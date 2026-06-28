@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, addDoc, serverTimestamp, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, serverTimestamp, doc, getDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // TODO: Replace with your actual Firebase configuration from the Firebase Console
 const firebaseConfig = {
@@ -70,11 +70,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // UI Loading state
         submitBtn.disabled = true;
+        submitBtn.classList.add("loading-pulse");
         btnText.textContent = "IN ELABORAZIONE...";
         messageDiv.className = "form-message hidden";
 
         try {
             if (db) {
+                // Anti-spam check
+                const q = query(collection(db, "registrations"), where("email", "==", email), where("eventId", "==", "act_1"));
+                const querySnapshot = await getDocs(q);
+                if (!querySnapshot.empty) {
+                    showMessage("Questa email risulta già in lista per l'evento.", "error");
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove("loading-pulse");
+                    btnText.textContent = "RICHIEDI ACCESSO";
+                    return;
+                }
+
                 // Actual Firebase write
                 await addDoc(collection(db, "registrations"), {
                     name: name,
@@ -96,6 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
             showMessage("Errore di sistema. Riprova più tardi.", "error");
         } finally {
             submitBtn.disabled = false;
+            submitBtn.classList.remove("loading-pulse");
             btnText.textContent = "RICHIEDI ACCESSO";
         }
     });

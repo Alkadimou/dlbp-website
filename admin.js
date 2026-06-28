@@ -52,6 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Multi-delete elements
     const selectAllCb = document.getElementById("select-all-cb");
     const deleteSelectedBtn = document.getElementById("delete-selected-btn");
+    const searchInput = document.getElementById("search-input");
 
     let usersData = [];
 
@@ -121,9 +122,22 @@ document.addEventListener("DOMContentLoaded", () => {
         loadSettings();
         loadUsers();
     }
+    
+    const SECRET_HASH = "731c8acd320f54b4fc09a3145661385c4c991fe468ffc907b2602ce971dcfe08"; // Hash di "dlbp2024"
 
-    loginBtn.addEventListener("click", () => {
-        if (passwordInput.value === "dlbp2024") { 
+    async function hashPassword(password) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(password);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    loginBtn.addEventListener("click", async () => {
+        const pwd = passwordInput.value;
+        const hashedInput = await hashPassword(pwd);
+        
+        if (hashedInput === SECRET_HASH) { 
             sessionStorage.setItem("dlbp_admin_auth", "true");
             loginSection.style.display = "none";
             dashboardSection.style.display = "block";
@@ -213,6 +227,28 @@ document.addEventListener("DOMContentLoaded", () => {
                 const allChecked = Array.from(userCheckboxes).every(c => c.checked);
                 selectAllCb.checked = allChecked;
                 updateDeleteBtn();
+            });
+        });
+        
+        // Trigger search filter if there's already text in the input
+        if (searchInput && searchInput.value) {
+            searchInput.dispatchEvent(new Event('input'));
+        }
+    }
+
+    // --- SEARCH LOGIC ---
+    if (searchInput) {
+        searchInput.addEventListener("input", (e) => {
+            const term = e.target.value.toLowerCase();
+            const rows = tbody.querySelectorAll("tr");
+            rows.forEach(row => {
+                const name = row.children[1].textContent.toLowerCase();
+                const email = row.children[2].textContent.toLowerCase();
+                if (name.includes(term) || email.includes(term)) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
             });
         });
     }

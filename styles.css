@@ -227,3 +227,58 @@ input::placeholder {
         width: 200px;
     }
 }
+
+/* ANIMATIONS (Fase 4) */
+.glitch {
+    position: relative;
+}
+
+.glitch:hover::before,
+.glitch:hover::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg-color);
+}
+
+.glitch:hover::before {
+    left: 2px;
+    text-shadow: -1px 0 red;
+    animation: glitch-anim-1 2s infinite linear alternate-reverse;
+}
+
+.glitch:hover::after {
+    left: -2px;
+    text-shadow: -1px 0 blue;
+    animation: glitch-anim-2 3s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim-1 {
+    0% { clip: rect(20px, 9999px, 85px, 0); }
+    20% { clip: rect(45px, 9999px, 12px, 0); }
+    40% { clip: rect(12px, 9999px, 5px, 0); }
+    60% { clip: rect(80px, 9999px, 60px, 0); }
+    80% { clip: rect(10px, 9999px, 90px, 0); }
+    100% { clip: rect(50px, 9999px, 30px, 0); }
+}
+
+@keyframes glitch-anim-2 {
+    0% { clip: rect(10px, 9999px, 30px, 0); }
+    20% { clip: rect(50px, 9999px, 90px, 0); }
+    40% { clip: rect(80px, 9999px, 60px, 0); }
+    60% { clip: rect(12px, 9999px, 5px, 0); }
+    80% { clip: rect(45px, 9999px, 12px, 0); }
+    100% { clip: rect(20px, 9999px, 85px, 0); }
+}
+
+.loading-pulse {
+    animation: pulse 1s infinite alternate;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0.8; transform: scale(0.98); }
+}
