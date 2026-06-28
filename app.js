@@ -32,6 +32,44 @@ document.addEventListener("DOMContentLoaded", () => {
     const closedMessage = document.getElementById("closed-message");
     const submitBtn = document.getElementById("submit-btn");
     const btnText = submitBtn.querySelector(".btn-text");
+    const registrationSection = document.getElementById("registration-section");
+
+    // Gate elements
+    const gateSection = document.getElementById("gate-section");
+    const gatePasswordInput = document.getElementById("gate-password");
+    const gateBtn = document.getElementById("gate-btn");
+    const gateMessage = document.getElementById("gate-message");
+
+    const PUBLIC_GATE_HASH = "9f0ec1a0240808b239a995975a3a09c633fe9edac27a203f21e90429f5cdbfe9"; // alogasse
+
+    async function hashPassword(password) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(password);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    // Check if user is already unlocked
+    if (sessionStorage.getItem("dlbp_public_unlocked") === "true") {
+        gateSection.style.display = "none";
+        registrationSection.style.display = "block";
+    }
+
+    gateBtn.addEventListener("click", async () => {
+        const pwd = gatePasswordInput.value;
+        const hashedInput = await hashPassword(pwd);
+        
+        if (hashedInput === PUBLIC_GATE_HASH) {
+            sessionStorage.setItem("dlbp_public_unlocked", "true");
+            gateSection.style.display = "none";
+            registrationSection.style.display = "block";
+        } else {
+            gateMessage.textContent = "ACCESSO NEGATO";
+            gateMessage.className = "form-message error";
+            gateMessage.style.display = "block";
+        }
+    });
 
     // Check if list is open
     async function checkAvailability() {
