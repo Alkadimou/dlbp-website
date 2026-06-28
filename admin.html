@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         .admin-container {
-            max-width: 800px;
+            max-width: 900px;
             width: 100%;
         }
         .users-table {
@@ -50,6 +50,77 @@
         #dashboard-section {
             display: none;
         }
+        .settings-panel {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .settings-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .settings-item label {
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            color: #888;
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #333;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: var(--success-color);
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        .capacity-input {
+            width: 80px;
+            padding: 0.5rem;
+            text-align: center;
+            background: #111;
+            border: 1px solid var(--border-color);
+            color: white;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .present-counter {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--success-color);
+            margin-left: auto;
+        }
     </style>
 </head>
 <body>
@@ -73,12 +144,33 @@
 
         <!-- Dashboard Section -->
         <section id="dashboard-section" class="event-card">
+            <div class="settings-panel">
+                <div class="settings-item">
+                    <label>LISTE APERTE</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="list-toggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="settings-item">
+                    <label>CAPIENZA LOCALE</label>
+                    <input type="number" id="capacity-input" class="capacity-input" value="100">
+                    <button id="save-capacity-btn" style="background:transparent; color:var(--accent-color); border:1px solid var(--border-color); padding: 0.5rem; cursor: pointer;">SALVA</button>
+                </div>
+                <div class="settings-item present-counter">
+                    <span id="present-count">0</span><span style="font-size: 1rem; color: #888;"> / <span id="capacity-display">100</span></span>
+                </div>
+            </div>
+
             <div class="admin-actions">
                 <h2 class="event-title" style="font-size: 1.5rem;">ISCRITTI (ACT I)</h2>
-                <div style="display: flex; gap: 1rem;">
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
                     <a href="scanner.html" class="submit-btn" style="margin: 0; padding: 0.8rem 1.2rem; text-decoration: none; display: flex; align-items: center;">
                         <span class="btn-text">APRI SCANNER</span>
                     </a>
+                    <button id="export-csv-btn" class="submit-btn" style="margin: 0; padding: 0.8rem 1.2rem; background: #333; color: white;">
+                        ESPORTA EXCEL
+                    </button>
                     <button id="send-emails-btn" class="submit-btn danger-btn" style="margin: 0; padding: 0.8rem 1.2rem;">
                         INVIA SECRET LOCATION
                     </button>

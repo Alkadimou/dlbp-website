@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, setDoc, getDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // TODO: Replace with your actual Firebase config
 const firebaseConfig = {
@@ -41,26 +41,89 @@ document.addEventListener("DOMContentLoaded", () => {
     const sendEmailsBtn = document.getElementById("send-emails-btn");
     const adminMessage = document.getElementById("admin-message");
 
-    // Dummy data for preview purposes
-    let usersData = [
-        { name: "Mario Rossi", email: "mario@example.com", timestamp: new Date() },
-        { name: "Giulia Bianchi", email: "giulia@example.com", timestamp: new Date() }
-    ];
+    // Settings elements
+    const listToggle = document.getElementById("list-toggle");
+    const capacityInput = document.getElementById("capacity-input");
+    const saveCapacityBtn = document.getElementById("save-capacity-btn");
+    const capacityDisplay = document.getElementById("capacity-display");
+    const presentCountDisplay = document.getElementById("present-count");
+    const exportCsvBtn = document.getElementById("export-csv-btn");
+
+    let usersData = [];
+
+    async function loadSettings() {
+        if (!db) return;
+        try {
+            const configSnap = await getDoc(doc(db, "settings", "config"));
+            if (configSnap.exists()) {
+                const config = configSnap.data();
+                listToggle.checked = config.isOpen;
+                capacityInput.value = config.maxCapacity;
+                capacityDisplay.textContent = config.maxCapacity;
+            } else {
+                await setDoc(doc(db, "settings", "config"), { isOpen: true, maxCapacity: 100 });
+            }
+        } catch (error) {
+            console.error("Error loading settings:", error);
+        }
+    }
+
+    listToggle.addEventListener("change", async (e) => {
+        if (!db) return;
+        try {
+            await setDoc(doc(db, "settings", "config"), { isOpen: e.target.checked }, { merge: true });
+        } catch (error) {
+            console.error("Error saving toggle:", error);
+        }
+    });
+
+    saveCapacityBtn.addEventListener("click", async () => {
+        if (!db) return;
+        const cap = parseInt(capacityInput.value);
+        if (isNaN(cap) || cap < 1) return;
+        try {
+            await setDoc(doc(db, "settings", "config"), { maxCapacity: cap }, { merge: true });
+            capacityDisplay.textContent = cap;
+            saveCapacityBtn.textContent = "FATTO";
+            setTimeout(() => saveCapacityBtn.textContent = "SALVA", 2000);
+        } catch (error) {
+            console.error("Error saving capacity:", error);
+        }
+    });
+
+    exportCsvBtn.addEventListener("click", () => {
+        if (usersData.length === 0) return;
+        let csvContent = "Nome,Email,Data Richiesta,Stato Ingresso,Orario Ingresso\n";
+        usersData.forEach(user => {
+            const time = user.timestamp.toLocaleString('it-IT').replace(/,/g, '');
+            const status = user.checked_in ? "Entrato" : "In Attesa";
+            const inTime = user.check_in_time ? user.check_in_time.toLocaleTimeString('it-IT') : "";
+            csvContent += `"${user.name}","${user.email}","${time}","${status}","${inTime}"\n`;
+        });
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", `dlbp_guestlist_${new Date().toISOString().split('T')[0]}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
 
     // --- LOGIN LOGIC ---
-    // Check if already logged in via this tab
     if (sessionStorage.getItem("dlbp_admin_auth") === "true") {
         loginSection.style.display = "none";
         dashboardSection.style.display = "block";
+        loadSettings();
         loadUsers();
     }
 
     loginBtn.addEventListener("click", () => {
-        // Hardcoded password for preview. IN PRODUCTION: Use proper Firebase Authentication!
         if (passwordInput.value === "dlbp2024") { 
             sessionStorage.setItem("dlbp_admin_auth", "true");
             loginSection.style.display = "none";
             dashboardSection.style.display = "block";
+            loadSettings();
             loadUsers();
         } else {
             loginMessage.textContent = "Accesso negato.";
@@ -71,7 +134,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- DASHBOARD LOGIC ---
     async function loadUsers() {
         tbody.innerHTML = "<tr><td colspan='3'>Caricamento dati...</td></tr>";
-        
         try {
             if (db) {
                 usersData = [];
@@ -79,8 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const querySnapshot = await getDocs(q);
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
-                    data.id = doc.id; // Save document ID for QR Code
-                    // Convert Firestore timestamp to JS Date
+                    data.id = doc.id;
                     data.timestamp = data.timestamp ? data.timestamp.toDate() : new Date();
                     if (data.check_in_time) {
                         data.check_in_time = data.check_in_time.toDate();
@@ -101,14 +162,17 @@ document.addEventListener("DOMContentLoaded", () => {
         tbody.innerHTML = "";
         if (usersData.length === 0) {
             tbody.innerHTML = "<tr><td colspan='3'>Nessun iscritto al momento.</td></tr>";
+            adminMessage.className = "form-message hidden";
             return;
         }
 
+        let presentCount = 0;
         usersData.forEach(user => {
             const tr = document.createElement("tr");
             
             let statusHtml = `<span class="status-attesa">IN ATTESA</span>`;
             if (user.checked_in) {
+                presentCount++;
                 const timeString = user.check_in_time ? user.check_in_time.toLocaleTimeString('it-IT', {hour: '2-digit', minute:'2-digit'}) : '';
                 statusHtml = `<span class="status-entrato">ENTRATO ${timeString}</span>`;
             }
@@ -121,6 +185,7 @@ document.addEventListener("DOMContentLoaded", () => {
             `;
             tbody.appendChild(tr);
         });
+        presentCountDisplay.textContent = presentCount;
     }
 
     // --- EMAIL SENDING LOGIC ---

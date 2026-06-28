@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, updateDoc, collection, query, where, getCountFromServer } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // TODO: Replace with your actual Firebase config
 const firebaseConfig = {
@@ -95,19 +95,42 @@ document.addEventListener("DOMContentLoaded", () => {
                         Email: ${userData.email}
                     `;
                 } else {
-                    // Valid and not checked in - update database
-                    await updateDoc(docRef, {
-                        checked_in: true,
-                        check_in_time: new Date()
-                    });
+                    // Check capacity before allowing
+                    let capacityExceeded = false;
+                    try {
+                        const configSnap = await getDoc(doc(db, "settings", "config"));
+                        if (configSnap.exists()) {
+                            const maxCap = configSnap.data().maxCapacity;
+                            const q = query(collection(db, "registrations"), where("checked_in", "==", true));
+                            const countSnap = await getCountFromServer(q);
+                            if (countSnap.data().count >= maxCap) {
+                                capacityExceeded = true;
+                            }
+                        }
+                    } catch (e) { console.error("Capacity check error:", e); }
 
-                    statusBox.classList.add("status-success");
-                    statusTitle.textContent = "ACCESSO CONSENTITO";
-                    statusDetails.innerHTML = `
-                        Biglietto valido e annullato correttamente.<br><br>
-                        <strong>Nome:</strong> ${userData.name}<br>
-                        <strong>Email:</strong> ${userData.email}
-                    `;
+                    if (capacityExceeded) {
+                        statusBox.classList.add("status-error");
+                        statusTitle.textContent = "LOCALE PIENO";
+                        statusDetails.innerHTML = `
+                            <strong>Attenzione:</strong> Capienza massima raggiunta!<br><br>
+                            Il biglietto di <strong>${userData.name}</strong> è valido, ma il locale è pieno. Non è stato annullato.
+                        `;
+                    } else {
+                        // Valid, not checked in, and capacity not exceeded
+                        await updateDoc(docRef, {
+                            checked_in: true,
+                            check_in_time: new Date()
+                        });
+
+                        statusBox.classList.add("status-success");
+                        statusTitle.textContent = "ACCESSO CONSENTITO";
+                        statusDetails.innerHTML = `
+                            Biglietto valido e annullato correttamente.<br><br>
+                            <strong>Nome:</strong> ${userData.name}<br>
+                            <strong>Email:</strong> ${userData.email}
+                        `;
+                    }
                 }
             } else {
                 // Document not found

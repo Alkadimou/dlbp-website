@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, serverTimestamp, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // TODO: Replace with your actual Firebase configuration from the Firebase Console
 const firebaseConfig = {
@@ -29,11 +29,36 @@ try {
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("registration-form");
     const messageDiv = document.getElementById("form-message");
+    const closedMessage = document.getElementById("closed-message");
     const submitBtn = document.getElementById("submit-btn");
     const btnText = submitBtn.querySelector(".btn-text");
 
+    // Check if list is open
+    async function checkAvailability() {
+        if (!db) return true;
+        try {
+            const configSnap = await getDoc(doc(db, "settings", "config"));
+            if (configSnap.exists()) {
+                const config = configSnap.data();
+                if (config.isOpen === false) {
+                    form.style.display = "none";
+                    closedMessage.style.display = "block";
+                    return false;
+                }
+            }
+        } catch (error) {
+            console.error("Error checking availability:", error);
+        }
+        return true;
+    }
+
+    checkAvailability();
+
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
+        
+        const isStillOpen = await checkAvailability();
+        if (!isStillOpen) return;
         
         const name = document.getElementById("name").value.trim();
         const email = document.getElementById("email").value.trim();
