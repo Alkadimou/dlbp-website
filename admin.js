@@ -265,8 +265,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
                         to_name: user.name,
                         to_email: user.email,
-                        secret_location: "Via Roma 123, Piano Interrato. Ingresso dal retro.", // Example data
-                        event_date: "Venerdì alle 23:00",
+                        secret_location: "Via Fabio Filzi 28 Arezzo (AR)",
+                        event_date: "SABATO 04/07 | 16:00 - 21:00",
                         qr_code_url: `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${user.id}`
                     });
                 } else {
