@@ -50,18 +50,13 @@ document.addEventListener("DOMContentLoaded", () => {
         return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
     }
 
-    // Check if user is already unlocked
-    if (sessionStorage.getItem("dlbp_public_unlocked") === "true") {
-        gateSection.style.display = "none";
-        registrationSection.style.display = "block";
-    }
+    // No sessionStorage used: password must be entered on every reload.
 
     gateBtn.addEventListener("click", async () => {
         const pwd = gatePasswordInput.value;
         const hashedInput = await hashPassword(pwd);
         
         if (hashedInput === PUBLIC_GATE_HASH) {
-            sessionStorage.setItem("dlbp_public_unlocked", "true");
             gateSection.style.display = "none";
             registrationSection.style.display = "block";
         } else {
