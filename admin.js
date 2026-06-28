@@ -257,7 +257,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const pwd = passwordInput.value;
         const hashedInput = await hashPassword(pwd);
             // Verify SHA-256
-            if (hashedInput === "51fb83fa0df63a943702a4b88edeb37db8754bde2cb73010b91e98a39a742880") {
+            if (hashedInput === SECRET_HASH) {
                 sessionStorage.setItem("dlbp_admin_auth", "true");
                 loginSection.style.display = "none";
                 dashboardSection.style.display = "block";
@@ -274,20 +274,24 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!db || !currentEventId) return;
         tbody.innerHTML = "<tr><td colspan='7' style='text-align: center;'>Caricamento dati...</td></tr>";
         try {
-            const q = query(collection(db, "registrations"), where("eventId", "==", currentEventId), orderBy("timestamp", "desc"));
+            // Rimosso orderBy per evitare l'errore di indice composito mancante su Firebase
+            const q = query(collection(db, "registrations"), where("eventId", "==", currentEventId));
             const querySnapshot = await getDocs(q);
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    data.id = doc.id;
-                    data.timestamp = data.timestamp ? data.timestamp.toDate() : new Date();
-                    if (data.check_in_time) {
-                        data.check_in_time = data.check_in_time.toDate();
-                    }
-                    usersData.push(data);
+            usersData = [];
+            
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                usersData.push({
+                    id: doc.id,
+                    ...data,
+                    timestamp: data.timestamp ? data.timestamp.toDate() : new Date(),
+                    check_in_time: data.check_in_time ? data.check_in_time.toDate() : null
                 });
-            } else {
-                console.warn("Using dummy data because Firebase is not configured.");
-            }
+            });
+
+            // Ordinamento manuale lato client (dal più recente)
+            usersData.sort((a, b) => b.timestamp - a.timestamp);
+            
             renderTable();
         } catch (error) {
             console.error("Error loading users:", error);

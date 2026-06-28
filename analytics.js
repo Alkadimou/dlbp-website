@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         analyticsContent.style.display = "none";
         
         try {
-            const q = query(collection(db, "registrations"), where("eventId", "==", eventId), orderBy("timestamp", "asc"));
+            const q = query(collection(db, "registrations"), where("eventId", "==", eventId)); // Rimosso orderBy
             const querySnapshot = await getDocs(q);
             
             const data = [];
