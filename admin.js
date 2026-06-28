@@ -219,13 +219,15 @@ document.addEventListener("DOMContentLoaded", () => {
         
         // Reset and attach multi-delete listeners
         selectAllCb.checked = false;
-        deleteSelectedBtn.style.display = "none";
+        deleteSelectedBtn.disabled = true;
+        deleteSelectedBtn.style.opacity = "0.5";
         
         const userCheckboxes = document.querySelectorAll(".user-checkbox");
         
         function updateDeleteBtn() {
             const anyChecked = Array.from(userCheckboxes).some(cb => cb.checked);
-            deleteSelectedBtn.style.display = anyChecked ? "block" : "none";
+            deleteSelectedBtn.disabled = !anyChecked;
+            deleteSelectedBtn.style.opacity = anyChecked ? "1" : "0.5";
         }
 
         selectAllCb.addEventListener("change", (e) => {
