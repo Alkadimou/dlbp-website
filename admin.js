@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, setDoc, getDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, setDoc, getDoc, query, orderBy, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // TODO: Replace with your actual Firebase config
 const firebaseConfig = {
@@ -48,6 +48,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const capacityDisplay = document.getElementById("capacity-display");
     const presentCountDisplay = document.getElementById("present-count");
     const exportCsvBtn = document.getElementById("export-csv-btn");
+    
+    // Multi-delete elements
+    const selectAllCb = document.getElementById("select-all-cb");
+    const deleteSelectedBtn = document.getElementById("delete-selected-btn");
 
     let usersData = [];
 
@@ -178,6 +182,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             tr.innerHTML = `
+                <td><input type="checkbox" class="user-checkbox" data-id="${user.id}"></td>
                 <td>${user.name}</td>
                 <td>${user.email}</td>
                 <td>${user.timestamp.toLocaleString('it-IT')}</td>
@@ -186,7 +191,60 @@ document.addEventListener("DOMContentLoaded", () => {
             tbody.appendChild(tr);
         });
         presentCountDisplay.textContent = presentCount;
+        
+        // Reset and attach multi-delete listeners
+        selectAllCb.checked = false;
+        deleteSelectedBtn.style.display = "none";
+        
+        const userCheckboxes = document.querySelectorAll(".user-checkbox");
+        
+        function updateDeleteBtn() {
+            const anyChecked = Array.from(userCheckboxes).some(cb => cb.checked);
+            deleteSelectedBtn.style.display = anyChecked ? "block" : "none";
+        }
+
+        selectAllCb.addEventListener("change", (e) => {
+            userCheckboxes.forEach(cb => cb.checked = e.target.checked);
+            updateDeleteBtn();
+        });
+
+        userCheckboxes.forEach(cb => {
+            cb.addEventListener("change", () => {
+                const allChecked = Array.from(userCheckboxes).every(c => c.checked);
+                selectAllCb.checked = allChecked;
+                updateDeleteBtn();
+            });
+        });
     }
+
+    // --- DELETE LOGIC ---
+    deleteSelectedBtn.addEventListener("click", async () => {
+        const selectedIds = Array.from(document.querySelectorAll(".user-checkbox:checked")).map(cb => cb.dataset.id);
+        if (selectedIds.length === 0) return;
+
+        if (!confirm(`Sei sicuro di voler eliminare definitivamente ${selectedIds.length} iscritti? Questa azione è irreversibile.`)) {
+            return;
+        }
+
+        adminMessage.textContent = "Eliminazione in corso...";
+        adminMessage.className = "form-message";
+
+        try {
+            for (const id of selectedIds) {
+                await deleteDoc(doc(db, "registrations", id));
+            }
+            adminMessage.textContent = "Iscritti eliminati con successo.";
+            adminMessage.className = "form-message success";
+            setTimeout(() => {
+                adminMessage.className = "form-message hidden";
+            }, 3000);
+            loadUsers();
+        } catch (error) {
+            console.error("Errore durante l'eliminazione:", error);
+            adminMessage.textContent = "Errore durante l'eliminazione.";
+            adminMessage.className = "form-message error";
+        }
+    });
 
     // --- EMAIL SENDING LOGIC ---
     sendEmailsBtn.addEventListener("click", async () => {

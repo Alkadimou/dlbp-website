@@ -168,10 +168,13 @@
                     <a href="scanner.html" class="submit-btn" style="margin: 0; padding: 0.8rem 1.2rem; text-decoration: none; display: flex; align-items: center;">
                         <span class="btn-text">APRI SCANNER</span>
                     </a>
+                    <button id="delete-selected-btn" class="submit-btn danger-btn" style="margin: 0; padding: 0.8rem 1.2rem; display: none;">
+                        ELIMINA SELEZIONATI
+                    </button>
                     <button id="export-csv-btn" class="submit-btn" style="margin: 0; padding: 0.8rem 1.2rem; background: #333; color: white;">
                         ESPORTA EXCEL
                     </button>
-                    <button id="send-emails-btn" class="submit-btn danger-btn" style="margin: 0; padding: 0.8rem 1.2rem;">
+                    <button id="send-emails-btn" class="submit-btn" style="margin: 0; padding: 0.8rem 1.2rem; background: var(--text-color); color: var(--bg-color);">
                         INVIA SECRET LOCATION
                     </button>
                 </div>
@@ -180,6 +183,7 @@
             <table class="users-table">
                 <thead>
                     <tr>
+                        <th style="width: 40px;"><input type="checkbox" id="select-all-cb"></th>
                         <th>NOME</th>
                         <th>EMAIL</th>
                         <th>DATA RICHIESTA</th>
