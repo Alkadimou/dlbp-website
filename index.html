@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DLBP | Drink Love Breathe Peace</title>
+    <meta name="description" content="Drink Love Breathe Peace. Exclusive artistic movement and private events.">
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google Fonts: Space Grotesk for a geometric, modern, underground feel -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="noise-overlay"></div>
+    
+    <main class="container">
+        <header class="header">
+            <img src="logo.jpg" alt="DLBP Logo" class="logo-img">
+            <p class="subtitle">Drink &middot; Love &middot; Breathe &middot; Peace</p>
+        </header>
+
+        <section class="event-section">
+            <div class="event-card">
+                <div class="event-status">PROSSIMO EVENTO // NUMERO CHIUSO</div>
+                <h2 class="event-title">ACT I: L'INIZIO</h2>
+                <p class="event-date">Data da destinarsi</p>
+                <p class="event-description">
+                    Un'esperienza immersiva e riservata. 
+                    L'accesso è strettamente limitato. Inserisci i tuoi dati per richiedere l'iscrizione.
+                    La location esatta (segreta) verrà comunicata solo agli iscritti selezionati 24h prima dell'evento.
+                </p>
+
+                <form id="registration-form" class="registration-form">
+                    <div class="form-group">
+                        <input type="text" id="name" name="name" required placeholder="NOME E COGNOME">
+                    </div>
+                    <div class="form-group">
+                        <input type="email" id="email" name="email" required placeholder="EMAIL">
+                    </div>
+                    <button type="submit" class="submit-btn" id="submit-btn">
+                        <span class="btn-text">RICHIEDI ACCESSO</span>
+                    </button>
+                    <div id="form-message" class="form-message hidden"></div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>

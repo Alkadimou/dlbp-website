@@ -1,0 +1,219 @@
+/* Reset & Base Styles */
+:root {
+    --bg-color: #000000;
+    --text-color: #f0f0f0;
+    --accent-color: #ffffff;
+    --border-color: rgba(255, 255, 255, 0.15);
+    --error-color: #ff3333;
+    --success-color: #33ff77;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Space Grotesk', sans-serif;
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Analog Noise Overlay - Disabled for solid color blending */
+.noise-overlay {
+    display: none;
+}
+
+.container {
+    width: 100%;
+    max-width: 600px;
+    padding: 2rem;
+    z-index: 10;
+}
+
+/* Header & Logo */
+.header {
+    text-align: center;
+    margin-bottom: 4rem;
+    animation: fadeIn 2s ease-out;
+}
+
+.logo-img {
+    width: 250px;
+    max-width: 100%;
+    margin-bottom: 0.5rem;
+}
+
+.subtitle {
+    font-size: 0.8rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    opacity: 0.6;
+    font-weight: 300;
+}
+
+/* Event Card (Brutalist Glassmorphism) */
+.event-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color);
+    padding: 3rem;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    animation: slideUp 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.event-status {
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    color: var(--accent-color);
+    margin-bottom: 1.5rem;
+    display: inline-block;
+    border-bottom: 1px solid var(--accent-color);
+    padding-bottom: 0.2rem;
+}
+
+.event-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    letter-spacing: -1px;
+}
+
+.event-date {
+    font-size: 0.9rem;
+    opacity: 0.7;
+    margin-bottom: 2rem;
+}
+
+.event-description {
+    font-size: 0.95rem;
+    opacity: 0.8;
+    margin-bottom: 3rem;
+    font-weight: 300;
+}
+
+/* Form Styles */
+.registration-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.form-group {
+    position: relative;
+}
+
+input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color);
+    font-family: inherit;
+    font-size: 1rem;
+    padding: 0.8rem 0;
+    outline: none;
+    transition: border-color 0.3s ease;
+    border-radius: 0;
+}
+
+input:focus {
+    border-bottom-color: var(--accent-color);
+}
+
+input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+    letter-spacing: 1px;
+    font-size: 0.8rem;
+}
+
+.submit-btn {
+    background: var(--text-color);
+    color: var(--bg-color);
+    border: none;
+    padding: 1.2rem;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+}
+
+.submit-btn:hover {
+    background: #ccc;
+    transform: translateY(-2px);
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+}
+
+.submit-btn:disabled {
+    background: #333;
+    color: #666;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.form-message {
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    text-align: center;
+    padding: 1rem;
+    border: 1px solid transparent;
+}
+
+.form-message.hidden {
+    display: none;
+}
+
+.form-message.success {
+    border-color: var(--success-color);
+    color: var(--success-color);
+}
+
+.form-message.error {
+    border-color: var(--error-color);
+    color: var(--error-color);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { 
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .event-card {
+        padding: 2rem;
+        border-left: none;
+        border-right: none;
+    }
+    .logo-img {
+        width: 200px;
+    }
+}

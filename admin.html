@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DLBP | Admin Panel</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        .admin-container {
+            max-width: 800px;
+            width: 100%;
+        }
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+        .users-table th, .users-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .users-table th {
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            color: var(--accent-color);
+            opacity: 0.8;
+        }
+        .admin-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .danger-btn {
+            background: var(--error-color);
+            color: white;
+        }
+        .danger-btn:hover {
+            background: #cc0000;
+        }
+        #login-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        #dashboard-section {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="noise-overlay"></div>
+    
+    <main class="container admin-container">
+        <header class="header">
+            <img src="logo.jpg" alt="DLBP Logo" class="logo-img">
+            <p class="subtitle">SECURITY CLEARANCE REQUIRED</p>
+        </header>
+
+        <!-- Login Section -->
+        <section id="login-section" class="event-card">
+            <h2 class="event-title" style="font-size: 1.5rem;">ACCESSO ADMIN</h2>
+            <div class="form-group">
+                <input type="password" id="admin-password" placeholder="INSERISCI PASSWORD">
+            </div>
+            <button id="login-btn" class="submit-btn">ACCEDI</button>
+            <div id="login-message" class="form-message hidden"></div>
+        </section>
+
+        <!-- Dashboard Section -->
+        <section id="dashboard-section" class="event-card">
+            <div class="admin-actions">
+                <h2 class="event-title" style="font-size: 1.5rem;">ISCRITTI (ACT I)</h2>
+                <button id="send-emails-btn" class="submit-btn danger-btn" style="margin: 0; padding: 0.8rem 1.2rem;">
+                    INVIA SECRET LOCATION
+                </button>
+            </div>
+            
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>NOME</th>
+                        <th>EMAIL</th>
+                        <th>DATA RICHIESTA</th>
+                    </tr>
+                </thead>
+                <tbody id="users-tbody">
+                    <!-- Data populated by JS -->
+                </tbody>
+            </table>
+            <div id="admin-message" class="form-message hidden"></div>
+        </section>
+    </main>
+
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="module" src="admin.js"></script>
+</body>
+</html>
