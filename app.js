@@ -3,12 +3,13 @@ import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.g
 
 // TODO: Replace with your actual Firebase configuration from the Firebase Console
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_STORAGE_BUCKET",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyD6THmnRAG_8YL1PLWSL7I2_WKLv-fioWk",
+  authDomain: "dlbp-website.firebaseapp.com",
+  projectId: "dlbp-website",
+  storageBucket: "dlbp-website.firebasestorage.app",
+  messagingSenderId: "51111322366",
+  appId: "1:51111322366:web:813b96994d6a1f2fbefbaf",
+  measurementId: "G-6HC9LRZWV9"
 };
 
 // Initialize Firebase only if the config is updated
