@@ -12,10 +12,10 @@ const firebaseConfig = {
   measurementId: "G-6HC9LRZWV9"
 };
 
-// TODO: Replace with your EmailJS config
-const EMAILJS_PUBLIC_KEY = "YOUR_EMAILJS_PUBLIC_KEY";
-const EMAILJS_SERVICE_ID = "YOUR_EMAILJS_SERVICE_ID";
-const EMAILJS_TEMPLATE_ID = "YOUR_EMAILJS_TEMPLATE_ID";
+// EmailJS config
+const EMAILJS_PUBLIC_KEY = "XIMzE429r_DY-U4nl";
+const EMAILJS_SERVICE_ID = "service_ndbmwte";
+const EMAILJS_TEMPLATE_ID = "template_o3kovxe";
 
 let db;
 try {
