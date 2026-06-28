@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DLBP | Scanner</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        .scanner-container {
+            max-width: 600px;
+            width: 100%;
+        }
+        #reader {
+            width: 100%;
+            margin-top: 1rem;
+            border: 2px solid var(--border-color);
+            background: #000;
+        }
+        #reader button {
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+            border: none;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-family: 'Space Grotesk', sans-serif;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        #reader a {
+            color: var(--accent-color);
+        }
+        .status-box {
+            padding: 2rem;
+            margin-top: 2rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            display: none;
+            background-color: #111;
+        }
+        .status-box h3 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        .status-success {
+            border-color: var(--success-color);
+        }
+        .status-success h3 {
+            color: var(--success-color);
+        }
+        .status-error {
+            border-color: var(--error-color);
+        }
+        .status-error h3 {
+            color: var(--error-color);
+        }
+        .user-details {
+            font-size: 1.1rem;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="noise-overlay"></div>
+    
+    <main class="container scanner-container">
+        <header class="header">
+            <img src="logo.jpg" alt="DLBP Logo" class="logo-img">
+            <p class="subtitle">DOOR MANAGEMENT</p>
+        </header>
+
+        <!-- Login Section -->
+        <section id="login-section" class="event-card">
+            <h2 class="event-title" style="font-size: 1.5rem;">ACCESSO SCANNER</h2>
+            <div class="form-group">
+                <input type="password" id="admin-password" placeholder="INSERISCI PASSWORD">
+            </div>
+            <button id="login-btn" class="submit-btn">ACCEDI</button>
+            <div id="login-message" class="form-message hidden"></div>
+        </section>
+
+        <!-- Scanner Section -->
+        <section id="scanner-section" class="event-card" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2 class="event-title" style="font-size: 1.5rem; margin: 0;">SCANNER QR</h2>
+                <a href="admin.html" style="color: #888; text-decoration: none; font-size: 0.9rem;">&larr; Admin</a>
+            </div>
+            
+            <div id="reader"></div>
+
+            <div id="status-box" class="status-box">
+                <h3 id="status-title">STATUS</h3>
+                <div id="status-details" class="user-details"></div>
+                <button id="next-scan-btn" class="submit-btn" style="margin-top: 1.5rem;">PROSSIMO BIGLIETTO</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- HTML5 QR Code Library -->
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <script type="module" src="scanner.js"></script>
+</body>
+</html>

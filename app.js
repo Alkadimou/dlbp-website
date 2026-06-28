@@ -55,6 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     name: name,
                     email: email,
                     eventId: "act_1", // Hardcoded for this event
+                    checked_in: false, // New field for QR code system
                     timestamp: serverTimestamp()
                 });
             } else {
