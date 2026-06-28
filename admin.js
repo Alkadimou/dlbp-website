@@ -125,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         to_email: user.email,
                         secret_location: "Via Roma 123, Piano Interrato. Ingresso dal retro.", // Example data
                         event_date: "Venerdì alle 23:00",
-                        qr_code_url: `https://api.qrserver.com/v1/create-qr-code/?size=300x300&color=ffffff&bgcolor=000000&data=${user.id}`
+                        qr_code_url: `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${user.id}`
                     });
                 } else {
                     // Simulate email sending delay
