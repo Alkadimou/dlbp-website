@@ -107,10 +107,10 @@ document.addEventListener("DOMContentLoaded", () => {
         usersData.forEach(user => {
             const tr = document.createElement("tr");
             
-            let statusHtml = `<span style="color: #888;">IN ATTESA</span>`;
+            let statusHtml = `<span class="status-attesa">IN ATTESA</span>`;
             if (user.checked_in) {
                 const timeString = user.check_in_time ? user.check_in_time.toLocaleTimeString('it-IT', {hour: '2-digit', minute:'2-digit'}) : '';
-                statusHtml = `<span style="color: var(--success-color); font-weight: bold;">ENTRATO ${timeString}</span>`;
+                statusHtml = `<span class="status-entrato">ENTRATO ${timeString}</span>`;
             }
 
             tr.innerHTML = `

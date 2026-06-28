@@ -1,5 +1,6 @@
 /* Reset & Base Styles */
 :root {
+    color-scheme: dark;
     --bg-color: #000000;
     --text-color: #f0f0f0;
     --accent-color: #ffffff;
@@ -187,6 +188,15 @@ input::placeholder {
 .form-message.error {
     border-color: var(--error-color);
     color: var(--error-color);
+}
+
+.status-attesa {
+    color: #888888 !important;
+}
+
+.status-entrato {
+    color: #33ff77 !important;
+    font-weight: bold;
 }
 
 /* Animations */
