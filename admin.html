@@ -145,6 +145,15 @@
 
         <!-- Dashboard Section -->
         <section id="dashboard-section" class="event-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                <h2 class="event-title" style="font-size: 1.5rem; margin: 0;">GESTIONE EVENTO</h2>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <select id="admin-event-selector" style="padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk'; min-width: 200px;">
+                    </select>
+                    <button id="new-event-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1rem; background: var(--text-color); color: var(--bg-color);">NUOVO ACT</button>
+                </div>
+            </div>
+
             <div class="settings-panel">
                 <div class="settings-item">
                     <label>LISTE APERTE</label>
@@ -171,6 +180,9 @@
             <div class="admin-actions" style="margin-bottom: 2rem; display: flex; gap: 1rem; flex-wrap: wrap;">
                 <a href="scanner.html" class="submit-btn" style="margin: 0; padding: 0.8rem 1.2rem; text-decoration: none; display: flex; align-items: center;">
                     <span class="btn-text">APRI SCANNER</span>
+                </a>
+                <a href="analytics.html" class="submit-btn" style="margin: 0; padding: 0.8rem 1.2rem; text-decoration: none; display: flex; align-items: center; background: #3498db; color: white;">
+                    <span class="btn-text">ANALYTICS 📊</span>
                 </a>
                 <button id="delete-selected-btn" class="submit-btn danger-btn" style="margin: 0; padding: 0.8rem 1.2rem; opacity: 0.5;" disabled>
                     ELIMINA SELEZIONATI

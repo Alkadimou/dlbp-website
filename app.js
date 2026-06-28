@@ -41,6 +41,46 @@ document.addEventListener("DOMContentLoaded", () => {
     const gateMessage = document.getElementById("gate-message");
 
     const PUBLIC_GATE_HASH = "9f0ec1a0240808b239a995975a3a09c633fe9edac27a203f21e90429f5cdbfe9"; // alogasse
+    let currentEventId = "act_1"; // Default fallback
+
+    // --- FETCH ACTIVE EVENT ---
+    async function loadActiveEvent() {
+        if (!db) return;
+        try {
+            const q = query(collection(db, "events"), where("isActive", "==", true));
+            const querySnapshot = await getDocs(q);
+            if (!querySnapshot.empty) {
+                const eventDoc = querySnapshot.docs[0];
+                const ev = eventDoc.data();
+                currentEventId = eventDoc.id;
+                
+                // Update UI
+                const titleEl = document.getElementById("public-event-title");
+                const dateEl = document.getElementById("public-event-date");
+                if (titleEl) {
+                    titleEl.textContent = ev.name;
+                    titleEl.setAttribute("data-text", ev.name);
+                }
+                if (dateEl) {
+                    dateEl.textContent = ev.date;
+                }
+                
+                // Set form state based on event
+                if (ev.isOpen === false) {
+                    form.style.display = "none";
+                    closedMessage.style.display = "block";
+                }
+            } else {
+                // Fallback to legacy check if events collection doesn't exist yet
+                checkLegacyAvailability();
+            }
+        } catch (error) {
+            console.error("Error loading active event:", error);
+        }
+    }
+
+    // Load active event immediately
+    loadActiveEvent();
 
     async function hashPassword(password) {
         const encoder = new TextEncoder();
@@ -66,8 +106,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Check if list is open
-    async function checkAvailability() {
+    // Fallback if no active event found (migration mode)
+    async function checkLegacyAvailability() {
         if (!db) return true;
         try {
             const configSnap = await getDoc(doc(db, "settings", "config"));
@@ -85,13 +125,11 @@ document.addEventListener("DOMContentLoaded", () => {
         return true;
     }
 
-    checkAvailability();
-
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
         
-        const isStillOpen = await checkAvailability();
-        if (!isStillOpen) return;
+        // Se c'è il messaggio chiuso visibile, blocca
+        if (closedMessage.style.display === "block") return;
         
         const name = document.getElementById("name").value.trim();
         const email = document.getElementById("email").value.trim();
@@ -110,7 +148,7 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
             if (db) {
                 // Anti-spam check
-                const q = query(collection(db, "registrations"), where("email", "==", email), where("eventId", "==", "act_1"));
+                const q = query(collection(db, "registrations"), where("email", "==", email), where("eventId", "==", currentEventId));
                 const querySnapshot = await getDocs(q);
                 if (!querySnapshot.empty) {
                     showMessage("Questa email risulta già in lista per l'evento.", "error");
@@ -124,7 +162,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 await addDoc(collection(db, "registrations"), {
                     name: name,
                     email: email,
-                    eventId: "act_1", // Hardcoded for this event
+                    eventId: currentEventId,
                     checked_in: false, // New field for QR code system
                     status: "pending", // VIP approval status
                     email_sent: false, // Track if secret location was sent

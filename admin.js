@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, setDoc, getDoc, query, orderBy, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, setDoc, getDoc, query, orderBy, deleteDoc, updateDoc, where, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // TODO: Replace with your actual Firebase config
 const firebaseConfig = {
@@ -54,40 +54,159 @@ document.addEventListener("DOMContentLoaded", () => {
     const deleteSelectedBtn = document.getElementById("delete-selected-btn");
     const searchInput = document.getElementById("search-input");
 
+    const adminEventSelector = document.getElementById("admin-event-selector");
+    const newEventBtn = document.getElementById("new-event-btn");
+    
     let usersData = [];
+    let currentEventId = null;
 
-    async function loadSettings() {
+    async function setupEventsIfNeeded() {
         if (!db) return;
         try {
-            const configSnap = await getDoc(doc(db, "settings", "config"));
-            if (configSnap.exists()) {
-                const config = configSnap.data();
-                listToggle.checked = config.isOpen;
-                capacityInput.value = config.maxCapacity;
-                capacityDisplay.textContent = config.maxCapacity;
-            } else {
-                await setDoc(doc(db, "settings", "config"), { isOpen: true, maxCapacity: 100 });
+            const eventsSnap = await getDocs(collection(db, "events"));
+            if (eventsSnap.empty) {
+                console.log("No events found, migrating legacy settings to act_1...");
+                let oldMaxCapacity = 100;
+                let oldIsOpen = true;
+                const oldSettingsSnap = await getDoc(doc(db, "settings", "config"));
+                if (oldSettingsSnap.exists()) {
+                    const data = oldSettingsSnap.data();
+                    oldMaxCapacity = data.maxCapacity || 100;
+                    oldIsOpen = data.isOpen !== false;
+                }
+
+                await setDoc(doc(db, "events", "act_1"), {
+                    name: "TXK.NØX Act I",
+                    date: "SABATO 04/07 | 16:00 - 21:00",
+                    location: "Via Fabio Filzi 28 Arezzo (AR)",
+                    maxCapacity: oldMaxCapacity,
+                    isOpen: oldIsOpen,
+                    isActive: true,
+                    createdAt: new Date()
+                });
+                
+                // Migrazione vecchie registrazioni
+                const regSnap = await getDocs(collection(db, "registrations"));
+                for (const d of regSnap.docs) {
+                    if (!d.data().eventId) {
+                        await updateDoc(doc(db, "registrations", d.id), { eventId: "act_1" });
+                    }
+                }
             }
         } catch (error) {
-            console.error("Error loading settings:", error);
+            console.error("Error setting up events:", error);
+        }
+    }
+
+    async function loadEventsList() {
+        if (!db) return;
+        try {
+            const eventsSnap = await getDocs(query(collection(db, "events"), orderBy("createdAt", "desc")));
+            adminEventSelector.innerHTML = "";
+            let foundActive = false;
+
+            eventsSnap.forEach(doc => {
+                const ev = doc.data();
+                const option = document.createElement("option");
+                option.value = doc.id;
+                option.textContent = ev.name + " (" + ev.date + ")" + (ev.isActive ? " [ATTIVO ONLINE]" : "");
+                if (ev.isActive && !foundActive) {
+                    option.selected = true;
+                    foundActive = true;
+                    currentEventId = doc.id;
+                }
+                adminEventSelector.appendChild(option);
+            });
+
+            if (!currentEventId && eventsSnap.docs.length > 0) {
+                currentEventId = eventsSnap.docs[0].id;
+                adminEventSelector.value = currentEventId;
+            }
+
+            if (currentEventId) {
+                await loadSettings();
+                await loadUsers();
+            }
+        } catch (error) {
+            console.error("Error loading events list:", error);
+        }
+    }
+
+    if (adminEventSelector) {
+        adminEventSelector.addEventListener("change", (e) => {
+            currentEventId = e.target.value;
+            loadSettings();
+            loadUsers();
+        });
+    }
+
+    if (newEventBtn) {
+        newEventBtn.addEventListener("click", async () => {
+            const name = prompt("Nome del nuovo evento (es: TXK.NØX Act II):");
+            if (!name) return;
+            const date = prompt("Data e ora (es: VENERDÌ 14/08 | 23:00 - 05:00):");
+            if (!date) return;
+            const capacity = prompt("Capienza massima:", "100");
+            
+            try {
+                // Imposta tutti gli altri eventi come NON attivi
+                const eventsSnap = await getDocs(collection(db, "events"));
+                for (const d of eventsSnap.docs) {
+                    if (d.data().isActive) {
+                        await updateDoc(doc(db, "events", d.id), { isActive: false });
+                    }
+                }
+
+                const newEventRef = await addDoc(collection(db, "events"), {
+                    name: name,
+                    date: date,
+                    location: "Via Fabio Filzi 28 Arezzo (AR)", // Puoi renderlo dinamico in futuro
+                    maxCapacity: parseInt(capacity) || 100,
+                    isOpen: true,
+                    isActive: true,
+                    createdAt: new Date()
+                });
+                
+                alert("Nuovo evento creato e impostato come ATTIVO!");
+                currentEventId = newEventRef.id;
+                await loadEventsList();
+            } catch (error) {
+                console.error("Error creating new event:", error);
+                alert("Errore nella creazione dell'evento.");
+            }
+        });
+    }
+
+    async function loadSettings() {
+        if (!db || !currentEventId) return;
+        try {
+            const eventSnap = await getDoc(doc(db, "events", currentEventId));
+            if (eventSnap.exists()) {
+                const evData = eventSnap.data();
+                listToggle.checked = evData.isOpen !== false; // default true
+                capacityInput.value = evData.maxCapacity || 100;
+                capacityDisplay.textContent = evData.maxCapacity || 100;
+            }
+        } catch (error) {
+            console.error("Error loading event settings:", error);
         }
     }
 
     listToggle.addEventListener("change", async (e) => {
-        if (!db) return;
+        if (!db || !currentEventId) return;
         try {
-            await setDoc(doc(db, "settings", "config"), { isOpen: e.target.checked }, { merge: true });
+            await updateDoc(doc(db, "events", currentEventId), { isOpen: e.target.checked });
         } catch (error) {
             console.error("Error saving toggle:", error);
         }
     });
 
     saveCapacityBtn.addEventListener("click", async () => {
-        if (!db) return;
+        if (!db || !currentEventId) return;
         const cap = parseInt(capacityInput.value);
         if (isNaN(cap) || cap < 1) return;
         try {
-            await setDoc(doc(db, "settings", "config"), { maxCapacity: cap }, { merge: true });
+            await updateDoc(doc(db, "events", currentEventId), { maxCapacity: cap });
             capacityDisplay.textContent = cap;
             saveCapacityBtn.textContent = "FATTO";
             setTimeout(() => saveCapacityBtn.textContent = "SALVA", 2000);
@@ -119,8 +238,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (sessionStorage.getItem("dlbp_admin_auth") === "true") {
         loginSection.style.display = "none";
         dashboardSection.style.display = "block";
-        loadSettings();
-        loadUsers();
+        setupEventsIfNeeded().then(() => {
+            loadEventsList();
+        });
     }
     
     const SECRET_HASH = "731c8acd320f54b4fc09a3145661385c4c991fe468ffc907b2602ce971dcfe08"; // Hash di "dlbp2024"
@@ -136,27 +256,26 @@ document.addEventListener("DOMContentLoaded", () => {
     loginBtn.addEventListener("click", async () => {
         const pwd = passwordInput.value;
         const hashedInput = await hashPassword(pwd);
-        
-        if (hashedInput === SECRET_HASH) { 
-            sessionStorage.setItem("dlbp_admin_auth", "true");
-            loginSection.style.display = "none";
-            dashboardSection.style.display = "block";
-            loadSettings();
-            loadUsers();
-        } else {
+            // Verify SHA-256
+            if (hashedInput === "51fb83fa0df63a943702a4b88edeb37db8754bde2cb73010b91e98a39a742880") {
+                sessionStorage.setItem("dlbp_admin_auth", "true");
+                loginSection.style.display = "none";
+                dashboardSection.style.display = "block";
+                await setupEventsIfNeeded();
+                await loadEventsList();
+            } else {
             loginMessage.textContent = "Accesso negato.";
             loginMessage.className = "form-message error";
         }
     });
 
-    // --- DASHBOARD LOGIC ---
+    // --- DATA LOADING LOGIC ---
     async function loadUsers() {
-        tbody.innerHTML = "<tr><td colspan='3'>Caricamento dati...</td></tr>";
+        if (!db || !currentEventId) return;
+        tbody.innerHTML = "<tr><td colspan='7' style='text-align: center;'>Caricamento dati...</td></tr>";
         try {
-            if (db) {
-                usersData = [];
-                const q = query(collection(db, "registrations"), orderBy("timestamp", "desc"));
-                const querySnapshot = await getDocs(q);
+            const q = query(collection(db, "registrations"), where("eventId", "==", currentEventId), orderBy("timestamp", "desc"));
+            const querySnapshot = await getDocs(q);
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
                     data.id = doc.id;

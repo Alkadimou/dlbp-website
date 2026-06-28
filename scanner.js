@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, doc, getDoc, updateDoc, collection, query, where, getCountFromServer } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, updateDoc, collection, query, where, getCountFromServer, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // TODO: Replace with your actual Firebase config
 const firebaseConfig = {
@@ -67,8 +67,31 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    let activeEventId = null;
+    let activeEventData = null;
+
+    async function loadActiveEvent() {
+        if (!db) return;
+        try {
+            const q = query(collection(db, "events"), where("isActive", "==", true));
+            const querySnapshot = await getDocs(q);
+            if (!querySnapshot.empty) {
+                const eventDoc = querySnapshot.docs[0];
+                activeEventId = eventDoc.id;
+                activeEventData = eventDoc.data();
+            } else {
+                activeEventId = "act_1"; // fallback for migration
+                activeEventData = { maxCapacity: 100 };
+            }
+        } catch (error) {
+            console.error("Error loading active event:", error);
+        }
+    }
+
     // --- SCANNER LOGIC ---
-    function startScanner() {
+    async function startScanner() {
+        await loadActiveEvent();
+        
         // Initialize HTML5 QR Code Scanner
         html5QrcodeScanner = new Html5QrcodeScanner(
             "reader",
@@ -98,7 +121,15 @@ document.addEventListener("DOMContentLoaded", () => {
             if (docSnap.exists()) {
                 const userData = docSnap.data();
                 
-                if (userData.checked_in === true) {
+                if (userData.eventId && activeEventId && userData.eventId !== activeEventId) {
+                    statusBox.classList.add("status-error");
+                    statusTitle.textContent = "EVENTO ERRATO";
+                    statusDetails.innerHTML = `
+                        <strong>Attenzione:</strong> Questo biglietto appartiene a un altro evento.<br><br>
+                        Nome: ${userData.name}<br>
+                        Email: ${userData.email}
+                    `;
+                } else if (userData.checked_in === true) {
                     // Already checked in
                     statusBox.classList.add("status-error");
                     statusTitle.textContent = "SCANSIONATO";
@@ -111,10 +142,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     // Check capacity before allowing
                     let capacityExceeded = false;
                     try {
-                        const configSnap = await getDoc(doc(db, "settings", "config"));
-                        if (configSnap.exists()) {
-                            const maxCap = configSnap.data().maxCapacity;
-                            const q = query(collection(db, "registrations"), where("checked_in", "==", true));
+                        if (activeEventData) {
+                            const maxCap = activeEventData.maxCapacity || 100;
+                            const q = query(collection(db, "registrations"), where("eventId", "==", activeEventId), where("checked_in", "==", true));
                             const countSnap = await getCountFromServer(q);
                             if (countSnap.data().count >= maxCap) {
                                 capacityExceeded = true;
