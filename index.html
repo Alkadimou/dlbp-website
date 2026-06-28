@@ -25,14 +25,8 @@
             <div class="event-card">
                 <div class="event-status">PROSSIMO EVENTO // NUMERO CHIUSO</div>
                 <h1 class="event-title glitch" data-text="TXK.NØX">TXK.NØX</h1>
-                <p class="event-date">SABATO 04/07 | 16:00 - 21:00</p>
-                <p class="event-description">
-                    Un'esperienza immersiva e riservata. 
-                    L'accesso è strettamente limitato. Inserisci i tuoi dati per richiedere l'iscrizione.
-                    La location esatta (segreta) verrà comunicata solo agli iscritti selezionati 24h prima dell'evento.
-                </p>
-
-                <div id="gate-section" style="text-align: center;">
+                <div id="gate-section" style="text-align: center; margin-top: 2rem;">
+                    <h3 style="letter-spacing: 3px; font-weight: 300; margin-bottom: 1.5rem; font-size: 1.1rem; color: #aaa;">PRIVATE EVENT // RESTRICTED ACCESS</h3>
                     <div class="form-group">
                         <input type="password" id="gate-password" placeholder="ENTER ACCESS CODE" style="text-align: center; letter-spacing: 3px;">
                     </div>
@@ -42,7 +36,14 @@
                     <div id="gate-message" class="form-message hidden"></div>
                 </div>
 
-                <div id="registration-section" style="display: none;">
+                <div id="registration-section" style="display: none; margin-top: 2rem;">
+                    <p class="event-date">SABATO 04/07 | 16:00 - 21:00</p>
+                    <p class="event-description">
+                        Un'esperienza immersiva e riservata. 
+                        L'accesso è strettamente limitato. Inserisci i tuoi dati per richiedere l'iscrizione.
+                        La location esatta (segreta) verrà comunicata solo agli iscritti selezionati 24h prima dell'evento.
+                    </p>
+
                     <div id="closed-message" style="display: none; text-align: center; padding: 2rem; border: 1px solid var(--error-color); background: rgba(255,51,51,0.1); margin-bottom: 2rem;">
                         <h3 style="color: var(--error-color); letter-spacing: 2px;">GUESTLIST CLOSED</h3>
                         <p style="font-size: 0.9rem; margin-top: 0.5rem; opacity: 0.8;">Le iscrizioni per questo evento sono chiuse.</p>
