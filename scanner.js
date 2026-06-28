@@ -36,8 +36,15 @@ document.addEventListener("DOMContentLoaded", () => {
     let html5QrcodeScanner;
 
     // --- LOGIN LOGIC ---
+    if (sessionStorage.getItem("dlbp_admin_auth") === "true") {
+        loginSection.style.display = "none";
+        scannerSection.style.display = "block";
+        startScanner();
+    }
+
     loginBtn.addEventListener("click", () => {
         if (passwordInput.value === "dlbp2024") { 
+            sessionStorage.setItem("dlbp_admin_auth", "true");
             loginSection.style.display = "none";
             scannerSection.style.display = "block";
             startScanner();

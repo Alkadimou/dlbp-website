@@ -48,9 +48,17 @@ document.addEventListener("DOMContentLoaded", () => {
     ];
 
     // --- LOGIN LOGIC ---
+    // Check if already logged in via this tab
+    if (sessionStorage.getItem("dlbp_admin_auth") === "true") {
+        loginSection.style.display = "none";
+        dashboardSection.style.display = "block";
+        loadUsers();
+    }
+
     loginBtn.addEventListener("click", () => {
         // Hardcoded password for preview. IN PRODUCTION: Use proper Firebase Authentication!
         if (passwordInput.value === "dlbp2024") { 
+            sessionStorage.setItem("dlbp_admin_auth", "true");
             loginSection.style.display = "none";
             dashboardSection.style.display = "block";
             loadUsers();
