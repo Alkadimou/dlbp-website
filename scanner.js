@@ -36,14 +36,27 @@ document.addEventListener("DOMContentLoaded", () => {
     let html5QrcodeScanner;
 
     // --- LOGIN LOGIC ---
+    const SECRET_HASH = "731c8acd320f54b4fc09a3145661385c4c991fe468ffc907b2602ce971dcfe08"; // Hash of "dlbp2024"
+
+    async function hashPassword(password) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(password);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
     if (sessionStorage.getItem("dlbp_admin_auth") === "true") {
         loginSection.style.display = "none";
         scannerSection.style.display = "block";
         startScanner();
     }
 
-    loginBtn.addEventListener("click", () => {
-        if (passwordInput.value === "dlbp2024") { 
+    loginBtn.addEventListener("click", async () => {
+        const pwd = passwordInput.value;
+        const hashedInput = await hashPassword(pwd);
+
+        if (hashedInput === SECRET_HASH) { 
             sessionStorage.setItem("dlbp_admin_auth", "true");
             loginSection.style.display = "none";
             scannerSection.style.display = "block";

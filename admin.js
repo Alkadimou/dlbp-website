@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, setDoc, getDoc, query, orderBy, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, setDoc, getDoc, query, orderBy, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // TODO: Replace with your actual Firebase config
 const firebaseConfig = {
@@ -188,19 +188,30 @@ document.addEventListener("DOMContentLoaded", () => {
         usersData.forEach(user => {
             const tr = document.createElement("tr");
             
-            let statusHtml = `<span class="status-attesa">IN ATTESA</span>`;
+            let statusHtml = `<span class="status-attesa" style="color: #ffcc00;">IN ATTESA</span>`;
+            if (user.status === "approved") {
+                statusHtml = `<span style="color: #4CAF50; font-weight: bold;">APPROVATO</span>`;
+            }
             if (user.checked_in) {
                 presentCount++;
-                const timeString = user.check_in_time ? user.check_in_time.toLocaleTimeString('it-IT', {hour: '2-digit', minute:'2-digit'}) : '';
-                statusHtml = `<span class="status-entrato">ENTRATO ${timeString}</span>`;
+                statusHtml = `<span class="status-entrato" style="color: #4CAF50;">ENTRATO</span>`;
             }
 
+            const checkinTimeHtml = user.checked_in && user.check_in_time ? user.check_in_time.toLocaleTimeString('it-IT', {hour: '2-digit', minute:'2-digit'}) : '-';
+            
+            let actionsHtml = `
+                <button class="approve-btn" data-id="${user.id}" title="Approva Accesso" style="background: none; border: none; cursor: pointer; font-size: 1.2rem; color: #4CAF50; padding: 0 5px;">✓</button>
+                <button class="resend-email-btn" data-id="${user.id}" title="Invia Email Singola" style="background: none; border: none; cursor: pointer; font-size: 1.2rem; color: #aaa; padding: 0 5px;">✉️</button>
+            `;
+
             tr.innerHTML = `
-                <td><input type="checkbox" class="user-checkbox" data-id="${user.id}"></td>
+                <td style="text-align: center;"><input type="checkbox" class="user-checkbox" data-id="${user.id}"></td>
                 <td>${user.name}</td>
                 <td>${user.email}</td>
-                <td>${user.timestamp.toLocaleString('it-IT')}</td>
                 <td>${statusHtml}</td>
+                <td>${user.timestamp.toLocaleString('it-IT', {dateStyle: 'short', timeStyle: 'short'})}</td>
+                <td>${checkinTimeHtml}</td>
+                <td style="text-align: right; white-space: nowrap;">${actionsHtml}</td>
             `;
             tbody.appendChild(tr);
         });
@@ -227,6 +238,53 @@ document.addEventListener("DOMContentLoaded", () => {
                 const allChecked = Array.from(userCheckboxes).every(c => c.checked);
                 selectAllCb.checked = allChecked;
                 updateDeleteBtn();
+            });
+        });
+
+        // Approve Logic
+        document.querySelectorAll(".approve-btn").forEach(btn => {
+            btn.addEventListener("click", async (e) => {
+                const id = e.target.dataset.id;
+                try {
+                    await updateDoc(doc(db, "registrations", id), { status: "approved" });
+                    loadUsers(); // Refresh table
+                } catch (error) {
+                    console.error("Error approving user", error);
+                }
+            });
+        });
+
+        // Single Resend Email Logic
+        document.querySelectorAll(".resend-email-btn").forEach(btn => {
+            btn.addEventListener("click", async (e) => {
+                const id = e.target.dataset.id;
+                const user = usersData.find(u => u.id === id);
+                if (!user) return;
+                
+                if (!confirm(`Vuoi inviare l'email con la location segreta a ${user.name}?`)) return;
+
+                e.target.disabled = true;
+                e.target.style.opacity = "0.5";
+
+                try {
+                    if (EMAILJS_PUBLIC_KEY !== "YOUR_EMAILJS_PUBLIC_KEY") {
+                        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+                            to_name: user.name,
+                            to_email: user.email,
+                            secret_location: "Via Fabio Filzi 28 Arezzo (AR)",
+                            event_date: "SABATO 04/07 | 16:00 - 21:00",
+                            qr_code_url: `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${user.id}`
+                        });
+                        await updateDoc(doc(db, "registrations", user.id), { email_sent: true });
+                    }
+                    alert("Email inviata con successo!");
+                    loadUsers();
+                } catch (error) {
+                    console.error(`Failed to send email to ${user.email}:`, error);
+                    alert("Errore durante l'invio dell'email.");
+                    e.target.disabled = false;
+                    e.target.style.opacity = "1";
+                }
             });
         });
         
@@ -296,24 +354,27 @@ document.addEventListener("DOMContentLoaded", () => {
         let failCount = 0;
 
         for (const user of usersData) {
-            try {
-                if (EMAILJS_PUBLIC_KEY !== "YOUR_EMAILJS_PUBLIC_KEY") {
-                    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-                        to_name: user.name,
-                        to_email: user.email,
-                        secret_location: "Via Fabio Filzi 28 Arezzo (AR)",
-                        event_date: "SABATO 04/07 | 16:00 - 21:00",
-                        qr_code_url: `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${user.id}`
-                    });
-                } else {
-                    // Simulate email sending delay
-                    await new Promise(r => setTimeout(r, 500));
-                    console.log(`Simulated email sent to ${user.email}`);
+            if (user.status === "approved" && user.email_sent !== true) {
+                try {
+                    if (EMAILJS_PUBLIC_KEY !== "YOUR_EMAILJS_PUBLIC_KEY") {
+                        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+                            to_name: user.name,
+                            to_email: user.email,
+                            secret_location: "Via Fabio Filzi 28 Arezzo (AR)",
+                            event_date: "SABATO 04/07 | 16:00 - 21:00",
+                            qr_code_url: `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${user.id}`
+                        });
+                        await updateDoc(doc(db, "registrations", user.id), { email_sent: true });
+                    } else {
+                        // Simulate email sending delay
+                        await new Promise(r => setTimeout(r, 500));
+                        console.log(`Simulated email sent to ${user.email}`);
+                    }
+                    successCount++;
+                } catch (error) {
+                    console.error(`Failed to send email to ${user.email}:`, error);
+                    failCount++;
                 }
-                successCount++;
-            } catch (error) {
-                console.error(`Failed to send email to ${user.email}:`, error);
-                failCount++;
             }
         }
 

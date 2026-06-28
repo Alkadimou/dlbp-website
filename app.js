@@ -126,6 +126,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     email: email,
                     eventId: "act_1", // Hardcoded for this event
                     checked_in: false, // New field for QR code system
+                    status: "pending", // VIP approval status
+                    email_sent: false, // Track if secret location was sent
                     timestamp: serverTimestamp()
                 });
             } else {

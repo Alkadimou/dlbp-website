@@ -282,3 +282,66 @@ input::placeholder {
     0% { opacity: 1; transform: scale(1); }
     100% { opacity: 0.8; transform: scale(0.98); }
 }
+
+/* Admin Table Mobile Optimization */
+@media (max-width: 768px) {
+    .users-table, 
+    .users-table thead, 
+    .users-table tbody, 
+    .users-table th, 
+    .users-table td, 
+    .users-table tr {
+        display: block;
+    }
+    
+    .users-table thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+    
+    .users-table tr {
+        border: 1px solid var(--border-color);
+        margin-bottom: 1rem;
+        background: rgba(255, 255, 255, 0.02);
+    }
+    
+    .users-table td {
+        border: none;
+        border-bottom: 1px solid var(--border-color);
+        position: relative;
+        padding-left: 50% !important;
+        text-align: left !important;
+        min-height: 40px;
+    }
+    
+    .users-table td:last-child {
+        border-bottom: 0;
+        text-align: right !important;
+    }
+    
+    .users-table td::before {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 45%;
+        padding: 0.8rem;
+        white-space: nowrap;
+        font-weight: bold;
+        color: #aaa;
+        font-size: 0.75rem;
+    }
+    
+    /* Set labels for each column using nth-child */
+    .users-table td:nth-child(1)::before { content: "SELEZIONA"; }
+    .users-table td:nth-child(2)::before { content: "NOME"; }
+    .users-table td:nth-child(3)::before { content: "EMAIL"; }
+    .users-table td:nth-child(4)::before { content: "STATO"; }
+    .users-table td:nth-child(5)::before { content: "DATA"; }
+    .users-table td:nth-child(6)::before { content: "CHECK-IN"; }
+    .users-table td:nth-child(7)::before { content: "AZIONI"; }
+    
+    .user-checkbox {
+        margin-top: 0.3rem;
+    }
+}
