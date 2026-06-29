@@ -494,21 +494,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
     exportCsvBtn.addEventListener("click", () => {
         if (usersData.length === 0) return;
-        let csvContent = "Nome,Email,Data Richiesta,Stato Ingresso,Orario Ingresso\n";
+        let csvContent = "Nome,Email,PR,Data Richiesta,Status Approvazione,Stato Ingresso,Orario Ingresso\n";
         usersData.forEach(user => {
             const time = user.timestamp.toLocaleString('it-IT').replace(/,/g, '');
-            const status = user.checked_in ? "Entrato" : "In Attesa";
+            const approvazione = user.status === "approved" ? "Approvato" : "In Attesa";
+            const status = user.checked_in ? "Entrato" : "Non Entrato";
             const inTime = user.check_in_time ? user.check_in_time.toLocaleTimeString('it-IT') : "";
-            csvContent += `"${user.name}","${user.email}","${time}","${status}","${inTime}"\n`;
+            const pr = user.invited_by ? user.invited_by.toUpperCase() : "";
+            csvContent += `"${user.name}","${user.email}","${pr}","${time}","${approvazione}","${status}","${inTime}"\n`;
         });
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.setAttribute("href", url);
-        link.setAttribute("download", `dlbp_guestlist_${new Date().toISOString().split('T')[0]}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "dlbp_iscritti.csv";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
     });
 
     // --- LOGIN LOGIC ---

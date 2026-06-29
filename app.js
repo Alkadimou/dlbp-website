@@ -229,4 +229,46 @@ document.addEventListener("DOMContentLoaded", () => {
         messageDiv.textContent = msg;
         messageDiv.className = `form-message ${type}`;
     }
+
+    // PWA Service Worker Registration
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('sw.js').catch(error => {
+                console.log('ServiceWorker registration failed: ', error);
+            });
+        });
+    }
+
+    // --- WOW FACTOR: Loader & Reveal Animations ---
+    window.addEventListener('load', () => {
+        const loader = document.getElementById('initial-loader');
+        if (loader) {
+            setTimeout(() => {
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    initRevealAnimations();
+                }, 600);
+            }, 800); // Mostra il loader per 800ms
+        } else {
+            initRevealAnimations();
+        }
+    });
+
+    function initRevealAnimations() {
+        const reveals = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px"
+        });
+
+        reveals.forEach(el => observer.observe(el));
+    }
 });

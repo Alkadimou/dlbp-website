@@ -11,8 +11,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#000000">
 </head>
 <body>
+    <div id="initial-loader">
+        <img src="logo.jpg" alt="Loading..." class="loader-logo">
+    </div>
     <div style="position: absolute; top: 1.5rem; left: 2rem; z-index: 1000; display: flex; gap: 1rem; font-family: 'Space Grotesk', sans-serif; font-weight: 700; flex-wrap: wrap;">
         <a href="index.html" style="color: #555; text-decoration: none; font-size: 0.7rem; letter-spacing: 2px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'">HOME</a>
         <a href="admin.html" style="color: #555; text-decoration: none; font-size: 0.7rem; letter-spacing: 2px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'">ADMIN</a>
@@ -22,22 +27,22 @@
     <div class="noise-overlay"></div>
     
     <main class="container">
-        <header class="header">
-            <img src="logo.jpg" alt="DLBP Logo" class="logo-img">
+        <header class="header reveal">
+            <img src="logo.jpg" alt="DLBP Logo" class="logo-img parallax-hover">
             <p class="subtitle">Drink &middot; Love &middot; Breathe &middot; Peace</p>
         </header>
 
         <section class="event-section">
             <div class="event-card">
                 
-                <div id="public-event-header" style="display: none; text-align: center;">
-                    <img id="public-event-flyer" src="" alt="Event Flyer" style="max-width: 100%; height: auto; max-height: 400px; display: none; margin: 0 auto 1.5rem auto; border: 1px solid var(--border-color);">
+                <div id="public-event-header" style="display: none; text-align: center;" class="reveal">
+                    <img id="public-event-flyer" src="" alt="Event Flyer" class="parallax-hover" style="max-width: 100%; height: auto; max-height: 400px; display: none; margin: 0 auto 1.5rem auto; border: 1px solid var(--border-color);">
                     <div class="event-status">PROSSIMO EVENTO // NUMERO CHIUSO</div>
                     <h1 class="event-title" id="public-event-title">TXK.NØX</h1>
                     <p class="event-date" id="public-event-date">SABATO 04/07 | 16:00 - 21:00</p>
                 </div>
 
-                <div id="gate-section" style="text-align: center;">
+                <div id="gate-section" style="text-align: center;" class="reveal">
                     <h3 style="letter-spacing: 3px; font-weight: 700; margin-bottom: 0.5rem; font-size: 1.2rem; color: #fff; text-transform: uppercase;">INGRESSO RISERVATO</h3>
                     <p style="color: var(--accent-color); font-size: 0.85rem; letter-spacing: 2px; margin-bottom: 2rem; opacity: 0.8;">INSERISCI LA PASSWORD</p>
                     <div class="form-group" style="margin-bottom: 1rem;">
@@ -49,7 +54,7 @@
                     <div id="gate-message" class="form-message hidden"></div>
                 </div>
 
-                <div id="registration-section" style="display: none; margin-top: 2rem;">
+                <div id="registration-section" style="display: none; margin-top: 2rem;" class="reveal">
                     <p class="event-description" id="public-event-description">
                         Un'esperienza immersiva e riservata. 
                         L'accesso è strettamente limitato. Inserisci i tuoi dati per richiedere l'iscrizione.
