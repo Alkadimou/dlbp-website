@@ -243,13 +243,24 @@ document.addEventListener("DOMContentLoaded", () => {
     window.addEventListener('load', () => {
         const loader = document.getElementById('initial-loader');
         if (loader) {
+            const logo = loader.querySelector('.loader-logo');
+            // Attendi 1.5s (un impulso completo del logo)
             setTimeout(() => {
-                loader.style.opacity = '0';
+                if (logo) {
+                    logo.style.transition = 'opacity 0.3s ease';
+                    logo.style.opacity = '0'; // Nascondi solo il logo
+                }
+                
+                // Schermata nera per 0.4 secondi (400ms) dopo la scomparsa del logo
                 setTimeout(() => {
-                    loader.style.display = 'none';
-                    initRevealAnimations();
-                }, 600);
-            }, 2000); // Mostra il loader per 2000ms
+                    loader.style.opacity = '0'; // Dissolvenza dello sfondo nero
+                    setTimeout(() => {
+                        loader.style.display = 'none';
+                        initRevealAnimations();
+                    }, 600);
+                }, 400);
+            }, 1500);
+
         } else {
             initRevealAnimations();
         }
