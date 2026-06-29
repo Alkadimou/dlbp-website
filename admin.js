@@ -1,6 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, getDocs, doc, setDoc, getDoc, query, deleteDoc, updateDoc, where, addDoc, writeBatch, onSnapshot, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
 // TODO: Replace with your actual Firebase config
 const firebaseConfig = {
@@ -19,12 +18,10 @@ const EMAILJS_SERVICE_ID = "service_ndbmwte";
 const EMAILJS_TEMPLATE_ID = "template_o3kovxe";
 
 let db;
-let storage;
 try {
     if (firebaseConfig.apiKey !== "YOUR_API_KEY") {
         const app = initializeApp(firebaseConfig);
         db = getFirestore(app);
-        storage = getStorage(app);
     }
 } catch (e) {
     console.error("Firebase init error", e);
@@ -271,6 +268,45 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    // Utility to compress image to Base64
+    function compressImage(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = event => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = () => {
+                    const maxWidth = 800;
+                    const maxHeight = 800;
+                    let width = img.width;
+                    let height = img.height;
+                    
+                    if (width > height) {
+                        if (width > maxWidth) {
+                            height = Math.round(height * (maxWidth / width));
+                            width = maxWidth;
+                        }
+                    } else {
+                        if (height > maxHeight) {
+                            width = Math.round(width * (maxHeight / height));
+                            height = maxHeight;
+                        }
+                    }
+                    
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    resolve(canvas.toDataURL('image/jpeg', 0.6)); // Compress to 60% quality JPEG
+                };
+                img.onerror = error => reject(error);
+            };
+            reader.onerror = error => reject(error);
+        });
+    }
+
     document.getElementById('save-content-btn').addEventListener("click", async () => {
         if (!db || !currentEventId) return;
         
@@ -286,10 +322,14 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
             let flyerUrl = undefined;
             if (file) {
-                if (!storage) throw new Error("Storage non inizializzato");
-                const storageRef = ref(storage, `flyers/${Date.now()}_${file.name}`);
-                const snapshot = await uploadBytes(storageRef, file);
-                flyerUrl = await getDownloadURL(snapshot);
+                // Compress and convert to Base64
+                flyerUrl = await compressImage(file);
+                
+                // Firestore document size limit is 1MB. Warn if still too large.
+                if (flyerUrl.length > 1000000) {
+                    alert("L'immagine è troppo grande anche dopo la compressione. Scegli un'immagine più leggera.");
+                    return;
+                }
             }
             
             const updates = { description: description };
