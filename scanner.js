@@ -107,7 +107,22 @@ document.addEventListener("DOMContentLoaded", () => {
         html5QrcodeScanner.render(onScanSuccess, onScanFailure);
     }
 
+    function escapeHtml(unsafe) {
+        if (!unsafe) return '';
+        return unsafe.toString()
+             .replace(/&/g, "&amp;")
+             .replace(/</g, "&lt;")
+             .replace(/>/g, "&gt;")
+             .replace(/"/g, "&quot;")
+             .replace(/'/g, "&#039;");
+    }
+
+    let isProcessing = false;
+
     async function onScanSuccess(decodedText, decodedResult) {
+        if (isProcessing) return;
+        isProcessing = true;
+
         // Stop scanning temporarily
         if (html5QrcodeScanner) {
             html5QrcodeScanner.pause(true);
@@ -118,6 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
         statusBox.className = "status-box"; // reset
         statusTitle.textContent = "VERIFICA IN CORSO...";
         statusDetails.innerHTML = "Controllo nel database...";
+        nextScanBtn.style.display = "none";
 
         try {
             const ticketId = decodedText.trim();
@@ -132,8 +148,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     statusTitle.textContent = "EVENTO ERRATO";
                     statusDetails.innerHTML = `
                         <strong>Attenzione:</strong> Questo biglietto appartiene a un altro evento.<br><br>
-                        Nome: ${userData.name}<br>
-                        Email: ${userData.email}
+                        Nome: ${escapeHtml(userData.name)}<br>
+                        Email: ${escapeHtml(userData.email)}
                     `;
                 } else if (userData.status !== "approved") {
                     // Not approved
@@ -141,8 +157,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     statusTitle.textContent = "NON APPROVATO";
                     statusDetails.innerHTML = `
                         <strong>Attenzione:</strong> Questo utente non è stato ancora approvato.<br><br>
-                        Nome: ${userData.name}<br>
-                        Email: ${userData.email}
+                        Nome: ${escapeHtml(userData.name)}<br>
+                        Email: ${escapeHtml(userData.email)}
                     `;
                 } else if (userData.checked_in === true) {
                     // Already checked in
@@ -150,8 +166,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     statusTitle.textContent = "SCANSIONATO";
                     statusDetails.innerHTML = `
                         <strong>Attenzione:</strong> Questo biglietto è già stato utilizzato.<br><br>
-                        Nome: ${userData.name}<br>
-                        Email: ${userData.email}
+                        Nome: ${escapeHtml(userData.name)}<br>
+                        Email: ${escapeHtml(userData.email)}
                     `;
                 } else {
                     // Check capacity before allowing
@@ -172,7 +188,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         statusTitle.textContent = "LOCALE PIENO";
                         statusDetails.innerHTML = `
                             <strong>Attenzione:</strong> Capienza massima raggiunta!<br><br>
-                            Il biglietto di <strong>${userData.name}</strong> è valido, ma il locale è pieno. Non è stato annullato.
+                            Il biglietto di <strong>${escapeHtml(userData.name)}</strong> è valido, ma il locale è pieno. Non è stato annullato.
                         `;
                     } else {
                         // Valid, not checked in, and capacity not exceeded
@@ -185,8 +201,8 @@ document.addEventListener("DOMContentLoaded", () => {
                         statusTitle.textContent = "ACCESSO CONSENTITO";
                         statusDetails.innerHTML = `
                             Biglietto valido e annullato correttamente.<br><br>
-                            <strong>Nome:</strong> ${userData.name}<br>
-                            <strong>Email:</strong> ${userData.email}
+                            <strong>Nome:</strong> ${escapeHtml(userData.name)}<br>
+                            <strong>Email:</strong> ${escapeHtml(userData.email)}
                         `;
                     }
                 }
@@ -209,6 +225,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     nextScanBtn.addEventListener("click", () => {
+        isProcessing = false;
         statusBox.style.display = "none";
         readerDiv.style.display = "block";
         if (html5QrcodeScanner) {

@@ -629,9 +629,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
             tr.innerHTML = `
                 <td style="text-align: center;"><input type="checkbox" class="user-checkbox" data-id="${user.id}"></td>
-                <td>${user.name}</td>
-                <td>${user.email}</td>
-                <td style="color: #aaa; text-transform: uppercase;">${user.invited_by || '-'}</td>
+                <td>${escapeHtml(user.name)}</td>
+                <td>${escapeHtml(user.email)}</td>
+                <td style="color: #aaa; text-transform: uppercase;">${escapeHtml(user.invited_by) || '-'}</td>
                 <td>${statusHtml}</td>
                 <td>${user.timestamp.toLocaleString('it-IT', {dateStyle: 'short', timeStyle: 'short'})}</td>
                 <td>${checkinTimeHtml}</td>
@@ -930,8 +930,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td>${pr.name}</td>
-                    <td><span style="color:var(--accent-color);">${pr.code}</span><br><small style="color:#666;">${link}</small></td>
+                    <td>${escapeHtml(pr.name)}</td>
+                    <td><span style="color:var(--accent-color);">${escapeHtml(pr.code)}</span><br><small style="color:#666;">${escapeHtml(link)}</small></td>
                     <td>${pr.isActive ? '<span style="color:var(--success-color);">ATTIVO</span>' : '<span style="color:var(--error-color);">DISABILITATO</span>'}</td>
                     <td style="text-align: right;">
                         <button class="submit-btn delete-pr-btn" data-id="${prId}" style="padding: 0.3rem 0.6rem; background: var(--error-color); border: none; font-size: 0.8rem; min-width: unset; margin: 0;">ELIMINA</button>
