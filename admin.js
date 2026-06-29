@@ -254,7 +254,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (eventSnap.exists()) {
                 const evData = eventSnap.data();
                 document.getElementById('event-name-input').value = evData.name || "";
-                document.getElementById('event-date-input').value = evData.date || "";
+                document.getElementById('event-date-input').value = evData.dateIso || "";
                 listToggle.checked = evData.isOpen !== false; // default true
                 capacityInput.value = evData.maxCapacity || 100;
                 capacityDisplay.textContent = evData.maxCapacity || 100;
@@ -344,7 +344,20 @@ document.addEventListener("DOMContentLoaded", () => {
         saveBtn.disabled = true;
 
         const name = document.getElementById('event-name-input').value.trim();
-        const date = document.getElementById('event-date-input').value.trim();
+        const rawDate = document.getElementById('event-date-input').value.trim();
+        
+        let formattedDate = rawDate;
+        let dateIso = rawDate;
+        if (rawDate && rawDate.includes('T')) {
+            const d = new Date(rawDate);
+            const days = ['DOMENICA', 'LUNEDÌ', 'MARTEDÌ', 'MERCOLEDÌ', 'GIOVEDÌ', 'VENERDÌ', 'SABATO'];
+            const dayName = days[d.getDay()];
+            const dayNum = String(d.getDate()).padStart(2, '0');
+            const monthNum = String(d.getMonth() + 1).padStart(2, '0');
+            const hours = String(d.getHours()).padStart(2, '0');
+            const minutes = String(d.getMinutes()).padStart(2, '0');
+            formattedDate = `${dayName} ${dayNum}/${monthNum} | ${hours}:${minutes}`;
+        }
         const description = document.getElementById('desc-input').value.trim();
         const fileInput = document.getElementById('flyer-input');
         const file = fileInput.files[0];
@@ -365,7 +378,8 @@ document.addEventListener("DOMContentLoaded", () => {
             if (isCreatingNew) {
                 const newEventRef = await addDoc(collection(db, "events"), {
                     name: name || "Nuovo Evento",
-                    date: date || "",
+                    date: formattedDate || "",
+                    dateIso: dateIso || "",
                     flyerUrl: flyerUrl || "",
                     description: description || "",
                     location: "Via Fabio Filzi 28 Arezzo (AR)",
@@ -388,7 +402,8 @@ document.addEventListener("DOMContentLoaded", () => {
             } else {
                 const updates = { 
                     name: name,
-                    date: date,
+                    date: formattedDate,
+                    dateIso: dateIso,
                     description: description 
                 };
                 if (flyerUrl) updates.flyerUrl = flyerUrl;
