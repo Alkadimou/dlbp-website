@@ -524,6 +524,7 @@ document.addEventListener("DOMContentLoaded", () => {
             } else {
                 loginSection.style.display = "block";
                 dashboardSection.style.display = "none";
+                document.getElementById("app-main").style.maxWidth = "";
             }
         });
     }
