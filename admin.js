@@ -923,30 +923,41 @@ document.addEventListener("DOMContentLoaded", () => {
     function loadPRs() {
         if (unsubPrs) unsubPrs();
         
-        const q = query(collection(db, "prs")); // Rimosso orderBy per Firebase
-        unsubPrs = onSnapshot(q, (snapshot) => {
+        // Passiamo direttamente la collection senza query() vuota
+        unsubPrs = onSnapshot(collection(db, "prs"), (snapshot) => {
             prTableBody.innerHTML = '';
             
+            if (snapshot.empty) {
+                prTableBody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Nessun PR trovato.</td></tr>';
+                return;
+            }
+
             let prsList = [];
             snapshot.forEach((docSnap) => {
                 prsList.push({ id: docSnap.id, ...docSnap.data() });
             });
             
-            // Ordinamento manuale lato client (dal più recente)
+            // Ordinamento sicuro
             prsList.sort((a, b) => {
-                const dateA = a.createdAt ? (a.createdAt.toMillis ? a.createdAt.toMillis() : a.createdAt) : 0;
-                const dateB = b.createdAt ? (b.createdAt.toMillis ? b.createdAt.toMillis() : b.createdAt) : 0;
-                return dateB - dateA;
+                const getMs = (val) => {
+                    if (!val) return 0;
+                    if (typeof val.toMillis === 'function') return val.toMillis();
+                    if (val instanceof Date) return val.getTime();
+                    return 0;
+                };
+                return getMs(b.createdAt) - getMs(a.createdAt);
             });
 
             prsList.forEach((pr) => {
                 const prId = pr.id;
-                const link = `?pr=${pr.code}`;
+                const prCode = pr.code || "";
+                const prName = pr.name || "";
+                const link = `?pr=${prCode}`;
                 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td>${escapeHtml(pr.name)}</td>
-                    <td><span style="color:var(--accent-color);">${escapeHtml(pr.code)}</span><br><small style="color:#666;">${escapeHtml(link)}</small></td>
+                    <td>${escapeHtml(prName)}</td>
+                    <td><span style="color:var(--accent-color);">${escapeHtml(prCode)}</span><br><small style="color:#666;">${escapeHtml(link)}</small></td>
                     <td>${pr.isActive ? '<span style="color:var(--success-color);">ATTIVO</span>' : '<span style="color:var(--error-color);">DISABILITATO</span>'}</td>
                     <td style="text-align: right;">
                         <button class="submit-btn delete-pr-btn" data-id="${prId}" style="padding: 0.3rem 0.6rem; background: var(--error-color); border: none; font-size: 0.8rem; min-width: unset; margin: 0;">ELIMINA</button>
@@ -958,15 +969,19 @@ document.addEventListener("DOMContentLoaded", () => {
             document.querySelectorAll('.delete-pr-btn').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
                     const id = e.target.getAttribute('data-id');
-                    if (confirm("Sei sicuro di voler eliminare questo PR?")) {
+                    if (confirm("Vuoi davvero eliminare questo PR?")) {
                         try {
                             await deleteDoc(doc(db, "prs", id));
                         } catch (error) {
-                            console.error("Error deleting PR:", error);
+                            console.error("Errore eliminazione PR:", error);
+                            alert("Impossibile eliminare il PR.");
                         }
                     }
                 });
             });
+        }, (error) => {
+            console.error("Firebase Error PRs:", error);
+            prTableBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:red;">Errore di connessione: ${error.message}</td></tr>`;
         });
     }
 
