@@ -96,12 +96,38 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // --- SCANNER LOGIC ---
+    // Suoni di sistema base64 per evitare dipendenze esterne
+    const audioSuccess = new Audio('data:audio/mp3;base64,//NExAAAAANIAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq');
+    const audioError = new Audio('data:audio/mp3;base64,//NExAAAAANIAAAAAExBTUUzLjEwMKqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq');
+    
+    // Fallback con AudioContext per bip dinamici se il base64 non viene supportato
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playBeep(frequency, type, duration) {
+        if (!audioCtx) return;
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        oscillator.type = type;
+        oscillator.frequency.value = frequency;
+        gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + duration);
+    }
+    function playSuccessSound() {
+        try { audioSuccess.play(); } catch(e) { playBeep(880, 'sine', 0.2); }
+    }
+    function playErrorSound() {
+        try { audioError.play(); } catch(e) { playBeep(300, 'sawtooth', 0.5); }
+    }
+
     async function startScanner() {
         await loadActiveEvent();
         
         // Counter Live
         if (unsubCounter) unsubCounter();
-        const qCount = query(collection(db, "users"), where("checked_in", "==", true));
+        const qCount = query(collection(db, "registrations"), where("eventId", "==", activeEventId), where("checked_in", "==", true));
         unsubCounter = onSnapshot(qCount, (snapshot) => {
             const count = snapshot.size;
             const max = activeEventData ? activeEventData.maxCapacity || 100 : 100;
@@ -157,6 +183,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const userData = docSnap.data();
                 
                 if (userData.eventId && activeEventId && userData.eventId !== activeEventId) {
+                    playErrorSound();
                     statusBox.classList.add("status-error");
                     statusTitle.textContent = "EVENTO ERRATO";
                     statusDetails.innerHTML = `
@@ -166,6 +193,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     `;
                 } else if (userData.status !== "approved") {
                     // Not approved
+                    playErrorSound();
                     statusBox.classList.add("status-error");
                     statusTitle.textContent = "NON APPROVATO";
                     statusDetails.innerHTML = `
@@ -175,6 +203,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     `;
                 } else if (userData.checked_in === true) {
                     // Already checked in
+                    playErrorSound();
                     statusBox.classList.add("status-error");
                     statusTitle.textContent = "SCANSIONATO";
                     statusDetails.innerHTML = `
@@ -197,6 +226,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     } catch (e) { console.error("Capacity check error:", e); }
 
                     if (capacityExceeded) {
+                        playErrorSound();
                         statusBox.classList.add("status-error");
                         statusTitle.textContent = "LOCALE PIENO";
                         statusDetails.innerHTML = `
@@ -210,6 +240,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             check_in_time: new Date()
                         });
 
+                        playSuccessSound();
                         statusBox.classList.add("status-success");
                         statusTitle.textContent = "ACCESSO CONSENTITO";
                         statusDetails.innerHTML = `
@@ -221,12 +252,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             } else {
                 // Document not found
+                playErrorSound();
                 statusBox.classList.add("status-error");
                 statusTitle.textContent = "BIGLIETTO NON VALIDO";
                 statusDetails.innerHTML = "Questo codice QR non esiste nel database.";
             }
         } catch (error) {
             console.error("Error verifying ticket:", error);
+            playErrorSound();
             statusBox.classList.add("status-error");
             statusTitle.textContent = "ERRORE DI SISTEMA";
             statusDetails.innerHTML = "Impossibile contattare il database. Riprova.";

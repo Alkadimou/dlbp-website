@@ -83,6 +83,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const setActiveBtn = document.getElementById("set-active-btn");
     
     let usersData = [];
+    let unsubAdminCounter = null;
+    let currentMaxCapacity = 100;
 
     async function setupEventsIfNeeded() {
         if (!db) return;
@@ -284,6 +286,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 listToggle.checked = evData.isOpen !== false; // default true
                 capacityInput.value = evData.maxCapacity || 100;
                 capacityDisplay.textContent = evData.maxCapacity || 100;
+                currentMaxCapacity = evData.maxCapacity || 100;
                 
                 const previewDiv = document.getElementById('current-flyer-preview');
                 if (evData.flyerUrl) {
@@ -585,6 +588,23 @@ document.addEventListener("DOMContentLoaded", () => {
     async function loadUsers() {
         if (!db || !currentEventId) return;
         tbody.innerHTML = "<tr><td colspan='7' style='text-align: center;'>Caricamento dati...</td></tr>";
+        
+        // Setup live counter
+        if (unsubAdminCounter) unsubAdminCounter();
+        const qCount = query(collection(db, "registrations"), where("eventId", "==", currentEventId), where("checked_in", "==", true));
+        unsubAdminCounter = onSnapshot(qCount, (snapshot) => {
+            const count = snapshot.size;
+            try {
+                const max = currentMaxCapacity;
+                const counterDiv = document.getElementById('admin-live-counter');
+                if (counterDiv) {
+                    counterDiv.style.display = "block";
+                    counterDiv.innerHTML = `INGRESSI: <span style="color: ${count >= max ? 'var(--error-color)' : '#fff'}">${count}</span> / ${max}`;
+                }
+            } catch (e) {
+                console.error("Counter update error:", e);
+            }
+        });
         try {
             // Rimosso orderBy per evitare l'errore di indice composito mancante su Firebase
             const q = query(collection(db, "registrations"), where("eventId", "==", currentEventId));
