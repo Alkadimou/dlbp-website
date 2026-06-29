@@ -244,22 +244,24 @@ document.addEventListener("DOMContentLoaded", () => {
         const loader = document.getElementById('initial-loader');
         if (loader) {
             const logo = loader.querySelector('.loader-logo');
-            // Attendi 1.5s (un impulso completo del logo)
+            // FASE 1: Caricamento iniziale (il logo è visibile)
             setTimeout(() => {
+                // Dopo il caricamento, nascondiamo immediatamente il logo
                 if (logo) {
-                    logo.style.transition = 'opacity 0.3s ease';
-                    logo.style.opacity = '0'; // Nascondi solo il logo
+                    logo.style.display = 'none'; 
                 }
                 
-                // Schermata nera per 0.8 secondi (800ms) dopo la scomparsa del logo
+                // FASE 2: Schermata completamente nera per "un tot secondi" (es. 1 secondo = 1000ms)
                 setTimeout(() => {
-                    loader.style.opacity = '0'; // Dissolvenza dello sfondo nero
+                    // FASE 3: La schermata nera svanisce in dissolvenza e mostra la pagina
+                    loader.style.opacity = '0';
                     setTimeout(() => {
                         loader.style.display = 'none';
                         initRevealAnimations();
-                    }, 600);
-                }, 800);
-            }, 1500);
+                    }, 600); // 600ms è la durata della dissolvenza (transition)
+                }, 1000); // <-- Modifica questo valore per aumentare/diminuire il tempo di schermata nera
+            }, 1500); // <-- Tempo di caricamento iniziale col logo visibile
+
 
         } else {
             initRevealAnimations();
