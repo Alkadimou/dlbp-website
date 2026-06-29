@@ -246,9 +246,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const logo = loader.querySelector('.loader-logo');
             // FASE 1: Caricamento iniziale (il logo è visibile)
             setTimeout(() => {
-                // Dopo il caricamento, nascondiamo immediatamente il logo
+                // Dopo il caricamento, il logo scompare in dissolvenza
                 if (logo) {
-                    logo.style.display = 'none'; 
+                    logo.style.transition = 'opacity 0.4s ease';
+                    logo.style.opacity = '0'; 
                 }
                 
                 // FASE 2: Schermata completamente nera per "un tot secondi" (es. 1 secondo = 1000ms)
