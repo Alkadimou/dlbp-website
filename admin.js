@@ -801,7 +801,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // --- EMAIL SENDING LOGIC ---
-    sendEmailsBtn.addEventListener("click", async () => {
+    const sendEmailsBtn = document.getElementById("send-emails-btn");
+    if (sendEmailsBtn) {
+        sendEmailsBtn.addEventListener("click", async () => {
         if (!confirm("ATTENZIONE: Stai per inviare la location segreta a TUTTI gli iscritti. Procedere?")) {
             return;
         }
@@ -857,6 +859,7 @@ document.addEventListener("DOMContentLoaded", () => {
         adminMessage.textContent = `Operazione completata. Inviate: ${successCount}. Fallite: ${failCount}.`;
         adminMessage.className = "form-message success";
     });
+    }
 
     // --- PR MANAGEMENT LOGIC ---
     const managePrBtn = document.getElementById('manage-pr-btn');
@@ -868,9 +871,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const prTableBody = document.getElementById('pr-table-body');
     let unsubPrs = null;
 
-    managePrBtn.addEventListener('click', () => {
-        prModal.style.display = 'flex';
-        loadPRs();
+    managePrBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        console.log("PR button clicked!");
+        try {
+            prModal.style.display = 'flex';
+            prModal.style.opacity = '1';
+            prModal.style.visibility = 'visible';
+            loadPRs();
+        } catch (err) {
+            console.error("Errore PR:", err);
+            alert("Si è verificato un errore nell'apertura: " + err.message);
+        }
     });
 
     closePrModalBtn.addEventListener('click', () => {
