@@ -260,7 +260,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         loader.style.display = 'none';
                         initRevealAnimations();
                     }, 600); // 600ms è la durata della dissolvenza (transition)
-                }, 1000); // <-- Modifica questo valore per aumentare/diminuire il tempo di schermata nera
+                }, 1400); // <-- Modifica questo valore per aumentare/diminuire il tempo di schermata nera
             }, 1500); // <-- Tempo di caricamento iniziale col logo visibile
 
 
