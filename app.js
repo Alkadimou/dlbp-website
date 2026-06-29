@@ -251,14 +251,14 @@ document.addEventListener("DOMContentLoaded", () => {
                     logo.style.opacity = '0'; // Nascondi solo il logo
                 }
                 
-                // Schermata nera per 0.4 secondi (400ms) dopo la scomparsa del logo
+                // Schermata nera per 0.8 secondi (800ms) dopo la scomparsa del logo
                 setTimeout(() => {
                     loader.style.opacity = '0'; // Dissolvenza dello sfondo nero
                     setTimeout(() => {
                         loader.style.display = 'none';
                         initRevealAnimations();
                     }, 600);
-                }, 400);
+                }, 800);
             }, 1500);
 
         } else {
