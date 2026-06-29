@@ -156,26 +156,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (newEventBtn) {
         newEventBtn.addEventListener("click", async () => {
-            const name = prompt("Nome del nuovo evento (es: TXK.NØX Act II):");
-            if (!name) return;
-            const date = prompt("Data e ora (es: VENERDÌ 14/08 | 23:00 - 05:00):");
-            if (!date) return;
-            const capacity = prompt("Capienza massima:", "100");
-            
             try {
                 const newEventRef = await addDoc(collection(db, "events"), {
-                    name: name,
-                    date: date,
+                    name: "Nuovo Evento " + new Date().toLocaleDateString(),
+                    date: "",
                     flyerUrl: "",
                     description: "",
-                    location: "Via Fabio Filzi 28 Arezzo (AR)", // Puoi renderlo dinamico in futuro
-                    maxCapacity: parseInt(capacity) || 100,
+                    location: "Via Fabio Filzi 28 Arezzo (AR)",
+                    maxCapacity: 100,
                     isOpen: true,
                     isActive: false,
                     createdAt: new Date()
                 });
                 
-                alert("Nuovo evento creato! Ricordati di cliccare su 'IMPOSTA ATTIVO' quando vuoi pubblicarlo.");
+                alert("Nuovo evento creato! Compila i dettagli nel riquadro sottostante e premi SALVA DETTAGLI EVENTO.");
                 currentEventId = newEventRef.id;
                 await loadEventsList();
                 // Assicuriamoci che il selettore mostri l'evento appena creato
@@ -227,6 +221,8 @@ document.addEventListener("DOMContentLoaded", () => {
             const eventSnap = await getDoc(doc(db, "events", currentEventId));
             if (eventSnap.exists()) {
                 const evData = eventSnap.data();
+                document.getElementById('event-name-input').value = evData.name || "";
+                document.getElementById('event-date-input').value = evData.date || "";
                 listToggle.checked = evData.isOpen !== false; // default true
                 capacityInput.value = evData.maxCapacity || 100;
                 capacityDisplay.textContent = evData.maxCapacity || 100;
@@ -315,6 +311,8 @@ document.addEventListener("DOMContentLoaded", () => {
         saveBtn.textContent = "CARICAMENTO...";
         saveBtn.disabled = true;
 
+        const name = document.getElementById('event-name-input').value.trim();
+        const date = document.getElementById('event-date-input').value.trim();
         const description = document.getElementById('desc-input').value.trim();
         const fileInput = document.getElementById('flyer-input');
         const file = fileInput.files[0];
@@ -332,17 +330,24 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
             
-            const updates = { description: description };
+            const updates = { 
+                name: name,
+                date: date,
+                description: description 
+            };
             if (flyerUrl) updates.flyerUrl = flyerUrl;
 
             await updateDoc(doc(db, "events", currentEventId), updates);
             
+            // Reload the dropdown to reflect the potential name/date change
+            await loadEventsList();
+
             if (flyerUrl) {
                 document.getElementById('current-flyer-preview').innerHTML = `Flyer attuale:<br><img src="${flyerUrl}" style="max-width: 150px; margin-top: 10px; border-radius: 8px;">`;
                 fileInput.value = "";
             }
             
-            alert("Testi e Immagine salvati con successo!");
+            alert("Dettagli evento salvati con successo!");
         } catch (error) {
             console.error("Error saving content:", error);
             alert("Errore durante il salvataggio.");
