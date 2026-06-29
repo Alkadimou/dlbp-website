@@ -280,6 +280,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (sessionStorage.getItem("dlbp_admin_auth") === "true") {
         loginSection.style.display = "none";
         dashboardSection.style.display = "block";
+        document.getElementById("app-main").style.maxWidth = "1200px";
         setupEventsIfNeeded().then(() => {
             loadEventsList();
         });
@@ -303,6 +304,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 sessionStorage.setItem("dlbp_admin_auth", "true");
                 loginSection.style.display = "none";
                 dashboardSection.style.display = "block";
+                document.getElementById("app-main").style.maxWidth = "1200px";
                 await setupEventsIfNeeded();
                 await loadEventsList();
             } else {
