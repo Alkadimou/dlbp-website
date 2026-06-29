@@ -212,6 +212,15 @@
                     <input type="number" id="capacity-input" class="capacity-input" value="100">
                     <button id="save-capacity-btn" style="background:transparent; color:var(--accent-color); border:1px solid var(--border-color); padding: 0.5rem; cursor: pointer;">SALVA</button>
                 </div>
+                <div class="settings-item" style="flex-grow: 1; min-width: 250px;">
+                    <label>LINK FLYER</label>
+                    <input type="text" id="flyer-input" placeholder="https://imgur.com/..." style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk';">
+                </div>
+                <div class="settings-item" style="flex-grow: 1; min-width: 100%;">
+                    <label>DESCRIZIONE</label>
+                    <textarea id="desc-input" placeholder="Descrizione dell'evento..." style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk'; min-height: 60px; resize: vertical;"></textarea>
+                    <button id="save-content-btn" class="submit-btn" style="margin-top: 0.5rem; padding: 0.5rem 1rem;">SALVA TESTI & IMMAGINE</button>
+                </div>
                 <div class="settings-item present-counter">
                     <span id="present-count">0</span><span style="font-size: 1rem; color: #888;"> / <span id="capacity-display">100</span></span>
                 </div>

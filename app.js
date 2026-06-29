@@ -44,6 +44,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const PUBLIC_GATE_HASH = "9f0ec1a0240808b239a995975a3a09c633fe9edac27a203f21e90429f5cdbfe9"; // alogasse
     let currentEventId = "act_1"; // Default fallback
 
+    // --- CHECK PR PARAMETER ---
+    const urlParams = new URLSearchParams(window.location.search);
+    const prCode = urlParams.get('pr') ? urlParams.get('pr').toLowerCase() : null;
+
     // --- FETCH ACTIVE EVENT ---
     async function loadActiveEvent() {
         if (!db) return;
@@ -58,12 +62,24 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Update UI
                 const titleEl = document.getElementById("public-event-title");
                 const dateEl = document.getElementById("public-event-date");
+                const flyerEl = document.getElementById("public-event-flyer");
+                const descEl = document.getElementById("public-event-description");
+                
                 if (titleEl) {
                     titleEl.textContent = ev.name;
                     titleEl.setAttribute("data-text", ev.name);
                 }
                 if (dateEl) {
                     dateEl.textContent = ev.date;
+                }
+                if (flyerEl && ev.flyerUrl && ev.flyerUrl.trim() !== "") {
+                    flyerEl.src = ev.flyerUrl;
+                    flyerEl.style.display = "block";
+                } else if (flyerEl) {
+                    flyerEl.style.display = "none";
+                }
+                if (descEl && ev.description && ev.description.trim() !== "") {
+                    descEl.innerHTML = ev.description.replace(/\n/g, '<br>');
                 }
                 
                 // Set form state based on event
@@ -171,6 +187,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     name: name,
                     email: email,
                     eventId: currentEventId,
+                    invited_by: prCode, // Track PR referrals
                     checked_in: false, // New field for QR code system
                     status: "pending", // VIP approval status
                     email_sent: false, // Track if secret location was sent

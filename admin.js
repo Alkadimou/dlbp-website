@@ -166,6 +166,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 const newEventRef = await addDoc(collection(db, "events"), {
                     name: name,
                     date: date,
+                    flyerUrl: "",
+                    description: "",
                     location: "Via Fabio Filzi 28 Arezzo (AR)", // Puoi renderlo dinamico in futuro
                     maxCapacity: parseInt(capacity) || 100,
                     isOpen: true,
@@ -228,6 +230,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 listToggle.checked = evData.isOpen !== false; // default true
                 capacityInput.value = evData.maxCapacity || 100;
                 capacityDisplay.textContent = evData.maxCapacity || 100;
+                document.getElementById('flyer-input').value = evData.flyerUrl || "";
+                document.getElementById('desc-input').value = evData.description || "";
             }
         } catch (error) {
             console.error("Error loading event settings:", error);
@@ -254,6 +258,23 @@ document.addEventListener("DOMContentLoaded", () => {
             setTimeout(() => saveCapacityBtn.textContent = "SALVA", 2000);
         } catch (error) {
             console.error("Error saving capacity:", error);
+        }
+    });
+
+    document.getElementById('save-content-btn').addEventListener("click", async () => {
+        if (!db || !currentEventId) return;
+        const flyerUrl = document.getElementById('flyer-input').value.trim();
+        const description = document.getElementById('desc-input').value.trim();
+        
+        try {
+            await updateDoc(doc(db, "events", currentEventId), { 
+                flyerUrl: flyerUrl,
+                description: description
+            });
+            alert("Testi e Immagine salvati con successo!");
+        } catch (error) {
+            console.error("Error saving content:", error);
+            alert("Errore durante il salvataggio.");
         }
     });
 

@@ -34,6 +34,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     let timelineChart = null;
     let statusChart = null;
     let conversionChart = null;
+    let peakTrafficChart = null;
 
     // Load Events
     async function loadEvents() {
@@ -92,8 +93,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             let pending = 0;
             let present = 0;
             
-            // Per il grafico a linee
+            // Per il grafico a linee e picchi
             const datesMap = {};
+            const trafficMap = {};
 
             querySnapshot.forEach(doc => {
                 const user = doc.data();
@@ -111,6 +113,16 @@ document.addEventListener("DOMContentLoaded", async () => {
                     const dateStr = dateObj.toISOString().split('T')[0];
                     datesMap[dateStr] = (datesMap[dateStr] || 0) + 1;
                 }
+
+                // Gestione picchi di affluenza (check_in_time in buckets da 30 min)
+                if (user.checked_in && user.check_in_time) {
+                    const timeObj = user.check_in_time.toDate();
+                    let min = timeObj.getMinutes();
+                    // Arrotonda ai 30 min
+                    min = min < 30 ? "00" : "30";
+                    const bucket = `${timeObj.getHours().toString().padStart(2, '0')}:${min}`;
+                    trafficMap[bucket] = (trafficMap[bucket] || 0) + 1;
+                }
             });
 
             // Update UI Counters
@@ -120,7 +132,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             document.getElementById("stat-present").textContent = present;
 
             // Update Charts
-            renderCharts(datesMap, approved, pending, present);
+            renderCharts(datesMap, approved, pending, present, trafficMap);
             
             loadingOverlay.style.display = "none";
             analyticsContent.style.display = "block";
@@ -133,11 +145,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    function renderCharts(datesMap, approved, pending, present) {
+    function renderCharts(datesMap, approved, pending, present, trafficMap) {
         // Distruggi i grafici vecchi se esistono
         if (timelineChart) timelineChart.destroy();
         if (statusChart) statusChart.destroy();
         if (conversionChart) conversionChart.destroy();
+        if (peakTrafficChart) peakTrafficChart.destroy();
 
         // 1. Timeline Chart
         const ctxTimeline = document.getElementById('timelineChart').getContext('2d');
@@ -225,6 +238,34 @@ document.addEventListener("DOMContentLoaded", async () => {
                 responsive: true,
                 plugins: {
                     legend: { position: 'bottom', labels: { color: '#fff', font: { family: 'Space Grotesk' } } }
+                }
+            }
+        });
+
+        // 4. Peak Traffic Chart (Bar)
+        const ctxTraffic = document.getElementById('peakTrafficChart').getContext('2d');
+        const trafficLabels = Object.keys(trafficMap).sort();
+        const trafficDataPoints = trafficLabels.map(l => trafficMap[l]);
+
+        peakTrafficChart = new Chart(ctxTraffic, {
+            type: 'bar',
+            data: {
+                labels: trafficLabels,
+                datasets: [{
+                    label: 'Ingressi per fascia oraria',
+                    data: trafficDataPoints,
+                    backgroundColor: '#e67e22',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: { ticks: { color: '#888' }, grid: { display: false } },
+                    y: { ticks: { color: '#888' }, grid: { color: '#333' }, beginAtZero: true }
                 }
             }
         });
