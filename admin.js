@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, getDocs, doc, setDoc, getDoc, query, deleteDoc, updateDoc, where, addDoc, writeBatch, onSnapshot, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
 // TODO: Replace with your actual Firebase config
 const firebaseConfig = {
@@ -18,10 +19,12 @@ const EMAILJS_SERVICE_ID = "service_ndbmwte";
 const EMAILJS_TEMPLATE_ID = "template_o3kovxe";
 
 let db;
+let storage;
 try {
     if (firebaseConfig.apiKey !== "YOUR_API_KEY") {
         const app = initializeApp(firebaseConfig);
         db = getFirestore(app);
+        storage = getStorage(app);
     }
 } catch (e) {
     console.error("Firebase init error", e);
@@ -230,7 +233,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 listToggle.checked = evData.isOpen !== false; // default true
                 capacityInput.value = evData.maxCapacity || 100;
                 capacityDisplay.textContent = evData.maxCapacity || 100;
-                document.getElementById('flyer-input').value = evData.flyerUrl || "";
+                
+                const previewDiv = document.getElementById('current-flyer-preview');
+                if (evData.flyerUrl) {
+                    previewDiv.innerHTML = `Flyer attuale: <a href="${evData.flyerUrl}" target="_blank" style="color:var(--accent-color);">Vedi Immagine</a>`;
+                } else {
+                    previewDiv.innerHTML = "Nessun flyer caricato.";
+                }
+                document.getElementById('flyer-input').value = "";
                 document.getElementById('desc-input').value = evData.description || "";
             }
         } catch (error) {
@@ -263,18 +273,42 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById('save-content-btn').addEventListener("click", async () => {
         if (!db || !currentEventId) return;
-        const flyerUrl = document.getElementById('flyer-input').value.trim();
+        
+        const saveBtn = document.getElementById('save-content-btn');
+        const originalText = saveBtn.textContent;
+        saveBtn.textContent = "CARICAMENTO...";
+        saveBtn.disabled = true;
+
         const description = document.getElementById('desc-input').value.trim();
+        const fileInput = document.getElementById('flyer-input');
+        const file = fileInput.files[0];
         
         try {
-            await updateDoc(doc(db, "events", currentEventId), { 
-                flyerUrl: flyerUrl,
-                description: description
-            });
+            let flyerUrl = undefined;
+            if (file) {
+                if (!storage) throw new Error("Storage non inizializzato");
+                const storageRef = ref(storage, `flyers/${Date.now()}_${file.name}`);
+                const snapshot = await uploadBytes(storageRef, file);
+                flyerUrl = await getDownloadURL(snapshot);
+            }
+            
+            const updates = { description: description };
+            if (flyerUrl) updates.flyerUrl = flyerUrl;
+
+            await updateDoc(doc(db, "events", currentEventId), updates);
+            
+            if (flyerUrl) {
+                document.getElementById('current-flyer-preview').innerHTML = `Flyer attuale: <a href="${flyerUrl}" target="_blank" style="color:var(--accent-color);">Vedi Immagine</a>`;
+                fileInput.value = "";
+            }
+            
             alert("Testi e Immagine salvati con successo!");
         } catch (error) {
             console.error("Error saving content:", error);
             alert("Errore durante il salvataggio.");
+        } finally {
+            saveBtn.textContent = originalText;
+            saveBtn.disabled = false;
         }
     });
 
