@@ -67,6 +67,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    passwordInput.addEventListener("keyup", (e) => {
+        if (e.key === "Enter") {
+            loginBtn.click();
+        }
+    });
+
     let activeEventId = null;
     let activeEventData = null;
 

@@ -106,6 +106,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    gatePasswordInput.addEventListener("keyup", (e) => {
+        if (e.key === "Enter") {
+            gateBtn.click();
+        }
+    });
+
     // Fallback if no active event found (migration mode)
     async function checkLegacyAvailability() {
         if (!db) return true;

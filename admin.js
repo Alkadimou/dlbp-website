@@ -269,6 +269,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    passwordInput.addEventListener("keyup", (e) => {
+        if (e.key === "Enter") {
+            loginBtn.click();
+        }
+    });
+
     // --- DATA LOADING LOGIC ---
     async function loadUsers() {
         if (!db || !currentEventId) return;
