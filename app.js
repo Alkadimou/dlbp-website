@@ -230,12 +230,12 @@ document.addEventListener("DOMContentLoaded", () => {
         messageDiv.className = `form-message ${type}`;
     }
 
-    // PWA Service Worker Registration
+    // FORZA RIMOZIONE SERVICE WORKER (per pulizia cache)
     if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('sw.js').catch(error => {
-                console.log('ServiceWorker registration failed: ', error);
-            });
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+            for(let registration of registrations) {
+                registration.unregister();
+            }
         });
     }
 
