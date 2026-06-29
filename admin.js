@@ -402,6 +402,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <td style="text-align: center;"><input type="checkbox" class="user-checkbox" data-id="${user.id}"></td>
                 <td>${user.name}</td>
                 <td>${user.email}</td>
+                <td style="color: #aaa; text-transform: uppercase;">${user.invited_by || '-'}</td>
                 <td>${statusHtml}</td>
                 <td>${user.timestamp.toLocaleString('it-IT', {dateStyle: 'short', timeStyle: 'short'})}</td>
                 <td>${checkinTimeHtml}</td>
