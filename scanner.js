@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, doc, getDoc, updateDoc, collection, query, where, getCountFromServer, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, updateDoc, collection, query, where, getCountFromServer, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // TODO: Replace with your actual Firebase config
 const firebaseConfig = {
@@ -34,6 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const readerDiv = document.getElementById("reader");
 
     let html5QrcodeScanner;
+    let unsubCounter = null;
 
     // --- LOGIN LOGIC ---
     const SECRET_HASH = "871c074e5911bd5418aa264ca0b0b0e09705189f84ce28d415d1fad0dcadda15"; // Hash of "dlbpscan"
@@ -97,6 +98,18 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- SCANNER LOGIC ---
     async function startScanner() {
         await loadActiveEvent();
+        
+        // Counter Live
+        if (unsubCounter) unsubCounter();
+        const qCount = query(collection(db, "users"), where("checked_in", "==", true));
+        unsubCounter = onSnapshot(qCount, (snapshot) => {
+            const count = snapshot.size;
+            const max = activeEventData ? activeEventData.maxCapacity || 100 : 100;
+            const counterDiv = document.getElementById('live-counter');
+            if (counterDiv) {
+                counterDiv.innerHTML = `INGRESSI: <span style="color: ${count >= max ? 'var(--error-color)' : '#fff'}">${count}</span> / ${max}`;
+            }
+        });
         
         // Initialize HTML5 QR Code Scanner
         html5QrcodeScanner = new Html5QrcodeScanner(
