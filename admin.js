@@ -1,5 +1,5 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, setDoc, getDoc, query, deleteDoc, updateDoc, where, addDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs, doc, setDoc, getDoc, query, deleteDoc, updateDoc, where, addDoc, writeBatch, onSnapshot, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // TODO: Replace with your actual Firebase config
 const firebaseConfig = {
@@ -585,4 +585,90 @@ document.addEventListener("DOMContentLoaded", () => {
         adminMessage.textContent = `Operazione completata. Inviate: ${successCount}. Fallite: ${failCount}.`;
         adminMessage.className = "form-message success";
     });
+
+    // --- PR MANAGEMENT LOGIC ---
+    const managePrBtn = document.getElementById('manage-pr-btn');
+    const prModal = document.getElementById('pr-modal');
+    const closePrModalBtn = document.getElementById('close-pr-modal-btn');
+    const addPrBtn = document.getElementById('add-pr-btn');
+    const prNameInput = document.getElementById('pr-name-input');
+    const prCodeInput = document.getElementById('pr-code-input');
+    const prTableBody = document.getElementById('pr-table-body');
+    let unsubPrs = null;
+
+    managePrBtn.addEventListener('click', () => {
+        prModal.style.display = 'flex';
+        loadPRs();
+    });
+
+    closePrModalBtn.addEventListener('click', () => {
+        prModal.style.display = 'none';
+        if (unsubPrs) {
+            unsubPrs();
+            unsubPrs = null;
+        }
+    });
+
+    addPrBtn.addEventListener('click', async () => {
+        const name = prNameInput.value.trim();
+        const code = prCodeInput.value.trim().toLowerCase();
+        
+        if (!name || !code) {
+            alert("Inserisci sia Nome che Codice.");
+            return;
+        }
+
+        try {
+            await addDoc(collection(db, "prs"), {
+                name: name,
+                code: code,
+                isActive: true,
+                createdAt: new Date()
+            });
+            prNameInput.value = '';
+            prCodeInput.value = '';
+        } catch (error) {
+            console.error("Error adding PR:", error);
+            alert("Errore nell'aggiunta del PR.");
+        }
+    });
+
+    function loadPRs() {
+        if (unsubPrs) unsubPrs();
+        
+        const q = query(collection(db, "prs"), orderBy("createdAt", "desc"));
+        unsubPrs = onSnapshot(q, (snapshot) => {
+            prTableBody.innerHTML = '';
+            snapshot.forEach((docSnap) => {
+                const pr = docSnap.data();
+                const prId = docSnap.id;
+                const link = `?pr=${pr.code}`;
+                
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${pr.name}</td>
+                    <td><span style="color:var(--accent-color);">${pr.code}</span><br><small style="color:#666;">${link}</small></td>
+                    <td>${pr.isActive ? '<span style="color:var(--success-color);">ATTIVO</span>' : '<span style="color:var(--error-color);">DISABILITATO</span>'}</td>
+                    <td style="text-align: right;">
+                        <button class="submit-btn delete-pr-btn" data-id="${prId}" style="padding: 0.3rem 0.6rem; background: var(--error-color); border: none; font-size: 0.8rem; min-width: unset; margin: 0;">ELIMINA</button>
+                    </td>
+                `;
+                prTableBody.appendChild(tr);
+            });
+
+            document.querySelectorAll('.delete-pr-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const id = e.target.getAttribute('data-id');
+                    if (confirm("Sei sicuro di voler eliminare questo PR?")) {
+                        try {
+                            await deleteDoc(doc(db, "prs", id));
+                        } catch (error) {
+                            console.error("Error deleting PR:", error);
+                        }
+                    }
+                });
+            });
+        });
+    }
+
 });

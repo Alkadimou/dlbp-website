@@ -195,6 +195,7 @@
                     <select id="admin-event-selector" style="padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk'; min-width: 200px;">
                     </select>
                     <button id="set-active-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1rem; background: var(--success-color); border: none; color: white;">IMPOSTA ATTIVO</button>
+                    <button id="manage-pr-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1rem; background: #555; color: white; border: none;">GESTIONE PR</button>
                     <button id="new-event-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1rem; background: var(--text-color); color: var(--bg-color);">NUOVO ACT</button>
                 </div>
             </div>
@@ -273,6 +274,37 @@
 
     <!-- EmailJS SDK -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+    <!-- PR Management Modal -->
+    <div id="pr-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; font-family: 'Space Grotesk', sans-serif;">
+        <div class="event-card" style="width: 90%; max-width: 600px; padding: 2rem; position: relative; max-height: 90vh; overflow-y: auto;">
+            <button id="close-pr-modal-btn" style="position: absolute; top: 1rem; right: 1rem; background: transparent; border: none; color: #fff; font-size: 1.5rem; cursor: pointer;">&times;</button>
+            <h2 class="event-title" style="font-size: 1.5rem; margin-bottom: 1.5rem;">GESTIONE PR</h2>
+            
+            <div style="display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap;">
+                <input type="text" id="pr-name-input" placeholder="Nome PR (es. Marco Rossi)" style="flex: 1; min-width: 200px; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333;">
+                <input type="text" id="pr-code-input" placeholder="Codice Accesso (es. marco24)" style="flex: 1; min-width: 200px; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333;">
+                <button id="add-pr-btn" class="submit-btn" style="padding: 0.5rem 1rem; margin: 0;">AGGIUNGI</button>
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>NOME</th>
+                            <th>CODICE / LINK</th>
+                            <th>STATO</th>
+                            <th style="text-align: right;">AZIONI</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pr-table-body">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <script type="module" src="admin.js"></script>
 </body>
 </html>

@@ -1,5 +1,5 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, query, where, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, query, where, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // TODO: Replace with your actual Firebase configuration
 const firebaseConfig = {
@@ -77,21 +77,42 @@ document.addEventListener("DOMContentLoaded", () => {
         if (e.key === "Enter") loginBtn.click();
     });
 
-    function login(code) {
-        currentPrCode = code;
-        sessionStorage.setItem("dlbp_pr_code", code);
+    async function login(code) {
+        if (!db) return;
         
-        loginSection.style.display = "none";
-        dashboardSection.style.display = "block";
-        document.getElementById("app-main").style.maxWidth = "800px";
-        
-        prWelcome.textContent = `DASHBOARD PR: ${code.toUpperCase()}`;
-        
-        // Generate invite link
-        const baseUrl = window.location.origin + window.location.pathname.replace('pr.html', 'index.html');
-        inviteLinkInput.value = `${baseUrl}?pr=${code}`;
+        try {
+            const prsQuery = query(collection(db, "prs"), where("code", "==", code), where("isActive", "==", true));
+            const prsSnap = await getDocs(prsQuery);
+            if (prsSnap.empty) {
+                loginMessage.textContent = "Codice PR non valido o disabilitato.";
+                loginMessage.className = "form-message error";
+                loginMessage.style.display = "block";
+                return;
+            }
+            
+            const prData = prsSnap.docs[0].data();
+            const prName = prData.name;
 
-        startListening(code);
+            currentPrCode = code;
+            sessionStorage.setItem("dlbp_pr_code", code);
+            
+            loginSection.style.display = "none";
+            dashboardSection.style.display = "block";
+            document.getElementById("app-main").style.maxWidth = "800px";
+            
+            prWelcome.textContent = `DASHBOARD PR: ${prName.toUpperCase()}`;
+            
+            // Generate invite link
+            const baseUrl = window.location.origin + window.location.pathname.replace('pr.html', 'index.html');
+            inviteLinkInput.value = `${baseUrl}?pr=${code}`;
+
+            startListening(code);
+        } catch (error) {
+            console.error("Errore login PR:", error);
+            loginMessage.textContent = "Errore di connessione al database.";
+            loginMessage.className = "form-message error";
+            loginMessage.style.display = "block";
+        }
     }
 
     logoutBtn.addEventListener("click", () => {
