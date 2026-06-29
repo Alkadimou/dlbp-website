@@ -203,6 +203,7 @@ document.addEventListener("DOMContentLoaded", () => {
             
             document.getElementById('event-name-input').value = "";
             document.getElementById('event-date-input').value = "";
+            document.getElementById('event-end-time-input').value = "";
             document.getElementById('desc-input').value = "";
             document.getElementById('flyer-input').value = "";
             document.getElementById('current-flyer-preview').innerHTML = "Nessun flyer caricato.";
@@ -255,6 +256,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const evData = eventSnap.data();
                 document.getElementById('event-name-input').value = evData.name || "";
                 document.getElementById('event-date-input').value = evData.dateIso || "";
+                document.getElementById('event-end-time-input').value = evData.endTime || "";
                 listToggle.checked = evData.isOpen !== false; // default true
                 capacityInput.value = evData.maxCapacity || 100;
                 capacityDisplay.textContent = evData.maxCapacity || 100;
@@ -345,6 +347,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const name = document.getElementById('event-name-input').value.trim();
         const rawDate = document.getElementById('event-date-input').value.trim();
+        const endTime = document.getElementById('event-end-time-input').value.trim();
         
         let formattedDate = rawDate;
         let dateIso = rawDate;
@@ -356,7 +359,13 @@ document.addEventListener("DOMContentLoaded", () => {
             const monthNum = String(d.getMonth() + 1).padStart(2, '0');
             const hours = String(d.getHours()).padStart(2, '0');
             const minutes = String(d.getMinutes()).padStart(2, '0');
-            formattedDate = `${dayName} ${dayNum}/${monthNum} | ${hours}:${minutes}`;
+            
+            let timeString = `${hours}:${minutes}`;
+            if (endTime) {
+                timeString += ` - ${endTime}`;
+            }
+            
+            formattedDate = `${dayName} ${dayNum}/${monthNum} | ${timeString}`;
         }
         const description = document.getElementById('desc-input').value.trim();
         const fileInput = document.getElementById('flyer-input');
@@ -380,6 +389,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     name: name || "Nuovo Evento",
                     date: formattedDate || "",
                     dateIso: dateIso || "",
+                    endTime: endTime || "",
                     flyerUrl: flyerUrl || "",
                     description: description || "",
                     location: "Via Fabio Filzi 28 Arezzo (AR)",
@@ -404,6 +414,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     name: name,
                     date: formattedDate,
                     dateIso: dateIso,
+                    endTime: endTime,
                     description: description 
                 };
                 if (flyerUrl) updates.flyerUrl = flyerUrl;
