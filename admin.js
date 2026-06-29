@@ -285,7 +285,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
     
-    const SECRET_HASH = "731c8acd320f54b4fc09a3145661385c4c991fe468ffc907b2602ce971dcfe08"; // Hash di "dlbp2024"
+    const SECRET_HASH = "20d70daed03b66603556192e43f3d6c94cf4543f84725d2cbdca96d3e65a4d97"; // Hash di "dlbpadmin"
 
     async function hashPassword(password) {
         const encoder = new TextEncoder();
