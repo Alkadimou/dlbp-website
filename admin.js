@@ -203,6 +203,7 @@ document.addEventListener("DOMContentLoaded", () => {
             
             document.getElementById('event-name-input').value = "";
             document.getElementById('event-date-input').value = "";
+            document.getElementById('event-start-time-input').value = "";
             document.getElementById('event-end-time-input').value = "";
             document.getElementById('desc-input').value = "";
             document.getElementById('flyer-input').value = "";
@@ -256,6 +257,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const evData = eventSnap.data();
                 document.getElementById('event-name-input').value = evData.name || "";
                 document.getElementById('event-date-input').value = evData.dateIso || "";
+                document.getElementById('event-start-time-input').value = evData.startTime || "";
                 document.getElementById('event-end-time-input').value = evData.endTime || "";
                 listToggle.checked = evData.isOpen !== false; // default true
                 capacityInput.value = evData.maxCapacity || 100;
@@ -347,20 +349,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const name = document.getElementById('event-name-input').value.trim();
         const rawDate = document.getElementById('event-date-input').value.trim();
+        const startTime = document.getElementById('event-start-time-input').value.trim();
         const endTime = document.getElementById('event-end-time-input').value.trim();
         
         let formattedDate = rawDate;
         let dateIso = rawDate;
-        if (rawDate && rawDate.includes('T')) {
-            const d = new Date(rawDate);
+        if (rawDate) {
+            // Append T12:00:00 to avoid UTC timezone offset issues making it the day before
+            const d = new Date(rawDate + "T12:00:00");
             const days = ['DOMENICA', 'LUNEDÌ', 'MARTEDÌ', 'MERCOLEDÌ', 'GIOVEDÌ', 'VENERDÌ', 'SABATO'];
             const dayName = days[d.getDay()];
             const dayNum = String(d.getDate()).padStart(2, '0');
             const monthNum = String(d.getMonth() + 1).padStart(2, '0');
-            const hours = String(d.getHours()).padStart(2, '0');
-            const minutes = String(d.getMinutes()).padStart(2, '0');
             
-            let timeString = `${hours}:${minutes}`;
+            let timeString = startTime || "23:00";
             if (endTime) {
                 timeString += ` - ${endTime}`;
             }
@@ -389,6 +391,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     name: name || "Nuovo Evento",
                     date: formattedDate || "",
                     dateIso: dateIso || "",
+                    startTime: startTime || "",
                     endTime: endTime || "",
                     flyerUrl: flyerUrl || "",
                     description: description || "",
@@ -414,6 +417,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     name: name,
                     date: formattedDate,
                     dateIso: dateIso,
+                    startTime: startTime,
                     endTime: endTime,
                     description: description 
                 };
