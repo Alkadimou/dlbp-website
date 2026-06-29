@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, setDoc, getDoc, query, orderBy, deleteDoc, updateDoc, where, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, setDoc, getDoc, query, deleteDoc, updateDoc, where, addDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // TODO: Replace with your actual Firebase config
 const firebaseConfig = {
@@ -468,9 +468,13 @@ document.addEventListener("DOMContentLoaded", () => {
         adminMessage.className = "form-message";
 
         try {
+            // Usa writeBatch per eliminazioni multiple in una singola richiesta di rete (più efficiente)
+            const batch = writeBatch(db);
             for (const id of selectedIds) {
-                await deleteDoc(doc(db, "registrations", id));
+                batch.delete(doc(db, "registrations", id));
             }
+            await batch.commit();
+
             adminMessage.textContent = "Iscritti eliminati con successo.";
             adminMessage.className = "form-message success";
             setTimeout(() => {
