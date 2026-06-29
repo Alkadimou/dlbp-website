@@ -18,6 +18,8 @@ const EMAILJS_SERVICE_ID = "service_ndbmwte";
 const EMAILJS_TEMPLATE_ID = "template_o3kovxe";
 
 let db;
+let currentEventId = null;
+let isCreatingNew = false;
 try {
     if (firebaseConfig.apiKey !== "YOUR_API_KEY") {
         const app = initializeApp(firebaseConfig);
@@ -124,20 +126,20 @@ document.addEventListener("DOMContentLoaded", () => {
                 const option = document.createElement("option");
                 option.value = ev.id;
                 option.textContent = ev.name + " (" + ev.date + ")" + (ev.isActive ? " [ATTIVO ONLINE]" : "");
-                if (ev.isActive && !foundActive) {
-                    option.selected = true;
-                    foundActive = true;
-                    currentEventId = ev.id;
-                }
                 adminEventSelector.appendChild(option);
             });
 
-            if (!currentEventId && eventsSnap.docs.length > 0) {
-                currentEventId = eventsSnap.docs[0].id;
-                adminEventSelector.value = currentEventId;
+            if (!currentEventId) {
+                let activeEv = eventsArray.find(e => e.isActive);
+                if (activeEv) {
+                    currentEventId = activeEv.id;
+                } else if (eventsArray.length > 0) {
+                    currentEventId = eventsArray[0].id;
+                }
             }
 
             if (currentEventId) {
+                adminEventSelector.value = currentEventId;
                 await loadSettings();
                 await loadUsers();
             }
@@ -149,35 +151,37 @@ document.addEventListener("DOMContentLoaded", () => {
     if (adminEventSelector) {
         adminEventSelector.addEventListener("change", (e) => {
             currentEventId = e.target.value;
+            isCreatingNew = false;
+            const title = document.getElementById('settings-panel-title');
+            if (title) {
+                title.textContent = "MODIFICA EVENTO ESISTENTE";
+                title.style.color = "var(--accent-color)";
+            }
+            document.getElementById('save-content-btn').textContent = "SALVA DETTAGLI EVENTO";
             loadSettings();
             loadUsers();
         });
     }
 
     if (newEventBtn) {
-        newEventBtn.addEventListener("click", async () => {
-            try {
-                const newEventRef = await addDoc(collection(db, "events"), {
-                    name: "Nuovo Evento " + new Date().toLocaleDateString(),
-                    date: "",
-                    flyerUrl: "",
-                    description: "",
-                    location: "Via Fabio Filzi 28 Arezzo (AR)",
-                    maxCapacity: 100,
-                    isOpen: true,
-                    isActive: false,
-                    createdAt: new Date()
-                });
-                
-                alert("Nuovo evento creato! Compila i dettagli nel riquadro sottostante e premi SALVA DETTAGLI EVENTO.");
-                currentEventId = newEventRef.id;
-                await loadEventsList();
-                // Assicuriamoci che il selettore mostri l'evento appena creato
-                if (adminEventSelector) adminEventSelector.value = currentEventId;
-            } catch (error) {
-                console.error("Error creating new event:", error);
-                alert("Errore nella creazione dell'evento.");
+        newEventBtn.addEventListener("click", () => {
+            isCreatingNew = true;
+            currentEventId = null;
+            if (adminEventSelector) adminEventSelector.value = "";
+            
+            const title = document.getElementById('settings-panel-title');
+            if (title) {
+                title.textContent = "CREAZIONE NUOVO EVENTO";
+                title.style.color = "#0f0";
             }
+            
+            document.getElementById('event-name-input').value = "";
+            document.getElementById('event-date-input').value = "";
+            document.getElementById('desc-input').value = "";
+            document.getElementById('flyer-input').value = "";
+            document.getElementById('current-flyer-preview').innerHTML = "Nessun flyer caricato.";
+            document.getElementById('save-content-btn').textContent = "CREA NUOVO EVENTO";
+            document.getElementById('event-name-input').focus();
         });
     }
 
@@ -304,7 +308,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     document.getElementById('save-content-btn').addEventListener("click", async () => {
-        if (!db || !currentEventId) return;
+        if (!isCreatingNew && (!db || !currentEventId)) return;
         
         const saveBtn = document.getElementById('save-content-btn');
         const originalText = saveBtn.textContent;
@@ -330,24 +334,46 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
             
-            const updates = { 
-                name: name,
-                date: date,
-                description: description 
-            };
-            if (flyerUrl) updates.flyerUrl = flyerUrl;
+            if (isCreatingNew) {
+                const newEventRef = await addDoc(collection(db, "events"), {
+                    name: name || "Nuovo Evento",
+                    date: date || "",
+                    flyerUrl: flyerUrl || "",
+                    description: description || "",
+                    location: "Via Fabio Filzi 28 Arezzo (AR)",
+                    maxCapacity: parseInt(document.getElementById('capacity-input').value) || 100,
+                    isOpen: document.getElementById('list-toggle').checked,
+                    isActive: false,
+                    createdAt: new Date()
+                });
+                currentEventId = newEventRef.id;
+                isCreatingNew = false;
+                
+                const title = document.getElementById('settings-panel-title');
+                if (title) {
+                    title.textContent = "MODIFICA EVENTO ESISTENTE";
+                    title.style.color = "var(--accent-color)";
+                }
+                
+                await loadEventsList();
+                alert("Nuovo evento creato con successo!");
+            } else {
+                const updates = { 
+                    name: name,
+                    date: date,
+                    description: description 
+                };
+                if (flyerUrl) updates.flyerUrl = flyerUrl;
 
-            await updateDoc(doc(db, "events", currentEventId), updates);
-            
-            // Reload the dropdown to reflect the potential name/date change
-            await loadEventsList();
+                await updateDoc(doc(db, "events", currentEventId), updates);
+                await loadEventsList();
+                alert("Dettagli evento salvati con successo!");
+            }
 
             if (flyerUrl) {
                 document.getElementById('current-flyer-preview').innerHTML = `Flyer attuale:<br><img src="${flyerUrl}" style="max-width: 150px; margin-top: 10px; border-radius: 8px;">`;
                 fileInput.value = "";
             }
-            
-            alert("Dettagli evento salvati con successo!");
         } catch (error) {
             console.error("Error saving content:", error);
             alert("Errore durante il salvataggio.");

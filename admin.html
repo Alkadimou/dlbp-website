@@ -220,18 +220,23 @@
                 </div>
             </div>
 
-            <div class="settings-panel">
-                <div class="settings-item" style="flex-grow: 1; min-width: 100%;">
-                    <label>NOME EVENTO</label>
-                    <input type="text" id="event-name-input" placeholder="es: TXK.NØX Act II" style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk';">
-                </div>
-                <div class="settings-item" style="flex-grow: 1; min-width: 100%;">
-                    <label>DATA E ORA</label>
-                    <input type="text" id="event-date-input" placeholder="es: SABATO 14/08 | 23:00 - 05:00" style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk';">
+            <div class="settings-panel" style="flex-direction: column;">
+                <h4 id="settings-panel-title" style="width: 100%; margin-top: 0; margin-bottom: 1rem; color: var(--accent-color); font-size: 0.9rem; letter-spacing: 2px;">MODIFICA EVENTO ESISTENTE</h4>
+                
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap; width: 100%;">
+                    <div class="settings-item" style="flex-grow: 1; min-width: 250px;">
+                        <label>NOME EVENTO</label>
+                        <input type="text" id="event-name-input" placeholder="es: TXK.NØX Act II" style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk';">
+                    </div>
+                    <div class="settings-item" style="flex-grow: 1; min-width: 250px;">
+                        <label>DATA E ORA</label>
+                        <input type="text" id="event-date-input" placeholder="es: SABATO 14/08 | 23:00 - 05:00" style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk';">
+                    </div>
                 </div>
                 
-                <div class="settings-item">
-                    <label>LISTE APERTE</label>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap; width: 100%;">
+                    <div class="settings-item">
+                        <label>LISTE APERTE</label>
                     <label class="toggle-switch">
                         <input type="checkbox" id="list-toggle" checked>
                         <span class="slider"></span>
@@ -241,6 +246,7 @@
                     <label>CAPIENZA LOCALE</label>
                     <input type="number" id="capacity-input" class="capacity-input" value="100">
                     <button id="save-capacity-btn" style="background:transparent; color:var(--accent-color); border:1px solid var(--border-color); padding: 0.5rem; cursor: pointer;">SALVA</button>
+                </div>
                 </div>
                 <div class="settings-item" style="flex-grow: 1; min-width: 250px;">
                     <label>CARICA FLYER</label>
