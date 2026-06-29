@@ -48,6 +48,10 @@
             align-items: center;
             flex-wrap: wrap;
         }
+        .admin-actions > * {
+            box-sizing: border-box;
+            max-width: 100%;
+        }
         .danger-btn {
             background: var(--error-color);
             color: white;
@@ -133,6 +137,32 @@
             font-weight: bold;
             color: var(--success-color);
             margin-left: auto;
+        }
+
+        /* Responsive Improvements */
+        * {
+            box-sizing: border-box;
+        }
+        
+        @media (max-width: 768px) {
+            .event-card {
+                padding: 1.5rem 1rem; /* Meno padding sui lati per mobile */
+            }
+            .admin-actions > * {
+                flex: 1 1 100%; /* Su mobile ogni pulsante occupa tutta la larghezza */
+                text-align: center;
+                justify-content: center;
+            }
+            #admin-event-selector {
+                width: 100%;
+                min-width: unset !important; /* Forza la riduzione su schermi piccoli */
+            }
+            #new-event-btn {
+                width: 100%;
+            }
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
