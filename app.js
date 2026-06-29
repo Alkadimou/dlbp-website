@@ -242,6 +242,14 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- WOW FACTOR: Loader & Reveal Animations ---
     window.addEventListener('load', () => {
         const loader = document.getElementById('initial-loader');
+        
+        // Se il loader è già stato mostrato in questa sessione, lo saltiamo
+        if (loader && sessionStorage.getItem('loaderSeen') === 'true') {
+            loader.style.display = 'none';
+            initRevealAnimations();
+            return;
+        }
+
         if (loader) {
             const logo = loader.querySelector('.loader-logo');
             // FASE 1: Caricamento iniziale (il logo è visibile)
@@ -255,16 +263,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 // FASE 2: Schermata completamente nera per 1.4 secondi
                 setTimeout(() => {
                     // FASE 3: Il loader (che copre tutto) viene rimosso istantaneamente.
-                    // Dato che lo sfondo del sito è nero e tutti gli elementi hanno opacità 0 (.reveal),
-                    // non c'è alcuno scatto visivo.
                     loader.style.display = 'none';
                     
-                    // Ora avviamo le animazioni di ingresso (.reveal), in modo che l'intera pagina 
-                    // appaia magicamente dal nero senza sovrapposizioni o incroci di dissolvenze.
+                    // Segnamo che il loader è stato completato per questa sessione
+                    sessionStorage.setItem('loaderSeen', 'true');
+                    
+                    // Ora avviamo le animazioni di ingresso (.reveal)
                     initRevealAnimations();
                 }, 1400); 
             }, 1500); // <-- Tempo di caricamento iniziale col logo visibile
-
 
         } else {
             initRevealAnimations();
