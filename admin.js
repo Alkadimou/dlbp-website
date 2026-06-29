@@ -101,19 +101,32 @@ document.addEventListener("DOMContentLoaded", () => {
     async function loadEventsList() {
         if (!db) return;
         try {
-            const eventsSnap = await getDocs(query(collection(db, "events"), orderBy("createdAt", "desc")));
+            // Rimosso orderBy per evitare problemi di indici mancanti o documenti senza createdAt
+            const eventsSnap = await getDocs(collection(db, "events"));
             adminEventSelector.innerHTML = "";
             let foundActive = false;
 
+            // Mettiamo gli eventi in un array per poterli ordinare
+            let eventsArray = [];
             eventsSnap.forEach(doc => {
-                const ev = doc.data();
+                eventsArray.push({ id: doc.id, ...doc.data() });
+            });
+
+            // Ordinamento decrescente (più recenti prima)
+            eventsArray.sort((a, b) => {
+                const dateA = a.createdAt ? a.createdAt.toMillis() : 0;
+                const dateB = b.createdAt ? b.createdAt.toMillis() : 0;
+                return dateB - dateA;
+            });
+
+            eventsArray.forEach(ev => {
                 const option = document.createElement("option");
-                option.value = doc.id;
+                option.value = ev.id;
                 option.textContent = ev.name + " (" + ev.date + ")" + (ev.isActive ? " [ATTIVO ONLINE]" : "");
                 if (ev.isActive && !foundActive) {
                     option.selected = true;
                     foundActive = true;
-                    currentEventId = doc.id;
+                    currentEventId = ev.id;
                 }
                 adminEventSelector.appendChild(option);
             });
