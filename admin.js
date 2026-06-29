@@ -233,7 +233,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 
                 const previewDiv = document.getElementById('current-flyer-preview');
                 if (evData.flyerUrl) {
-                    previewDiv.innerHTML = `Flyer attuale: <a href="${evData.flyerUrl}" target="_blank" style="color:var(--accent-color);">Vedi Immagine</a>`;
+                    previewDiv.innerHTML = `Flyer attuale:<br><img src="${evData.flyerUrl}" style="max-width: 150px; margin-top: 10px; border-radius: 8px;">`;
                 } else {
                     previewDiv.innerHTML = "Nessun flyer caricato.";
                 }
@@ -338,7 +338,7 @@ document.addEventListener("DOMContentLoaded", () => {
             await updateDoc(doc(db, "events", currentEventId), updates);
             
             if (flyerUrl) {
-                document.getElementById('current-flyer-preview').innerHTML = `Flyer attuale: <a href="${flyerUrl}" target="_blank" style="color:var(--accent-color);">Vedi Immagine</a>`;
+                document.getElementById('current-flyer-preview').innerHTML = `Flyer attuale:<br><img src="${flyerUrl}" style="max-width: 150px; margin-top: 10px; border-radius: 8px;">`;
                 fileInput.value = "";
             }
             
