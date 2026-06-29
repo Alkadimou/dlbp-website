@@ -199,7 +199,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.log("Simulated saving to DB:", { name, email });
             }
 
-            showMessage("Richiesta inviata. Sarai contattato se selezionato.", "success");
+            submitBtn.disabled = false;
+            submitBtn.classList.remove("loading-pulse");
+            btnText.textContent = "RICHIEDI ACCESSO";
+            document.getElementById("name").value = "";
+            document.getElementById("email").value = "";
+            
+            const modal = document.getElementById("success-modal");
+            if (modal) {
+                modal.classList.remove("hidden");
+                document.getElementById("close-modal-btn").onclick = () => {
+                    modal.classList.add("hidden");
+                };
+            } else {
+                showMessage("Richiesta inviata. Sarai contattato se selezionato.", "success");
+            }
             form.reset();
         } catch (error) {
             console.error("Error adding document: ", error);

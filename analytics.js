@@ -1,5 +1,6 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, getDocs, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyD6THmnRAG_8YL1PLWSL7I2_WKLv-fioWk",
@@ -12,23 +13,33 @@ const firebaseConfig = {
 };
 
 let db;
+let auth;
 try {
     const app = initializeApp(firebaseConfig);
     db = getFirestore(app);
+    auth = getAuth(app);
 } catch (e) {
     console.error("Firebase init error", e);
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
-    // 1. Check Authentication
-    if (!sessionStorage.getItem("dlbp_admin_auth")) {
-        window.location.href = "admin.html";
-        return;
-    }
-
     const eventSelector = document.getElementById("event-selector");
     const loadingOverlay = document.getElementById("loading-overlay");
     const analyticsContent = document.getElementById("analytics-content");
+
+    // 1. Check Authentication
+    if (auth) {
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = "admin.html";
+            } else {
+                document.getElementById('analytics-content').style.display = 'block';
+                await loadEvents();
+            }
+        });
+    } else {
+        window.location.href = "admin.html";
+    }
 
     // Chart instances
     let timelineChart = null;
@@ -276,6 +287,5 @@ document.addEventListener("DOMContentLoaded", async () => {
         loadAnalytics(e.target.value);
     });
 
-    // Avvio iniziale
-    loadEvents();
+    // Initialization relies on Auth state now
 });

@@ -180,6 +180,57 @@
             .dashboard-grid {
                 grid-template-columns: 1fr;
             }
+            .toolbar-panel {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .toolbar-panel {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            align-items: end;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid #333;
+        }
+        .toolbar-panel .toolbar-input-group {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+        .toolbar-panel .toolbar-input-group label {
+            font-size: 0.7rem;
+            color: #888;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+        .toolbar-panel .toolbar-input-group select,
+        .toolbar-panel .toolbar-input-group input {
+            width: 100%;
+            height: 42px;
+            padding: 0.5rem 1rem;
+            background: #000;
+            color: #fff;
+            border: 1px solid #444;
+            font-family: 'Space Grotesk';
+        }
+        .toolbar-panel .toolbar-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 0.5rem;
+            width: 100%;
+        }
+        .toolbar-panel .toolbar-actions button {
+            margin: 0;
+            height: 42px;
+            padding: 0 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            font-size: 0.8rem;
         }
     </style>
 </head>
@@ -201,8 +252,11 @@
         <!-- Login Section -->
         <section id="login-section" class="event-card">
             <h2 class="event-title" style="font-size: 1.5rem;">ACCESSO ADMIN</h2>
+            <div class="form-group" style="margin-bottom: 1rem;">
+                <input type="email" id="admin-email" placeholder="EMAIL AMMINISTRATORE" required>
+            </div>
             <div class="form-group">
-                <input type="password" id="admin-password" placeholder="INSERISCI PASSWORD">
+                <input type="password" id="admin-password" placeholder="INSERISCI PASSWORD" required>
             </div>
             <button id="login-btn" class="submit-btn">ACCEDI</button>
             <div id="login-message" class="form-message hidden"></div>
@@ -212,19 +266,21 @@
         <section id="dashboard-section" class="event-card" style="display: none;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
                 <h2 class="event-title" style="font-size: 1.5rem; margin: 0;">GESTIONE EVENTO</h2>
-                <button id="new-event-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1.5rem;">+ NUOVO ACT</button>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button id="logout-btn" class="submit-btn outline-btn" style="margin: 0; padding: 0.5rem 1rem; border-color: #ff3333; color: #ff3333;">ESCI</button>
+                    <button id="new-event-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1.5rem;">+ NUOVO ACT</button>
+                </div>
             </div>
 
-            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; padding: 1rem; background: rgba(0, 0, 0, 0.4); border: 1px solid #333; flex-wrap: wrap; gap: 1rem;">
-                <div style="flex-grow: 1; min-width: 200px;">
-                    <label style="font-size: 0.7rem; color: #888; letter-spacing: 1px; display: block; margin-bottom: 0.5rem;">SELEZIONA EVENTO</label>
-                    <select id="admin-event-selector" style="width: 100%; padding: 0.5rem; background: #000; color: #fff; border: 1px solid #444; font-family: 'Space Grotesk';">
-                    </select>
+            <div class="toolbar-panel">
+                <div class="toolbar-input-group">
+                    <label>SELEZIONA EVENTO</label>
+                    <select id="admin-event-selector"></select>
                 </div>
-                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                    <button id="set-active-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1rem;">IMPOSTA ATTIVO</button>
-                    <button id="edit-event-btn" class="submit-btn outline-btn" style="margin: 0; padding: 0.5rem 1rem;">MODIFICA DETTAGLI</button>
-                    <button id="manage-pr-btn" class="submit-btn outline-btn" style="margin: 0; padding: 0.5rem 1rem;">GESTIONE PR</button>
+                <div class="toolbar-actions">
+                    <button id="set-active-btn" class="submit-btn">IMPOSTA ATTIVO</button>
+                    <button id="edit-event-btn" class="submit-btn outline-btn">MODIFICA DETTAGLI</button>
+                    <button id="manage-pr-btn" class="submit-btn outline-btn">GESTIONE PR</button>
                 </div>
             </div>
 
@@ -236,6 +292,10 @@
                     <div class="settings-item" style="width: 100%;">
                         <label>NOME EVENTO</label>
                         <input type="text" id="event-name-input" placeholder="es: TXK.NØX Act II" style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk';">
+                    </div>
+                    <div class="settings-item" style="width: 100%;">
+                        <label>SECRET LOCATION (Email)</label>
+                        <input type="text" id="event-location-input" placeholder="es: Via Fabio Filzi 28 Arezzo (AR)" style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk';">
                     </div>
                     <div style="display: flex; gap: 1rem; flex-wrap: wrap; width: 100%;">
                         <div class="settings-item" style="flex-grow: 2; min-width: 150px;">
@@ -289,17 +349,17 @@
                 <h2 class="event-title" style="font-size: 1.5rem; margin: 0;">ISCRITTI EVENTO</h2>
             </div>
 
-            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; padding: 1rem; background: rgba(0, 0, 0, 0.4); border: 1px solid #333; flex-wrap: wrap; gap: 1rem;">
-                <div style="flex-grow: 1; min-width: 200px;">
-                    <label style="font-size: 0.7rem; color: #888; letter-spacing: 1px; display: block; margin-bottom: 0.5rem;">RICERCA ISCRITTI</label>
-                    <input type="text" id="search-input" placeholder="Cerca nome o email..." style="width: 100%; padding: 0.5rem; background: #000; color: #fff; border: 1px solid #444; font-family: 'Space Grotesk';">
+            <div class="toolbar-panel" style="grid-template-columns: 1fr 3fr;">
+                <div class="toolbar-input-group">
+                    <label>RICERCA ISCRITTI</label>
+                    <input type="text" id="search-input" placeholder="Cerca nome o email...">
                 </div>
                 
-                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                    <button class="submit-btn outline-btn" style="margin: 0; padding: 0.5rem 1rem;" onclick="window.location.href='analytics.html'">ANALYTICS</button>
-                    <button id="export-csv-btn" class="submit-btn outline-btn" style="margin: 0; padding: 0.5rem 1rem;">ESPORTA EXCEL</button>
-                    <button id="delete-selected-btn" class="submit-btn outline-btn" style="margin: 0; padding: 0.5rem 1rem; border-color: #ff3333; color: #ff3333; opacity: 0.5;" disabled>ELIMINA SELEZIONATI</button>
-                    <button id="send-emails-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1rem;">INVIA SECRET LOCATION</button>
+                <div class="toolbar-actions">
+                    <button class="submit-btn outline-btn" onclick="window.location.href='analytics.html'">ANALYTICS</button>
+                    <button id="export-csv-btn" class="submit-btn outline-btn">ESPORTA EXCEL</button>
+                    <button id="delete-selected-btn" class="submit-btn outline-btn" style="border-color: #ff3333; color: #ff3333; opacity: 0.5;" disabled>ELIMINA SELEZIONATI</button>
+                    <button id="send-emails-btn" class="submit-btn">INVIA SECRET LOCATION</button>
                 </div>
             </div>
             

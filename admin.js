@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, getDocs, doc, setDoc, getDoc, query, deleteDoc, updateDoc, where, addDoc, writeBatch, onSnapshot, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 // TODO: Replace with your actual Firebase config
 const firebaseConfig = {
@@ -18,12 +19,14 @@ const EMAILJS_SERVICE_ID = "service_ndbmwte";
 const EMAILJS_TEMPLATE_ID = "template_o3kovxe";
 
 let db;
+let auth;
 let currentEventId = null;
 let isCreatingNew = false;
 try {
     if (firebaseConfig.apiKey !== "YOUR_API_KEY") {
         const app = initializeApp(firebaseConfig);
         db = getFirestore(app);
+        auth = getAuth(app);
     }
 } catch (e) {
     console.error("Firebase init error", e);
@@ -40,7 +43,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const loginMessage = document.getElementById("login-message");
     
     const tbody = document.getElementById("users-tbody");
-    const sendEmailsBtn = document.getElementById("send-emails-btn");
     const adminMessage = document.getElementById("admin-message");
 
     // Settings elements
@@ -53,6 +55,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const deleteEventBtn = document.getElementById("delete-event-btn");
     const presentCountDisplay = document.getElementById("present-count");
     const exportCsvBtn = document.getElementById("export-csv-btn");
+    const logoutBtn = document.getElementById("logout-btn");
+
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", () => {
+            if (auth) signOut(auth);
+        });
+    }
     
     // Multi-delete elements
     const selectAllCb = document.getElementById("select-all-cb");
@@ -64,7 +73,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const setActiveBtn = document.getElementById("set-active-btn");
     
     let usersData = [];
-    let currentEventId = null;
 
     async function setupEventsIfNeeded() {
         if (!db) return;
@@ -110,7 +118,6 @@ document.addEventListener("DOMContentLoaded", () => {
             // Rimosso orderBy per evitare problemi di indici mancanti o documenti senza createdAt
             const eventsSnap = await getDocs(collection(db, "events"));
             adminEventSelector.innerHTML = "";
-            let foundActive = false;
 
             // Mettiamo gli eventi in un array per poterli ordinare
             let eventsArray = [];
@@ -202,8 +209,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 title.textContent = "CREAZIONE NUOVO EVENTO";
                 title.style.color = "var(--accent-color)";
             }
-            
+            settingsPanel.style.display = "block";
             document.getElementById('event-name-input').value = "";
+            document.getElementById('event-location-input').value = "";
             document.getElementById('event-date-input').value = "";
             document.getElementById('event-start-time-input').value = "";
             document.getElementById('event-end-time-input').value = "";
@@ -259,6 +267,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (eventSnap.exists()) {
                 const evData = eventSnap.data();
                 document.getElementById('event-name-input').value = evData.name || "";
+                document.getElementById('event-location-input').value = evData.location || "";
                 document.getElementById('event-date-input').value = evData.dateIso || "";
                 document.getElementById('event-start-time-input').value = evData.startTime || "";
                 document.getElementById('event-end-time-input').value = evData.endTime || "";
@@ -368,43 +377,39 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    document.getElementById('save-content-btn').addEventListener("click", async () => {
-        if (!isCreatingNew && (!db || !currentEventId)) return;
-        
-        const saveBtn = document.getElementById('save-content-btn');
-        const originalText = saveBtn.textContent;
-        saveBtn.textContent = "CARICAMENTO...";
-        saveBtn.disabled = true;
+    document.getElementById("save-content-btn").addEventListener("click", async () => {
+        if (!db) return;
+        const btn = document.getElementById("save-content-btn");
+        const originalText = btn.textContent;
+        btn.textContent = "SALVATAGGIO...";
+        btn.disabled = true;
 
         const name = document.getElementById('event-name-input').value.trim();
-        const rawDate = document.getElementById('event-date-input').value.trim();
-        const startTime = document.getElementById('event-start-time-input').value.trim();
-        const endTime = document.getElementById('event-end-time-input').value.trim();
+        const location = document.getElementById('event-location-input').value.trim() || "Secret Location";
+        const dateIso = document.getElementById('event-date-input').value;
+        const startTime = document.getElementById('event-start-time-input').value;
+        const endTime = document.getElementById('event-end-time-input').value;
 
-        if (!rawDate || !startTime || !endTime) {
+        if (!dateIso || !startTime || !endTime) {
             alert("Compila correttamente la Data, l'Ora di Inizio e l'Ora di Fine dell'evento prima di salvare.");
-            saveBtn.textContent = originalText;
-            saveBtn.disabled = false;
+            btn.textContent = originalText;
+            btn.disabled = false;
             return;
         }
         
-        let formattedDate = rawDate;
-        let dateIso = rawDate;
-        if (rawDate) {
-            // Append T12:00:00 to avoid UTC timezone offset issues making it the day before
-            const d = new Date(rawDate + "T12:00:00");
-            const days = ['DOMENICA', 'LUNEDÌ', 'MARTEDÌ', 'MERCOLEDÌ', 'GIOVEDÌ', 'VENERDÌ', 'SABATO'];
-            const dayName = days[d.getDay()];
-            const dayNum = String(d.getDate()).padStart(2, '0');
-            const monthNum = String(d.getMonth() + 1).padStart(2, '0');
-            
-            let timeString = startTime || "23:00";
-            if (endTime) {
-                timeString += ` - ${endTime}`;
-            }
-            
-            formattedDate = `${dayName} ${dayNum}/${monthNum} | ${timeString}`;
+        // Append T12:00:00 to avoid UTC timezone offset issues making it the day before
+        const d = new Date(dateIso + "T12:00:00");
+        const days = ['DOMENICA', 'LUNEDÌ', 'MARTEDÌ', 'MERCOLEDÌ', 'GIOVEDÌ', 'VENERDÌ', 'SABATO'];
+        const dayName = days[d.getDay()];
+        const dayNum = String(d.getDate()).padStart(2, '0');
+        const monthNum = String(d.getMonth() + 1).padStart(2, '0');
+        
+        let timeString = startTime;
+        if (endTime) {
+            timeString += ` - ${endTime}`;
         }
+        
+        const formattedDate = `${dayName} ${dayNum}/${monthNum} | ${timeString}`;
         const description = document.getElementById('desc-input').value.trim();
         const fileInput = document.getElementById('flyer-input');
         const file = fileInput.files[0];
@@ -425,13 +430,13 @@ document.addEventListener("DOMContentLoaded", () => {
             if (isCreatingNew) {
                 const newEventRef = await addDoc(collection(db, "events"), {
                     name: name || "Nuovo Evento",
-                    date: formattedDate || "",
-                    dateIso: dateIso || "",
-                    startTime: startTime || "",
-                    endTime: endTime || "",
+                    date: formattedDate,
+                    dateIso: dateIso,
+                    startTime: startTime,
+                    endTime: endTime,
+                    location: location,
                     flyerUrl: flyerUrl || "",
                     description: description || "",
-                    location: "Via Fabio Filzi 28 Arezzo (AR)",
                     maxCapacity: parseInt(document.getElementById('capacity-input').value) || 100,
                     isOpen: document.getElementById('list-toggle').checked,
                     isActive: false,
@@ -452,10 +457,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 const cap = parseInt(document.getElementById('capacity-input').value) || 100;
                 const isOpen = document.getElementById('list-toggle').checked;
                 
-                const updates = { 
+                const updates = {
                     name: name,
-                    date: formattedDate,
+                    location: location,
                     dateIso: dateIso,
+                    date: formattedDate,
                     startTime: startTime,
                     endTime: endTime,
                     description: description,
@@ -481,8 +487,8 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("Error saving content:", error);
             alert("Errore durante il salvataggio.");
         } finally {
-            saveBtn.textContent = originalText;
-            saveBtn.disabled = false;
+            btn.textContent = originalText;
+            btn.disabled = false;
         }
     });
 
@@ -506,45 +512,59 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // --- LOGIN LOGIC ---
-    if (sessionStorage.getItem("dlbp_admin_auth") === "true") {
-        loginSection.style.display = "none";
-        dashboardSection.style.display = "block";
-        document.getElementById("app-main").style.maxWidth = "1200px";
-        setupEventsIfNeeded().then(() => {
-            loadEventsList();
-        });
-    }
-    
-    const SECRET_HASH = "20d70daed03b66603556192e43f3d6c94cf4543f84725d2cbdca96d3e65a4d97"; // Hash di "dlbpadmin"
-
-    async function hashPassword(password) {
-        const encoder = new TextEncoder();
-        const data = encoder.encode(password);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    }
-
-    loginBtn.addEventListener("click", async () => {
-        const pwd = passwordInput.value;
-        const hashedInput = await hashPassword(pwd);
-            // Verify SHA-256
-            if (hashedInput === SECRET_HASH) {
-                sessionStorage.setItem("dlbp_admin_auth", "true");
+    // Firebase Auth logic
+    if (auth) {
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
                 loginSection.style.display = "none";
                 dashboardSection.style.display = "block";
                 document.getElementById("app-main").style.maxWidth = "1200px";
                 await setupEventsIfNeeded();
                 await loadEventsList();
             } else {
-            loginMessage.textContent = "Accesso negato.";
+                loginSection.style.display = "block";
+                dashboardSection.style.display = "none";
+            }
+        });
+    }
+
+    loginBtn.addEventListener("click", async () => {
+        if (!auth) return;
+        const email = document.getElementById("admin-email").value.trim();
+        const pwd = passwordInput.value;
+        
+        if (!email || !pwd) {
+            loginMessage.textContent = "Inserisci email e password.";
             loginMessage.className = "form-message error";
+            loginMessage.style.display = "block";
+            return;
+        }
+
+        loginBtn.disabled = true;
+        loginBtn.textContent = "ACCESSO...";
+
+        try {
+            await signInWithEmailAndPassword(auth, email, pwd);
+            // onAuthStateChanged will handle the UI switch
+        } catch (error) {
+            console.error("Login error:", error);
+            loginMessage.textContent = "Credenziali errate o utente non trovato.";
+            loginMessage.className = "form-message error";
+            loginMessage.style.display = "block";
+        } finally {
+            loginBtn.disabled = false;
+            loginBtn.textContent = "ACCEDI";
         }
     });
 
     passwordInput.addEventListener("keyup", (e) => {
         if (e.key === "Enter") {
             loginBtn.click();
+        }
+    });
+    document.getElementById("admin-email").addEventListener("keyup", (e) => {
+        if (e.key === "Enter") {
+            passwordInput.focus();
         }
     });
 
@@ -602,7 +622,8 @@ document.addEventListener("DOMContentLoaded", () => {
             const checkinTimeHtml = user.checked_in && user.check_in_time ? user.check_in_time.toLocaleTimeString('it-IT', {hour: '2-digit', minute:'2-digit'}) : '-';
             
             let actionsHtml = `
-                <button class="approve-btn" data-id="${user.id}" title="Approva Accesso" style="background: none; border: none; cursor: pointer; font-size: 1.2rem; color: #4CAF50; padding: 0 5px;">✓</button>
+                <button class="approve-btn" data-id="${user.id}" title="Approva Accesso" style="background: none; border: none; cursor: pointer; font-size: 1.2rem; color: #4CAF50; padding: 0 5px; ${user.status === 'approved' ? 'opacity:0.3; cursor:default;' : ''}">✓</button>
+                <button class="checkin-btn" data-id="${user.id}" title="Segna Presente" style="background: none; border: none; cursor: pointer; font-size: 1.2rem; color: #00bcd4; padding: 0 5px; ${user.checked_in ? 'opacity:0.3; cursor:default;' : ''}">🚪</button>
                 <button class="resend-email-btn" data-id="${user.id}" title="Invia Email Singola" style="background: none; border: none; cursor: pointer; font-size: 1.2rem; color: #aaa; padding: 0 5px;">✉️</button>
             `;
 
@@ -650,11 +671,28 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelectorAll(".approve-btn").forEach(btn => {
             btn.addEventListener("click", async (e) => {
                 const id = e.target.dataset.id;
+                const user = usersData.find(u => u.id === id);
+                if (user && user.status === "approved") return;
                 try {
                     await updateDoc(doc(db, "registrations", id), { status: "approved" });
                     loadUsers(); // Refresh table
                 } catch (error) {
                     console.error("Error approving user", error);
+                }
+            });
+        });
+
+        // Check-in Logic
+        document.querySelectorAll(".checkin-btn").forEach(btn => {
+            btn.addEventListener("click", async (e) => {
+                const id = e.target.dataset.id;
+                const user = usersData.find(u => u.id === id);
+                if (user && user.checked_in) return;
+                try {
+                    await updateDoc(doc(db, "registrations", id), { checked_in: true, check_in_time: new Date() });
+                    loadUsers(); // Refresh table
+                } catch (error) {
+                    console.error("Error checking in user", error);
                 }
             });
         });
@@ -671,13 +709,26 @@ document.addEventListener("DOMContentLoaded", () => {
                 e.target.disabled = true;
                 e.target.style.opacity = "0.5";
 
+                let eventLocation = "Secret Location";
+                let eventDateStr = "Data Evento";
+                try {
+                    const eventSnap = await getDoc(doc(db, "events", currentEventId));
+                    if (eventSnap.exists()) {
+                        const ed = eventSnap.data();
+                        eventLocation = ed.location || "Secret Location";
+                        eventDateStr = ed.date || "Data Evento";
+                    }
+                } catch(e) {
+                    console.error("Failed to fetch event data", e);
+                }
+
                 try {
                     if (EMAILJS_PUBLIC_KEY !== "YOUR_EMAILJS_PUBLIC_KEY") {
                         await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
                             to_name: user.name,
                             to_email: user.email,
-                            secret_location: "Via Fabio Filzi 28 Arezzo (AR)",
-                            event_date: "SABATO 04/07 | 16:00 - 21:00",
+                            secret_location: eventLocation,
+                            event_date: eventDateStr,
                             qr_code_url: `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${user.id}`
                         });
                         await updateDoc(doc(db, "registrations", user.id), { email_sent: true });
@@ -759,6 +810,19 @@ document.addEventListener("DOMContentLoaded", () => {
         sendEmailsBtn.textContent = "INVIO IN CORSO...";
         adminMessage.className = "form-message hidden";
 
+        let eventLocation = "Secret Location";
+        let eventDateStr = "Data Evento";
+        try {
+            const eventSnap = await getDoc(doc(db, "events", currentEventId));
+            if (eventSnap.exists()) {
+                const ed = eventSnap.data();
+                eventLocation = ed.location || "Secret Location";
+                eventDateStr = ed.date || "Data Evento";
+            }
+        } catch(e) {
+            console.error("Failed to fetch event data", e);
+        }
+
         let successCount = 0;
         let failCount = 0;
 
@@ -769,8 +833,8 @@ document.addEventListener("DOMContentLoaded", () => {
                         await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
                             to_name: user.name,
                             to_email: user.email,
-                            secret_location: "Via Fabio Filzi 28 Arezzo (AR)",
-                            event_date: "SABATO 04/07 | 16:00 - 21:00",
+                            secret_location: eventLocation,
+                            event_date: eventDateStr,
                             qr_code_url: `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${user.id}`
                         });
                         await updateDoc(doc(db, "registrations", user.id), { email_sent: true });
