@@ -46,8 +46,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // Settings elements
     const listToggle = document.getElementById("list-toggle");
     const capacityInput = document.getElementById("capacity-input");
-    const saveCapacityBtn = document.getElementById("save-capacity-btn");
     const capacityDisplay = document.getElementById("capacity-display");
+    const saveCapacityBtn = document.getElementById("save-capacity-btn");
+    const settingsPanel = document.getElementById("settings-panel");
+    const editEventBtn = document.getElementById("edit-event-btn");
+    const closeSettingsBtn = document.getElementById("close-settings-btn");
     const presentCountDisplay = document.getElementById("present-count");
     const exportCsvBtn = document.getElementById("export-csv-btn");
     
@@ -163,6 +166,29 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    if (editEventBtn && settingsPanel) {
+        editEventBtn.addEventListener("click", () => {
+            if (!currentEventId) {
+                alert("Nessun evento selezionato da modificare.");
+                return;
+            }
+            isCreatingNew = false;
+            const title = document.getElementById('settings-panel-title');
+            if (title) {
+                title.textContent = "MODIFICA EVENTO ESISTENTE";
+                title.style.color = "var(--accent-color)";
+            }
+            document.getElementById('save-content-btn').textContent = "SALVA DETTAGLI EVENTO";
+            settingsPanel.style.display = 'flex';
+        });
+    }
+
+    if (closeSettingsBtn && settingsPanel) {
+        closeSettingsBtn.addEventListener("click", () => {
+            settingsPanel.style.display = 'none';
+        });
+    }
+
     if (newEventBtn) {
         newEventBtn.addEventListener("click", () => {
             isCreatingNew = true;
@@ -181,6 +207,8 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById('flyer-input').value = "";
             document.getElementById('current-flyer-preview').innerHTML = "Nessun flyer caricato.";
             document.getElementById('save-content-btn').textContent = "CREA NUOVO EVENTO";
+            
+            if (settingsPanel) settingsPanel.style.display = 'flex';
             document.getElementById('event-name-input').focus();
         });
     }
@@ -369,6 +397,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 await loadEventsList();
                 alert("Dettagli evento salvati con successo!");
             }
+            
+            // Close the panel after saving
+            if (settingsPanel) settingsPanel.style.display = 'none';
 
             if (flyerUrl) {
                 document.getElementById('current-flyer-preview').innerHTML = `Flyer attuale:<br><img src="${flyerUrl}" style="max-width: 150px; margin-top: 10px; border-radius: 8px;">`;

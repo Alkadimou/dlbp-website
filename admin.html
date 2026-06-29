@@ -215,12 +215,14 @@
                     <select id="admin-event-selector" style="padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk'; min-width: 200px;">
                     </select>
                     <button id="set-active-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1rem; background: var(--success-color); border: none; color: white;">IMPOSTA ATTIVO</button>
+                    <button id="edit-event-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1rem; background: transparent; border: 1px solid var(--accent-color); color: var(--accent-color);">MODIFICA DETTAGLI</button>
                     <button id="manage-pr-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1rem; background: #555; color: white; border: none;">GESTIONE PR</button>
                     <button id="new-event-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1rem; background: var(--text-color); color: var(--bg-color);">NUOVO ACT</button>
                 </div>
             </div>
 
-            <div class="settings-panel" style="flex-direction: column;">
+            <div class="settings-panel" id="settings-panel" style="flex-direction: column; display: none; position: relative; border: 1px solid #333;">
+                <button id="close-settings-btn" style="position: absolute; top: 1rem; right: 1rem; background: transparent; border: none; color: #888; font-size: 1.2rem; cursor: pointer; padding: 0.5rem;">✕</button>
                 <h4 id="settings-panel-title" style="width: 100%; margin-top: 0; margin-bottom: 1rem; color: var(--accent-color); font-size: 0.9rem; letter-spacing: 2px;">MODIFICA EVENTO ESISTENTE</h4>
                 
                 <div style="display: flex; gap: 1rem; flex-wrap: wrap; width: 100%;">
