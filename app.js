@@ -249,7 +249,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     loader.style.display = 'none';
                     initRevealAnimations();
                 }, 600);
-            }, 800); // Mostra il loader per 800ms
+            }, 2000); // Mostra il loader per 2000ms
         } else {
             initRevealAnimations();
         }
