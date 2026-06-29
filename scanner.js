@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const loginSection = document.getElementById("login-section");
     const scannerSection = document.getElementById("scanner-section");
     const loginBtn = document.getElementById("login-btn");
-    const passwordInput = document.getElementById("admin-password");
+    const passwordInput = document.getElementById("scanner-password");
     const loginMessage = document.getElementById("login-message");
     
     const statusBox = document.getElementById("status-box");
@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let html5QrcodeScanner;
 
     // --- LOGIN LOGIC ---
-    const SECRET_HASH = "731c8acd320f54b4fc09a3145661385c4c991fe468ffc907b2602ce971dcfe08"; // Hash of "dlbp2024"
+    const SECRET_HASH = "871c074e5911bd5418aa264ca0b0b0e09705189f84ce28d415d1fad0dcadda15"; // Hash of "dlbpscan"
 
     async function hashPassword(password) {
         const encoder = new TextEncoder();
@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
     }
 
-    if (sessionStorage.getItem("dlbp_admin_auth") === "true") {
+    if (sessionStorage.getItem("dlbp_scanner_auth") === "true") {
         loginSection.style.display = "none";
         scannerSection.style.display = "block";
         startScanner();
@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const hashedInput = await hashPassword(pwd);
 
         if (hashedInput === SECRET_HASH) { 
-            sessionStorage.setItem("dlbp_admin_auth", "true");
+            sessionStorage.setItem("dlbp_scanner_auth", "true");
             loginSection.style.display = "none";
             scannerSection.style.display = "block";
             startScanner();
