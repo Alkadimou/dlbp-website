@@ -351,6 +351,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const rawDate = document.getElementById('event-date-input').value.trim();
         const startTime = document.getElementById('event-start-time-input').value.trim();
         const endTime = document.getElementById('event-end-time-input').value.trim();
+
+        if (!rawDate || !startTime || !endTime) {
+            alert("Compila correttamente la Data, l'Ora di Inizio e l'Ora di Fine dell'evento prima di salvare.");
+            saveBtn.textContent = originalText;
+            saveBtn.disabled = false;
+            return;
+        }
         
         let formattedDate = rawDate;
         let dateIso = rawDate;
