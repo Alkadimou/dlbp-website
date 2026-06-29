@@ -201,7 +201,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const title = document.getElementById('settings-panel-title');
             if (title) {
                 title.textContent = "CREAZIONE NUOVO EVENTO";
-                title.style.color = "#0f0";
+                title.style.color = "var(--accent-color)";
             }
             
             document.getElementById('event-name-input').value = "";
