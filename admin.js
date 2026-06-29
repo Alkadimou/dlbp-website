@@ -923,12 +923,24 @@ document.addEventListener("DOMContentLoaded", () => {
     function loadPRs() {
         if (unsubPrs) unsubPrs();
         
-        const q = query(collection(db, "prs"), orderBy("createdAt", "desc"));
+        const q = query(collection(db, "prs")); // Rimosso orderBy per Firebase
         unsubPrs = onSnapshot(q, (snapshot) => {
             prTableBody.innerHTML = '';
+            
+            let prsList = [];
             snapshot.forEach((docSnap) => {
-                const pr = docSnap.data();
-                const prId = docSnap.id;
+                prsList.push({ id: docSnap.id, ...docSnap.data() });
+            });
+            
+            // Ordinamento manuale lato client (dal più recente)
+            prsList.sort((a, b) => {
+                const dateA = a.createdAt ? (a.createdAt.toMillis ? a.createdAt.toMillis() : a.createdAt) : 0;
+                const dateB = b.createdAt ? (b.createdAt.toMillis ? b.createdAt.toMillis() : b.createdAt) : 0;
+                return dateB - dateA;
+            });
+
+            prsList.forEach((pr) => {
+                const prId = pr.id;
                 const link = `?pr=${pr.code}`;
                 
                 const tr = document.createElement('tr');
