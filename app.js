@@ -252,15 +252,17 @@ document.addEventListener("DOMContentLoaded", () => {
                     logo.style.opacity = '0'; 
                 }
                 
-                // FASE 2: Schermata completamente nera per "un tot secondi" (es. 1 secondo = 1000ms)
+                // FASE 2: Schermata completamente nera per 1.4 secondi
                 setTimeout(() => {
-                    // FASE 3: La schermata nera svanisce in dissolvenza e mostra la pagina
-                    loader.style.opacity = '0';
-                    setTimeout(() => {
-                        loader.style.display = 'none';
-                        initRevealAnimations();
-                    }, 600); // 600ms è la durata della dissolvenza (transition)
-                }, 1400); // <-- Modifica questo valore per aumentare/diminuire il tempo di schermata nera
+                    // FASE 3: Il loader (che copre tutto) viene rimosso istantaneamente.
+                    // Dato che lo sfondo del sito è nero e tutti gli elementi hanno opacità 0 (.reveal),
+                    // non c'è alcuno scatto visivo.
+                    loader.style.display = 'none';
+                    
+                    // Ora avviamo le animazioni di ingresso (.reveal), in modo che l'intera pagina 
+                    // appaia magicamente dal nero senza sovrapposizioni o incroci di dissolvenze.
+                    initRevealAnimations();
+                }, 1400); 
             }, 1500); // <-- Tempo di caricamento iniziale col logo visibile
 
 
