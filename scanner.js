@@ -135,6 +135,15 @@ document.addEventListener("DOMContentLoaded", () => {
                         Nome: ${userData.name}<br>
                         Email: ${userData.email}
                     `;
+                } else if (userData.status !== "approved") {
+                    // Not approved
+                    statusBox.classList.add("status-error");
+                    statusTitle.textContent = "NON APPROVATO";
+                    statusDetails.innerHTML = `
+                        <strong>Attenzione:</strong> Questo utente non è stato ancora approvato.<br><br>
+                        Nome: ${userData.name}<br>
+                        Email: ${userData.email}
+                    `;
                 } else if (userData.checked_in === true) {
                     // Already checked in
                     statusBox.classList.add("status-error");
