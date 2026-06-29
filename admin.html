@@ -214,10 +214,10 @@
                 <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
                     <select id="admin-event-selector" style="padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk'; min-width: 200px;">
                     </select>
-                    <button id="set-active-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1rem; background: var(--success-color); border: none; color: white;">IMPOSTA ATTIVO</button>
-                    <button id="edit-event-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1rem; background: transparent; border: 1px solid var(--accent-color); color: var(--accent-color);">MODIFICA DETTAGLI</button>
-                    <button id="manage-pr-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1rem; background: #555; color: white; border: none;">GESTIONE PR</button>
-                    <button id="new-event-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1rem; background: var(--text-color); color: var(--bg-color);">NUOVO ACT</button>
+                    <button id="set-active-btn" class="admin-btn">IMPOSTA ATTIVO</button>
+                    <button id="edit-event-btn" class="admin-btn">MODIFICA DETTAGLI</button>
+                    <button id="manage-pr-btn" class="admin-btn">GESTIONE PR</button>
+                    <button id="new-event-btn" class="admin-btn primary">NUOVO ACT</button>
                 </div>
             </div>
 
@@ -247,7 +247,7 @@
                 <div class="settings-item">
                     <label>CAPIENZA LOCALE</label>
                     <input type="number" id="capacity-input" class="capacity-input" value="100">
-                    <button id="save-capacity-btn" style="background:transparent; color:var(--accent-color); border:1px solid var(--border-color); padding: 0.5rem; cursor: pointer;">SALVA</button>
+                    <button id="save-capacity-btn" class="admin-btn">SALVA</button>
                 </div>
                 </div>
                 <div class="settings-item" style="flex-grow: 1; min-width: 250px;">
@@ -271,18 +271,12 @@
             </div>
 
             <div class="admin-actions" style="margin-bottom: 2rem; display: flex; gap: 1rem; flex-wrap: wrap;">
-                <a href="analytics.html" class="submit-btn" style="margin: 0; padding: 0.8rem 1.2rem; text-decoration: none; display: flex; align-items: center; background: #3498db; color: white;">
+                <a href="analytics.html" class="admin-btn">
                     <span class="btn-text">ANALYTICS</span>
                 </a>
-                <button id="delete-selected-btn" class="submit-btn danger-btn" style="margin: 0; padding: 0.8rem 1.2rem; opacity: 0.5;" disabled>
-                    ELIMINA SELEZIONATI
-                </button>
-                <button id="export-csv-btn" class="submit-btn" style="margin: 0; padding: 0.8rem 1.2rem; background: #333; color: white;">
-                    ESPORTA EXCEL
-                </button>
-                <button id="send-emails-btn" class="submit-btn" style="margin: 0; padding: 0.8rem 1.2rem; background: var(--text-color); color: var(--bg-color);">
-                    INVIA SECRET LOCATION
-                </button>
+                <button id="delete-selected-btn" class="admin-btn">ELIMINA SELEZIONATI</button>
+                <button id="export-csv-btn" class="admin-btn">ESPORTA EXCEL</button>
+                <button id="send-emails-btn" class="admin-btn primary">INVIA SECRET LOCATION</button>
             </div>
             
             <div class="table-responsive">

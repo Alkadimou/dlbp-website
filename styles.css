@@ -154,8 +154,39 @@ input::placeholder {
 }
 
 .submit-btn:hover {
+    background: transparent;
+    color: var(--text-color);
+    box-shadow: 0 0 15px rgba(255,255,255,0.2);
+}
+
+.admin-btn {
+    margin: 0;
+    padding: 0.5rem 1rem;
+    background: #111;
+    color: #fff;
+    border: 1px solid #333;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.admin-btn:hover {
+    background: #222;
+    border-color: #555;
+}
+
+.admin-btn.primary {
+    background: #fff;
+    color: #000;
+    border-color: #fff;
+}
+
+.admin-btn.primary:hover {
     background: #ccc;
-    transform: translateY(-2px);
+    border-color: #ccc;
 }
 
 .submit-btn:active {
