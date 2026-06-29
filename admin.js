@@ -47,7 +47,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const listToggle = document.getElementById("list-toggle");
     const capacityInput = document.getElementById("capacity-input");
     const capacityDisplay = document.getElementById("capacity-display");
-    const saveCapacityBtn = document.getElementById("save-capacity-btn");
     const settingsPanel = document.getElementById("settings-panel");
     const editEventBtn = document.getElementById("edit-event-btn");
     const closeSettingsBtn = document.getElementById("close-settings-btn");
@@ -281,29 +280,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    listToggle.addEventListener("change", async (e) => {
-        if (!db || !currentEventId) return;
-        try {
-            await updateDoc(doc(db, "events", currentEventId), { isOpen: e.target.checked });
-        } catch (error) {
-            console.error("Error saving toggle:", error);
-        }
-    });
-
-    saveCapacityBtn.addEventListener("click", async () => {
-        if (!db || !currentEventId) return;
-        const cap = parseInt(capacityInput.value);
-        if (isNaN(cap) || cap < 1) return;
-        try {
-            await updateDoc(doc(db, "events", currentEventId), { maxCapacity: cap });
-            capacityDisplay.textContent = cap;
-            saveCapacityBtn.textContent = "FATTO";
-            setTimeout(() => saveCapacityBtn.textContent = "SALVA", 2000);
-        } catch (error) {
-            console.error("Error saving capacity:", error);
-        }
-    });
-
     // Utility to compress image to Base64
     function compressImage(file) {
         return new Promise((resolve, reject) => {
@@ -473,17 +449,23 @@ document.addEventListener("DOMContentLoaded", () => {
                 await loadEventsList();
                 alert("Nuovo evento creato con successo!");
             } else {
+                const cap = parseInt(document.getElementById('capacity-input').value) || 100;
+                const isOpen = document.getElementById('list-toggle').checked;
+                
                 const updates = { 
                     name: name,
                     date: formattedDate,
                     dateIso: dateIso,
                     startTime: startTime,
                     endTime: endTime,
-                    description: description 
+                    description: description,
+                    maxCapacity: cap,
+                    isOpen: isOpen
                 };
                 if (flyerUrl) updates.flyerUrl = flyerUrl;
-
+                
                 await updateDoc(doc(db, "events", currentEventId), updates);
+                capacityDisplay.textContent = cap;
                 await loadEventsList();
                 alert("Dettagli evento salvati con successo!");
             }
