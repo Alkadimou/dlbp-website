@@ -56,6 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const adminEventSelector = document.getElementById("admin-event-selector");
     const newEventBtn = document.getElementById("new-event-btn");
+    const setActiveBtn = document.getElementById("set-active-btn");
     
     let usersData = [];
     let currentEventId = null;
@@ -162,30 +163,51 @@ document.addEventListener("DOMContentLoaded", () => {
             const capacity = prompt("Capienza massima:", "100");
             
             try {
-                // Imposta tutti gli altri eventi come NON attivi
-                const eventsSnap = await getDocs(collection(db, "events"));
-                for (const d of eventsSnap.docs) {
-                    if (d.data().isActive) {
-                        await updateDoc(doc(db, "events", d.id), { isActive: false });
-                    }
-                }
-
                 const newEventRef = await addDoc(collection(db, "events"), {
                     name: name,
                     date: date,
                     location: "Via Fabio Filzi 28 Arezzo (AR)", // Puoi renderlo dinamico in futuro
                     maxCapacity: parseInt(capacity) || 100,
                     isOpen: true,
-                    isActive: true,
+                    isActive: false,
                     createdAt: new Date()
                 });
                 
-                alert("Nuovo evento creato e impostato come ATTIVO!");
+                alert("Nuovo evento creato! Ricordati di cliccare su 'IMPOSTA ATTIVO' quando vuoi pubblicarlo.");
                 currentEventId = newEventRef.id;
                 await loadEventsList();
+                // Assicuriamoci che il selettore mostri l'evento appena creato
+                if (adminEventSelector) adminEventSelector.value = currentEventId;
             } catch (error) {
                 console.error("Error creating new event:", error);
                 alert("Errore nella creazione dell'evento.");
+            }
+        });
+    }
+
+    if (setActiveBtn) {
+        setActiveBtn.addEventListener("click", async () => {
+            if (!currentEventId) return;
+            if (!confirm("Vuoi impostare questo evento come ATTIVO ONLINE? Le nuove iscrizioni finiranno qui.")) return;
+            
+            try {
+                // Imposta tutti gli altri eventi come NON attivi
+                const eventsSnap = await getDocs(collection(db, "events"));
+                const batch = writeBatch(db);
+                for (const d of eventsSnap.docs) {
+                    if (d.data().isActive && d.id !== currentEventId) {
+                        batch.update(doc(db, "events", d.id), { isActive: false });
+                    }
+                }
+                // Imposta quello corrente come attivo
+                batch.update(doc(db, "events", currentEventId), { isActive: true });
+                
+                await batch.commit();
+                alert("Evento impostato come ATTIVO ONLINE!");
+                await loadEventsList();
+            } catch (error) {
+                console.error("Error setting active event:", error);
+                alert("Errore durante l'operazione.");
             }
         });
     }
