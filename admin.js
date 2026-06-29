@@ -36,6 +36,16 @@ try {
 emailjs.init(EMAILJS_PUBLIC_KEY);
 
 document.addEventListener("DOMContentLoaded", () => {
+    function escapeHtml(unsafe) {
+        if (!unsafe) return '';
+        return unsafe.toString()
+             .replace(/&/g, "&amp;")
+             .replace(/</g, "&lt;")
+             .replace(/>/g, "&gt;")
+             .replace(/"/g, "&quot;")
+             .replace(/'/g, "&#039;");
+    }
+
     const loginSection = document.getElementById("login-section");
     const dashboardSection = document.getElementById("dashboard-section");
     const loginBtn = document.getElementById("login-btn");
