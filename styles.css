@@ -219,12 +219,15 @@ input::placeholder {
 /* Responsive */
 @media (max-width: 600px) {
     .event-card {
-        padding: 2rem;
+        padding: 1.5rem;
         border-left: none;
         border-right: none;
     }
+    .header {
+        margin-bottom: 2rem;
+    }
     .logo-img {
-        width: 200px;
+        width: 180px;
     }
 }
 
