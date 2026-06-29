@@ -188,9 +188,16 @@ document.addEventListener("DOMContentLoaded", () => {
     if (setActiveBtn) {
         setActiveBtn.addEventListener("click", async () => {
             if (!currentEventId) return;
-            if (!confirm("Vuoi impostare questo evento come ATTIVO ONLINE? Le nuove iscrizioni finiranno qui.")) return;
             
             try {
+                const currentDoc = await getDoc(doc(db, "events", currentEventId));
+                if (currentDoc.exists() && currentDoc.data().isActive) {
+                    alert("Questo evento è già attivo online!");
+                    return;
+                }
+
+                if (!confirm("Vuoi impostare questo evento come ATTIVO ONLINE? Le nuove iscrizioni finiranno qui.")) return;
+                
                 // Imposta tutti gli altri eventi come NON attivi
                 const eventsSnap = await getDocs(collection(db, "events"));
                 const batch = writeBatch(db);
