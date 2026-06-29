@@ -37,7 +37,7 @@ body {
 .container {
     width: 100%;
     max-width: 600px;
-    padding: 1rem;
+    padding: 2rem;
     position: relative;
     z-index: 10;
 }
@@ -45,14 +45,14 @@ body {
 /* Header & Logo */
 .header {
     text-align: center;
-    margin-bottom: 1rem;
+    margin-bottom: 4rem;
     animation: fadeIn 2s ease-out;
 }
 
 .logo-img {
-    width: 150px;
+    width: 250px;
     max-width: 100%;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.5rem;
 }
 
 .subtitle {
@@ -67,7 +67,7 @@ body {
 .event-card {
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid var(--border-color);
-    padding: 1.5rem;
+    padding: 3rem;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     animation: slideUp 1.5s cubic-bezier(0.16, 1, 0.3, 1);
@@ -86,14 +86,14 @@ body {
 .event-title {
     font-size: 2.5rem;
     font-weight: 700;
-    margin-bottom: 0;
+    margin-bottom: 0.5rem;
     letter-spacing: -1px;
 }
 
 .event-date {
     font-size: 0.9rem;
     opacity: 0.7;
-    margin-bottom: 0.5rem;
+    margin-bottom: 2rem;
 }
 
 .event-description {
@@ -220,15 +220,15 @@ input::placeholder {
 /* Responsive */
 @media (max-width: 600px) {
     .event-card {
-        padding: 1rem;
+        padding: 2rem;
         border-left: none;
         border-right: none;
     }
     .header {
-        margin-bottom: 1rem;
+        margin-bottom: 2rem;
     }
     .logo-img {
-        width: 120px;
+        width: 200px;
     }
 }
 
