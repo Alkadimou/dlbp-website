@@ -22,6 +22,18 @@
         .users-table th, .users-table td {
             padding: 1rem;
             border-bottom: 1px solid var(--border-color);
+            white-space: nowrap;
+        }
+        .stat-box h3 {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin-bottom: 2rem;
+            border-radius: 4px;
         }
         .users-table th {
             font-size: 0.8rem;
@@ -195,7 +207,8 @@
                 </button>
             </div>
             
-            <table class="users-table">
+            <div class="table-responsive">
+                <table class="users-table">
                 <thead>
                     <tr>
                         <th style="width: 40px; text-align: center;">
@@ -212,7 +225,8 @@
                 <tbody id="users-tbody">
                     <!-- Data populated by JS -->
                 </tbody>
-            </table>
+                </table>
+            </div>
             <div id="admin-message" class="form-message hidden"></div>
         </section>
     </main>
