@@ -225,22 +225,24 @@
                 <button id="close-settings-btn" style="position: absolute; top: 1rem; right: 1rem; background: transparent; border: none; color: #888; font-size: 1.2rem; cursor: pointer; padding: 0.5rem;">✕</button>
                 <h4 id="settings-panel-title" style="width: 100%; margin-top: 0; margin-bottom: 1rem; color: var(--accent-color); font-size: 0.9rem; letter-spacing: 2px;">MODIFICA EVENTO ESISTENTE</h4>
                 
-                <div style="display: flex; gap: 1rem; flex-wrap: wrap; width: 100%;">
-                    <div class="settings-item" style="flex-grow: 1; min-width: 250px;">
+                <div style="display: flex; flex-direction: column; gap: 1rem; width: 100%;">
+                    <div class="settings-item" style="width: 100%;">
                         <label>NOME EVENTO</label>
                         <input type="text" id="event-name-input" placeholder="es: TXK.NØX Act II" style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk';">
                     </div>
-                    <div class="settings-item" style="flex-grow: 1; min-width: 150px;">
-                        <label>DATA EVENTO</label>
-                        <input type="date" id="event-date-input" style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk';">
-                    </div>
-                    <div class="settings-item" style="flex-grow: 1; min-width: 100px;">
-                        <label>ORA INIZIO</label>
-                        <input type="time" id="event-start-time-input" style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk';">
-                    </div>
-                    <div class="settings-item" style="flex-grow: 1; min-width: 100px;">
-                        <label>ORA FINE (opz.)</label>
-                        <input type="time" id="event-end-time-input" style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk';">
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap; width: 100%;">
+                        <div class="settings-item" style="flex-grow: 2; min-width: 150px;">
+                            <label>DATA EVENTO</label>
+                            <input type="date" id="event-date-input" style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk';">
+                        </div>
+                        <div class="settings-item" style="flex-grow: 1; min-width: 100px;">
+                            <label>ORA INIZIO</label>
+                            <input type="time" id="event-start-time-input" style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk';">
+                        </div>
+                        <div class="settings-item" style="flex-grow: 1; min-width: 100px;">
+                            <label>ORA FINE (opz.)</label>
+                            <input type="time" id="event-end-time-input" style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk';">
+                        </div>
                     </div>
                 </div>
                 
