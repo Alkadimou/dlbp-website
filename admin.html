@@ -265,10 +265,14 @@
                     <input type="file" id="flyer-input" accept="image/*" style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk';">
                     <div id="current-flyer-preview" style="margin-top: 10px; font-size: 0.8rem; color: #888;">Nessun flyer caricato.</div>
                 </div>
-                <div class="settings-item" style="flex-grow: 1; min-width: 100%;">
-                    <label>DESCRIZIONE</label>
-                    <textarea id="desc-input" placeholder="Descrizione dell'evento..." style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk'; min-height: 60px; resize: vertical;"></textarea>
-                    <button id="save-content-btn" class="submit-btn" style="margin-top: 0.5rem; padding: 0.5rem 1rem; width: 100%;">SALVA DETTAGLI EVENTO</button>
+                <div style="margin-top: 1.5rem; width: 100%;">
+                    <label>DESCRIZIONE EVENTO</label>
+                    <textarea id="desc-input" rows="4" style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk'; resize: vertical;"></textarea>
+                </div>
+                
+                <div style="display: flex; gap: 1rem; margin-top: 2rem; width: 100%;">
+                    <button id="delete-event-btn" class="submit-btn outline-btn" style="flex: 1; border-color: #ff3333; color: #ff3333;">ELIMINA EVENTO</button>
+                    <button id="save-content-btn" class="submit-btn" style="flex: 2;">SALVA DETTAGLI EVENTO</button>
                 </div>
                 <div class="settings-item present-counter">
                     <span id="present-count">0</span><span style="font-size: 1rem; color: #888;"> / <span id="capacity-display">100</span></span>

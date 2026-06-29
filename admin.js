@@ -51,6 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const settingsPanel = document.getElementById("settings-panel");
     const editEventBtn = document.getElementById("edit-event-btn");
     const closeSettingsBtn = document.getElementById("close-settings-btn");
+    const deleteEventBtn = document.getElementById("delete-event-btn");
     const presentCountDisplay = document.getElementById("present-count");
     const exportCsvBtn = document.getElementById("export-csv-btn");
     
@@ -161,6 +162,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 title.style.color = "var(--accent-color)";
             }
             document.getElementById('save-content-btn').textContent = "SALVA DETTAGLI EVENTO";
+            if (deleteEventBtn) deleteEventBtn.style.display = 'block';
             loadSettings();
             loadUsers();
         });
@@ -179,6 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 title.style.color = "var(--accent-color)";
             }
             document.getElementById('save-content-btn').textContent = "SALVA DETTAGLI EVENTO";
+            if (deleteEventBtn) deleteEventBtn.style.display = 'block';
             settingsPanel.style.display = 'flex';
         });
     }
@@ -209,6 +212,7 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById('flyer-input').value = "";
             document.getElementById('current-flyer-preview').innerHTML = "Nessun flyer caricato.";
             document.getElementById('save-content-btn').textContent = "CREA NUOVO EVENTO";
+            if (deleteEventBtn) deleteEventBtn.style.display = 'none';
             
             if (settingsPanel) settingsPanel.style.display = 'flex';
             document.getElementById('event-name-input').focus();
@@ -336,6 +340,55 @@ document.addEventListener("DOMContentLoaded", () => {
                 img.onerror = error => reject(error);
             };
             reader.onerror = error => reject(error);
+        });
+    }
+
+    if (deleteEventBtn) {
+        deleteEventBtn.addEventListener('click', async () => {
+            if (!currentEventId || isCreatingNew) return;
+            
+            const confirmDelete = confirm("⚠️ ATTENZIONE: Sei sicuro di voler eliminare definitivamente questo evento e tutti i suoi iscritti? L'azione è irreversibile.");
+            if (!confirmDelete) return;
+
+            deleteEventBtn.textContent = "ELIMINAZIONE...";
+            deleteEventBtn.disabled = true;
+
+            try {
+                // Delete registrations associated with this event
+                const q = query(collection(db, "registrations"), where("eventId", "==", currentEventId));
+                const snapshot = await getDocs(q);
+                
+                if (!snapshot.empty) {
+                    let batch = writeBatch(db);
+                    let count = 0;
+                    
+                    for (const docSnap of snapshot.docs) {
+                        batch.delete(doc(db, "registrations", docSnap.id));
+                        count++;
+                        
+                        // Firestore batches support up to 500 operations
+                        if (count === 490) {
+                            await batch.commit();
+                            batch = writeBatch(db);
+                            count = 0;
+                        }
+                    }
+                    if (count > 0) {
+                        await batch.commit();
+                    }
+                }
+
+                // Delete the event document
+                await deleteDoc(doc(db, "events", currentEventId));
+                
+                alert("Evento e iscritti eliminati con successo!");
+                window.location.reload(); 
+            } catch (error) {
+                console.error("Errore durante l'eliminazione:", error);
+                alert("Si è verificato un errore durante l'eliminazione.");
+                deleteEventBtn.textContent = "ELIMINA EVENTO";
+                deleteEventBtn.disabled = false;
+            }
         });
     }
 
