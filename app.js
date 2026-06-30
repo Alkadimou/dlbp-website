@@ -157,9 +157,15 @@ document.addEventListener("DOMContentLoaded", () => {
         
         const name = document.getElementById("name").value.trim();
         const email = document.getElementById("email").value.trim();
+        const privacyConsent = document.getElementById("privacy-consent").checked;
 
         if (!name || !email) {
             showMessage("Tutti i campi sono obbligatori.", "error");
+            return;
+        }
+        
+        if (!privacyConsent) {
+            showMessage("Devi accettare il trattamento dei dati personali per proseguire.", "error");
             return;
         }
 
@@ -191,6 +197,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     checked_in: false, // New field for QR code system
                     status: "pending", // VIP approval status
                     email_sent: false, // Track if secret location was sent
+                    privacy_consent: privacyConsent, // Privacy consent flag
                     timestamp: serverTimestamp()
                 });
             } else {
