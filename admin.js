@@ -1,3 +1,4 @@
+import { showModal, showConfirm } from './utils.js';
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, getDocs, doc, setDoc, getDoc, query, deleteDoc, updateDoc, where, addDoc, writeBatch, onSnapshot, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -190,7 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (editEventBtn && settingsPanel) {
         editEventBtn.addEventListener("click", () => {
             if (!currentEventId) {
-                alert("Nessun evento selezionato da modificare.");
+                showModal("Nessun evento selezionato da modificare.");
                 return;
             }
             isCreatingNew = false;
@@ -246,11 +247,11 @@ document.addEventListener("DOMContentLoaded", () => {
             try {
                 const currentDoc = await getDoc(doc(db, "events", currentEventId));
                 if (currentDoc.exists() && currentDoc.data().isActive) {
-                    alert("Questo evento è già attivo online!");
+                    showModal("Questo evento è già attivo online!");
                     return;
                 }
 
-                if (!confirm("Vuoi impostare questo evento come ATTIVO ONLINE? Le nuove iscrizioni finiranno qui.")) return;
+                if (!await showConfirm("Vuoi impostare questo evento come ATTIVO ONLINE? Le nuove iscrizioni finiranno qui.")) return;
                 
                 // Imposta tutti gli altri eventi come NON attivi
                 const eventsSnap = await getDocs(collection(db, "events"));
@@ -264,11 +265,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 batch.update(doc(db, "events", currentEventId), { isActive: true });
                 
                 await batch.commit();
-                alert("Evento impostato come ATTIVO ONLINE!");
+                showModal("Evento impostato come ATTIVO ONLINE!");
                 await loadEventsList();
             } catch (error) {
                 console.error("Error setting active event:", error);
-                alert("Errore durante l'operazione.");
+                showModal("Errore durante l'operazione.");
             }
         });
     }
@@ -360,7 +361,7 @@ document.addEventListener("DOMContentLoaded", () => {
         deleteEventBtn.addEventListener('click', async () => {
             if (!currentEventId || isCreatingNew) return;
             
-            const confirmDelete = confirm("⚠️ ATTENZIONE: Sei sicuro di voler eliminare definitivamente questo evento e tutti i suoi iscritti? L'azione è irreversibile.");
+            const confirmDelete = await showConfirm("⚠️ ATTENZIONE: Sei sicuro di voler eliminare definitivamente questo evento e tutti i suoi iscritti? L'azione è irreversibile.");
             if (!confirmDelete) return;
 
             deleteEventBtn.textContent = "ELIMINAZIONE...";
@@ -394,11 +395,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Delete the event document
                 await deleteDoc(doc(db, "events", currentEventId));
                 
-                alert("Evento e iscritti eliminati con successo!");
+                showModal("Evento e iscritti eliminati con successo!");
                 window.location.reload(); 
             } catch (error) {
                 console.error("Errore durante l'eliminazione:", error);
-                alert("Si è verificato un errore durante l'eliminazione.");
+                showModal("Si è verificato un errore durante l'eliminazione.");
                 deleteEventBtn.textContent = "ELIMINA EVENTO";
                 deleteEventBtn.disabled = false;
             }
@@ -419,7 +420,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const endTime = document.getElementById('event-end-time-input').value;
 
         if (!dateIso || !startTime || !endTime) {
-            alert("Compila correttamente la Data, l'Ora di Inizio e l'Ora di Fine dell'evento prima di salvare.");
+            showModal("Compila correttamente la Data, l'Ora di Inizio e l'Ora di Fine dell'evento prima di salvare.");
             btn.textContent = originalText;
             btn.disabled = false;
             return;
@@ -450,7 +451,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 
                 // Firestore document size limit is 1MB. Warn if still too large.
                 if (flyerUrl.length > 1000000) {
-                    alert("L'immagine è troppo grande anche dopo la compressione. Scegli un'immagine più leggera.");
+                    showModal("L'immagine è troppo grande anche dopo la compressione. Scegli un'immagine più leggera.");
                     return;
                 }
             }
@@ -480,7 +481,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
                 
                 await loadEventsList();
-                alert("Nuovo evento creato con successo!");
+                showModal("Nuovo evento creato con successo!");
             } else {
                 const cap = parseInt(document.getElementById('capacity-input').value) || 100;
                 const isOpen = document.getElementById('list-toggle').checked;
@@ -501,7 +502,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 await updateDoc(doc(db, "events", currentEventId), updates);
                 capacityDisplay.textContent = cap;
                 await loadEventsList();
-                alert("Dettagli evento salvati con successo!");
+                showModal("Dettagli evento salvati con successo!");
             }
             
             // Close the panel after saving
@@ -513,7 +514,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         } catch (error) {
             console.error("Error saving content:", error);
-            alert("Errore durante il salvataggio.");
+            showModal("Errore durante il salvataggio.");
         } finally {
             btn.textContent = originalText;
             btn.disabled = false;
@@ -759,7 +760,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const user = usersData.find(u => u.id === id);
                 if (!user) return;
                 
-                if (!confirm(`Vuoi inviare l'email con la location segreta a ${user.name}?`)) return;
+                if (!await showConfirm(`Vuoi inviare l'email con la location segreta a ${user.name}?`)) return;
 
                 e.target.disabled = true;
                 e.target.style.opacity = "0.5";
@@ -788,11 +789,11 @@ document.addEventListener("DOMContentLoaded", () => {
                         });
                         await updateDoc(doc(db, "registrations", user.id), { email_sent: true });
                     }
-                    alert("Email inviata con successo!");
+                    showModal("Email inviata con successo!");
                     loadUsers();
                 } catch (error) {
                     console.error(`Failed to send email to ${user.email}:`, error);
-                    alert("Errore durante l'invio dell'email.");
+                    showModal("Errore durante l'invio dell'email.");
                     e.target.disabled = false;
                     e.target.style.opacity = "1";
                 }
@@ -827,7 +828,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const selectedIds = Array.from(document.querySelectorAll(".user-checkbox:checked")).map(cb => cb.dataset.id);
         if (selectedIds.length === 0) return;
 
-        if (!confirm(`Sei sicuro di voler eliminare definitivamente ${selectedIds.length} iscritti? Questa azione è irreversibile.`)) {
+        if (!await showConfirm(`Sei sicuro di voler eliminare definitivamente ${selectedIds.length} iscritti? Questa azione è irreversibile.`)) {
             return;
         }
 
@@ -859,7 +860,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const sendEmailsBtn = document.getElementById("send-emails-btn");
     if (sendEmailsBtn) {
         sendEmailsBtn.addEventListener("click", async () => {
-        if (!confirm("ATTENZIONE: Stai per inviare la location segreta a TUTTI gli iscritti. Procedere?")) {
+        if (!await showConfirm("ATTENZIONE: Stai per inviare la location segreta a TUTTI gli iscritti. Procedere?")) {
             return;
         }
 
@@ -936,7 +937,7 @@ document.addEventListener("DOMContentLoaded", () => {
             loadPRs();
         } catch (err) {
             console.error("Errore PR:", err);
-            alert("Si è verificato un errore nell'apertura: " + err.message);
+            showModal("Si è verificato un errore nell'apertura: " + err.message);
         }
     });
 
@@ -953,7 +954,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const code = prCodeInput.value.trim().toLowerCase();
         
         if (!name || !code) {
-            alert("Inserisci sia Nome che Codice.");
+            showModal("Inserisci sia Nome che Codice.");
             return;
         }
 
@@ -968,7 +969,7 @@ document.addEventListener("DOMContentLoaded", () => {
             prCodeInput.value = '';
         } catch (error) {
             console.error("Error adding PR:", error);
-            alert("Errore nell'aggiunta del PR.");
+            showModal("Errore nell'aggiunta del PR.");
         }
     });
 
@@ -1021,12 +1022,12 @@ document.addEventListener("DOMContentLoaded", () => {
             document.querySelectorAll('.delete-pr-btn').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
                     const id = e.target.getAttribute('data-id');
-                    if (confirm("Vuoi davvero eliminare questo PR?")) {
+                    if (await showConfirm("Vuoi davvero eliminare questo PR?")) {
                         try {
                             await deleteDoc(doc(db, "prs", id));
                         } catch (error) {
                             console.error("Errore eliminazione PR:", error);
-                            alert("Impossibile eliminare il PR.");
+                            showModal("Impossibile eliminare il PR.");
                         }
                     }
                 });

@@ -1,3 +1,4 @@
+import { showModal } from './utils.js';
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, getDocs, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -85,7 +86,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         } catch (error) {
             console.error("Errore nel caricamento eventi:", error);
-            alert("Errore di connessione al database.");
+            showModal("Errore di connessione al database.");
         }
     }
 
@@ -150,7 +151,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             
         } catch (error) {
             console.error("Errore caricamento dati analytics:", error);
-            alert("Errore nel caricamento dei dati.");
+            showModal("Errore nel caricamento dei dati.");
             loadingOverlay.style.display = "none";
             analyticsContent.style.display = "block";
         }

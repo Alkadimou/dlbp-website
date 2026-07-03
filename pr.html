@@ -20,39 +20,17 @@
         #dashboard-section {
             display: none;
         }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        .stat-box {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-color);
-            padding: 1.5rem;
-            text-align: center;
-        }
-        .stat-number {
-            font-size: 3rem;
-            font-weight: 700;
-            color: var(--accent-color);
-        }
-        .stat-box h3 {
-            font-size: 0.8rem;
-            opacity: 0.7;
-            margin-bottom: 0.5rem;
-        }
     </style>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#000000">
 </head>
 <body>
-    <div style="position: absolute; top: 1.5rem; left: 2rem; z-index: 1000; display: flex; gap: 1rem; font-family: 'Space Grotesk', sans-serif; font-weight: 700; flex-wrap: wrap;">
-        <a href="index.html" style="color: #555; text-decoration: none; font-size: 0.7rem; letter-spacing: 2px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'">HOME</a>
-        <a href="admin.html" style="color: #555; text-decoration: none; font-size: 0.7rem; letter-spacing: 2px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'">ADMIN</a>
-        <a href="scanner.html" style="color: #555; text-decoration: none; font-size: 0.7rem; letter-spacing: 2px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'">SCANNER</a>
-        <a href="pr.html" style="color: #555; text-decoration: none; font-size: 0.7rem; letter-spacing: 2px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'">AREA PR</a>
-    </div>
+    <nav class="global-nav">
+        <a href="index.html">HOME</a>
+        <a href="admin.html">ADMIN</a>
+        <a href="scanner.html">SCANNER</a>
+        <a href="pr.html" class="active">AREA PR</a>
+    </nav>
     <div class="noise-overlay"></div>
     
     <main id="app-main" class="container pr-container">
@@ -62,7 +40,7 @@
         </header>
 
         <!-- Login Section -->
-        <section id="login-section" class="event-card" style="text-align: center;">
+        <section id="login-section" class="event-card fade-in stagger-1" style="text-align: center;">
             <h2 class="event-title" style="font-size: 1.5rem; margin-bottom: 2rem;">ACCESSO PR</h2>
             <div class="form-group" style="margin-bottom: 2rem;">
                 <input type="text" id="pr-code" placeholder="INSERISCI CODICE PR" style="text-align: center; letter-spacing: 2px;">
@@ -72,24 +50,24 @@
         </section>
 
         <!-- Dashboard Section -->
-        <section id="dashboard-section">
+        <section id="dashboard-section" class="fade-in stagger-1">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
                 <h2 id="pr-welcome" class="event-title" style="margin: 0; font-size: 1.5rem;">DASHBOARD PR</h2>
-                <button id="logout-btn" style="background: none; border: 1px solid var(--border-color); color: var(--text-color); padding: 0.5rem 1rem; cursor: pointer; font-family: inherit;">ESCI</button>
+                <button id="logout-btn" style="background: none; border: 1px solid var(--border-color); color: var(--text-color); padding: 0.5rem 1rem; cursor: pointer; font-family: inherit; border-radius: 4px;">ESCI</button>
             </div>
 
-            <div class="stats-grid">
-                <div class="stat-box">
-                    <h3>ISCRITTI TOTALI</h3>
-                    <div class="stat-number" id="stat-total">0</div>
+            <div class="dashboard-grid" style="margin-bottom: 2rem;">
+                <div class="kpi-box">
+                    <h4>ISCRITTI TOTALI</h4>
+                    <div class="kpi-value" id="stat-total">0</div>
                 </div>
-                <div class="stat-box">
-                    <h3>APPROVATI</h3>
-                    <div class="stat-number" id="stat-approved">0</div>
+                <div class="kpi-box">
+                    <h4>APPROVATI</h4>
+                    <div class="kpi-value" id="stat-approved">0</div>
                 </div>
-                <div class="stat-box">
-                    <h3>INGRESSI (ENTRATI)</h3>
-                    <div class="stat-number" id="stat-entered" style="color: #4CAF50;">0</div>
+                <div class="kpi-box highlight">
+                    <h4 style="color: var(--accent-color);">INGRESSI (ENTRATI)</h4>
+                    <div class="kpi-value" id="stat-entered" style="color: var(--accent-color);">0</div>
                 </div>
             </div>
 

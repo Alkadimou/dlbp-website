@@ -240,12 +240,12 @@
     <meta name="theme-color" content="#000000">
 </head>
 <body>
-    <div style="position: absolute; top: 1.5rem; left: 2rem; z-index: 1000; display: flex; gap: 1rem; font-family: 'Space Grotesk', sans-serif; font-weight: 700; flex-wrap: wrap;">
-        <a href="index.html" style="color: #555; text-decoration: none; font-size: 0.7rem; letter-spacing: 2px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'">HOME</a>
-        <a href="admin.html" style="color: #555; text-decoration: none; font-size: 0.7rem; letter-spacing: 2px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'">ADMIN</a>
-        <a href="scanner.html" style="color: #555; text-decoration: none; font-size: 0.7rem; letter-spacing: 2px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'">SCANNER</a>
-        <a href="pr.html" style="color: #555; text-decoration: none; font-size: 0.7rem; letter-spacing: 2px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'">AREA PR</a>
-    </div>
+    <nav class="global-nav">
+        <a href="index.html">HOME</a>
+        <a href="admin.html" class="active">ADMIN</a>
+        <a href="scanner.html">SCANNER</a>
+        <a href="pr.html">AREA PR</a>
+    </nav>
     <div class="noise-overlay"></div>
     
     <main id="app-main" class="container">
@@ -255,7 +255,7 @@
         </header>
 
         <!-- Login Section -->
-        <section id="login-section" class="event-card" style="text-align: center;">
+        <section id="login-section" class="event-card fade-in stagger-1" style="text-align: center;">
             <h2 class="event-title" style="font-size: 1.5rem; margin-bottom: 2rem;">ACCESSO ADMIN</h2>
             <div class="form-group" style="margin-bottom: 1.5rem;">
                 <input type="email" id="admin-email" placeholder="EMAIL AMMINISTRATORE" required style="text-align: center; letter-spacing: 2px;">
@@ -268,8 +268,7 @@
         </section>
 
         <!-- Dashboard Section -->
-        <!-- Dashboard Section -->
-        <section id="dashboard-section" style="display: none; padding-bottom: 4rem;">
+        <section id="dashboard-section" class="fade-in stagger-1" style="display: none; padding-bottom: 4rem;">
             
             <!-- Global Header -->
             <div class="admin-global-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">

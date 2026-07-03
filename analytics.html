@@ -39,33 +39,8 @@
             margin-bottom: 1rem;
             text-align: center;
         }
-        .stats-summary {
-            display: flex;
-            justify-content: space-around;
-            background: #111;
-            padding: 1.5rem;
-            border: 1px solid var(--border-color);
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-        .stat-box {
-            text-align: center;
-        }
-        .stat-box h4 {
-            font-size: 0.8rem;
-            color: #888;
-            margin-bottom: 0.5rem;
-            letter-spacing: 1px;
-        }
-        .stat-box .stat-value {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: white;
-        }
-        .stat-box .stat-value.green { color: var(--success-color); }
-        .stat-box .stat-value.yellow { color: #f1c40f; }
-        
+    </style>
+    <style>
         /* Loading overlay */
         #loading-overlay {
             position: fixed;
@@ -85,12 +60,12 @@
 </head>
 <body>
     <div id="loading-overlay">CARICAMENTO DATI...</div>
-    <div style="position: absolute; top: 1.5rem; left: 2rem; z-index: 1000; display: flex; gap: 1rem; font-family: 'Space Grotesk', sans-serif; font-weight: 700; flex-wrap: wrap;">
-        <a href="index.html" style="color: #555; text-decoration: none; font-size: 0.7rem; letter-spacing: 2px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'">HOME</a>
-        <a href="admin.html" style="color: #555; text-decoration: none; font-size: 0.7rem; letter-spacing: 2px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'">ADMIN</a>
-        <a href="scanner.html" style="color: #555; text-decoration: none; font-size: 0.7rem; letter-spacing: 2px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'">SCANNER</a>
-        <a href="pr.html" style="color: #555; text-decoration: none; font-size: 0.7rem; letter-spacing: 2px; transition: color 0.3s ease;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#555'">AREA PR</a>
-    </div>
+    <nav class="global-nav">
+        <a href="index.html">HOME</a>
+        <a href="admin.html">ADMIN</a>
+        <a href="scanner.html">SCANNER</a>
+        <a href="pr.html">AREA PR</a>
+    </nav>
     <div class="noise-overlay"></div>
     
     <main class="container admin-container">
@@ -99,35 +74,34 @@
             <p class="subtitle">DATA ANALYTICS</p>
         </header>
 
-        <section class="event-card" id="analytics-content" style="display: none;">
+        <section class="event-card fade-in stagger-1" id="analytics-content" style="display: none;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
                 <h2 class="event-title" style="font-size: 1.5rem; margin: 0;">PERFORMANCE EVENTO</h2>
-                <select id="event-selector" style="padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk'; min-width: 200px;">
-                    <!-- Eventi caricati dinamicamente -->
-                </select>
-            </div>
-            
-            <div style="margin-bottom: 2rem; text-align: right;">
-                <a href="admin.html" class="submit-btn" style="text-decoration: none; display: inline-block; padding: 0.5rem 1rem;">TORNA ALL'ADMIN</a>
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <select id="event-selector" style="padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk'; min-width: 200px; border-radius: 4px;">
+                        <!-- Eventi caricati dinamicamente -->
+                    </select>
+                    <a href="admin.html" class="submit-btn" style="text-decoration: none; display: inline-block; padding: 0.5rem 1rem; margin: 0;">TORNA ALL'ADMIN</a>
+                </div>
             </div>
 
             <!-- Numeri Chiave -->
-            <div class="stats-summary">
-                <div class="stat-box">
+            <div class="dashboard-grid" style="margin-bottom: 2rem;">
+                <div class="kpi-box">
                     <h4>ISCRITTI TOTALI</h4>
-                    <div class="stat-value" id="stat-total">0</div>
+                    <div class="kpi-value" id="stat-total">0</div>
                 </div>
-                <div class="stat-box">
+                <div class="kpi-box">
                     <h4>APPROVATI</h4>
-                    <div class="stat-value green" id="stat-approved">0</div>
+                    <div class="kpi-value" id="stat-approved" style="color: var(--success-color);">0</div>
                 </div>
-                <div class="stat-box">
+                <div class="kpi-box">
                     <h4>IN ATTESA</h4>
-                    <div class="stat-value yellow" id="stat-pending">0</div>
+                    <div class="kpi-value" id="stat-pending" style="color: #f1c40f;">0</div>
                 </div>
-                <div class="stat-box">
-                    <h4>PRESENTI ALLA PORTA</h4>
-                    <div class="stat-value" id="stat-present">0</div>
+                <div class="kpi-box highlight">
+                    <h4 style="color: var(--accent-color);">PRESENTI ALLA PORTA</h4>
+                    <div class="kpi-value" id="stat-present" style="color: var(--accent-color);">0</div>
                 </div>
             </div>
 
