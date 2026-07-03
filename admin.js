@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const listToggle = document.getElementById("list-toggle");
     const capacityInput = document.getElementById("capacity-input");
     const capacityDisplay = document.getElementById("capacity-display");
-    const settingsPanel = document.getElementById("settings-panel");
+    const settingsPanel = document.getElementById("settings-modal");
     const editEventBtn = document.getElementById("edit-event-btn");
     const closeSettingsBtn = document.getElementById("close-settings-btn");
     const deleteEventBtn = document.getElementById("delete-event-btn");
@@ -221,7 +221,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 title.textContent = "CREAZIONE NUOVO EVENTO";
                 title.style.color = "var(--accent-color)";
             }
-            settingsPanel.style.display = "block";
+            settingsPanel.style.display = "flex";
             document.getElementById('event-name-input').value = "";
             document.getElementById('event-location-input').value = "";
             document.getElementById('event-date-input').value = "";
@@ -655,9 +655,9 @@ document.addEventListener("DOMContentLoaded", () => {
             const checkinTimeHtml = user.checked_in && user.check_in_time ? user.check_in_time.toLocaleTimeString('it-IT', {hour: '2-digit', minute:'2-digit'}) : '-';
             
             let actionsHtml = `
-                <button class="approve-btn" data-id="${user.id}" title="Approva Accesso" style="background: none; border: none; cursor: pointer; font-size: 1.2rem; color: #4CAF50; padding: 0 5px; ${user.status === 'approved' ? 'opacity:0.3; cursor:default;' : ''}">✓</button>
-                <button class="checkin-btn" data-id="${user.id}" title="Segna Presente" style="background: none; border: none; cursor: pointer; font-size: 1.2rem; color: #00bcd4; padding: 0 5px; ${user.checked_in ? 'opacity:0.3; cursor:default;' : ''}">🚪</button>
-                <button class="resend-email-btn" data-id="${user.id}" title="Invia Email Singola" style="background: none; border: none; cursor: pointer; font-size: 1.2rem; color: #aaa; padding: 0 5px;">✉️</button>
+                <button class="approve-btn action-btn-icon" data-id="${user.id}" title="Approva Accesso" style="${user.status === 'approved' ? 'opacity:0.3; cursor:default;' : ''}">✓</button>
+                <button class="checkin-btn action-btn-icon check" data-id="${user.id}" title="Segna Presente" style="${user.checked_in ? 'opacity:0.3; cursor:default;' : ''}">🚪</button>
+                <button class="resend-email-btn action-btn-icon" data-id="${user.id}" title="Invia Email Singola">✉</button>
             `;
 
             tr.innerHTML = `
@@ -665,9 +665,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 <td>${escapeHtml(user.name)}</td>
                 <td>${escapeHtml(user.email)}</td>
                 <td style="color: #aaa; text-transform: uppercase;">${escapeHtml(user.invited_by) || '-'}</td>
-                <td>${statusHtml}</td>
+                <td>${statusHtml} ${user.checked_in && user.check_in_time ? '<br><small style="color:#888;">'+user.check_in_time.toLocaleTimeString('it-IT', {hour: '2-digit', minute:'2-digit'})+'</small>' : ''}</td>
                 <td>${user.timestamp.toLocaleString('it-IT', {dateStyle: 'short', timeStyle: 'short'})}</td>
-                <td>${checkinTimeHtml}</td>
                 <td style="text-align: right; white-space: nowrap;">${actionsHtml}</td>
             `;
             tbody.appendChild(tr);

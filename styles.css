@@ -297,6 +297,86 @@ input::placeholder {
     100% { opacity: 0.8; transform: scale(0.98); }
 }
 
+/* Admin Dashboard Styles */
+.admin-global-header {
+    background: rgba(255, 255, 255, 0.02);
+    padding: 1.5rem;
+    border-radius: 4px;
+}
+.summary-card {
+    background: linear-gradient(145deg, rgba(20,20,20,0.8) 0%, rgba(0,0,0,0.9) 100%);
+    border-top: 2px solid var(--accent-color);
+}
+.small-btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.75rem;
+}
+.kpi-box {
+    transition: transform 0.3s ease;
+}
+.kpi-box:hover {
+    transform: translateY(-3px);
+}
+
+/* Table Styles */
+.users-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    font-family: 'Space Grotesk', sans-serif;
+    text-align: left;
+}
+.users-table th {
+    padding: 1rem;
+    font-size: 0.8rem;
+    color: #888;
+    border-bottom: 2px solid #333;
+    letter-spacing: 1px;
+}
+.users-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #222;
+    font-size: 0.9rem;
+    vertical-align: middle;
+}
+.users-table tbody tr {
+    transition: background-color 0.2s ease;
+}
+.users-table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+.action-btn-icon {
+    background: transparent;
+    border: 1px solid #444;
+    color: #fff;
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    margin-left: 0.5rem;
+}
+.action-btn-icon:hover {
+    background: #333;
+}
+.action-btn-icon.check {
+    color: #33ff77;
+    border-color: #33ff77;
+}
+.action-btn-icon.check:hover {
+    background: rgba(51, 255, 119, 0.1);
+}
+.action-btn-icon.delete {
+    color: #ff3333;
+    border-color: #ff3333;
+}
+.action-btn-icon.delete:hover {
+    background: rgba(255, 51, 51, 0.1);
+}
+
 /* Admin Table Mobile Optimization */
 @media (max-width: 768px) {
     .users-table, 
@@ -346,9 +426,9 @@ input::placeholder {
     .users-table td:nth-child(1)::before { content: "SELEZIONA"; }
     .users-table td:nth-child(2)::before { content: "NOME"; }
     .users-table td:nth-child(3)::before { content: "EMAIL"; }
-    .users-table td:nth-child(4)::before { content: "STATO"; }
-    .users-table td:nth-child(5)::before { content: "DATA"; }
-    .users-table td:nth-child(6)::before { content: "CHECK-IN"; }
+    .users-table td:nth-child(4)::before { content: "PR"; }
+    .users-table td:nth-child(5)::before { content: "STATO"; }
+    .users-table td:nth-child(6)::before { content: "DATA"; }
     .users-table td:nth-child(7)::before { content: "AZIONI"; }
     
     .user-checkbox {

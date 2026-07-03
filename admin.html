@@ -268,129 +268,92 @@
         </section>
 
         <!-- Dashboard Section -->
-        <section id="dashboard-section" class="event-card" style="display: none;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
-                <h2 class="event-title" style="font-size: 1.5rem; margin: 0;">GESTIONE EVENTO</h2>
-                <div style="display: flex; gap: 0.5rem; align-items: center;">
-                    <div id="admin-live-counter" style="font-size: 1rem; font-weight: bold; color: var(--accent-color); border: 1px solid var(--border-color); padding: 0.5rem 1rem; background: rgba(0,0,0,0.5); display: none;">INGRESSI: -- / --</div>
-                    <button id="logout-btn" class="submit-btn outline-btn" style="margin: 0; padding: 0.5rem 1rem; border-color: #ff3333; color: #ff3333;">ESCI</button>
-                    <button id="new-event-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1.5rem;">+ NUOVO ACT</button>
-                </div>
-            </div>
-
-            <div class="toolbar-panel">
-                <div class="toolbar-input-group">
-                    <label>SELEZIONA EVENTO</label>
-                    <select id="admin-event-selector"></select>
-                </div>
-                <div class="toolbar-actions">
-                    <button id="set-active-btn" class="submit-btn">IMPOSTA ATTIVO</button>
-                    <button id="edit-event-btn" class="submit-btn outline-btn">MODIFICA DETTAGLI</button>
-                    <button id="manage-pr-btn" class="submit-btn outline-btn">GESTIONE PR</button>
-                </div>
-            </div>
-
-            <div class="settings-panel" id="settings-panel" style="flex-direction: column; display: none; position: relative; border: 1px solid #333;">
-                <button id="close-settings-btn" style="position: absolute; top: 1rem; right: 1rem; background: transparent; border: none; color: #888; font-size: 1.2rem; cursor: pointer; padding: 0.5rem;">✕</button>
-                <h4 id="settings-panel-title" style="width: 100%; margin-top: 0; margin-bottom: 1rem; color: var(--accent-color); font-size: 0.9rem; letter-spacing: 2px;">MODIFICA EVENTO ESISTENTE</h4>
-                
-                <div style="display: flex; flex-direction: column; gap: 1rem; width: 100%;">
-                    <div class="settings-item" style="width: 100%;">
-                        <label>NOME EVENTO</label>
-                        <input type="text" id="event-name-input" placeholder="es: TXK.NØX Act II" style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk';">
-                    </div>
-                    <div class="settings-item" style="width: 100%;">
-                        <label>SECRET LOCATION (Email)</label>
-                        <input type="text" id="event-location-input" placeholder="es: Via Fabio Filzi 28 Arezzo (AR)" style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk';">
-                    </div>
-                    <div style="display: flex; gap: 1rem; flex-wrap: wrap; width: 100%;">
-                        <div class="settings-item" style="flex-grow: 2; min-width: 150px;">
-                            <label>DATA EVENTO</label>
-                            <input type="date" id="event-date-input" style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk';">
-                        </div>
-                        <div class="settings-item" style="flex-grow: 1; min-width: 100px;">
-                            <label>ORA INIZIO</label>
-                            <input type="time" id="event-start-time-input" style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk';">
-                        </div>
-                        <div class="settings-item" style="flex-grow: 1; min-width: 100px;">
-                            <label>ORA FINE</label>
-                            <input type="time" id="event-end-time-input" style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk';">
-                        </div>
-                    </div>
-                </div>
-                
-                <div style="display: flex; gap: 1rem; flex-wrap: wrap; width: 100%;">
-                    <div class="settings-item">
-                        <label>LISTE APERTE</label>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="list-toggle" checked>
-                        <span class="slider"></span>
-                    </label>
-                </div>
-                <div class="settings-item">
-                    <label>CAPIENZA LOCALE</label>
-                    <input type="number" id="capacity-input" class="capacity-input" value="100">
-                </div>
-                </div>
-                <div class="settings-item" style="flex-grow: 1; min-width: 250px;">
-                    <label>CARICA FLYER</label>
-                    <input type="file" id="flyer-input" accept="image/*" style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk';">
-                    <div id="current-flyer-preview" style="margin-top: 10px; font-size: 0.8rem; color: #888;">Nessun flyer caricato.</div>
-                </div>
-                <div style="margin-top: 1.5rem; width: 100%;">
-                    <label>DESCRIZIONE EVENTO</label>
-                    <textarea id="desc-input" rows="4" style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk'; resize: vertical;"></textarea>
-                </div>
-                
-                <div style="display: flex; gap: 1rem; margin-top: 2rem; width: 100%;">
-                    <button id="delete-event-btn" class="submit-btn outline-btn" style="flex: 1; border-color: #ff3333; color: #ff3333;">ELIMINA EVENTO</button>
-                    <button id="save-content-btn" class="submit-btn" style="flex: 2;">SALVA DETTAGLI EVENTO</button>
-                </div>
-                <div class="settings-item present-counter">
-                    <span id="present-count">0</span><span style="font-size: 1rem; color: #888;"> / <span id="capacity-display">100</span></span>
-                </div>
-            </div>
-
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
-                <h2 class="event-title" style="font-size: 1.5rem; margin: 0;">ISCRITTI EVENTO</h2>
-            </div>
-
-            <div class="toolbar-panel" style="grid-template-columns: 1fr 3fr;">
-                <div class="toolbar-input-group">
-                    <label>RICERCA ISCRITTI</label>
-                    <input type="text" id="search-input" placeholder="Cerca nome o email...">
-                </div>
-                
-                <div class="toolbar-actions">
-                    <button class="submit-btn outline-btn" onclick="window.location.href='analytics.html'">ANALYTICS</button>
-                    <button id="export-csv-btn" class="submit-btn outline-btn">ESPORTA EXCEL</button>
-                    <button id="delete-selected-btn" class="submit-btn outline-btn" style="border-color: #ff3333; color: #ff3333; opacity: 0.5;" disabled>ELIMINA SELEZIONATI</button>
-                    <button id="send-emails-btn" class="submit-btn">INVIA ACCESSO</button>
-                </div>
-            </div>
+        <!-- Dashboard Section -->
+        <section id="dashboard-section" style="display: none; padding-bottom: 4rem;">
             
-            <div class="table-responsive">
-                <table class="users-table">
-                <thead>
-                    <tr>
-                        <th style="width: 40px; text-align: center;">
-                            <input type="checkbox" id="select-all-cb">
-                        </th>
-                        <th>NOME</th>
-                        <th>EMAIL</th>
-                        <th>REFERENTE (PR)</th>
-                        <th>STATO</th>
-                        <th>DATA</th>
-                        <th>CHECK-IN</th>
-                        <th style="text-align: right;">AZIONI</th>
-                    </tr>
-                </thead>
-                <tbody id="users-tbody">
-                    <!-- Data populated by JS -->
-                </tbody>
-                </table>
+            <!-- Global Header -->
+            <div class="admin-global-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
+                <h2 class="event-title" style="font-size: 1.5rem; margin: 0;">ADMIN DASHBOARD</h2>
+                <div class="global-actions" style="display: flex; gap: 1rem; align-items: center;">
+                    <div class="event-selector-wrapper" style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="font-size: 0.7rem; color: #888; letter-spacing: 1px;">EVENTO:</span>
+                        <select id="admin-event-selector" style="background: transparent; color: #fff; border: 1px solid #444; padding: 0.3rem 0.5rem; font-family: 'Space Grotesk'; font-size: 0.9rem; cursor: pointer;"></select>
+                    </div>
+                    <button id="logout-btn" class="submit-btn outline-btn logout-btn" style="margin: 0; padding: 0.3rem 1rem; border-color: #ff3333; color: #ff3333; min-height: unset; font-size: 0.8rem;">ESCI</button>
+                </div>
             </div>
-            <div id="admin-message" class="form-message hidden"></div>
+
+            <!-- Event Summary Card -->
+            <div class="event-card summary-card" style="margin-bottom: 2rem; padding: 1.5rem;">
+                <div class="summary-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                    <div>
+                        <h3 id="summary-event-title" style="font-size: 1.8rem; margin-bottom: 0.2rem; text-transform: uppercase; letter-spacing: 2px;">--</h3>
+                        <p id="summary-event-date" style="color: var(--accent-color); font-size: 0.9rem; letter-spacing: 1px; opacity: 0.8;">--</p>
+                    </div>
+                    <div class="summary-actions" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <button id="set-active-btn" class="submit-btn outline-btn" style="margin: 0; padding: 0.5rem 1rem; font-size: 0.75rem; min-height: unset;">RENDI ATTIVO</button>
+                        <button id="edit-event-btn" class="submit-btn outline-btn" style="margin: 0; padding: 0.5rem 1rem; font-size: 0.75rem; min-height: unset;">MODIFICA</button>
+                        <button id="manage-pr-btn" class="submit-btn outline-btn" style="margin: 0; padding: 0.5rem 1rem; font-size: 0.75rem; min-height: unset;">AREA PR</button>
+                        <button id="new-event-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1rem; font-size: 0.75rem; min-height: unset;">+ NUOVO</button>
+                    </div>
+                </div>
+
+                <div class="kpi-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+                    <div class="kpi-box" style="background: rgba(255,255,255,0.05); padding: 1rem; text-align: center; border: 1px solid #333;">
+                        <h4 style="color: #888; font-size: 0.7rem; letter-spacing: 2px; margin-bottom: 0.5rem;">CAPIENZA</h4>
+                        <div class="kpi-value" style="font-size: 2rem; font-weight: bold; color: #fff;" id="capacity-display">0</div>
+                    </div>
+                    <div class="kpi-box" style="background: rgba(255,255,255,0.05); padding: 1rem; text-align: center; border: 1px solid #333;">
+                        <h4 style="color: #888; font-size: 0.7rem; letter-spacing: 2px; margin-bottom: 0.5rem;">ISCRITTI</h4>
+                        <div class="kpi-value" id="stat-total-dash" style="font-size: 2rem; font-weight: bold; color: #fff;">0</div>
+                    </div>
+                    <div class="kpi-box highlight" style="background: rgba(255,255,255,0.1); padding: 1rem; text-align: center; border: 1px solid var(--accent-color);">
+                        <h4 style="color: var(--accent-color); font-size: 0.7rem; letter-spacing: 2px; margin-bottom: 0.5rem;">INGRESSI LIVE</h4>
+                        <div class="kpi-value" id="present-count-dash" style="font-size: 2.5rem; font-weight: bold; color: var(--accent-color);">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Section -->
+            <div class="event-card" style="padding: 1.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                    <h2 class="event-title" style="font-size: 1.2rem; margin: 0; letter-spacing: 2px;">GESTIONE ISCRITTI</h2>
+                </div>
+
+                <div class="toolbar-panel unified-toolbar" style="display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; background: rgba(0,0,0,0.4); border: 1px solid #333; padding: 1rem;">
+                    <div class="toolbar-input-group" style="flex: 1; min-width: 250px;">
+                        <input type="text" id="search-input" placeholder="Cerca nome o email..." style="width: 100%; height: 38px; padding: 0.5rem 1rem; background: #000; color: #fff; border: 1px solid #444; font-family: 'Space Grotesk';">
+                    </div>
+                    <div class="toolbar-actions" style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
+                        <button class="submit-btn outline-btn small-btn" onclick="window.location.href='analytics.html'" style="margin: 0; height: 38px; min-height: unset; padding: 0 1rem; font-size: 0.7rem;">ANALYTICS</button>
+                        <button id="export-csv-btn" class="submit-btn outline-btn small-btn" style="margin: 0; height: 38px; min-height: unset; padding: 0 1rem; font-size: 0.7rem;">ESPORTA EXCEL</button>
+                        <button id="delete-selected-btn" class="submit-btn outline-btn small-btn" style="margin: 0; height: 38px; min-height: unset; padding: 0 1rem; font-size: 0.7rem; border-color: #ff3333; color: #ff3333;" disabled>ELIMINA SELEZIONATI</button>
+                        <button id="send-emails-btn" class="submit-btn small-btn" style="margin: 0; height: 38px; min-height: unset; padding: 0 1rem; font-size: 0.7rem;">INVIA ACCESSI</button>
+                    </div>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 40px; text-align: center;">
+                                <input type="checkbox" id="select-all-cb">
+                            </th>
+                            <th>NOME</th>
+                            <th>EMAIL</th>
+                            <th>PR</th>
+                            <th>STATO</th>
+                            <th>DATA</th>
+                            <th style="text-align: right;">AZIONI</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-tbody">
+                        <!-- Data populated by JS -->
+                    </tbody>
+                    </table>
+                </div>
+                <div id="admin-message" class="form-message hidden"></div>
+            </div>
         </section>
     </main>
 
@@ -423,6 +386,67 @@
                         <!-- Populated by JS -->
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; font-family: 'Space Grotesk', sans-serif;">
+        <div class="event-card" style="width: 90%; max-width: 800px; padding: 2rem; position: relative; max-height: 90vh; overflow-y: auto;">
+            <button id="close-settings-btn" style="position: absolute; top: 1rem; right: 1rem; background: transparent; border: none; color: #fff; font-size: 1.5rem; cursor: pointer;">&times;</button>
+            <h2 id="settings-panel-title" class="event-title" style="font-size: 1.5rem; margin-bottom: 1.5rem;">MODIFICA EVENTO ESISTENTE</h2>
+            
+            <div style="display: flex; flex-direction: column; gap: 1rem; width: 100%;">
+                <div class="settings-item" style="width: 100%;">
+                    <label>NOME EVENTO</label>
+                    <input type="text" id="event-name-input" placeholder="es: TXK.NØX Act II" style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk';">
+                </div>
+                <div class="settings-item" style="width: 100%;">
+                    <label>SECRET LOCATION (Email)</label>
+                    <input type="text" id="event-location-input" placeholder="es: Via Fabio Filzi 28 Arezzo (AR)" style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk';">
+                </div>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap; width: 100%;">
+                    <div class="settings-item" style="flex-grow: 2; min-width: 150px;">
+                        <label>DATA EVENTO</label>
+                        <input type="date" id="event-date-input" style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk';">
+                    </div>
+                    <div class="settings-item" style="flex-grow: 1; min-width: 100px;">
+                        <label>ORA INIZIO</label>
+                        <input type="time" id="event-start-time-input" style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk';">
+                    </div>
+                    <div class="settings-item" style="flex-grow: 1; min-width: 100px;">
+                        <label>ORA FINE</label>
+                        <input type="time" id="event-end-time-input" style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk';">
+                    </div>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; width: 100%; margin-top: 1rem;">
+                <div class="settings-item">
+                    <label>LISTE APERTE</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="list-toggle" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="settings-item">
+                    <label>CAPIENZA LOCALE</label>
+                    <input type="number" id="capacity-input" class="capacity-input" value="100">
+                </div>
+            </div>
+            <div class="settings-item" style="flex-grow: 1; min-width: 250px; margin-top: 1rem;">
+                <label>CARICA FLYER</label>
+                <input type="file" id="flyer-input" accept="image/*" style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk';">
+                <div id="current-flyer-preview" style="margin-top: 10px; font-size: 0.8rem; color: #888;">Nessun flyer caricato.</div>
+            </div>
+            <div style="margin-top: 1.5rem; width: 100%;">
+                <label>DESCRIZIONE EVENTO</label>
+                <textarea id="desc-input" rows="4" style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk'; resize: vertical;"></textarea>
+            </div>
+            
+            <div style="display: flex; gap: 1rem; margin-top: 2rem; width: 100%;">
+                <button id="delete-event-btn" class="submit-btn outline-btn" style="flex: 1; border-color: #ff3333; color: #ff3333;">ELIMINA EVENTO</button>
+                <button id="save-content-btn" class="submit-btn" style="flex: 2;">SALVA DETTAGLI</button>
             </div>
         </div>
     </div>
