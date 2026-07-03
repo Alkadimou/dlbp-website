@@ -63,7 +63,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const editEventBtn = document.getElementById("edit-event-btn");
     const closeSettingsBtn = document.getElementById("close-settings-btn");
     const deleteEventBtn = document.getElementById("delete-event-btn");
-    const presentCountDisplay = document.getElementById("present-count");
+    const presentCountDisplay = document.getElementById("present-count-dash");
+    const totalCountDisplay = document.getElementById("stat-total-dash");
     const exportCsvBtn = document.getElementById("export-csv-btn");
     const logoutBtn = document.getElementById("logout-btn");
 
@@ -278,6 +279,20 @@ document.addEventListener("DOMContentLoaded", () => {
             const eventSnap = await getDoc(doc(db, "events", currentEventId));
             if (eventSnap.exists()) {
                 const evData = eventSnap.data();
+                
+                const summaryTitle = document.getElementById("summary-event-title");
+                const summaryDate = document.getElementById("summary-event-date");
+                if (summaryTitle) summaryTitle.textContent = evData.name || "NOME EVENTO";
+                if (summaryDate) {
+                    if (evData.dateIso) {
+                        const dateObj = new Date(evData.dateIso);
+                        const dateStr = isNaN(dateObj) ? evData.dateIso : dateObj.toLocaleDateString('it-IT', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                        summaryDate.innerHTML = `<i class="fas fa-calendar-alt"></i> ${dateStr}`;
+                    } else {
+                        summaryDate.innerHTML = `<i class="fas fa-calendar-alt"></i> Data non definita`;
+                    }
+                }
+                
                 document.getElementById('event-name-input').value = evData.name || "";
                 document.getElementById('event-location-input').value = evData.location || "";
                 document.getElementById('event-date-input').value = evData.dateIso || "";
@@ -596,10 +611,14 @@ document.addEventListener("DOMContentLoaded", () => {
             const count = snapshot.size;
             try {
                 const max = currentMaxCapacity;
-                const counterDiv = document.getElementById('admin-live-counter');
+                const counterDiv = document.getElementById('present-count-dash');
                 if (counterDiv) {
-                    counterDiv.style.display = "block";
-                    counterDiv.innerHTML = `INGRESSI: <span style="color: ${count >= max ? 'var(--error-color)' : '#fff'}">${count}</span> / ${max}`;
+                    counterDiv.textContent = count;
+                    if (count >= max && max > 0) {
+                        counterDiv.style.color = "var(--error-color)";
+                    } else {
+                        counterDiv.style.color = "var(--accent-color)";
+                    }
                 }
             } catch (e) {
                 console.error("Counter update error:", e);
@@ -623,6 +642,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Ordinamento manuale lato client (dal più recente)
             usersData.sort((a, b) => b.timestamp - a.timestamp);
+            
+            if (totalCountDisplay) {
+                totalCountDisplay.textContent = usersData.length;
+            }
             
             renderTable();
         } catch (error) {
