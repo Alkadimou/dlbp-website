@@ -163,6 +163,11 @@ input::placeholder {
     color: var(--accent-color);
 }
 
+#login-btn {
+    width: 100%;
+    display: block;
+}
+
 .submit-btn.outline-btn:hover {
     background: var(--accent-color);
     color: var(--bg-color);
