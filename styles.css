@@ -1404,10 +1404,6 @@ input::placeholder {
    MINIMALIST MENU OVERLAY
    ================================================== */
 .menu-btn {
-    position: fixed;
-    top: 2rem;
-    right: 2rem;
-    z-index: 100;
     background: transparent;
     border: none;
     color: rgba(255, 255, 255, 0.7);
@@ -1611,7 +1607,7 @@ input::placeholder {
     top: 0;
     left: 0;
     width: 100%;
-    padding: 3rem 5rem;
+    padding: 3rem 15vw;
     display: flex;
     justify-content: space-between;
     align-items: center;
