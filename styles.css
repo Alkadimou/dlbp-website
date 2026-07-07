@@ -1674,7 +1674,7 @@ input::placeholder {
 }
 
 .social-bottom {
-    position: absolute;
+    position: fixed;
     bottom: 5vh;
     left: 0;
     width: 100%;
@@ -1690,7 +1690,7 @@ input::placeholder {
 }
 
 .copyright-bottom-left {
-    position: absolute;
+    position: fixed;
     bottom: 5vh;
     left: 10vw;
     font-family: 'Space Mono', monospace;
