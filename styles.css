@@ -1708,6 +1708,28 @@ input::placeholder {
     -webkit-user-select: none;
 }
 
+.staff-btn {
+    position: absolute;
+    bottom: 5vh;
+    right: 10vw;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.4);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: color 0.3s ease;
+    z-index: 10;
+    outline: none;
+}
+
+.staff-btn:hover {
+    color: #fff;
+}
+
 .social-bottom a, .social-bottom span {
     color: rgba(255, 255, 255, 0.4);
     font-size: 1.2rem;
@@ -1743,6 +1765,14 @@ input::placeholder {
         width: 100%;
         text-align: center;
         bottom: 4vh;
+        font-size: 0.55rem;
+    }
+    .staff-btn {
+        right: auto;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        bottom: 1.5vh;
         font-size: 0.55rem;
     }
 }

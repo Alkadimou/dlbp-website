@@ -70,7 +70,15 @@
             </div>
         </div>
         <div class="copyright-bottom-left">© 2026 DLBP — All rights reserved</div>
+        <button class="staff-btn" id="staff-btn">AREA RISERVATA</button>
     </footer>
+
+    <!-- STAFF MENU OVERLAY -->
+    <div class="menu-overlay" id="staff-overlay">
+        <a href="admin.html">ADMIN</a>
+        <a href="scanner.html">SCANNER</a>
+        <a href="pr.html">AREA PR</a>
+    </div>
 
     <!-- JS -->
     <script>
@@ -82,6 +90,17 @@
             menuBtn.addEventListener('click', () => {
                 menuOverlay.classList.toggle('active');
                 menuBtn.textContent = menuOverlay.classList.contains('active') ? 'CHIUDI' : 'MENU';
+            });
+        }
+
+        // Staff Menu Toggle Logic
+        const staffBtn = document.getElementById('staff-btn');
+        const staffOverlay = document.getElementById('staff-overlay');
+
+        if (staffBtn && staffOverlay) {
+            staffBtn.addEventListener('click', () => {
+                staffOverlay.classList.toggle('active');
+                staffBtn.textContent = staffOverlay.classList.contains('active') ? 'CHIUDI' : 'AREA RISERVATA';
             });
         }
     </script>
