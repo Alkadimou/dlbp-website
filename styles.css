@@ -1674,7 +1674,7 @@ input::placeholder {
     top: 0;
     left: 0;
     width: 100%;
-    padding: 3rem 10vw 2.5rem 10vw;
+    padding: 3.25rem 10vw 2.5rem 10vw;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1833,7 +1833,7 @@ input::placeholder {
 
 @media (max-width: 768px) {
     .main-nav {
-        padding: 1.8rem 1.5rem 1.5rem 1.5rem;
+        padding: 1.95rem 1.5rem 1.5rem 1.5rem;
     }
     .hero-tagline-center {
         font-size: 0.6rem;
