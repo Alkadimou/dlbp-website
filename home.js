@@ -23,13 +23,18 @@ try {
 document.addEventListener("DOMContentLoaded", () => {
     // Hide loader
     const loader = document.getElementById('initial-loader');
-    if(loader) {
-        setTimeout(() => {
-            loader.style.opacity = '0';
+    if (loader) {
+        if (sessionStorage.getItem('visited')) {
+            loader.style.display = 'none';
+        } else {
             setTimeout(() => {
-                loader.style.display = 'none';
-            }, 500);
-        }, 1000);
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    sessionStorage.setItem('visited', 'true');
+                }, 500);
+            }, 1000);
+        }
     }
 
     // Scroll Down Indicator Logic

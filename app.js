@@ -260,7 +260,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const loader = document.getElementById('initial-loader');
         
         // Se il loader è già stato mostrato in questa sessione, lo saltiamo
-        if (loader && sessionStorage.getItem('loaderSeen') === 'true') {
+        if (loader && sessionStorage.getItem('visited') === 'true') {
             loader.style.display = 'none';
             initRevealAnimations();
             return;
@@ -282,7 +282,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     loader.style.display = 'none';
                     
                     // Segnamo che il loader è stato completato per questa sessione
-                    sessionStorage.setItem('loaderSeen', 'true');
+                    sessionStorage.setItem('visited', 'true');
                     
                     // Ora avviamo le animazioni di ingresso (.reveal)
                     initRevealAnimations();

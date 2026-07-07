@@ -560,6 +560,10 @@ input::placeholder {
     align-items: center;
     transition: opacity 0.6s ease-out;
 }
+
+.visited #initial-loader {
+    display: none !important;
+}
 .loader-logo {
     width: 150px;
     animation: pulse 1.5s infinite;

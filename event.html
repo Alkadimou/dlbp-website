@@ -13,6 +13,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#050508">
+    <script>
+        if (sessionStorage.getItem('visited')) {
+            document.documentElement.classList.add('visited');
+        }
+    </script>
 </head>
 <body class="landing-page">
     <div class="grain-overlay" style="z-index: 1;"></div>
