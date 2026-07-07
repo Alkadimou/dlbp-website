@@ -1643,19 +1643,34 @@ input::placeholder {
     background: transparent;
 }
 
-.nav-link {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.9rem;
-    letter-spacing: 3px;
-    color: rgba(255,255,255,0.7);
-    text-decoration: none;
-    transition: var(--transition);
-    text-transform: uppercase;
+.nav-right {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
 }
 
-.nav-link:hover {
+.nav-right a, .nav-right button {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: rgba(255, 255, 255, 0.5);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.3s ease;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    padding: 0.5rem 0;
+}
+
+.nav-right a:hover, .nav-right button:hover {
     color: #fff;
-    text-shadow: 0 0 10px rgba(255,255,255,0.5);
+}
+
+.nav-right a.active {
+    color: #fff;
 }
 
 .nav-logo {
@@ -1785,5 +1800,12 @@ input::placeholder {
         font-size: 0.6rem;
         letter-spacing: 2px;
         width: 90%;
+    }
+    .nav-right {
+        gap: 1rem;
+    }
+    .nav-right a, .nav-right button {
+        font-size: 0.65rem;
+        letter-spacing: 1px;
     }
 }

@@ -27,15 +27,17 @@
             </a>
         </div>
         <div class="nav-right">
-            <button class="menu-btn" id="menu-btn">MENU</button>
+            <a href="index.html" class="active">HOME</a>
+            <a href="eventi.html">EVENTI</a>
+            <button id="staff-btn">AREA RISERVATA</button>
         </div>
     </nav>
 
-    <!-- FULLSCREEN MENU OVERLAY -->
-    <div class="menu-overlay" id="menu-overlay">
-        <a href="index.html" class="active">HOME</a>
-        <a href="eventi.html">EVENTI</a>
-        <!-- <a href="about.html">ABOUT</a> -->
+    <!-- STAFF MENU OVERLAY -->
+    <div class="menu-overlay" id="staff-overlay">
+        <a href="admin.html">ADMIN</a>
+        <a href="scanner.html">SCANNER</a>
+        <a href="pr.html">AREA PR</a>
     </div>
 
     <!-- HERO SECTION (100vh) -->
@@ -57,29 +59,10 @@
             </div>
         </div>
         <div class="copyright-bottom-left reveal">© 2026 DLBP — All rights reserved</div>
-        <button class="staff-btn reveal" id="staff-btn">AREA RISERVATA</button>
     </section>
-
-    <!-- STAFF MENU OVERLAY -->
-    <div class="menu-overlay" id="staff-overlay">
-        <a href="admin.html">ADMIN</a>
-        <a href="scanner.html">SCANNER</a>
-        <a href="pr.html">AREA PR</a>
-    </div>
 
     <!-- JS -->
     <script>
-        // Menu Toggle Logic
-        const menuBtn = document.getElementById('menu-btn');
-        const menuOverlay = document.getElementById('menu-overlay');
-
-        if (menuBtn && menuOverlay) {
-            menuBtn.addEventListener('click', () => {
-                menuOverlay.classList.toggle('active');
-                menuBtn.textContent = menuOverlay.classList.contains('active') ? 'CHIUDI' : 'MENU';
-            });
-        }
-
         // Staff Menu Toggle Logic
         const staffBtn = document.getElementById('staff-btn');
         const staffOverlay = document.getElementById('staff-overlay');
