@@ -1417,6 +1417,15 @@ input::placeholder {
     width: 100%;
 }
 
+.eventi-page.gate-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 15vh);
+    padding: 8rem 2rem;
+}
+
 /* ==================================================
    MINIMALIST MENU OVERLAY
    ================================================== */
