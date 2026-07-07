@@ -1708,8 +1708,9 @@ input::placeholder {
     color: #fff;
 }
 
-.nav-right a.active {
+.nav-right a.active, .nav-right button.active {
     color: #fff;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
 }
 
 .nav-logo {
