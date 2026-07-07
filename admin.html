@@ -227,11 +227,23 @@
     </div>
     <div class="grain-overlay"></div>
 
-    <!-- Minimal Menu -->
-    <button class="menu-btn" onclick="document.getElementById('nav-overlay').classList.add('active')">MENU</button>
-    <div id="nav-overlay" class="menu-overlay">
-        <button class="menu-btn" style="top: 2rem; right: 2rem;" onclick="document.getElementById('nav-overlay').classList.remove('active')">CHIUDI</button>
-        <a href="index.html">HOME</a>
+    <!-- MAIN NAVIGATION -->
+    <nav class="main-nav">
+        <div class="nav-left">
+            <a href="index.html">
+                <img src="logo.png" alt="DLBP Logo" class="nav-logo">
+            </a>
+        </div>
+        <div class="nav-right">
+            <a href="index.html">HOME</a>
+            <a href="eventi.html">EVENTI</a>
+            <button id="staff-btn">AREA RISERVATA</button>
+        </div>
+    </nav>
+
+    <!-- STAFF MENU OVERLAY -->
+    <div class="menu-overlay" id="staff-overlay">
+        <button class="close-overlay-btn" id="close-staff-btn" aria-label="Chiudi menu">&times;</button>
         <a href="admin.html" class="active">ADMIN</a>
         <a href="scanner.html">SCANNER</a>
         <a href="pr.html">AREA PR</a>
@@ -435,6 +447,25 @@
         </div>
     </div>
 
+    <!-- JS -->
+    <script>
+        // Staff Menu Toggle Logic
+        const staffBtn = document.getElementById('staff-btn');
+        const staffOverlay = document.getElementById('staff-overlay');
+        const closeStaffBtn = document.getElementById('close-staff-btn');
+
+        if (staffBtn && staffOverlay) {
+            staffBtn.addEventListener('click', () => {
+                staffOverlay.classList.add('active');
+            });
+        }
+
+        if (closeStaffBtn && staffOverlay) {
+            closeStaffBtn.addEventListener('click', () => {
+                staffOverlay.classList.remove('active');
+            });
+        }
+    </script>
     <script type="module" src="admin.js"></script>
 </body>
 </html>
