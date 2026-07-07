@@ -700,6 +700,28 @@ input::placeholder {
     display: none; /* Hide standard nav on landing page */
 }
 
+/* ==================================================
+   ANIMATED FLUID BACKGROUND
+   ================================================== */
+.fluid-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    background: linear-gradient(45deg, #050505, #111, #0a0a0c, #000);
+    background-size: 400% 400%;
+    animation: fluidGradient 15s ease infinite;
+}
+
+@keyframes fluidGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+
 /* HERO SECTION */
 .hero-section {
     height: 100vh;
@@ -708,7 +730,7 @@ input::placeholder {
     align-items: center;
     justify-content: center;
     position: relative;
-    background: radial-gradient(circle at center, #111 0%, #000 100%);
+    /* Background is now handled by .fluid-background */
 }
 
 .hero-content {
@@ -719,9 +741,10 @@ input::placeholder {
 
 .hero-title {
     font-size: clamp(2rem, 5vw, 4rem);
-    letter-spacing: 8px;
+    letter-spacing: 12px;
     margin-top: 1rem;
-    font-weight: 700;
+    font-weight: 300; /* More elegant thinner weight */
+    text-transform: uppercase;
 }
 
 .hero-subtitle {
@@ -796,11 +819,14 @@ input::placeholder {
 }
 
 .event-card-item {
-    border: 1px solid var(--border-color);
-    background: rgba(255,255,255,0.02);
-    padding: 2rem;
+    background: rgba(20, 20, 25, 0.4);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 2.5rem;
     text-align: left;
-    transition: transform 0.3s, background 0.3s, box-shadow 0.3s;
+    transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), background 0.4s, box-shadow 0.4s;
     opacity: 0; /* For fade-in observer */
     transform: translateY(20px);
 }
@@ -810,9 +836,10 @@ input::placeholder {
 }
 
 .event-card-item:hover {
-    background: rgba(255,255,255,0.05);
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    background: rgba(30, 30, 35, 0.5);
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .event-card-status {
@@ -825,9 +852,10 @@ input::placeholder {
 .status-closed { color: var(--error-color); }
 
 .event-card-title {
-    font-size: 1.8rem;
-    letter-spacing: 3px;
+    font-size: 1.6rem;
+    letter-spacing: 4px;
     margin-bottom: 0.5rem;
+    font-weight: 400;
 }
 
 .event-card-date {
@@ -839,26 +867,29 @@ input::placeholder {
 
 .event-card-btn {
     display: inline-block;
-    padding: 0.8rem 1.5rem;
-    border: 1px solid var(--text-color);
+    padding: 0.8rem 1.8rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.05);
     color: var(--text-color);
     text-decoration: none;
     font-size: 0.8rem;
-    letter-spacing: 2px;
-    font-weight: 700;
-    transition: all 0.3s;
+    letter-spacing: 3px;
+    font-weight: 300;
+    border-radius: 4px;
+    transition: all 0.4s ease;
 }
 .event-card-btn:hover {
     background: var(--text-color);
     color: var(--bg-color);
+    border-color: var(--text-color);
 }
 
 /* FOOTER */
 .site-footer {
-    border-top: 1px solid var(--border-color);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
     padding: 3rem 2rem;
     text-align: center;
-    background: #050505;
+    background: transparent;
     margin-top: 4rem;
 }
 
