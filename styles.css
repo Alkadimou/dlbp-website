@@ -1646,17 +1646,13 @@ input::placeholder {
 }
 
 .hero-tagline-center {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     z-index: 10;
     font-size: 0.8rem;
     letter-spacing: 4px;
     color: rgba(255,255,255,0.7);
     font-weight: 400;
     text-align: center;
-    width: 100%;
+    position: relative;
 }
 
 .nav-logo:hover {
