@@ -1662,3 +1662,14 @@ input::placeholder {
 .nav-logo:hover {
     transform: scale(1.05);
 }
+
+@media (max-width: 768px) {
+    .main-nav {
+        padding: 1.5rem 1.5rem;
+    }
+    .hero-tagline-center {
+        font-size: 0.6rem;
+        letter-spacing: 2px;
+        width: 90%;
+    }
+}
