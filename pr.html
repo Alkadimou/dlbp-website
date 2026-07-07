@@ -77,17 +77,16 @@
         <div class="nav-right">
             <a href="index.html">HOME</a>
             <a href="eventi.html">EVENTI</a>
-            <button id="staff-btn" class="active">AREA RISERVATA</button>
+            <div class="dropdown-wrapper">
+                <button id="staff-btn" class="active">AREA RISERVATA</button>
+                <div class="dropdown-content" id="staff-dropdown">
+                    <a href="admin.html">ADMIN</a>
+                    <a href="scanner.html">SCANNER</a>
+                    <a href="pr.html" class="active">AREA PR</a>
+                </div>
+            </div>
         </div>
     </nav>
-
-    <!-- STAFF MENU OVERLAY -->
-    <div class="menu-overlay" id="staff-overlay">
-        <button class="close-overlay-btn" id="close-staff-btn" aria-label="Chiudi menu">&times;</button>
-        <a href="admin.html">ADMIN</a>
-        <a href="scanner.html">SCANNER</a>
-        <a href="pr.html" class="active">AREA PR</a>
-    </div>
     
     <main id="app-main" class="eventi-page pr-container">
         <!-- Login Section -->
@@ -136,22 +135,19 @@
         <div class="copyright-bottom-left">© 2026 DLBP — All rights reserved</div>
     </footer>
 
-    <!-- JS -->
     <script>
-        // Staff Menu Toggle Logic
+        // Staff Dropdown Toggle Logic
         const staffBtn = document.getElementById('staff-btn');
-        const staffOverlay = document.getElementById('staff-overlay');
-        const closeStaffBtn = document.getElementById('close-staff-btn');
+        const staffDropdown = document.getElementById('staff-dropdown');
 
-        if (staffBtn && staffOverlay) {
-            staffBtn.addEventListener('click', () => {
-                staffOverlay.classList.add('active');
+        if (staffBtn && staffDropdown) {
+            staffBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                staffDropdown.classList.toggle('show');
             });
-        }
 
-        if (closeStaffBtn && staffOverlay) {
-            closeStaffBtn.addEventListener('click', () => {
-                staffOverlay.classList.remove('active');
+            document.addEventListener('click', () => {
+                staffDropdown.classList.remove('show');
             });
         }
     </script>
