@@ -1625,10 +1625,8 @@ input::placeholder {
     justify-content: space-between;
     align-items: center;
     z-index: 100;
-    background: rgba(5, 5, 8, 0.85);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: transparent;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .nav-link {
