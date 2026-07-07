@@ -724,7 +724,9 @@ input::placeholder {
    LANDING PAGE — LUXURY EDITORIAL REDESIGN
    ================================================== */
 .landing-page {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
     background: transparent !important;
     font-family: 'Space Mono', monospace;
     text-align: center;
@@ -1411,6 +1413,8 @@ input::placeholder {
     margin: 0 auto;
     padding: 10rem 2rem 4rem;
     text-align: center;
+    flex: 1 0 auto;
+    width: 100%;
 }
 
 /* ==================================================
@@ -1584,13 +1588,14 @@ input::placeholder {
 /* --- EVENTS SECTION --- */
 .events-section {
     padding: 10rem 1.5rem 5rem;
-    min-height: 100vh;
     background: transparent;
     position: relative;
     z-index: 2;
     display: flex;
     flex-direction: column;
     align-items: center;
+    flex: 1 0 auto;
+    width: 100%;
 }
 
 .section-header {
@@ -1674,7 +1679,7 @@ input::placeholder {
 }
 
 .social-bottom {
-    position: fixed;
+    position: absolute;
     bottom: 5vh;
     left: 0;
     width: 100%;
@@ -1690,7 +1695,7 @@ input::placeholder {
 }
 
 .copyright-bottom-left {
-    position: fixed;
+    position: absolute;
     bottom: 5vh;
     left: 10vw;
     font-family: 'Space Mono', monospace;
