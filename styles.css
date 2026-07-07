@@ -710,15 +710,44 @@ input::placeholder {
     width: 100vw;
     height: 100vh;
     z-index: -1;
-    background: linear-gradient(45deg, #050505, #111, #0a0a0c, #000);
-    background-size: 400% 400%;
-    animation: fluidGradient 15s ease infinite;
+    background-color: #000;
+    overflow: hidden;
 }
 
-@keyframes fluidGradient {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+.fluid-background::before,
+.fluid-background::after {
+    content: '';
+    position: absolute;
+    width: 150vw;
+    height: 150vh;
+    top: -25vh;
+    left: -25vw;
+    border-radius: 50%;
+    filter: blur(100px);
+}
+
+.fluid-background::before {
+    background: radial-gradient(circle, rgba(50, 50, 80, 0.4) 0%, transparent 50%);
+    animation: float1 20s infinite ease-in-out;
+}
+
+.fluid-background::after {
+    background: radial-gradient(circle, rgba(80, 40, 60, 0.35) 0%, transparent 50%);
+    animation: float2 25s infinite ease-in-out reverse;
+}
+
+@keyframes float1 {
+    0% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(15%, 5%) scale(1.1); }
+    66% { transform: translate(-5%, 15%) scale(0.9); }
+    100% { transform: translate(0, 0) scale(1); }
+}
+
+@keyframes float2 {
+    0% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(-15%, -10%) scale(1.2); }
+    66% { transform: translate(10%, -15%) scale(0.8); }
+    100% { transform: translate(0, 0) scale(1); }
 }
 
 
