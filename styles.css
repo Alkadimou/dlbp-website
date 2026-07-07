@@ -55,7 +55,7 @@ body {
 }
 
 .logo-img {
-    width: 250px;
+    width: 175px;
     max-width: 100%;
     margin-bottom: 0.5rem;
 }
@@ -565,7 +565,7 @@ input::placeholder {
     display: none !important;
 }
 .loader-logo {
-    width: 150px;
+    width: 105px;
     animation: pulse 1.5s infinite;
 }
 @keyframes pulse {
@@ -1713,7 +1713,7 @@ input::placeholder {
 }
 
 .nav-logo {
-    width: 150px;
+    width: 105px;
     max-width: 50vw;
     height: auto;
     filter: drop-shadow(0 0 20px rgba(255,255,255,0.1));
