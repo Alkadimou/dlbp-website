@@ -696,6 +696,7 @@ input::placeholder {
     display: block;
     background: transparent !important;
     font-family: 'Space Mono', monospace;
+    text-align: center;
 }
 
 .landing-page .global-nav {
@@ -882,11 +883,14 @@ input::placeholder {
     align-items: center;
     justify-content: center;
     min-height: 80vh;
+    width: 100%;
 }
 
 .manifesto-inner {
     max-width: 720px;
+    margin: 0 auto;
     text-align: center;
+    width: 100%;
 }
 
 .section-label {
@@ -960,6 +964,7 @@ input::placeholder {
     position: relative;
     z-index: 2;
     padding: 6rem 2rem 8rem;
+    width: 100%;
 }
 
 .events-inner {
