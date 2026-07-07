@@ -36,9 +36,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const scrollIndicator = document.querySelector('.scroll-indicator');
     if (scrollIndicator) {
         scrollIndicator.addEventListener('click', () => {
-            const conceptSection = document.getElementById('concept');
-            if (conceptSection) {
-                conceptSection.scrollIntoView({ behavior: 'smooth' });
+            const eventsSection = document.getElementById('events');
+            if (eventsSection) {
+                eventsSection.scrollIntoView({ behavior: 'smooth' });
             }
         });
     }
@@ -91,14 +91,19 @@ async function loadEvents() {
             const statusText = isOpen ? 'ISCRIZIONI APERTE' : 'GUESTLIST CLOSED';
             const statusClass = isOpen ? 'status-open' : 'status-closed';
 
+            const flyerHtml = ev.flyerUrl ? `<img src="${ev.flyerUrl}" alt="Locandina" class="event-card-img">` : '';
+
             card.innerHTML = `
                 <div class="event-card-inner">
-                    <div class="event-card-status ${statusClass}">${statusText}</div>
-                    <h3 class="event-card-title">${ev.name}</h3>
-                    <div class="event-card-date">${ev.date}</div>
-                    <a href="event.html?id=${eventId}${prQuery}" class="event-card-btn">
-                        ${isOpen ? 'SCOPRI / ACCEDI' : 'DETTAGLI'}
-                    </a>
+                    ${flyerHtml}
+                    <div class="event-card-content">
+                        <div class="event-card-status ${statusClass}">${statusText}</div>
+                        <h3 class="event-card-title">${ev.name}</h3>
+                        <div class="event-card-date">${ev.date}</div>
+                        <a href="event.html?id=${eventId}${prQuery}" class="event-card-btn">
+                            ${isOpen ? 'SCOPRI / ACCEDI' : 'DETTAGLI'}
+                        </a>
+                    </div>
                 </div>
             `;
             

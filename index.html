@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#050508">
 </head>
@@ -18,39 +19,40 @@
         <img src="logo.png" alt="Loading..." class="loader-logo">
     </div>
 
-    <!-- Animated fluid background -->
-    <div class="fluid-background">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-        <div class="blob blob-3"></div>
-    </div>
-
-    <!-- Subtle grain texture overlay -->
-    <div class="grain-overlay"></div>
-
-    <!-- SINGLE SCREEN HERO -->
-    <section class="hero-section" id="hero">
-        <div class="hero-content reveal">
-            <img src="logo.png" alt="DLBP Logo" class="logo-img">
-            <div class="hero-divider"></div>
-            <p class="hero-tagline">DRINK · LOVE · BREATHE · PEACE</p>
+    <!-- MAIN NAVIGATION -->
+    <nav class="main-nav">
+        <div class="nav-left">
+            <a href="index.html">
+                <img src="logo.png" alt="DLBP Logo" class="nav-logo">
+            </a>
         </div>
+        <div class="nav-right">
+            <a href="eventi.html" class="nav-link">EVENTI</a>
+        </div>
+    </nav>
 
-        <!-- Bottom bar: EVENTI link + footer info -->
-        <div class="hero-bottom reveal stagger-2">
-            <a href="eventi.html" class="enter-btn">EVENTI</a>
-            <div class="hero-footer-row">
-                <a href="https://instagram.com/dlbp.art" target="_blank" rel="noopener" class="hero-social">Instagram</a>
+    <!-- HERO SECTION (100vh) -->
+    <section class="hero-fullscreen" id="hero">
+        <div class="hero-bg-fallback"></div>
+        <div class="grain-overlay" style="z-index: 1;"></div>
+        <div class="hero-tagline-bottom reveal">DRINK · LOVE · BREATHE · PEACE</div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-links">
+                <a href="https://instagram.com/dlbp.art" target="_blank" rel="noopener">Instagram</a>
+                <a href="mailto:info@dlbp.art">Contact</a>
             </div>
+            <div class="footer-copy">© 2026 DLBP — All rights reserved</div>
         </div>
-
-        <!-- Staff access (hidden) -->
         <div class="staff-links">
             <a href="admin.html">Admin</a>
             <a href="scanner.html">Scanner</a>
             <a href="pr.html">Area PR</a>
         </div>
-    </section>
+    </footer>
 
     <script type="module" src="home.js"></script>
 </body>
