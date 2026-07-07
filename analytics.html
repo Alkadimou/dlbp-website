@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DLBP | Analytics</title>
-    <link rel="icon" href="logo.png" type="image/jpeg">
+    <link rel="icon" href="logo.png" type="image/png">
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -26,82 +26,126 @@
             }
         }
         .chart-card {
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(255, 255, 255, 0.02);
             padding: 1.5rem;
-            border: 1px solid var(--border-color);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 8px;
+            backdrop-filter: blur(10px);
         }
         .chart-card h3 {
             margin-top: 0;
-            font-size: 1.2rem;
+            font-size: 1rem;
             letter-spacing: 2px;
-            color: var(--accent-color);
+            color: rgba(255,255,255,0.7);
             margin-bottom: 1rem;
             text-align: center;
+            font-family: 'Space Mono', monospace;
         }
-    </style>
-    <style>
         /* Loading overlay */
         #loading-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: var(--bg-color);
+            background: rgba(5, 5, 8, 0.9);
+            backdrop-filter: blur(10px);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 9999;
-            color: var(--accent-color);
-            font-family: 'Space Grotesk', sans-serif;
+            color: rgba(255,255,255,0.8);
+            font-family: 'Space Mono', monospace;
             letter-spacing: 3px;
+        }
+        .dashboard-grid {
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .kpi-box {
+            background: rgba(255,255,255,0.02);
+            padding: 1.5rem 1rem; 
+            text-align: center; 
+            border: 1px solid rgba(255,255,255,0.05); 
+            border-radius: 8px;
+            backdrop-filter: blur(5px);
+        }
+        .kpi-box.highlight {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.2); 
+        }
+        .kpi-box h4 {
+            color: rgba(255,255,255,0.5); 
+            font-size: 0.6rem; 
+            letter-spacing: 2px; 
+            margin-bottom: 0.5rem;
+            font-family: 'Space Mono', monospace;
+        }
+        .kpi-box.highlight h4 {
+            color: rgba(255,255,255,0.8);
+        }
+        .kpi-value {
+            font-size: 2rem; 
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
         }
     </style>
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#000000">
+    <meta name="theme-color" content="#050508">
 </head>
-<body>
+<body class="landing-page">
     <div id="loading-overlay">CARICAMENTO DATI...</div>
-    <nav class="global-nav">
+    <div id="initial-loader">
+        <img src="logo.png" alt="Loading..." class="loader-logo">
+    </div>
+
+    <!-- Animated fluid background -->
+    <div class="fluid-background">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+    <div class="grain-overlay"></div>
+
+    <!-- Minimal Menu -->
+    <button class="menu-btn" onclick="document.getElementById('nav-overlay').classList.add('active')">MENU</button>
+    <div id="nav-overlay" class="menu-overlay">
+        <button class="menu-btn" style="top: 2rem; right: 2rem;" onclick="document.getElementById('nav-overlay').classList.remove('active')">CHIUDI</button>
         <a href="index.html">HOME</a>
         <a href="admin.html">ADMIN</a>
         <a href="scanner.html">SCANNER</a>
         <a href="pr.html">AREA PR</a>
-    </nav>
-    <div class="noise-overlay"></div>
+    </div>
     
-    <main class="container admin-container">
-        <header class="header">
-            <img src="logo.png" alt="DLBP Logo" class="logo-img">
-            <p class="subtitle">DATA ANALYTICS</p>
-        </header>
+    <main class="eventi-page admin-container">
 
-        <section class="event-card fade-in stagger-1" id="analytics-content" style="display: none;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
-                <h2 class="event-title" style="font-size: 1.5rem; margin: 0;">PERFORMANCE EVENTO</h2>
+        <section class="event-card-item fade-in stagger-1" id="analytics-content" style="display: none; opacity: 1; transform: none; width: 100%; padding: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem;">
+                <h2 class="event-card-title" style="font-size: 1.2rem; margin: 0; text-align: left;">PERFORMANCE EVENTO</h2>
                 <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; flex: 1; justify-content: flex-end;">
-                    <select id="event-selector" style="padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk'; flex: 1; min-width: 200px; border-radius: 4px;">
+                    <select id="event-selector" style="padding: 0.5rem; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); font-family: 'Space Mono', monospace; flex: 1; min-width: 200px; border-radius: 4px; outline: none;">
                         <!-- Eventi caricati dinamicamente -->
                     </select>
-                    <a href="admin.html" class="submit-btn" style="text-decoration: none; display: inline-block; padding: 0.5rem 1rem; margin: 0; text-align: center; white-space: nowrap;">TORNA ALL'ADMIN</a>
+                    <a href="admin.html" class="submit-btn" style="margin: 0; padding: 0.5rem 1rem; text-decoration: none;">TORNA ALL'ADMIN</a>
                 </div>
             </div>
 
             <!-- Numeri Chiave -->
-            <div class="dashboard-grid" style="margin-bottom: 2rem;">
+            <div class="dashboard-grid">
                 <div class="kpi-box">
                     <h4>ISCRITTI TOTALI</h4>
                     <div class="kpi-value" id="stat-total">0</div>
                 </div>
                 <div class="kpi-box">
                     <h4>APPROVATI</h4>
-                    <div class="kpi-value" id="stat-approved" style="color: var(--success-color);">0</div>
+                    <div class="kpi-value" id="stat-approved" style="color: rgba(100,255,100,0.8);">0</div>
                 </div>
                 <div class="kpi-box">
                     <h4>IN ATTESA</h4>
-                    <div class="kpi-value" id="stat-pending" style="color: #f1c40f;">0</div>
+                    <div class="kpi-value" id="stat-pending" style="color: rgba(255,200,100,0.8);">0</div>
                 </div>
                 <div class="kpi-box highlight">
-                    <h4 style="color: var(--accent-color);">PRESENTI ALLA PORTA</h4>
-                    <div class="kpi-value" id="stat-present" style="color: var(--accent-color);">0</div>
+                    <h4>PRESENTI ALLA PORTA</h4>
+                    <div class="kpi-value" id="stat-present">0</div>
                 </div>
             </div>
 

@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DLBP | Admin Panel</title>
-    <link rel="icon" href="logo.png" type="image/jpeg">
+    <link rel="icon" href="logo.png" type="image/png">
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#050508">
     <style>
         .admin-container {
             max-width: 1200px;
@@ -18,10 +20,11 @@
             margin-top: 2rem;
             margin-bottom: 2rem;
             text-align: left;
+            font-family: 'Space Mono', monospace;
         }
         .users-table th, .users-table td {
             padding: 1rem;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             word-wrap: break-word;
             overflow-wrap: break-word;
             word-break: break-word;
@@ -38,24 +41,26 @@
             border-radius: 4px;
         }
         .users-table th {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             letter-spacing: 2px;
-            color: var(--accent-color);
+            color: rgba(255, 255, 255, 0.5);
             opacity: 0.8;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
         .pr-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
+            font-family: 'Space Mono', monospace;
         }
         .pr-table th, .pr-table td {
             padding: 1rem;
             text-align: left;
-            border-bottom: 1px solid #333;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
         .pr-table th {
-            color: var(--accent-color);
-            border-bottom: 2px solid #333;
+            color: rgba(255, 255, 255, 0.5);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
         .admin-actions {
             display: flex;
@@ -68,13 +73,6 @@
             box-sizing: border-box;
             max-width: 100%;
         }
-        .danger-btn {
-            background: var(--error-color);
-            color: white;
-        }
-        .danger-btn:hover {
-            background: #cc0000;
-        }
         #login-section {
             display: flex;
             flex-direction: column;
@@ -83,31 +81,21 @@
         #dashboard-section {
             display: none;
         }
-        .settings-panel {
-            background: rgba(0, 0, 0, 0.5);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            border: 1px solid var(--border-color);
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-            flex-wrap: wrap;
-        }
         .settings-item {
             display: flex;
             align-items: center;
             gap: 1rem;
         }
         .settings-item label {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             letter-spacing: 1px;
-            color: #888;
+            color: rgba(255, 255, 255, 0.5);
         }
         .toggle-switch {
             position: relative;
             display: inline-block;
-            width: 50px;
-            height: 24px;
+            width: 44px;
+            height: 20px;
         }
         .toggle-switch input {
             opacity: 0;
@@ -118,61 +106,51 @@
             position: absolute;
             cursor: pointer;
             top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #333;
+            background-color: rgba(255,255,255,0.1);
             transition: .4s;
-            border-radius: 24px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         .slider:before {
             position: absolute;
             content: "";
-            height: 16px;
-            width: 16px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
+            height: 12px;
+            width: 12px;
+            left: 3px;
+            bottom: 3px;
+            background-color: rgba(255,255,255,0.5);
             transition: .4s;
             border-radius: 50%;
         }
         input:checked + .slider {
-            background-color: #fff;
+            background-color: rgba(255,255,255,0.2);
         }
         input:checked + .slider:before {
-            transform: translateX(26px);
-            background-color: #000;
+            transform: translateX(24px);
+            background-color: #fff;
         }
         .capacity-input {
             width: 80px;
             padding: 0.5rem;
             text-align: center;
-            background: #111;
-            border: 1px solid var(--border-color);
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
             color: white;
-            font-family: 'Space Grotesk', sans-serif;
-        }
-        .present-counter {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #fff;
-            margin-left: auto;
+            font-family: 'Space Mono', monospace;
         }
 
         /* Responsive Improvements */
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
         
         @media (max-width: 768px) {
-            .event-card {
-                padding: 1.5rem 1rem; /* Meno padding sui lati per mobile */
-            }
             .admin-actions > * {
-                flex: 1 1 100%; /* Su mobile ogni pulsante occupa tutta la larghezza */
+                flex: 1 1 100%;
                 text-align: center;
                 justify-content: center;
             }
             #admin-event-selector {
                 width: 100%;
-                min-width: unset !important; /* Forza la riduzione su schermi piccoli */
+                min-width: unset !important;
             }
             #new-event-btn {
                 width: 100%;
@@ -192,8 +170,9 @@
             gap: 1rem;
             margin-bottom: 2rem;
             padding: 1rem;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid #333;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
         }
         .toolbar-panel .toolbar-input-group {
             display: flex;
@@ -202,7 +181,7 @@
         }
         .toolbar-panel .toolbar-input-group label {
             font-size: 0.7rem;
-            color: #888;
+            color: rgba(255, 255, 255, 0.5);
             letter-spacing: 1px;
             margin-bottom: 0.5rem;
         }
@@ -211,10 +190,11 @@
             width: 100%;
             height: 42px;
             padding: 0.5rem 1rem;
-            background: #000;
+            background: rgba(255,255,255,0.05);
             color: #fff;
-            border: 1px solid #444;
-            font-family: 'Space Grotesk';
+            border: 1px solid rgba(255,255,255,0.1);
+            font-family: 'Space Mono', monospace;
+            border-radius: 4px;
         }
         .toolbar-panel .toolbar-actions {
             display: grid;
@@ -236,98 +216,106 @@
             line-height: 1.2;
         }
     </style>
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#000000">
 </head>
-<body>
-    <nav class="global-nav">
+<body class="landing-page">
+    <div id="initial-loader">
+        <img src="logo.png" alt="Loading..." class="loader-logo">
+    </div>
+
+    <!-- Animated fluid background -->
+    <div class="fluid-background">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+    <div class="grain-overlay"></div>
+
+    <!-- Minimal Menu -->
+    <button class="menu-btn" onclick="document.getElementById('nav-overlay').classList.add('active')">MENU</button>
+    <div id="nav-overlay" class="menu-overlay">
+        <button class="menu-btn" style="top: 2rem; right: 2rem;" onclick="document.getElementById('nav-overlay').classList.remove('active')">CHIUDI</button>
         <a href="index.html">HOME</a>
         <a href="admin.html" class="active">ADMIN</a>
         <a href="scanner.html">SCANNER</a>
         <a href="pr.html">AREA PR</a>
-    </nav>
-    <div class="noise-overlay"></div>
+    </div>
     
-    <main id="app-main" class="container">
-        <header class="header">
-            <img src="logo.png" alt="DLBP Logo" class="logo-img">
-            <p class="subtitle">SECURITY CLEARANCE REQUIRED</p>
-        </header>
+    <main id="app-main" class="eventi-page">
 
         <!-- Login Section -->
-        <section id="login-section" class="event-card fade-in stagger-1" style="text-align: center;">
-            <h2 class="event-title" style="font-size: 1.5rem; margin-bottom: 2rem;">ACCESSO ADMIN</h2>
+        <section id="login-section" class="event-card-item fade-in stagger-1" style="max-width: 400px; margin: 0 auto; text-align: center; opacity: 1; transform: none;">
+            <h2 class="event-card-title" style="font-size: 1.2rem; margin-bottom: 2rem;">ACCESSO ADMIN</h2>
             <div class="form-group" style="margin-bottom: 1.5rem;">
-                <input type="email" id="admin-email" placeholder="EMAIL AMMINISTRATORE" required style="text-align: center; letter-spacing: 2px;">
+                <input type="email" id="admin-email" placeholder="EMAIL" required style="text-align: center; letter-spacing: 2px;">
             </div>
             <div class="form-group" style="margin-bottom: 2rem;">
-                <input type="password" id="admin-password" placeholder="INSERISCI PASSWORD" required style="text-align: center; letter-spacing: 2px;">
+                <input type="password" id="admin-password" placeholder="PASSWORD" required style="text-align: center; letter-spacing: 2px;">
             </div>
-            <button id="login-btn" class="submit-btn" style="font-weight: 900; letter-spacing: 4px; width: 100%; box-sizing: border-box;">ACCEDI</button>
+            <button id="login-btn" class="submit-btn" style="width: 100%;">ACCEDI</button>
             <div id="login-message" class="form-message hidden"></div>
         </section>
 
         <!-- Dashboard Section -->
-        <section id="dashboard-section" class="fade-in stagger-1" style="display: none; padding-bottom: 4rem;">
+        <section id="dashboard-section" class="fade-in stagger-1" style="display: none; width: 100%; max-width: 1000px; margin: 0 auto;">
             
             <!-- Global Header -->
-            <div class="admin-global-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem;">
-                <h2 class="event-title" style="font-size: 1.5rem; margin: 0;">ADMIN DASHBOARD</h2>
+            <div class="admin-global-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem;">
+                <h2 class="event-card-title" style="font-size: 1.2rem; margin: 0;">ADMIN DASHBOARD</h2>
                 <div class="global-actions" style="display: flex; gap: 1rem; align-items: center;">
                     <div class="event-selector-wrapper" style="display: flex; align-items: center; gap: 0.5rem;">
-                        <span style="font-size: 0.7rem; color: #888; letter-spacing: 1px;">EVENTO:</span>
-                        <select id="admin-event-selector" style="background: transparent; color: #fff; border: 1px solid #444; padding: 0.3rem 0.5rem; font-family: 'Space Grotesk'; font-size: 0.9rem; cursor: pointer;"></select>
+                        <span style="font-size: 0.7rem; color: rgba(255,255,255,0.5); letter-spacing: 1px;">EVENTO:</span>
+                        <select id="admin-event-selector" style="background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 0.5rem; font-family: 'Space Mono', monospace; font-size: 0.8rem; cursor: pointer; border-radius: 4px; outline: none;"></select>
                     </div>
-                    <button id="logout-btn" class="submit-btn outline-btn logout-btn" style="margin: 0; padding: 0.3rem 1rem; border-color: #ff3333; color: #ff3333; min-height: unset; font-size: 0.8rem;">ESCI</button>
+                    <button id="logout-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1rem; border-color: rgba(255, 50, 50, 0.4); color: rgba(255, 100, 100, 0.8); font-size: 0.7rem;">ESCI</button>
                 </div>
             </div>
 
             <!-- Event Summary Card -->
-            <div class="event-card summary-card" style="margin-bottom: 2rem; padding: 1.5rem;">
+            <div class="event-card-item summary-card" style="margin-bottom: 2rem; padding: 1.5rem; text-align: left; opacity: 1; transform: none;">
                 <div class="summary-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
                     <div>
-                        <h3 id="summary-event-title" style="font-size: 1.8rem; margin-bottom: 0.2rem; text-transform: uppercase; letter-spacing: 2px;">--</h3>
-                        <p id="summary-event-date" style="color: var(--accent-color); font-size: 0.9rem; letter-spacing: 1px; opacity: 0.8;">--</p>
+                        <h3 id="summary-event-title" style="font-size: 1.5rem; margin-bottom: 0.5rem; font-family: 'Space Mono', monospace; font-weight: 700; letter-spacing: 0.1em;">--</h3>
+                        <p id="summary-event-date" style="color: rgba(255,255,255,0.5); font-size: 0.8rem; letter-spacing: 1px; margin: 0;">--</p>
                     </div>
                     <div class="summary-actions" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                        <button id="set-active-btn" class="submit-btn outline-btn" style="margin: 0; padding: 0.5rem 1rem; font-size: 0.75rem; min-height: unset;">RENDI ATTIVO</button>
-                        <button id="edit-event-btn" class="submit-btn outline-btn" style="margin: 0; padding: 0.5rem 1rem; font-size: 0.75rem; min-height: unset;">MODIFICA</button>
-                        <button id="manage-pr-btn" class="submit-btn outline-btn" style="margin: 0; padding: 0.5rem 1rem; font-size: 0.75rem; min-height: unset;">AREA PR</button>
-                        <button id="new-event-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1rem; font-size: 0.75rem; min-height: unset;">+ NUOVO</button>
+                        <button id="set-active-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1rem; font-size: 0.7rem;">RENDI ATTIVO</button>
+                        <button id="edit-event-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1rem; font-size: 0.7rem;">MODIFICA</button>
+                        <button id="manage-pr-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1rem; font-size: 0.7rem;">AREA PR</button>
+                        <button id="new-event-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1rem; font-size: 0.7rem;">+ NUOVO</button>
                     </div>
                 </div>
 
                 <div class="kpi-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
-                    <div class="kpi-box" style="background: rgba(255,255,255,0.05); padding: 1rem; text-align: center; border: 1px solid #333;">
-                        <h4 style="color: #888; font-size: 0.7rem; letter-spacing: 2px; margin-bottom: 0.5rem;">CAPIENZA</h4>
-                        <div class="kpi-value" style="font-size: 2rem; font-weight: bold; color: #fff;" id="capacity-display">0</div>
+                    <div class="kpi-box" style="background: rgba(255,255,255,0.02); padding: 1rem; text-align: center; border: 1px solid rgba(255,255,255,0.05); border-radius: 8px;">
+                        <h4 style="color: rgba(255,255,255,0.5); font-size: 0.6rem; letter-spacing: 2px; margin-bottom: 0.5rem;">CAPIENZA</h4>
+                        <div class="kpi-value" style="font-size: 1.5rem; font-family: 'Space Mono', monospace;" id="capacity-display">0</div>
                     </div>
-                    <div class="kpi-box" style="background: rgba(255,255,255,0.05); padding: 1rem; text-align: center; border: 1px solid #333;">
-                        <h4 style="color: #888; font-size: 0.7rem; letter-spacing: 2px; margin-bottom: 0.5rem;">ISCRITTI</h4>
-                        <div class="kpi-value" id="stat-total-dash" style="font-size: 2rem; font-weight: bold; color: #fff;">0</div>
+                    <div class="kpi-box" style="background: rgba(255,255,255,0.02); padding: 1rem; text-align: center; border: 1px solid rgba(255,255,255,0.05); border-radius: 8px;">
+                        <h4 style="color: rgba(255,255,255,0.5); font-size: 0.6rem; letter-spacing: 2px; margin-bottom: 0.5rem;">ISCRITTI</h4>
+                        <div class="kpi-value" id="stat-total-dash" style="font-size: 1.5rem; font-family: 'Space Mono', monospace;">0</div>
                     </div>
-                    <div class="kpi-box highlight" style="background: rgba(255,255,255,0.1); padding: 1rem; text-align: center; border: 1px solid var(--accent-color);">
-                        <h4 style="color: var(--accent-color); font-size: 0.7rem; letter-spacing: 2px; margin-bottom: 0.5rem;">INGRESSI LIVE</h4>
-                        <div class="kpi-value" id="present-count-dash" style="font-size: 2.5rem; font-weight: bold; color: var(--accent-color);">0</div>
+                    <div class="kpi-box highlight" style="background: rgba(255,255,255,0.05); padding: 1rem; text-align: center; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px;">
+                        <h4 style="color: rgba(255,255,255,0.8); font-size: 0.6rem; letter-spacing: 2px; margin-bottom: 0.5rem;">INGRESSI LIVE</h4>
+                        <div class="kpi-value" id="present-count-dash" style="font-size: 2rem; font-family: 'Space Mono', monospace; font-weight: 700;">0</div>
                     </div>
                 </div>
             </div>
 
             <!-- Users Section -->
-            <div class="event-card" style="padding: 1.5rem;">
+            <div class="event-card-item" style="padding: 1.5rem; opacity: 1; transform: none; text-align: left;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
-                    <h2 class="event-title" style="font-size: 1.2rem; margin: 0; letter-spacing: 2px;">GESTIONE ISCRITTI</h2>
+                    <h2 class="event-card-title" style="font-size: 1rem; margin: 0; letter-spacing: 2px;">GESTIONE ISCRITTI</h2>
                 </div>
 
-                <div class="toolbar-panel unified-toolbar" style="display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; background: rgba(0,0,0,0.4); border: 1px solid #333; padding: 1rem;">
+                <div class="toolbar-panel unified-toolbar">
                     <div class="toolbar-input-group" style="flex: 1; min-width: 250px;">
-                        <input type="text" id="search-input" placeholder="Cerca nome o email..." style="width: 100%; height: 38px; padding: 0.5rem 1rem; background: #000; color: #fff; border: 1px solid #444; font-family: 'Space Grotesk';">
+                        <input type="text" id="search-input" placeholder="Cerca nome o email...">
                     </div>
                     <div class="toolbar-actions" style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
-                        <button class="submit-btn outline-btn small-btn" onclick="window.location.href='analytics.html'" style="margin: 0; height: 38px; min-height: unset; padding: 0 1rem; font-size: 0.7rem;">ANALYTICS</button>
-                        <button id="export-csv-btn" class="submit-btn outline-btn small-btn" style="margin: 0; height: 38px; min-height: unset; padding: 0 1rem; font-size: 0.7rem;">ESPORTA EXCEL</button>
-                        <button id="delete-selected-btn" class="submit-btn outline-btn small-btn" style="margin: 0; height: 38px; min-height: unset; padding: 0 1rem; font-size: 0.7rem; border-color: #ff3333; color: #ff3333;" disabled>ELIMINA SELEZIONATI</button>
-                        <button id="send-emails-btn" class="submit-btn small-btn" style="margin: 0; height: 38px; min-height: unset; padding: 0 1rem; font-size: 0.7rem;">INVIA ACCESSI</button>
+                        <button class="submit-btn" onclick="window.location.href='analytics.html'">ANALYTICS</button>
+                        <button id="export-csv-btn" class="submit-btn">ESPORTA</button>
+                        <button id="delete-selected-btn" class="submit-btn" style="border-color: rgba(255, 50, 50, 0.4); color: rgba(255, 100, 100, 0.8);" disabled>ELIMINA</button>
+                        <button id="send-emails-btn" class="submit-btn">INVIA ACCESSI</button>
                     </div>
                 </div>
                 
@@ -336,7 +324,7 @@
                     <thead>
                         <tr>
                             <th style="width: 40px; text-align: center;">
-                                <input type="checkbox" id="select-all-cb">
+                                <input type="checkbox" id="select-all-cb" style="width: auto;">
                             </th>
                             <th>NOME</th>
                             <th>EMAIL</th>
@@ -360,14 +348,14 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 
     <!-- PR Management Modal -->
-    <div id="pr-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; font-family: 'Space Grotesk', sans-serif;">
-        <div class="event-card" style="width: 90%; max-width: 600px; padding: 2rem; position: relative; max-height: 90vh; overflow-y: auto;">
-            <button id="close-pr-modal-btn" style="position: absolute; top: 1rem; right: 1rem; background: transparent; border: none; color: #fff; font-size: 1.5rem; cursor: pointer;">&times;</button>
-            <h2 class="event-title" style="font-size: 1.5rem; margin-bottom: 1.5rem;">GESTIONE PR</h2>
+    <div id="pr-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 600px; max-height: 90vh; overflow-y: auto;">
+            <button id="close-pr-modal-btn" style="position: absolute; top: 1rem; right: 1rem; background: transparent; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; font-family: 'Space Mono', monospace;">&times;</button>
+            <h2 class="event-card-title" style="font-size: 1.2rem; margin-bottom: 1.5rem;">GESTIONE PR</h2>
             
             <div style="display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap;">
-                <input type="text" id="pr-name-input" placeholder="Nome PR (es. Marco Rossi)" style="flex: 1; min-width: 200px; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333;">
-                <input type="text" id="pr-code-input" placeholder="Codice Accesso (es. marco24)" style="flex: 1; min-width: 200px; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333;">
+                <input type="text" id="pr-name-input" placeholder="Nome PR (es. Marco Rossi)" style="flex: 1; min-width: 200px;">
+                <input type="text" id="pr-code-input" placeholder="Codice (es. marco24)" style="flex: 1; min-width: 200px;">
                 <button id="add-pr-btn" class="submit-btn" style="padding: 0.5rem 1rem; margin: 0;">AGGIUNGI</button>
             </div>
 
@@ -390,37 +378,37 @@
     </div>
 
     <!-- Settings Modal -->
-    <div id="settings-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; justify-content: center; align-items: center; font-family: 'Space Grotesk', sans-serif;">
-        <div class="event-card" style="width: 90%; max-width: 800px; padding: 2rem; position: relative; max-height: 90vh; overflow-y: auto;">
-            <button id="close-settings-btn" style="position: absolute; top: 1rem; right: 1rem; background: transparent; border: none; color: #fff; font-size: 1.5rem; cursor: pointer;">&times;</button>
-            <h2 id="settings-panel-title" class="event-title" style="font-size: 1.5rem; margin-bottom: 1.5rem;">MODIFICA EVENTO ESISTENTE</h2>
+    <div id="settings-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
+            <button id="close-settings-btn" style="position: absolute; top: 1rem; right: 1rem; background: transparent; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; font-family: 'Space Mono', monospace;">&times;</button>
+            <h2 id="settings-panel-title" class="event-card-title" style="font-size: 1.2rem; margin-bottom: 1.5rem;">MODIFICA EVENTO ESISTENTE</h2>
             
-            <div style="display: flex; flex-direction: column; gap: 1rem; width: 100%;">
+            <div style="display: flex; flex-direction: column; gap: 1rem; width: 100%; text-align: left;">
                 <div class="settings-item" style="width: 100%;">
-                    <label>NOME EVENTO</label>
-                    <input type="text" id="event-name-input" placeholder="es: TXK.NØX Act II" style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk';">
+                    <label style="width: 150px; flex-shrink: 0;">NOME EVENTO</label>
+                    <input type="text" id="event-name-input" placeholder="es: TXK.NØX Act II" style="flex: 1;">
                 </div>
                 <div class="settings-item" style="width: 100%;">
-                    <label>SECRET LOCATION (Email)</label>
-                    <input type="text" id="event-location-input" placeholder="es: Via Fabio Filzi 28 Arezzo (AR)" style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk';">
+                    <label style="width: 150px; flex-shrink: 0;">SECRET LOCATION</label>
+                    <input type="text" id="event-location-input" placeholder="Indirizzo (per email)" style="flex: 1;">
                 </div>
                 <div style="display: flex; gap: 1rem; flex-wrap: wrap; width: 100%;">
                     <div class="settings-item" style="flex-grow: 2; min-width: 150px;">
-                        <label>DATA EVENTO</label>
-                        <input type="date" id="event-date-input" style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk';">
+                        <label style="width: auto;">DATA EVENTO</label>
+                        <input type="date" id="event-date-input" style="flex: 1;">
                     </div>
                     <div class="settings-item" style="flex-grow: 1; min-width: 100px;">
-                        <label>ORA INIZIO</label>
-                        <input type="time" id="event-start-time-input" style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk';">
+                        <label style="width: auto;">INIZIO</label>
+                        <input type="time" id="event-start-time-input" style="flex: 1;">
                     </div>
                     <div class="settings-item" style="flex-grow: 1; min-width: 100px;">
-                        <label>ORA FINE</label>
-                        <input type="time" id="event-end-time-input" style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk';">
+                        <label style="width: auto;">FINE</label>
+                        <input type="time" id="event-end-time-input" style="flex: 1;">
                     </div>
                 </div>
             </div>
             
-            <div style="display: flex; gap: 1rem; flex-wrap: wrap; width: 100%; margin-top: 1rem;">
+            <div style="display: flex; gap: 2rem; flex-wrap: wrap; width: 100%; margin-top: 1.5rem; align-items: center;">
                 <div class="settings-item">
                     <label>LISTE APERTE</label>
                     <label class="toggle-switch">
@@ -433,19 +421,19 @@
                     <input type="number" id="capacity-input" class="capacity-input" value="100">
                 </div>
             </div>
-            <div class="settings-item" style="flex-grow: 1; min-width: 250px; margin-top: 1rem;">
-                <label>CARICA FLYER</label>
-                <input type="file" id="flyer-input" accept="image/*" style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk';">
-                <div id="current-flyer-preview" style="margin-top: 10px; font-size: 0.8rem; color: #888;">Nessun flyer caricato.</div>
+            <div class="settings-item" style="width: 100%; margin-top: 1.5rem; text-align: left; display: block;">
+                <label style="display: block; margin-bottom: 0.5rem;">CARICA FLYER (JPEG/PNG)</label>
+                <input type="file" id="flyer-input" accept="image/*" style="width: 100%;">
+                <div id="current-flyer-preview" style="margin-top: 10px; font-size: 0.7rem; color: rgba(255,255,255,0.5);">Nessun flyer caricato.</div>
             </div>
-            <div style="margin-top: 1.5rem; width: 100%;">
-                <label>DESCRIZIONE EVENTO</label>
-                <textarea id="desc-input" rows="4" style="width: 100%; padding: 0.5rem; background: #111; color: #fff; border: 1px solid #333; font-family: 'Space Grotesk'; resize: vertical;"></textarea>
+            <div style="margin-top: 1.5rem; width: 100%; text-align: left;">
+                <label style="font-size: 0.7rem; color: rgba(255,255,255,0.5); letter-spacing: 1px; display: block; margin-bottom: 0.5rem;">DESCRIZIONE EVENTO</label>
+                <textarea id="desc-input" rows="4" style="width: 100%; padding: 1rem; background: rgba(255,255,255,0.03); color: #fff; border: 1px solid rgba(255,255,255,0.1); font-family: 'Space Mono', monospace; border-radius: 4px; resize: vertical; box-shadow: inset 0 2px 10px rgba(0,0,0,0.1); outline: none;"></textarea>
             </div>
             
-            <div style="display: flex; gap: 1rem; margin-top: 2rem; width: 100%;">
-                <button id="delete-event-btn" class="submit-btn outline-btn" style="flex: 1; border-color: #ff3333; color: #ff3333;">ELIMINA EVENTO</button>
-                <button id="save-content-btn" class="submit-btn" style="flex: 2;">SALVA DETTAGLI</button>
+            <div style="display: flex; gap: 1rem; margin-top: 2.5rem; width: 100%;">
+                <button id="delete-event-btn" class="submit-btn" style="flex: 1; border-color: rgba(255,50,50,0.4); color: rgba(255,100,100,0.8);">ELIMINA EVENTO</button>
+                <button id="save-content-btn" class="submit-btn" style="flex: 2; border-color: rgba(255,255,255,0.8); color: #fff;">SALVA DETTAGLI</button>
             </div>
         </div>
     </div>
