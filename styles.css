@@ -1680,6 +1680,20 @@ input::placeholder {
     align-items: center;
 }
 
+.copyright-bottom-left {
+    position: absolute;
+    bottom: 5vh;
+    left: 5vw;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.2);
+    letter-spacing: 0.1em;
+    z-index: 10;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
 .social-bottom a, .social-bottom span {
     color: rgba(255, 255, 255, 0.4);
     font-size: 1.2rem;
