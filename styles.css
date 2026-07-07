@@ -58,7 +58,6 @@ body {
     width: 250px;
     max-width: 100%;
     margin-bottom: 0.5rem;
-    mix-blend-mode: screen; /* Rimuove lo sfondo nero del JPG */
 }
 
 .subtitle {
@@ -532,7 +531,6 @@ input::placeholder {
 }
 .loader-logo {
     width: 150px;
-    mix-blend-mode: screen;
     animation: pulse 1.5s infinite;
 }
 @keyframes pulse {
