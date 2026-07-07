@@ -1626,7 +1626,16 @@ input::placeholder {
     align-items: center;
     z-index: 100;
     background: transparent;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.main-nav::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 20%;
+    right: 20%;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.15);
 }
 
 .nav-link {
