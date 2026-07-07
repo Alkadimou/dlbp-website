@@ -1723,4 +1723,20 @@ input::placeholder {
         letter-spacing: 2px;
         width: 90%;
     }
+    .social-bottom {
+        bottom: 10vh;
+    }
+    .social-icons {
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 0 1rem;
+    }
+    .copyright-bottom-left {
+        left: 0;
+        width: 100%;
+        text-align: center;
+        bottom: 4vh;
+        font-size: 0.55rem;
+    }
 }
