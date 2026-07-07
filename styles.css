@@ -1456,7 +1456,7 @@ input::placeholder {
     background: rgba(5, 5, 8, 0.95);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
-    z-index: 99;
+    z-index: 101;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1488,6 +1488,41 @@ input::placeholder {
 .menu-overlay a.active {
     color: #fff;
     font-weight: 700;
+}
+
+.close-overlay-btn {
+    position: absolute;
+    top: 2.5rem;
+    right: 10vw;
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 2.5rem;
+    font-family: sans-serif;
+    font-weight: 100;
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.3s ease;
+    outline: none;
+    z-index: 102;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+}
+
+.close-overlay-btn:hover {
+    color: #fff;
+    transform: rotate(90deg);
+}
+
+@media (max-width: 768px) {
+    .close-overlay-btn {
+        top: 1.5rem;
+        right: 1.5rem;
+        font-size: 2rem;
+    }
 }
 
 /* --- NEW LANDING PAGE HERO --- */

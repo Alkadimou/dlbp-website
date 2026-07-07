@@ -35,6 +35,7 @@
 
     <!-- STAFF MENU OVERLAY -->
     <div class="menu-overlay" id="staff-overlay">
+        <button class="close-overlay-btn" id="close-staff-btn" aria-label="Chiudi menu">&times;</button>
         <a href="admin.html">ADMIN</a>
         <a href="scanner.html">SCANNER</a>
         <a href="pr.html">AREA PR</a>
@@ -66,11 +67,17 @@
         // Staff Menu Toggle Logic
         const staffBtn = document.getElementById('staff-btn');
         const staffOverlay = document.getElementById('staff-overlay');
+        const closeStaffBtn = document.getElementById('close-staff-btn');
 
         if (staffBtn && staffOverlay) {
             staffBtn.addEventListener('click', () => {
-                staffOverlay.classList.toggle('active');
-                staffBtn.textContent = staffOverlay.classList.contains('active') ? 'CHIUDI' : 'AREA RISERVATA';
+                staffOverlay.classList.add('active');
+            });
+        }
+
+        if (closeStaffBtn && staffOverlay) {
+            closeStaffBtn.addEventListener('click', () => {
+                staffOverlay.classList.remove('active');
             });
         }
     </script>
