@@ -60,6 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
 async function loadEvents() {
     if (!db) return;
     const eventsGrid = document.getElementById("events-grid");
+    if (!eventsGrid) return;
     
     try {
         // Fetch all active events
