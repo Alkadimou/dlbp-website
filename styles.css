@@ -1655,6 +1655,26 @@ input::placeholder {
     -webkit-user-select: none;
 }
 
+.social-bottom {
+    position: absolute;
+    bottom: 5vh;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+}
+
+.social-bottom a {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.2rem;
+    transition: color 0.3s ease, transform 0.3s ease;
+    display: inline-block;
+}
+
+.social-bottom a:hover {
+    color: #fff;
+    transform: translateY(-3px);
+}
+
 .nav-logo:hover {
     transform: scale(1.05);
 }
