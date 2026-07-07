@@ -817,15 +817,14 @@ input::placeholder {
     margin: 0 auto 2rem;
 }
 
-.hero-title {
+.hero-tagline {
     font-family: 'Space Mono', monospace;
-    font-size: clamp(2.5rem, 7vw, 5.5rem);
-    font-weight: 300;
-    font-style: normal;
-    letter-spacing: 0.06em;
-    line-height: 1.15;
-    color: #fff;
-    margin-bottom: 1.5rem;
+    font-size: clamp(0.7rem, 1.3vw, 0.9rem);
+    font-weight: 400;
+    letter-spacing: 0.4em;
+    color: rgba(255, 255, 255, 0.45);
+    margin-bottom: 0.8rem;
+    text-transform: lowercase;
 }
 
 .hero-subtitle {
