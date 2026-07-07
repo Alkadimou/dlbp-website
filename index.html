@@ -4,79 +4,89 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DLBP | Drink Love Breathe Peace</title>
-    <meta name="description" content="Drink Love Breathe Peace. Exclusive artistic movement and private events.">
-    <link rel="icon" href="logo.png" type="image/jpeg">
+    <meta name="description" content="DLBP — An exclusive artistic movement. Private events, curated experiences, underground culture.">
+    <link rel="icon" href="logo.png" type="image/png">
     <link rel="stylesheet" href="styles.css">
-    <!-- Google Fonts: Space Grotesk for a geometric, modern, underground feel -->
+    <!-- Fonts: Cormorant Garamond (editorial serif) + Inter (clean sans-serif) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@200;300;400;500&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#000000">
+    <meta name="theme-color" content="#050508">
 </head>
 <body class="landing-page">
     <div id="initial-loader">
         <img src="logo.png" alt="Loading..." class="loader-logo">
     </div>
 
-    <!-- Hidden secret nav items on desktop, visible on footer -->
-    <div class="noise-overlay"></div>
+    <!-- Animated fluid background -->
     <div class="fluid-background">
         <div class="blob blob-1"></div>
         <div class="blob blob-2"></div>
         <div class="blob blob-3"></div>
     </div>
-    
+
+    <!-- Subtle grain texture overlay -->
+    <div class="grain-overlay"></div>
+
     <!-- HERO SECTION -->
-    <section class="hero-section">
+    <section class="hero-section" id="hero">
         <div class="hero-content reveal">
-            <img src="logo.png" alt="DLBP Logo" class="logo-img parallax-hover">
-            <h1 class="hero-title">DRINK LOVE BREATHE PEACE</h1>
-            <p class="hero-subtitle">ARTISTIC MOVEMENT & PRIVATE EVENTS</p>
+            <img src="logo.png" alt="DLBP Logo" class="logo-img">
+            <div class="hero-divider"></div>
+            <h1 class="hero-title">Drink Love<br>Breathe Peace</h1>
+            <p class="hero-subtitle">Artistic Movement · Private Events</p>
         </div>
-        <div class="scroll-indicator fade-in stagger-3">
-            <span>DISCOVER</span>
-            <div class="scroll-arrow">↓</div>
+        <div class="scroll-indicator reveal stagger-2">
+            <span>SCOPRI</span>
+            <div class="scroll-line"></div>
         </div>
     </section>
 
-    <main class="container">
-        <!-- CONCEPT SECTION -->
-        <section class="concept-section reveal" id="concept">
-            <h2 class="section-title">CONCEPT</h2>
-            <div class="concept-text">
-                <p>Non siamo solo un evento, siamo un movimento.</p>
-                <p>Spazi segreti, sonorità ricercate e un'atmosfera dove la libertà d'espressione è l'unica regola.</p>
-                <p>L'accesso ai nostri eventi è strettamente su invito o tramite selezione all'ingresso. Unisciti a noi.</p>
-            </div>
-        </section>
+    <!-- MANIFESTO SECTION -->
+    <section class="manifesto-section" id="concept">
+        <div class="manifesto-inner reveal">
+            <span class="section-label">IL NOSTRO MANIFESTO</span>
+            <h2 class="manifesto-heading">Non siamo solo un evento.<br><em>Siamo un movimento.</em></h2>
+            <div class="manifesto-divider"></div>
+            <p class="manifesto-body">
+                Spazi segreti, sonorità ricercate e un'atmosfera dove la libertà 
+                d'espressione è l'unica regola. L'accesso ai nostri eventi è 
+                strettamente su invito o tramite selezione all'ingresso.
+            </p>
+            <p class="manifesto-cta">Unisciti a noi.</p>
+        </div>
+    </section>
 
-        <!-- EVENTS SECTION -->
-        <section class="events-directory reveal" id="events">
-            <h2 class="section-title">UPCOMING EVENTS</h2>
-            
+    <!-- EVENTS SECTION -->
+    <section class="events-section" id="events">
+        <div class="events-inner">
+            <span class="section-label reveal">PROSSIMI EVENTI</span>
             <div id="events-grid" class="events-grid">
-                <!-- Event cards will be injected here by home.js -->
-                <div class="loading-events" style="text-align: center; padding: 3rem; color: #666; font-size: 0.9rem; letter-spacing: 2px;">
-                    CARICAMENTO EVENTI...
+                <div class="loading-events">
+                    <div class="loading-pulse"></div>
+                    <span>CARICAMENTO...</span>
                 </div>
             </div>
-        </section>
-    </main>
+        </div>
+    </section>
 
     <!-- FOOTER -->
     <footer class="site-footer">
-        <div class="footer-content">
-            <div class="footer-brand">DLBP © 2026</div>
-            <div class="footer-social">
-                <a href="https://instagram.com/dlbp.art" target="_blank">INSTAGRAM</a>
+        <div class="footer-inner">
+            <div class="footer-logo">
+                <img src="logo.png" alt="DLBP" class="footer-logo-img">
             </div>
+            <div class="footer-links">
+                <a href="https://instagram.com/dlbp.art" target="_blank" rel="noopener">Instagram</a>
+            </div>
+            <div class="footer-copy">© 2026 DLBP — All rights reserved</div>
         </div>
-        <!-- Secret links for staff -->
+        <!-- Staff access -->
         <div class="staff-links">
-            <a href="admin.html">ADMIN</a>
-            <a href="scanner.html">SCANNER</a>
-            <a href="pr.html">AREA PR</a>
+            <a href="admin.html">Admin</a>
+            <a href="scanner.html">Scanner</a>
+            <a href="pr.html">Area PR</a>
         </div>
     </footer>
 
