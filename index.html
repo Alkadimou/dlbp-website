@@ -14,91 +14,67 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#000000">
 </head>
-<body>
+<body class="landing-page">
     <div id="initial-loader">
         <img src="logo.jpg" alt="Loading..." class="loader-logo">
     </div>
-    <nav class="global-nav">
-        <a href="index.html" class="active">HOME</a>
-        <a href="admin.html">ADMIN</a>
-        <a href="scanner.html">SCANNER</a>
-        <a href="pr.html">AREA PR</a>
-    </nav>
+
+    <!-- Hidden secret nav items on desktop, visible on footer -->
     <div class="noise-overlay"></div>
     
-    <main class="container">
-        <header class="header reveal">
+    <!-- HERO SECTION -->
+    <section class="hero-section">
+        <div class="hero-content reveal">
             <img src="logo.jpg" alt="DLBP Logo" class="logo-img parallax-hover">
-            <p class="subtitle">Drink &middot; Love &middot; Breathe &middot; Peace</p>
-        </header>
+            <h1 class="hero-title glitch" data-text="DRINK LOVE BREATHE PEACE">DRINK LOVE BREATHE PEACE</h1>
+            <p class="hero-subtitle">ARTISTIC MOVEMENT & PRIVATE EVENTS</p>
+        </div>
+        <div class="scroll-indicator fade-in stagger-3">
+            <span>DISCOVER</span>
+            <div class="scroll-arrow">↓</div>
+        </div>
+    </section>
 
-        <section class="event-section fade-in stagger-1">
-            <div class="event-card">
-                
-                <div id="public-event-header" style="display: none; text-align: center;" class="reveal">
-                    <div class="event-status">PROSSIMO EVENTO // NUMERO CHIUSO</div>
-                    <h1 class="event-title" id="public-event-title">TXK.NØX</h1>
-                    <p class="event-date" id="public-event-date">SABATO 04/07 | 16:00 - 21:00</p>
-                </div>
+    <main class="container">
+        <!-- CONCEPT SECTION -->
+        <section class="concept-section reveal" id="concept">
+            <h2 class="section-title">CONCEPT</h2>
+            <div class="concept-text">
+                <p>Non siamo solo un evento, siamo un movimento.</p>
+                <p>Spazi segreti, sonorità ricercate e un'atmosfera dove la libertà d'espressione è l'unica regola.</p>
+                <p>L'accesso ai nostri eventi è strettamente su invito o tramite selezione all'ingresso. Unisciti a noi.</p>
+            </div>
+        </section>
 
-                <div id="gate-section" style="text-align: center;" class="reveal">
-                    <h3 style="letter-spacing: 3px; font-weight: 700; margin-bottom: 0.5rem; font-size: 1.2rem; color: #fff; text-transform: uppercase;">INGRESSO RISERVATO</h3>
-                    <p style="color: var(--accent-color); font-size: 0.85rem; letter-spacing: 2px; margin-bottom: 2rem; opacity: 0.8;">INSERISCI LA PASSWORD</p>
-                    <div class="form-group" style="margin-bottom: 1rem;">
-                        <input type="password" id="gate-password" placeholder="PASSWORD" style="text-align: center; letter-spacing: 5px; font-size: 1.2rem; padding: 1.2rem; border: 2px solid var(--text-color); background: rgba(255,255,255,0.05); color: #fff; box-shadow: 0 0 15px rgba(255,255,255,0.1) inset; border-radius: 4px;">
-                    </div>
-                    <button id="gate-btn" class="submit-btn" style="margin-top: 1rem; font-weight: 900; letter-spacing: 4px; border: 1px solid var(--text-color);">
-                        <span class="btn-text">SBLOCCA ACCESSO</span>
-                    </button>
-                    <div id="gate-message" class="form-message hidden"></div>
-                </div>
-
-                <div id="registration-section" style="display: none; margin-top: 2rem;" class="fade-in stagger-3">
-                    <p class="event-description" id="public-event-description">
-                        Un'esperienza immersiva e riservata. 
-                        L'accesso è strettamente limitato. Inserisci i tuoi dati per richiedere l'iscrizione.
-                        La location esatta (segreta) verrà comunicata solo agli iscritti selezionati 24h prima dell'evento.
-                    </p>
-
-                    <div id="closed-message" style="display: none; text-align: center; padding: 2rem; border: 1px solid var(--error-color); background: rgba(255,51,51,0.1); margin-bottom: 2rem;">
-                        <h3 style="color: var(--error-color); letter-spacing: 2px;">GUESTLIST CLOSED</h3>
-                        <p style="font-size: 0.9rem; margin-top: 0.5rem; opacity: 0.8;">Le iscrizioni per questo evento sono chiuse.</p>
-                    </div>
-
-                    <form id="registration-form" class="registration-form">
-                    <div class="form-group">
-                        <input type="text" id="name" name="name" required placeholder="NOME E COGNOME">
-                    </div>
-                    <div class="form-group">
-                        <input type="email" id="email" name="email" required placeholder="EMAIL">
-                    </div>
-                    <div class="form-group privacy-checkbox" style="display: flex; align-items: flex-start; gap: 1rem; text-align: left; margin-bottom: 2rem; padding: 1rem; background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 4px;">
-                        <input type="checkbox" id="privacy-consent" name="privacy-consent" required style="margin-top: 0.3rem; accent-color: var(--accent-color); width: 18px; height: 18px; cursor: pointer;">
-                        <label for="privacy-consent" style="font-size: 0.75rem; color: #aaa; line-height: 1.5; cursor: pointer;">
-                            Acconsento al trattamento dei miei dati personali per ricevere il biglietto d'ingresso e le comunicazioni relative agli eventi secondo le vigenti normative sulla privacy.
-                        </label>
-                    </div>
-                    <button type="submit" class="submit-btn" id="submit-btn" style="letter-spacing: 3px; font-weight: 700;">
-                        <span class="btn-text">RICHIEDI ACCESSO</span>
-                    </button>
-                    <div id="form-message" class="form-message hidden"></div>
-                </form>
+        <!-- EVENTS SECTION -->
+        <section class="events-directory reveal" id="events">
+            <h2 class="section-title">UPCOMING EVENTS</h2>
+            
+            <div id="events-grid" class="events-grid">
+                <!-- Event cards will be injected here by home.js -->
+                <div class="loading-events" style="text-align: center; padding: 3rem; color: #666; font-size: 0.9rem; letter-spacing: 2px;">
+                    CARICAMENTO EVENTI...
                 </div>
             </div>
         </section>
     </main>
-    <!-- Success Modal -->
-    <div id="success-modal" class="modal hidden">
-        <div class="modal-content">
-            <h2 style="letter-spacing: 2px; margin-bottom: 1rem;">RICHIESTA RICEVUTA</h2>
-            <p style="color: #aaa; margin-bottom: 2rem; font-size: 0.9rem; line-height: 1.5;">
-                I tuoi dati sono stati registrati con successo.<br>
-                Se selezionato, riceverai la Secret Location via email 24h prima dell'evento.
-            </p>
-            <button id="close-modal-btn" class="submit-btn outline-btn" style="width: 100%;">CHIUDI</button>
-        </div>
-    </div>
 
-    <script type="module" src="app.js"></script>
+    <!-- FOOTER -->
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-brand">DLBP © 2026</div>
+            <div class="footer-social">
+                <a href="https://instagram.com/dlbp.art" target="_blank">INSTAGRAM</a>
+            </div>
+        </div>
+        <!-- Secret links for staff -->
+        <div class="staff-links">
+            <a href="admin.html">ADMIN</a>
+            <a href="scanner.html">SCANNER</a>
+            <a href="pr.html">AREA PR</a>
+        </div>
+    </footer>
+
+    <script type="module" src="home.js"></script>
 </body>
 </html>

@@ -52,12 +52,21 @@ document.addEventListener("DOMContentLoaded", () => {
     async function loadActiveEvent() {
         if (!db) return;
         try {
-            const q = query(collection(db, "events"), where("isActive", "==", true));
-            const querySnapshot = await getDocs(q);
-            if (!querySnapshot.empty) {
-                const eventDoc = querySnapshot.docs[0];
-                const ev = eventDoc.data();
-                currentEventId = eventDoc.id;
+            const urlParams = new URLSearchParams(window.location.search);
+            const eventId = urlParams.get('id');
+
+            if (!eventId) {
+                // If no event ID is provided, redirect to home page
+                window.location.href = 'index.html';
+                return;
+            }
+
+            const docRef = doc(db, "events", eventId);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                const ev = docSnap.data();
+                currentEventId = eventId;
                 
                 // Update UI
                 const titleEl = document.getElementById("public-event-title");
