@@ -1633,16 +1633,6 @@ input::placeholder {
     background: transparent;
 }
 
-.main-nav::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 20%;
-    right: 20%;
-    height: 1px;
-    background: rgba(255, 255, 255, 0.15);
-}
-
 .nav-link {
     font-family: 'Space Mono', monospace;
     font-size: 0.9rem;
