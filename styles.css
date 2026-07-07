@@ -1418,6 +1418,7 @@ input::placeholder {
     cursor: pointer;
     text-transform: uppercase;
     transition: color 0.3s ease;
+    outline: none;
 }
 .menu-btn:hover {
     color: #fff;

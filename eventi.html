@@ -22,6 +22,13 @@
     </div>
     <div class="grain-overlay"></div>
 
+    <!-- FULLSCREEN MENU OVERLAY -->
+    <div class="menu-overlay" id="menu-overlay">
+        <a href="index.html">HOME</a>
+        <a href="eventi.html" class="active">EVENTI</a>
+        <!-- <a href="about.html">ABOUT</a> -->
+    </div>
+
     <!-- MAIN NAVIGATION -->
     <nav class="main-nav">
         <div class="nav-left">
@@ -30,7 +37,7 @@
             </a>
         </div>
         <div class="nav-right">
-            <a href="index.html" class="nav-link">HOME</a>
+            <button class="menu-btn" id="menu-btn">MENU</button>
         </div>
     </nav>
 
@@ -60,6 +67,19 @@
         </div>
     </footer>
 
+    <!-- JS -->
+    <script>
+        // Menu Toggle Logic
+        const menuBtn = document.getElementById('menu-btn');
+        const menuOverlay = document.getElementById('menu-overlay');
+
+        if (menuBtn && menuOverlay) {
+            menuBtn.addEventListener('click', () => {
+                menuOverlay.classList.toggle('active');
+                menuBtn.textContent = menuOverlay.classList.contains('active') ? 'CHIUDI' : 'MENU';
+            });
+        }
+    </script>
     <script type="module" src="home.js"></script>
 </body>
 </html>

@@ -34,9 +34,16 @@
             </a>
         </div>
         <div class="nav-right">
-            <a href="eventi.html" class="nav-link">EVENTI</a>
+            <button class="menu-btn" id="menu-btn">MENU</button>
         </div>
     </nav>
+
+    <!-- FULLSCREEN MENU OVERLAY -->
+    <div class="menu-overlay" id="menu-overlay">
+        <a href="index.html">HOME</a>
+        <a href="eventi.html">EVENTI</a>
+        <!-- <a href="about.html">ABOUT</a> -->
+    </div>
 
     <main class="eventi-page">
         <section class="event-section fade-in stagger-1">
@@ -107,6 +114,19 @@
         </div>
     </div>
 
+    <!-- JS -->
+    <script>
+        // Menu Toggle Logic
+        const menuBtn = document.getElementById('menu-btn');
+        const menuOverlay = document.getElementById('menu-overlay');
+
+        if (menuBtn && menuOverlay) {
+            menuBtn.addEventListener('click', () => {
+                menuOverlay.classList.toggle('active');
+                menuBtn.textContent = menuOverlay.classList.contains('active') ? 'CHIUDI' : 'MENU';
+            });
+        }
+    </script>
     <script type="module" src="app.js"></script>
 </body>
 </html>
