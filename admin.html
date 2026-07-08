@@ -220,21 +220,22 @@
             }
             
             /* Table Mobile View (Cards) */
-            .users-table thead {
+            .users-table thead, .pr-table thead {
                 display: none;
             }
-            .users-table, .users-table tbody, .users-table tr, .users-table td {
+            .users-table, .users-table tbody, .users-table tr, .users-table td,
+            .pr-table, .pr-table tbody, .pr-table tr, .pr-table td {
                 display: block;
                 width: 100%;
             }
-            .users-table tr {
+            .users-table tr, .pr-table tr {
                 margin-bottom: 1.5rem;
                 background: rgba(255, 255, 255, 0.02);
                 border: 1px solid rgba(255, 255, 255, 0.1);
                 border-radius: 8px;
                 padding: 0.5rem;
             }
-            .users-table td {
+            .users-table td, .pr-table td {
                 text-align: right !important;
                 padding: 0.75rem;
                 border-bottom: 1px dotted rgba(255, 255, 255, 0.1);
@@ -244,10 +245,10 @@
                 display: block;
                 word-break: break-all;
             }
-            .users-table td:last-child {
+            .users-table td:last-child, .pr-table td:last-child {
                 border-bottom: 0;
             }
-            .users-table td::before {
+            .users-table td::before, .pr-table td::before {
                 content: attr(data-label);
                 position: absolute;
                 left: 0.75rem;
@@ -259,7 +260,7 @@
                 text-transform: uppercase;
                 letter-spacing: 1px;
             }
-            .users-table td input[type="checkbox"] {
+            .users-table td input[type="checkbox"], .pr-table td input[type="checkbox"] {
                 transform: scale(1.5);
                 margin: 0;
             }
