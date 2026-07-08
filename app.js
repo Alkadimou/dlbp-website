@@ -15,7 +15,7 @@ const firebaseConfig = {
 // EmailJS config
 const EMAILJS_PUBLIC_KEY = "XIMzE429r_DY-U4nl";
 const EMAILJS_SERVICE_ID = "service_ndbmwte";
-const EMAILJS_REGISTRATION_TEMPLATE_ID = "template_registration_pending";
+const EMAILJS_REGISTRATION_TEMPLATE_ID = "reg_pending";
 
 // Initialize EmailJS
 if (typeof emailjs !== 'undefined') {
@@ -229,7 +229,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Send email confirmation
             try {
-                if (typeof emailjs !== 'undefined' && EMAILJS_REGISTRATION_TEMPLATE_ID !== "template_registration_pending") {
+                if (typeof emailjs !== 'undefined' && EMAILJS_REGISTRATION_TEMPLATE_ID !== "reg_pending") {
                     await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_REGISTRATION_TEMPLATE_ID, {
                         to_name: name,
                         to_email: email,
