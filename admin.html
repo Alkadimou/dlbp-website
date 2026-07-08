@@ -261,7 +261,11 @@
                 letter-spacing: 1px;
             }
             .users-table td input[type="checkbox"], .pr-table td input[type="checkbox"] {
-                transform: scale(1.5);
+                position: absolute;
+                right: 0.75rem;
+                top: 50%;
+                transform: translateY(-50%) scale(1.5);
+                transform-origin: right center;
                 margin: 0;
             }
             /* Hide the redundant "Seleziona" text on mobile if possible, or keep it */
