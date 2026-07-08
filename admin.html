@@ -235,14 +235,14 @@
                 padding: 0.5rem;
             }
             .users-table td {
-                text-align: left !important;
+                text-align: right !important;
                 padding: 0.75rem;
                 border-bottom: 1px dotted rgba(255, 255, 255, 0.1);
                 position: relative;
-                padding-right: 45%;
+                padding-left: 45%;
                 min-height: 40px;
                 display: flex;
-                justify-content: flex-start;
+                justify-content: flex-end;
                 align-items: center;
                 word-break: break-all;
             }
@@ -252,9 +252,9 @@
             .users-table td::before {
                 content: attr(data-label);
                 position: absolute;
-                right: 0.75rem;
+                left: 0.75rem;
                 width: 40%;
-                text-align: right;
+                text-align: left;
                 font-weight: bold;
                 color: rgba(255, 255, 255, 0.5);
                 font-size: 0.7rem;
