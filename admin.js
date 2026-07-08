@@ -18,7 +18,6 @@ const firebaseConfig = {
 const EMAILJS_PUBLIC_KEY = "XIMzE429r_DY-U4nl";
 const EMAILJS_SERVICE_ID = "service_ndbmwte";
 const EMAILJS_TEMPLATE_ID = "ticket_confirm";
-const EMAILJS_APPROVE_TEMPLATE_ID = "approve_confirm";
 
 let db;
 let auth;
@@ -682,7 +681,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const checkinTimeHtml = user.checked_in && user.check_in_time ? user.check_in_time.toLocaleTimeString('it-IT', {hour: '2-digit', minute:'2-digit'}) : '-';
             
             let actionsHtml = `
-                <button class="approve-btn action-btn-icon" data-id="${user.id}" title="Approva Accesso" style="${user.status === 'approved' ? 'opacity:0.3; cursor:default;' : ''}">✓</button>
                 <button class="checkin-btn action-btn-icon check" data-id="${user.id}" title="Segna Presente" style="${user.checked_in ? 'opacity:0.3; cursor:default;' : ''}">🚪</button>
                 <button class="resend-email-btn action-btn-icon" data-id="${user.id}" title="Invia Email Singola">✉</button>
             `;
@@ -726,55 +724,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
 
-        // Approve Logic
-        document.querySelectorAll(".approve-btn").forEach(btn => {
-            btn.addEventListener("click", async (e) => {
-                const id = e.target.dataset.id;
-                const user = usersData.find(u => u.id === id);
-                if (user && user.status === "approved") return;
-                
-                if (!await showConfirm(`Vuoi approvare l'accesso per ${user.name} e inviare l'email di conferma (senza QR)?`)) return;
 
-                e.target.disabled = true;
-                e.target.style.opacity = "0.5";
-
-                try {
-                    await updateDoc(doc(db, "registrations", id), { status: "approved" });
-
-                    // Get event name
-                    let eventName = "Evento";
-                    try {
-                        if (currentEventId) {
-                            const eventSnap = await getDoc(doc(db, "events", currentEventId));
-                            if (eventSnap.exists()) {
-                                eventName = eventSnap.data().name || "Evento";
-                            }
-                        }
-                    } catch (evErr) {
-                        console.error("Failed to fetch event name for approval email", evErr);
-                    }
-
-                    // Send email
-                    if (EMAILJS_PUBLIC_KEY !== "YOUR_EMAILJS_PUBLIC_KEY" && EMAILJS_APPROVE_TEMPLATE_ID !== "approve_confirm_pending") {
-                        try {
-                            await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_APPROVE_TEMPLATE_ID, {
-                                to_name: user.name,
-                                to_email: user.email,
-                                event_name: eventName
-                            });
-                        } catch (mailErr) {
-                            console.error("Error sending approval email:", mailErr);
-                        }
-                    }
-
-                    loadUsers(); // Refresh table
-                } catch (error) {
-                    console.error("Error approving user", error);
-                    e.target.disabled = false;
-                    e.target.style.opacity = "1";
-                }
-            });
-        });
 
         // Check-in Logic
         document.querySelectorAll(".checkin-btn").forEach(btn => {

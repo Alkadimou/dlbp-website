@@ -216,7 +216,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     eventId: currentEventId,
                     invited_by: prCode, // Track PR referrals
                     checked_in: false, // New field for QR code system
-                    status: "pending", // VIP approval status
+                    status: "approved", // Automatically approved
                     email_sent: false, // Track if secret location was sent
                     privacy_consent: privacyConsent, // Privacy consent flag
                     timestamp: serverTimestamp()
