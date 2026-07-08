@@ -681,11 +681,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 <button class="resend-email-btn action-btn-icon" data-id="${user.id}" title="Invia Email Singola">✉</button>
             `;
 
+            const ticketHtml = user.email_sent ? `<span style="color: #4CAF50;">INVIATO</span>` : `<span style="color: #ffcc00;">NO</span>`;
+
             tr.innerHTML = `
                 <td style="text-align: center;"><input type="checkbox" class="user-checkbox" data-id="${user.id}"></td>
                 <td>${escapeHtml(user.name)}</td>
                 <td style="word-break: break-all;">${escapeHtml(user.email)}</td>
                 <td style="color: #aaa; text-transform: uppercase; text-align: center;">${escapeHtml(user.invited_by) || '-'}</td>
+                <td style="text-align: center; white-space: nowrap; font-size: 0.8rem;">${ticketHtml}</td>
                 <td style="white-space: nowrap;">${statusHtml} ${user.checked_in && user.check_in_time ? '<br><small style="color:#888;">'+user.check_in_time.toLocaleTimeString('it-IT', {hour: '2-digit', minute:'2-digit'})+'</small>' : ''}</td>
                 <td style="white-space: nowrap;">${user.timestamp.toLocaleString('it-IT', {dateStyle: 'short', timeStyle: 'short'})}</td>
                 <td style="text-align: right; white-space: nowrap;">${actionsHtml}</td>

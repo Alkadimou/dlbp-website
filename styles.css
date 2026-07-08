@@ -470,9 +470,10 @@ input::placeholder {
     .users-table td:nth-child(2)::before { content: "NOME"; }
     .users-table td:nth-child(3)::before { content: "EMAIL"; }
     .users-table td:nth-child(4)::before { content: "PR"; }
-    .users-table td:nth-child(5)::before { content: "STATO"; }
-    .users-table td:nth-child(6)::before { content: "DATA"; }
-    .users-table td:nth-child(7)::before { content: "AZIONI"; }
+    .users-table td:nth-child(5)::before { content: "TICKET"; }
+    .users-table td:nth-child(6)::before { content: "INGRESSO"; }
+    .users-table td:nth-child(7)::before { content: "DATA"; }
+    .users-table td:nth-child(8)::before { content: "AZIONI"; }
     
     .user-checkbox {
         margin-top: 0.3rem;
