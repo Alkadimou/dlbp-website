@@ -525,14 +525,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     exportCsvBtn.addEventListener("click", () => {
         if (usersData.length === 0) return;
-        let csvContent = "Nome,Email,PR,Data Richiesta,Status Approvazione,Stato Ingresso,Orario Ingresso\n";
+        let csvContent = "Nome,Email,PR,Data Richiesta,Stato Ingresso,Orario Ingresso\n";
         usersData.forEach(user => {
             const time = user.timestamp.toLocaleString('it-IT').replace(/,/g, '');
-            const approvazione = user.status === "approved" ? "Approvato" : "In Attesa";
             const status = user.checked_in ? "Entrato" : "Non Entrato";
             const inTime = user.check_in_time ? user.check_in_time.toLocaleTimeString('it-IT') : "";
             const pr = user.invited_by ? user.invited_by.toUpperCase() : "";
-            csvContent += `"${user.name}","${user.email}","${pr}","${time}","${approvazione}","${status}","${inTime}"\n`;
+            csvContent += `"${user.name}","${user.email}","${pr}","${time}","${status}","${inTime}"\n`;
         });
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
@@ -669,13 +668,10 @@ document.addEventListener("DOMContentLoaded", () => {
         usersData.forEach(user => {
             const tr = document.createElement("tr");
             
-            let statusHtml = `<span class="status-attesa" style="color: #ffcc00;">IN ATTESA</span>`;
-            if (user.status === "approved") {
-                statusHtml = `<span style="color: #4CAF50; font-weight: bold;">APPROVATO</span>`;
-            }
+            let statusHtml = `<span style="color: #888;">-</span>`;
             if (user.checked_in) {
                 presentCount++;
-                statusHtml = `<span class="status-entrato" style="color: #4CAF50;">ENTRATO</span>`;
+                statusHtml = `<span class="status-entrato" style="color: #4CAF50; font-weight: bold;">ENTRATO</span>`;
             }
 
             const checkinTimeHtml = user.checked_in && user.check_in_time ? user.check_in_time.toLocaleTimeString('it-IT', {hour: '2-digit', minute:'2-digit'}) : '-';
@@ -873,7 +869,7 @@ document.addEventListener("DOMContentLoaded", () => {
         let failCount = 0;
 
         for (const user of usersData) {
-            if (user.status === "approved" && user.email_sent !== true) {
+            if (user.email_sent !== true) {
                 try {
                     if (EMAILJS_PUBLIC_KEY !== "YOUR_EMAILJS_PUBLIC_KEY") {
                         await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
