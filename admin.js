@@ -17,7 +17,7 @@ const firebaseConfig = {
 // EmailJS config
 const EMAILJS_PUBLIC_KEY = "XIMzE429r_DY-U4nl";
 const EMAILJS_SERVICE_ID = "service_ndbmwte";
-const EMAILJS_TEMPLATE_ID = "template_o3kovxe";
+const EMAILJS_TEMPLATE_ID = "ticket_confirm";
 
 let db;
 let auth;
