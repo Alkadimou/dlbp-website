@@ -198,7 +198,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // UI Loading state
         submitBtn.disabled = true;
-        submitBtn.classList.add("loading-pulse");
         btnText.textContent = "IN ELABORAZIONE...";
         messageDiv.className = "form-message hidden";
 
@@ -210,7 +209,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (!querySnapshot.empty) {
                     showMessage("Questa email risulta già in lista per l'evento.", "error");
                     submitBtn.disabled = false;
-                    submitBtn.classList.remove("loading-pulse");
                     btnText.textContent = "RICHIEDI ACCESSO";
                     return;
                 }
@@ -266,11 +264,9 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             form.reset();
         } catch (error) {
-            console.error("Error adding document: ", error);
+            console.error("Error saving to database:", error);
             showMessage("Errore di sistema. Riprova più tardi.", "error");
-        } finally {
             submitBtn.disabled = false;
-            submitBtn.classList.remove("loading-pulse");
             btnText.textContent = "RICHIEDI ACCESSO";
         }
     });
