@@ -452,6 +452,19 @@ input::placeholder {
         border-bottom: 0;
         flex-direction: column;
         align-items: flex-start;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .users-table td:last-child > div {
+        width: 100%;
+        justify-content: flex-start !important;
+        margin-top: 0.5rem;
+    }
+    
+    .action-btn-icon {
+        margin-left: 0;
+        margin-right: 0.5rem;
     }
     
     .users-table td::before {
