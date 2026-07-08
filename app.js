@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (!eventId) {
                 // If no event ID is provided, redirect to home page
-                window.location.href = 'index.html';
+                window.location.href = '/';
                 return;
             }
 

@@ -1,7 +1,7 @@
 const CACHE_NAME = 'dlbp-cache-v2';
 const urlsToCache = [
   './',
-  './index.html',
+  './',
   './styles.css',
   './app.js',
   './logo.jpg'
