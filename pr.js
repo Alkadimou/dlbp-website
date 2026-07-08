@@ -103,7 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
             prWelcome.textContent = `DASHBOARD PR: ${prName.toUpperCase()}`;
             
             // Generate invite link
-            const baseUrl = window.location.origin + window.location.pathname.replace('pr.html', '/');
+            const baseUrl = window.location.origin + '/';
             inviteLinkInput.value = `${baseUrl}?pr=${code}`;
 
             startListening(code);

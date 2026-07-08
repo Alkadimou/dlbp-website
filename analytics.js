@@ -32,14 +32,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (auth) {
         onAuthStateChanged(auth, async (user) => {
             if (!user) {
-                window.location.href = "admin.html";
+                window.location.href = "admin";
             } else {
                 document.getElementById('analytics-content').style.display = 'block';
                 await loadEvents();
             }
         });
     } else {
-        window.location.href = "admin.html";
+        window.location.href = "admin";
     }
 
     // Chart instances

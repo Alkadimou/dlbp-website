@@ -79,7 +79,7 @@ async function loadEvents() {
             return;
         }
 
-        // Get PR code from URL if exists to pass it to event.html
+        // Get PR code from URL if exists to pass it to event
         const urlParams = new URLSearchParams(window.location.search);
         const prCode = urlParams.get('pr');
         let prQuery = prCode ? `&pr=${encodeURIComponent(prCode)}` : '';
@@ -105,7 +105,7 @@ async function loadEvents() {
                         <div class="event-card-status ${statusClass}">${statusText}</div>
                         <h3 class="event-card-title">${ev.name}</h3>
                         <div class="event-card-date">${ev.date}</div>
-                        <a href="event.html?id=${eventId}${prQuery}" class="event-card-btn">
+                        <a href="event?id=${eventId}${prQuery}" class="event-card-btn">
                             ${isOpen ? 'SCOPRI / ACCEDI' : 'DETTAGLI'}
                         </a>
                     </div>
