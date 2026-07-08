@@ -12,6 +12,16 @@ const firebaseConfig = {
   measurementId: "G-6HC9LRZWV9"
 };
 
+// EmailJS config
+const EMAILJS_PUBLIC_KEY = "XIMzE429r_DY-U4nl";
+const EMAILJS_SERVICE_ID = "service_ndbmwte";
+const EMAILJS_REGISTRATION_TEMPLATE_ID = "template_registration_pending";
+
+// Initialize EmailJS
+if (typeof emailjs !== 'undefined') {
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+}
+
 // Initialize Firebase only if the config is updated
 let app;
 let db;
@@ -43,6 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const PUBLIC_GATE_HASH = "9f0ec1a0240808b239a995975a3a09c633fe9edac27a203f21e90429f5cdbfe9"; // alogasse
     let currentEventId = "act_1"; // Default fallback
+    let currentEventName = "";
 
     // --- CHECK PR PARAMETER ---
     const urlParams = new URLSearchParams(window.location.search);
@@ -67,6 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (docSnap.exists()) {
                 const ev = docSnap.data();
                 currentEventId = eventId;
+                currentEventName = ev.name || "";
                 
                 // Update UI
                 const titleEl = document.getElementById("public-event-title");
@@ -213,6 +225,22 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Simulated delay if Firebase is not yet configured
                 await new Promise(resolve => setTimeout(resolve, 1500));
                 console.log("Simulated saving to DB:", { name, email });
+            }
+
+            // Send email confirmation
+            try {
+                if (typeof emailjs !== 'undefined' && EMAILJS_REGISTRATION_TEMPLATE_ID !== "template_registration_pending") {
+                    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_REGISTRATION_TEMPLATE_ID, {
+                        to_name: name,
+                        to_email: email,
+                        event_name: currentEventName || "Evento"
+                    });
+                    console.log("Email inviata con successo.");
+                } else if (typeof emailjs !== 'undefined') {
+                    console.warn("Invio email saltato: Configura l'ID del template reale in app.js.");
+                }
+            } catch (err) {
+                console.error("Errore invio email di registrazione:", err);
             }
 
             submitBtn.disabled = false;
