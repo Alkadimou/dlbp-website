@@ -229,7 +229,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Send email confirmation
             try {
-                if (typeof emailjs !== 'undefined' && EMAILJS_REGISTRATION_TEMPLATE_ID !== "reg_pending") {
+                if (typeof emailjs !== 'undefined' && EMAILJS_PUBLIC_KEY !== "YOUR_EMAILJS_PUBLIC_KEY") {
                     await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_REGISTRATION_TEMPLATE_ID, {
                         to_name: name,
                         to_email: email,
@@ -237,7 +237,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     });
                     console.log("Email inviata con successo.");
                 } else if (typeof emailjs !== 'undefined') {
-                    console.warn("Invio email saltato: Configura l'ID del template reale in app.js.");
+                    console.warn("Invio email saltato: EmailJS non è configurato.");
                 }
             } catch (err) {
                 console.error("Errore invio email di registrazione:", err);
