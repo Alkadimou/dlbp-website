@@ -139,30 +139,6 @@
             font-family: 'Space Mono', monospace;
         }
 
-        /* Responsive Improvements */
-        * { box-sizing: border-box; }
-        
-        @media (max-width: 768px) {
-            .admin-actions > * {
-                flex: 1 1 100%;
-                text-align: center;
-                justify-content: center;
-            }
-            #admin-event-selector {
-                width: 100%;
-                min-width: unset !important;
-            }
-            #new-event-btn {
-                width: 100%;
-            }
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-            .toolbar-panel {
-                grid-template-columns: 1fr;
-            }
-        }
-
         .toolbar-panel {
             display: grid;
             grid-template-columns: 1fr 2fr;
@@ -214,6 +190,31 @@
             text-align: center;
             font-size: 0.75rem;
             line-height: 1.2;
+        }
+
+        /* Responsive Improvements */
+        * { box-sizing: border-box; }
+        
+        @media (max-width: 768px) {
+            .admin-actions > * {
+                flex: 1 1 100%;
+                text-align: center;
+                justify-content: center;
+            }
+            #admin-event-selector {
+                width: 100%;
+                min-width: unset !important;
+            }
+            #new-event-btn {
+                width: 100%;
+            }
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            .toolbar-panel {
+                grid-template-columns: 1fr !important;
+                gap: 1.5rem !important;
+            }
         }
     </style>
 </head>
