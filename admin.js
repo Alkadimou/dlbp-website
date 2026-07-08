@@ -695,6 +695,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 <td style="white-space: nowrap;">${user.timestamp.toLocaleString('it-IT', {dateStyle: 'short', timeStyle: 'short'})}</td>
                 <td style="text-align: right;">${actionsHtml}</td>
             `;
+
+            tr.style.cursor = "pointer";
+            tr.addEventListener("click", (e) => {
+                // Evita di selezionare se si clicca su un pulsante o sulla checkbox stessa
+                if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A' || e.target.tagName === 'INPUT' || e.target.closest('button')) {
+                    return;
+                }
+                const cb = tr.querySelector('.user-checkbox');
+                if (cb) {
+                    cb.click();
+                }
+            });
+
             tbody.appendChild(tr);
         });
         presentCountDisplay.textContent = presentCount;
