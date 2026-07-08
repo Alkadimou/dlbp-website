@@ -57,7 +57,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // --- CHECK PR PARAMETER ---
     const urlParams = new URLSearchParams(window.location.search);
-    const prCode = urlParams.get('pr') ? urlParams.get('pr').toLowerCase() : null;
+    let prCode = urlParams.get('pr');
+    if (prCode) {
+        prCode = prCode.toLowerCase();
+        sessionStorage.setItem('dlbp_pr_code', prCode);
+    } else {
+        prCode = sessionStorage.getItem('dlbp_pr_code');
+    }
 
     // --- FETCH ACTIVE EVENT ---
     async function loadActiveEvent() {
