@@ -248,7 +248,7 @@
                 padding: 0.5rem;
             }
             .users-table td, .pr-table td {
-                text-align: left !important;
+                text-align: right !important;
                 padding: 0.75rem;
                 border-bottom: 1px dotted rgba(255, 255, 255, 0.1);
                 position: relative;
@@ -261,7 +261,7 @@
                 max-width: none !important;
             }
             .pr-table td {
-                text-align: left !important;
+                text-align: right !important;
             }
             .users-table td:last-child, .pr-table td:last-child {
                 border-bottom: 0;
@@ -279,9 +279,16 @@
                 font-size: 0.7rem;
                 text-transform: uppercase;
                 letter-spacing: 1px;
+                overflow: visible;
+                text-overflow: unset;
+                white-space: nowrap;
+            }
+            .truncate-mobile {
+                display: inline-block;
+                max-width: 100%;
                 overflow: hidden;
                 text-overflow: ellipsis;
-                white-space: nowrap;
+                vertical-align: middle;
             }
             .users-table td input[type="checkbox"], .pr-table td input[type="checkbox"] {
                 position: absolute;

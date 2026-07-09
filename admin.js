@@ -685,9 +685,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
             tr.innerHTML = `
                 <td data-label="${escapeHtml(user.name)}" style="text-align: center;"><input type="checkbox" class="user-checkbox" data-id="${user.id}"></td>
-                <td data-label="NOME">${escapeHtml(user.name)}</td>
-                <td data-label="EMAIL" style="word-break: break-all;">${escapeHtml(user.email)}</td>
-                <td data-label="LISTA" style="color: #aaa; text-transform: uppercase; text-align: center;">${escapeHtml(user.invited_by) || '-'}</td>
+                <td data-label="NOME"><span class="truncate-mobile">${escapeHtml(user.name)}</span></td>
+                <td data-label="EMAIL" style="word-break: break-all;"><span class="truncate-mobile">${escapeHtml(user.email)}</span></td>
+                <td data-label="LISTA" style="color: #aaa; text-transform: uppercase; text-align: center;"><span class="truncate-mobile">${escapeHtml(user.invited_by) || '-'}</span></td>
                 <td data-label="TICKET" style="text-align: center; white-space: nowrap; font-size: 0.8rem;">${ticketHtml}</td>
                 <td data-label="STATO" style="white-space: nowrap;">${statusHtml} ${user.checked_in && user.check_in_time ? '<br><small style="color:#888;">'+user.check_in_time.toLocaleTimeString('it-IT', {hour: '2-digit', minute:'2-digit'})+'</small>' : ''}</td>
                 <td data-label="REGISTRATO IL" style="white-space: nowrap;">${user.timestamp.toLocaleString('it-IT', {dateStyle: 'short', timeStyle: 'short'})}</td>
@@ -985,10 +985,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td>${escapeHtml(prName)}</td>
-                    <td><span style="color:var(--accent-color);">${escapeHtml(prCode)}</span><br><small style="color:#666;">${escapeHtml(link)}</small></td>
-                    <td>${pr.isActive ? '<span style="color:var(--success-color);">ATTIVO</span>' : '<span style="color:var(--error-color);">DISABILITATO</span>'}</td>
-                    <td style="text-align: right;">
+                    <td data-label="NOME"><span class="truncate-mobile">${escapeHtml(prName)}</span></td>
+                    <td data-label="CODICE / LINK"><span class="truncate-mobile" style="color:var(--accent-color);">${escapeHtml(prCode)}</span><br><small style="color:#666;">${escapeHtml(link)}</small></td>
+                    <td data-label="STATO"><span class="truncate-mobile">${pr.isActive ? '<span style="color:var(--success-color);">ATTIVO</span>' : '<span style="color:var(--error-color);">DISABILITATO</span>'}</span></td>
+                    <td data-label="AZIONI" style="text-align: right;">
                         <button class="submit-btn delete-pr-btn" data-id="${prId}" style="padding: 0.3rem 0.6rem; background: var(--error-color); border: none; font-size: 0.8rem; min-width: unset; margin: 0;">ELIMINA</button>
                     </td>
                 `;
