@@ -67,55 +67,107 @@ async function loadEvents() {
     const eventsGrid = document.getElementById("events-grid");
     if (!eventsGrid) return;
     
+    const pastEventsGrid = document.getElementById("past-events-grid");
+    
     try {
-        // Fetch all active events
-        const q = query(collection(db, "events"), where("isActive", "==", true));
+        // Fetch all events
+        const q = query(collection(db, "events"));
         const querySnapshot = await getDocs(q);
         
         eventsGrid.innerHTML = ''; // Clear loading text
+        if (pastEventsGrid) {
+            pastEventsGrid.innerHTML = '';
+        }
 
         if (querySnapshot.empty) {
             eventsGrid.innerHTML = '<div class="no-events">NESSUN EVENTO IN PROGRAMMA</div>';
             return;
         }
 
-        // Get PR code from URL if exists to pass it to event
-        const urlParams = new URLSearchParams(window.location.search);
-        const prCode = urlParams.get('pr');
-        let prQuery = prCode ? `&pr=${encodeURIComponent(prCode)}` : '';
-
-        const fragment = document.createDocumentFragment();
+        // Put events into array
+        let eventsArray = [];
         querySnapshot.forEach((doc) => {
-            const ev = doc.data();
-            const eventId = doc.id;
-            
-            // Build card
-            const card = document.createElement('div');
-            card.className = 'event-card-item fade-in';
-            
-            const isOpen = ev.isOpen !== false;
-            const statusText = isOpen ? 'ISCRIZIONI APERTE' : 'GUESTLIST CLOSED';
-            const statusClass = isOpen ? 'status-open' : 'status-closed';
-
-            const flyerHtml = ev.flyerUrl ? `<img src="${ev.flyerUrl}" alt="Locandina" class="event-card-img">` : '';
-
-            card.innerHTML = `
-                <div class="event-card-inner">
-                    ${flyerHtml}
-                    <div class="event-card-content">
-                        <div class="event-card-status ${statusClass}">${statusText}</div>
-                        <h3 class="event-card-title">${ev.name}</h3>
-                        <div class="event-card-date">${ev.date}</div>
-                        <a href="event?id=${eventId}${prQuery}" class="event-card-btn">
-                            ${isOpen ? 'SCOPRI / ACCEDI' : 'DETTAGLI'}
-                        </a>
-                    </div>
-                </div>
-            `;
-            
-            fragment.appendChild(card);
+            eventsArray.push({ id: doc.id, ...doc.data() });
         });
-        eventsGrid.appendChild(fragment);
+
+        // Sort by createdAt descending
+        eventsArray.sort((a, b) => {
+            const dateA = a.createdAt ? a.createdAt.toMillis() : 0;
+            const dateB = b.createdAt ? b.createdAt.toMillis() : 0;
+            return dateB - dateA;
+        });
+
+        const activeEvents = eventsArray.filter(e => e.isActive === true);
+        const pastEvents = eventsArray.filter(e => e.isActive !== true);
+
+        if (activeEvents.length === 0) {
+            eventsGrid.innerHTML = '<div class="no-events">NESSUN EVENTO IN PROGRAMMA</div>';
+        } else {
+            // Render upcoming active events
+            const activeFragment = document.createDocumentFragment();
+            const urlParams = new URLSearchParams(window.location.search);
+            const prCode = urlParams.get('pr');
+            let prQuery = prCode ? `&pr=${encodeURIComponent(prCode)}` : '';
+
+            activeEvents.forEach((ev) => {
+                const card = document.createElement('div');
+                card.className = 'event-card-item fade-in';
+                
+                const isOpen = ev.isOpen !== false;
+                const statusText = isOpen ? 'ISCRIZIONI APERTE' : 'GUESTLIST CLOSED';
+                const statusClass = isOpen ? 'status-open' : 'status-closed';
+
+                const flyerHtml = ev.flyerUrl ? `<img src="${ev.flyerUrl}" alt="Locandina" class="event-card-img">` : '';
+
+                card.innerHTML = `
+                    <div class="event-card-inner">
+                        ${flyerHtml}
+                        <div class="event-card-content">
+                            <div class="event-card-status ${statusClass}">${statusText}</div>
+                            <h3 class="event-card-title">${ev.name}</h3>
+                            <div class="event-card-date">${ev.date}</div>
+                            <a href="event?id=${ev.id}${prQuery}" class="event-card-btn">
+                                ${isOpen ? 'SCOPRI / ACCEDI' : 'DETTAGLI'}
+                            </a>
+                        </div>
+                    </div>
+                `;
+                activeFragment.appendChild(card);
+            });
+            eventsGrid.appendChild(activeFragment);
+        }
+
+        // Render past events (if container exists on page)
+        if (pastEventsGrid) {
+            if (pastEvents.length === 0) {
+                pastEventsGrid.innerHTML = '<div class="no-events">NESSUN EVENTO PASSATO</div>';
+            } else {
+                const pastFragment = document.createDocumentFragment();
+                pastEvents.forEach((ev) => {
+                    const card = document.createElement('div');
+                    card.className = 'event-card-item fade-in';
+                    card.style.opacity = '0.5';
+                    
+                    const flyerHtml = ev.flyerUrl ? `<img src="${ev.flyerUrl}" alt="Locandina" class="event-card-img" style="filter: grayscale(100%);">` : '';
+
+                    card.innerHTML = `
+                        <div class="event-card-inner">
+                            ${flyerHtml}
+                            <div class="event-card-content">
+                                <div class="event-card-status status-closed" style="border-color: rgba(255,255,255,0.1); color: rgba(255,255,255,0.4);">EVENTO CONCLUSO</div>
+                                <h3 class="event-card-title" style="color: rgba(255,255,255,0.6);">${ev.name}</h3>
+                                <div class="event-card-date" style="color: rgba(255,255,255,0.3);">${ev.date}</div>
+                                <span class="event-card-btn" style="background: rgba(255,255,255,0.02); color: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.05); cursor: default; pointer-events: none; text-align: center; display: block; padding: 0.8rem; font-size: 0.8rem; text-transform: uppercase;">
+                                    ARCHIVIATO
+                                </span>
+                            </div>
+                        </div>
+                    `;
+                    pastFragment.appendChild(card);
+                });
+                pastEventsGrid.appendChild(pastFragment);
+            }
+        }
 
         // Add intersection observer for fade-in elements inside the grid
         const observer = new IntersectionObserver((entries) => {
