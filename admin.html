@@ -208,9 +208,8 @@
             margin-bottom: 2rem;
         }
         .search-input-wrapper {
-            flex: 0 0 300px;
-            max-width: calc(100% - 130px);
-            transition: flex-basis 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            flex: 1;
+            min-width: 0;
         }
         .search-input-wrapper input {
             width: 100%;
@@ -222,10 +221,6 @@
             font-family: 'Space Mono', monospace;
             border-radius: 4px;
             outline: none;
-        }
-        .search-input-wrapper:focus-within {
-            flex: 1 1 100%;
-            flex-basis: 100%;
         }
         .toolbar-actions {
             display: grid;
