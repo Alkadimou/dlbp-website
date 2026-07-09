@@ -74,6 +74,14 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    const logoutBtn = document.getElementById("logout-btn");
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", () => {
+            sessionStorage.removeItem("dlbp_scanner_auth");
+            window.location.reload();
+        });
+    }
+
     let activeEventId = null;
     let activeEventData = null;
 
