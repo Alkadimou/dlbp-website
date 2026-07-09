@@ -119,18 +119,22 @@ async function loadEvents() {
 
                 const flyerHtml = ev.flyerUrl ? `<img src="${ev.flyerUrl}" alt="Locandina" class="event-card-img">` : '';
 
+                const eventUrl = `event?id=${ev.id}${prQuery}`;
+
                 card.innerHTML = `
-                    <div class="event-card-inner">
-                        ${flyerHtml}
-                        <div class="event-card-content">
-                            <div class="event-card-status ${statusClass}">${statusText}</div>
-                            <h3 class="event-card-title">${ev.name}</h3>
-                            <div class="event-card-date">${ev.date}</div>
-                            <a href="event?id=${ev.id}${prQuery}" class="event-card-btn">
-                                ${isOpen ? 'SCOPRI / ACCEDI' : 'DETTAGLI'}
-                            </a>
+                    <a href="${eventUrl}" style="text-decoration: none; color: inherit; display: block; cursor: pointer;">
+                        <div class="event-card-inner">
+                            ${flyerHtml}
+                            <div class="event-card-content">
+                                <div class="event-card-status ${statusClass}">${statusText}</div>
+                                <h3 class="event-card-title">${ev.name}</h3>
+                                <div class="event-card-date">${ev.date}</div>
+                                <span class="event-card-btn">
+                                    ${isOpen ? 'SCOPRI / ACCEDI' : 'DETTAGLI'}
+                                </span>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 `;
                 activeFragment.appendChild(card);
             });
