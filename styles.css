@@ -1015,12 +1015,15 @@ input::placeholder {
 
 .event-card-inner {
     display: flex;
-    gap: 2rem;
-    align-items: flex-start;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: center;
+    text-align: center;
 }
 
 .event-card-img {
-    width: 150px;
+    width: 100%;
+    max-width: 200px;
     height: auto;
     object-fit: contain;
     flex-shrink: 0;
@@ -1029,9 +1032,10 @@ input::placeholder {
 }
 
 .event-card-content {
-    flex-grow: 1;
+    width: 100%;
     display: flex;
     flex-direction: column;
+    align-items: center;
 }
 
 .event-card-status {
