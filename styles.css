@@ -1088,10 +1088,10 @@ input::placeholder {
     background: rgba(255, 255, 255, 0.08);
     transition: left 0.4s ease;
 }
-.event-card-btn:hover::before {
+.event-card-item:hover .event-card-btn::before {
     left: 0;
 }
-.event-card-btn:hover {
+.event-card-item:hover .event-card-btn {
     border-color: rgba(255, 255, 255, 0.3);
     color: #fff;
 }
