@@ -54,6 +54,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const PUBLIC_GATE_HASH = "c696c0a9f8d1a373840f501af566265e1fc09e1aaba4acbbee87c0c4b0312523"; // theprodigy
     let currentEventId = "act_1"; // Default fallback
     let currentEventName = "";
+    let currentEventPassword = "";
+    let hasPassword = false;
 
     // --- CHECK PR PARAMETER ---
     const urlParams = new URLSearchParams(window.location.search);
@@ -85,6 +87,20 @@ document.addEventListener("DOMContentLoaded", () => {
                 const ev = docSnap.data();
                 currentEventId = eventId;
                 currentEventName = ev.name || "";
+                
+                // Set password state and check for bypass
+                currentEventPassword = (ev.password || "").trim().toLowerCase();
+                hasPassword = currentEventPassword !== "";
+
+                if (!hasPassword) {
+                    gateSection.style.display = "none";
+                    publicEventHeader.style.display = "block";
+                    registrationSection.style.display = "block";
+                } else {
+                    gateSection.style.display = "block";
+                    publicEventHeader.style.display = "none";
+                    registrationSection.style.display = "none";
+                }
                 
                 // Update UI
                 const titleEl = document.getElementById("public-event-title");
@@ -137,10 +153,18 @@ document.addEventListener("DOMContentLoaded", () => {
     // No sessionStorage used: password must be entered on every reload.
 
     gateBtn.addEventListener("click", async () => {
-        const pwd = gatePasswordInput.value;
-        const hashedInput = await hashPassword(pwd);
+        const pwd = gatePasswordInput.value.trim().toLowerCase();
         
-        if (hashedInput === PUBLIC_GATE_HASH) {
+        let isAuthorized = false;
+        if (hasPassword) {
+            isAuthorized = (pwd === currentEventPassword);
+        } else {
+            // Fallback (usually bypassed, but safe to keep)
+            const hashedInput = await hashPassword(pwd);
+            isAuthorized = (hashedInput === PUBLIC_GATE_HASH);
+        }
+        
+        if (isAuthorized) {
             gateSection.style.display = "none";
             publicEventHeader.style.display = "block";
             registrationSection.style.display = "block";

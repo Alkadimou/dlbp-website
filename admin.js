@@ -504,6 +504,7 @@ document.addEventListener("DOMContentLoaded", () => {
             document.body.classList.add('no-scroll');
             document.getElementById('event-name-input').value = "";
             document.getElementById('event-location-input').value = "";
+            document.getElementById('event-password-input').value = "";
             document.getElementById('event-date-input').value = "";
             document.getElementById('event-start-time-input').value = "";
             document.getElementById('event-end-time-input').value = "";
@@ -572,6 +573,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 
                 document.getElementById('event-name-input').value = evData.name || "";
                 document.getElementById('event-location-input').value = evData.location || "";
+                document.getElementById('event-password-input').value = evData.password || "";
                 document.getElementById('event-date-input').value = evData.dateIso || "";
                 document.getElementById('event-start-time-input').value = evData.startTime || "";
                 document.getElementById('event-end-time-input').value = evData.endTime || "";
@@ -740,6 +742,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     startTime: startTime,
                     endTime: endTime,
                     location: location,
+                    password: document.getElementById('event-password-input').value.trim(),
                     flyerUrl: flyerUrl || "",
                     description: description || "",
                     maxCapacity: parseInt(document.getElementById('capacity-input').value) || 100,
@@ -765,6 +768,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const updates = {
                     name: name,
                     location: location,
+                    password: document.getElementById('event-password-input').value.trim(),
                     dateIso: dateIso,
                     date: formattedDate,
                     startTime: startTime,
