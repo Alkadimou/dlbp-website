@@ -150,12 +150,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 return dateB - dateA;
             });
 
+            const fragment = document.createDocumentFragment();
             eventsArray.forEach(ev => {
                 const option = document.createElement("option");
                 option.value = ev.id;
                 option.textContent = ev.name + " (" + ev.date + ")" + (ev.isActive ? " [ATTIVO ONLINE]" : "");
-                adminEventSelector.appendChild(option);
+                fragment.appendChild(option);
             });
+            adminEventSelector.appendChild(fragment);
 
             if (!currentEventId) {
                 let activeEv = eventsArray.find(e => e.isActive);
@@ -938,6 +940,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         let presentCount = 0;
+        const fragment = document.createDocumentFragment();
         usersData.forEach(user => {
             const tr = document.createElement("tr");
             
@@ -981,8 +984,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             });
 
-            tbody.appendChild(tr);
+            fragment.appendChild(tr);
         });
+        tbody.appendChild(fragment);
         presentCountDisplay.textContent = presentCount;
         
         // Reset and attach multi-delete listeners
@@ -1082,19 +1086,24 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // --- SEARCH LOGIC ---
+    let searchTimeout;
     if (searchInput) {
         searchInput.addEventListener("input", (e) => {
-            const term = e.target.value.toLowerCase();
-            const rows = tbody.querySelectorAll("tr");
-            rows.forEach(row => {
-                const name = row.children[1].textContent.toLowerCase();
-                const email = row.children[2].textContent.toLowerCase();
-                if (name.includes(term) || email.includes(term)) {
-                    row.style.display = "";
-                } else {
-                    row.style.display = "none";
-                }
-            });
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                const term = e.target.value.toLowerCase();
+                const rows = tbody.querySelectorAll("tr");
+                rows.forEach(row => {
+                    if (row.children.length < 3) return;
+                    const name = row.children[1].textContent.toLowerCase();
+                    const email = row.children[2].textContent.toLowerCase();
+                    if (name.includes(term) || email.includes(term)) {
+                        row.style.display = "";
+                    } else {
+                        row.style.display = "none";
+                    }
+                });
+            }, 150);
         });
     }
 
@@ -1252,6 +1261,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 return getMs(b.createdAt) - getMs(a.createdAt);
             });
 
+            const fragment = document.createDocumentFragment();
             prsList.forEach((pr) => {
                 const prId = pr.id;
                 const prCode = pr.code || "";
@@ -1267,8 +1277,9 @@ document.addEventListener("DOMContentLoaded", () => {
                         <button class="submit-btn delete-pr-btn" data-id="${prId}" style="padding: 0.3rem 0.6rem; background: var(--error-color); border: none; font-size: 0.8rem; min-width: unset; margin: 0;">ELIMINA</button>
                     </td>
                 `;
-                prTableBody.appendChild(tr);
+                fragment.appendChild(tr);
             });
+            prTableBody.appendChild(fragment);
 
             document.querySelectorAll('.delete-pr-btn').forEach(btn => {
                 btn.addEventListener('click', async (e) => {

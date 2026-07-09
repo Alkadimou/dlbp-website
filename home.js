@@ -84,6 +84,7 @@ async function loadEvents() {
         const prCode = urlParams.get('pr');
         let prQuery = prCode ? `&pr=${encodeURIComponent(prCode)}` : '';
 
+        const fragment = document.createDocumentFragment();
         querySnapshot.forEach((doc) => {
             const ev = doc.data();
             const eventId = doc.id;
@@ -112,8 +113,9 @@ async function loadEvents() {
                 </div>
             `;
             
-            eventsGrid.appendChild(card);
+            fragment.appendChild(card);
         });
+        eventsGrid.appendChild(fragment);
 
         // Add intersection observer for fade-in elements inside the grid
         const observer = new IntersectionObserver((entries) => {
