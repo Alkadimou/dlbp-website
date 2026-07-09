@@ -182,7 +182,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 title.style.color = "var(--accent-color)";
             }
             document.getElementById('save-content-btn').textContent = "SALVA DETTAGLI EVENTO";
-            if (deleteEventBtn) deleteEventBtn.style.display = 'block';
             loadSettings();
             loadUsers();
         });
@@ -201,7 +200,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 title.style.color = "var(--accent-color)";
             }
             document.getElementById('save-content-btn').textContent = "SALVA DETTAGLI EVENTO";
-            if (deleteEventBtn) deleteEventBtn.style.display = 'block';
             
             await loadSettings();
             
@@ -236,7 +234,6 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById('flyer-input').value = "";
             document.getElementById('current-flyer-preview').innerHTML = "Nessun flyer caricato.";
             document.getElementById('save-content-btn').textContent = "CREA NUOVO EVENTO";
-            if (deleteEventBtn) deleteEventBtn.style.display = 'none';
             
             document.getElementById('event-name-input').focus();
         });

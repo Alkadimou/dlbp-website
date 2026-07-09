@@ -341,14 +341,13 @@
                         <p id="summary-event-date" style="color: rgba(255,255,255,0.5); font-size: 0.8rem; letter-spacing: 1px; margin: 0;">--</p>
                     </div>
                     <div class="summary-actions" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                        <button id="set-active-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1rem; font-size: 0.7rem;">RENDI ATTIVO</button>
                         <button id="edit-event-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1rem; font-size: 0.7rem;">MODIFICA</button>
                         <button id="manage-pr-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1rem; font-size: 0.7rem;">AREA PR</button>
                         <button id="new-event-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1rem; font-size: 0.7rem;">+ NUOVO</button>
                     </div>
                 </div>
 
-                <div class="kpi-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+                <div class="kpi-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
                     <div class="kpi-box" style="background: rgba(255,255,255,0.02); padding: 1rem; text-align: center; border: 1px solid rgba(255,255,255,0.05); border-radius: 8px;">
                         <h4 style="color: rgba(255,255,255,0.5); font-size: 0.6rem; letter-spacing: 2px; margin-bottom: 0.5rem;">CAPIENZA</h4>
                         <div class="kpi-value" style="font-size: 1.5rem; font-family: 'Space Mono', monospace;" id="capacity-display">0</div>
@@ -361,6 +360,11 @@
                         <h4 style="color: rgba(255,255,255,0.8); font-size: 0.6rem; letter-spacing: 2px; margin-bottom: 0.5rem;">INGRESSI LIVE</h4>
                         <div class="kpi-value" id="present-count-dash" style="font-size: 2rem; font-family: 'Space Mono', monospace; font-weight: 700;">0</div>
                     </div>
+                </div>
+                
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: flex-start;">
+                    <button id="set-active-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1rem; font-size: 0.7rem;">RENDI ATTIVO</button>
+                    <button id="delete-event-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1rem; font-size: 0.7rem; border-color: rgba(255, 50, 50, 0.4); color: rgba(255, 100, 100, 0.8);">ELIMINA EVENTO</button>
                 </div>
             </div>
 
@@ -496,7 +500,6 @@
             </div>
             
             <div style="display: flex; gap: 1rem; margin-top: 2.5rem; width: 100%;">
-                <button id="delete-event-btn" class="submit-btn" style="flex: 1; border-color: rgba(255,50,50,0.4); color: rgba(255,100,100,0.8);">ELIMINA EVENTO</button>
                 <button id="save-content-btn" class="submit-btn" style="flex: 2; border-color: rgba(255,255,255,0.8); color: #fff;">SALVA DETTAGLI</button>
             </div>
         </div>
