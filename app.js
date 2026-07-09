@@ -256,8 +256,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const modal = document.getElementById("success-modal");
             if (modal) {
                 modal.classList.remove("hidden");
+                document.body.classList.add("no-scroll");
                 document.getElementById("close-modal-btn").onclick = () => {
                     modal.classList.add("hidden");
+                    document.body.classList.remove("no-scroll");
                 };
             } else {
                 showMessage("Richiesta inviata. Sarai contattato se selezionato.", "success");

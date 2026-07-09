@@ -204,12 +204,14 @@ document.addEventListener("DOMContentLoaded", () => {
             await loadSettings();
             
             settingsPanel.classList.remove('hidden');
+            document.body.classList.add('no-scroll');
         });
     }
 
     if (closeSettingsBtn && settingsPanel) {
         closeSettingsBtn.addEventListener("click", () => {
             settingsPanel.classList.add('hidden');
+            document.body.classList.remove('no-scroll');
         });
     }
 
@@ -263,12 +265,14 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             await loadDetails();
             detailsModal.classList.remove('hidden');
+            document.body.classList.add('no-scroll');
         });
     }
 
     if (closeDetailsBtn && detailsModal) {
         closeDetailsBtn.addEventListener("click", () => {
             detailsModal.classList.add('hidden');
+            document.body.classList.remove('no-scroll');
         });
     }
 
@@ -284,6 +288,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 title.style.color = "var(--accent-color)";
             }
             settingsPanel.classList.remove('hidden');
+            document.body.classList.add('no-scroll');
             document.getElementById('event-name-input').value = "";
             document.getElementById('event-location-input').value = "";
             document.getElementById('event-date-input').value = "";

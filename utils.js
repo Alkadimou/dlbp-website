@@ -39,11 +39,13 @@ export function showModal(message) {
     btn.textContent = 'OK';
     btn.onclick = () => {
         overlay.classList.remove('active');
+        document.body.classList.remove('no-scroll');
     };
     btnContainer.appendChild(btn);
     
     requestAnimationFrame(() => {
         overlay.classList.add('active');
+        document.body.classList.add('no-scroll');
     });
 }
 
@@ -62,6 +64,7 @@ export function showConfirm(message) {
         btnCancel.textContent = 'ANNULLA';
         btnCancel.onclick = () => {
             overlay.classList.remove('active');
+            document.body.classList.remove('no-scroll');
             resolve(false);
         };
         
@@ -70,6 +73,7 @@ export function showConfirm(message) {
         btnConfirm.textContent = 'CONFERMA';
         btnConfirm.onclick = () => {
             overlay.classList.remove('active');
+            document.body.classList.remove('no-scroll');
             resolve(true);
         };
         
@@ -78,6 +82,7 @@ export function showConfirm(message) {
         
         requestAnimationFrame(() => {
             overlay.classList.add('active');
+            document.body.classList.add('no-scroll');
         });
     });
 }
