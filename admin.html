@@ -203,12 +203,33 @@
             font-size: 0.75rem;
             line-height: 1.2;
         }
+        .summary-bottom-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 0.5rem;
+            width: 100%;
+            margin-top: 2rem;
+        }
+        .summary-bottom-actions button {
+            margin: 0;
+            min-height: 42px;
+            height: auto;
+            padding: 0.3rem 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            white-space: normal;
+            text-align: center;
+            font-size: 0.75rem;
+            line-height: 1.2;
+        }
 
         /* Responsive Improvements */
         * { box-sizing: border-box; }
         
         @media (max-width: 768px) {
-            .toolbar-panel .toolbar-actions {
+            .toolbar-panel .toolbar-actions,
+            .summary-bottom-actions {
                 grid-template-columns: 1fr 1fr;
             }
             .admin-actions > * {
@@ -390,9 +411,6 @@
                         <h3 id="summary-event-title" style="font-size: 1.5rem; margin-bottom: 0.5rem; font-family: 'Space Mono', monospace; font-weight: 700; letter-spacing: 0.1em;">--</h3>
                         <p id="summary-event-date" style="color: rgba(255,255,255,0.5); font-size: 0.8rem; letter-spacing: 1px; margin: 0;">--</p>
                     </div>
-                    <div class="summary-actions" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                        <button id="edit-event-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1rem; font-size: 0.7rem;">MODIFICA</button>
-                    </div>
                 </div>
 
                 <div class="kpi-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
@@ -410,9 +428,10 @@
                     </div>
                 </div>
                 
-                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: flex-start;">
-                    <button id="set-active-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1rem; font-size: 0.7rem;">RENDI ATTIVO</button>
-                    <button id="delete-event-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1rem; font-size: 0.7rem; border-color: rgba(255, 50, 50, 0.4); color: rgba(255, 100, 100, 0.8);">ELIMINA EVENTO</button>
+                <div class="summary-bottom-actions">
+                    <button id="edit-event-btn" class="submit-btn">MODIFICA</button>
+                    <button id="set-active-btn" class="submit-btn">RENDI ATTIVO</button>
+                    <button id="delete-event-btn" class="submit-btn" style="border-color: rgba(255, 50, 50, 0.4); color: rgba(255, 100, 100, 0.8);">ELIMINA EVENTO</button>
                 </div>
             </div>
 
