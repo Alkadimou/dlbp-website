@@ -523,26 +523,22 @@ document.addEventListener("DOMContentLoaded", () => {
             
             try {
                 const currentDoc = await getDoc(doc(db, "events", currentEventId));
-                if (currentDoc.exists() && currentDoc.data().isActive) {
-                    showModal("Questo evento è già attivo online!");
-                    return;
-                }
-
-                if (!await showConfirm("Vuoi impostare questo evento come ATTIVO ONLINE? Le nuove iscrizioni finiranno qui.")) return;
+                if (!currentDoc.exists()) return;
                 
-                // Imposta tutti gli altri eventi come NON attivi
-                const eventsSnap = await getDocs(collection(db, "events"));
-                const batch = writeBatch(db);
-                for (const d of eventsSnap.docs) {
-                    if (d.data().isActive && d.id !== currentEventId) {
-                        batch.update(doc(db, "events", d.id), { isActive: false });
-                    }
-                }
-                // Imposta quello corrente come attivo
-                batch.update(doc(db, "events", currentEventId), { isActive: true });
+                const evData = currentDoc.data();
+                const nowActive = evData.isActive || false;
                 
-                await batch.commit();
-                showModal("Evento impostato come ATTIVO ONLINE!");
+                if (nowActive) {
+                    if (!await showConfirm("Vuoi impostare questo evento come NON ATTIVO? Non sarà più visibile tra gli eventi attivi.")) return;
+                    await updateDoc(doc(db, "events", currentEventId), { isActive: false });
+                    showModal("Evento disattivato con successo!");
+                } else {
+                    if (!await showConfirm("Vuoi impostare questo evento come ATTIVO ONLINE?")) return;
+                    await updateDoc(doc(db, "events", currentEventId), { isActive: true });
+                    showModal("Evento impostato come ATTIVO ONLINE!");
+                }
+                
+                await loadSettings();
                 await loadEventsList();
             } catch (error) {
                 console.error("Error setting active event:", error);
@@ -590,6 +586,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
                 document.getElementById('flyer-input').value = "";
                 document.getElementById('desc-input').value = evData.description || "";
+                
+                // Aggiorna lo stato visivo del pulsante "Rendi attivo"
+                if (setActiveBtn) {
+                    if (evData.isActive) {
+                        setActiveBtn.textContent = "RENDI INATTIVO";
+                        setActiveBtn.style.borderColor = "rgba(255, 50, 50, 0.4)";
+                        setActiveBtn.style.color = "rgba(255, 100, 100, 0.8)";
+                    } else {
+                        setActiveBtn.textContent = "RENDI ATTIVO";
+                        setActiveBtn.style.borderColor = "rgba(46, 204, 113, 0.4)";
+                        setActiveBtn.style.color = "rgba(46, 204, 113, 0.9)";
+                    }
+                }
             }
         } catch (error) {
             console.error("Error loading event settings:", error);
