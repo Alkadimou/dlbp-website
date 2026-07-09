@@ -199,13 +199,14 @@
             font-family: 'Space Mono', monospace;
             border-radius: 4px;
         }
-        .toolbar-panel .toolbar-actions {
+        .toolbar-actions {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             gap: 0.5rem;
             width: 100%;
+            margin-top: 1.5rem;
         }
-        .toolbar-panel .toolbar-actions button {
+        .toolbar-actions button {
             margin: 0;
             min-height: 42px;
             height: auto;
@@ -243,7 +244,7 @@
         * { box-sizing: border-box; }
         
         @media (max-width: 768px) {
-            .toolbar-panel .toolbar-actions,
+            .toolbar-actions,
             .summary-bottom-actions {
                 grid-template-columns: 1fr 1fr;
             }
@@ -514,12 +515,6 @@
                     <div class="toolbar-input-group" style="flex: 1; min-width: 250px;">
                         <input type="text" id="search-input" placeholder="Cerca nome o email...">
                     </div>
-                    <div class="toolbar-actions">
-                        <button id="analytics-btn" class="submit-btn">ANALYTICS</button>
-                        <button id="export-csv-btn" class="submit-btn">ESPORTA</button>
-                        <button id="delete-selected-btn" class="submit-btn" style="border-color: rgba(255, 50, 50, 0.4); color: rgba(255, 100, 100, 0.8);" disabled>ELIMINA</button>
-                        <button id="send-emails-btn" class="submit-btn">INVIA ACCESSI</button>
-                    </div>
                 </div>
                 
                 <div class="table-responsive">
@@ -543,6 +538,14 @@
                     </tbody>
                     </table>
                 </div>
+
+                <div class="toolbar-actions">
+                    <button id="analytics-btn" class="submit-btn">ANALYTICS</button>
+                    <button id="export-csv-btn" class="submit-btn">ESPORTA</button>
+                    <button id="delete-selected-btn" class="submit-btn" style="border-color: rgba(255, 50, 50, 0.4); color: rgba(255, 100, 100, 0.8);" disabled>ELIMINA</button>
+                    <button id="send-emails-btn" class="submit-btn">INVIA ACCESSI</button>
+                </div>
+                
                 <div id="admin-message" class="form-message hidden"></div>
             </div>
             <!-- PR Management Section -->
