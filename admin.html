@@ -260,6 +260,8 @@
                 content: attr(data-label);
                 position: absolute;
                 left: 0.75rem;
+                top: 50%;
+                transform: translateY(-50%);
                 width: 40%;
                 text-align: left;
                 font-weight: bold;
@@ -269,11 +271,13 @@
                 letter-spacing: 1px;
             }
             .users-table td input[type="checkbox"], .pr-table td input[type="checkbox"] {
-                float: right;
+                position: absolute;
+                right: 0.75rem;
+                top: 50%;
+                transform: translateY(-50%) scale(1.5);
+                margin: 0;
                 width: auto !important;
                 height: auto !important;
-                transform: scale(1.5);
-                margin: 0.15rem 0.5rem 0 0;
             }
             /* Hide the redundant "Seleziona" text on mobile if possible, or keep it */
         }
