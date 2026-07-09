@@ -208,9 +208,9 @@
             margin-bottom: 2rem;
         }
         .search-input-wrapper {
-            width: 300px;
+            flex: 0 0 300px;
             max-width: calc(100% - 130px);
-            transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transition: flex-basis 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
         .search-input-wrapper input {
             width: 100%;
@@ -224,7 +224,8 @@
             outline: none;
         }
         .search-input-wrapper:focus-within {
-            width: 100%;
+            flex: 1 1 100%;
+            flex-basis: 100%;
         }
         .toolbar-actions {
             display: grid;
