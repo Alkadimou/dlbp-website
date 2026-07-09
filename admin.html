@@ -429,6 +429,7 @@
                 </div>
                 
                 <div class="summary-bottom-actions">
+                    <button id="view-event-btn" class="submit-btn">DETTAGLI</button>
                     <button id="edit-event-btn" class="submit-btn">MODIFICA</button>
                     <button id="set-active-btn" class="submit-btn">RENDI ATTIVO</button>
                     <button id="delete-event-btn" class="submit-btn" style="border-color: rgba(255, 50, 50, 0.4); color: rgba(255, 100, 100, 0.8);">ELIMINA EVENTO</button>
@@ -564,6 +565,60 @@
             
             <div style="display: flex; gap: 1rem; margin-top: 2.5rem; width: 100%;">
                 <button id="save-content-btn" class="submit-btn" style="flex: 2; border-color: rgba(255,255,255,0.8); color: #fff;">SALVA DETTAGLI</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Details Modal -->
+    <div id="details-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
+            <button id="close-details-btn" style="position: absolute; top: 1rem; right: 1rem; background: transparent; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; font-family: 'Space Mono', monospace;">&times;</button>
+            <h2 class="event-card-title" style="font-size: 1.2rem; margin-bottom: 2rem; color: var(--accent-color);">DETTAGLI EVENTO</h2>
+            
+            <div style="display: flex; flex-direction: column; gap: 1.5rem; width: 100%; text-align: left; font-family: 'Space Mono', monospace;">
+                <div style="display: flex; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.8rem;">
+                    <span style="width: 180px; color: rgba(255,255,255,0.5); font-size: 0.8rem; flex-shrink: 0;">NOME EVENTO</span>
+                    <span id="details-event-name" style="color: #fff; font-weight: bold;">--</span>
+                </div>
+                <div style="display: flex; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.8rem;">
+                    <span style="width: 180px; color: rgba(255,255,255,0.5); font-size: 0.8rem; flex-shrink: 0;">SECRET LOCATION</span>
+                    <span id="details-event-location" style="color: #fff;">--</span>
+                </div>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.8rem;">
+                    <div style="display: flex; flex: 2; min-width: 150px;">
+                        <span style="width: 180px; color: rgba(255,255,255,0.5); font-size: 0.8rem; flex-shrink: 0;">DATA EVENTO</span>
+                        <span id="details-event-date" style="color: #fff;">--</span>
+                    </div>
+                    <div style="display: flex; flex: 1; min-width: 100px;">
+                        <span style="width: 80px; color: rgba(255,255,255,0.5); font-size: 0.8rem; flex-shrink: 0;">INIZIO</span>
+                        <span id="details-event-start" style="color: #fff;">--</span>
+                    </div>
+                    <div style="display: flex; flex: 1; min-width: 100px;">
+                        <span style="width: 80px; color: rgba(255,255,255,0.5); font-size: 0.8rem; flex-shrink: 0;">FINE</span>
+                        <span id="details-event-end" style="color: #fff;">--</span>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 2rem; flex-wrap: wrap; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.8rem;">
+                    <div style="display: flex; flex: 1; min-width: 150px;">
+                        <span style="width: 180px; color: rgba(255,255,255,0.5); font-size: 0.8rem; flex-shrink: 0;">LISTE APERTE</span>
+                        <span id="details-event-status" style="color: #fff;">--</span>
+                    </div>
+                    <div style="display: flex; flex: 1; min-width: 150px;">
+                        <span style="width: 180px; color: rgba(255,255,255,0.5); font-size: 0.8rem; flex-shrink: 0;">CAPIENZA LOCALE</span>
+                        <span id="details-event-capacity" style="color: #fff;">--</span>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.8rem;">
+                    <span style="color: rgba(255,255,255,0.5); font-size: 0.8rem;">FLYER DELL'EVENTO</span>
+                    <div id="details-event-flyer-preview" style="margin-top: 10px; max-width: 100%; max-height: 300px; overflow: hidden; border-radius: 8px; display: flex; justify-content: flex-start;">
+                        <img id="details-event-flyer-img" src="" alt="Flyer Evento" style="max-width: 100%; max-height: 300px; display: none; object-fit: contain; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1);">
+                        <span id="details-event-flyer-none" style="color: rgba(255,255,255,0.4); font-size: 0.8rem;">Nessun flyer caricato</span>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <span style="color: rgba(255,255,255,0.5); font-size: 0.8rem;">DESCRIZIONE EVENTO</span>
+                    <div id="details-event-desc" style="color: #fff; line-height: 1.6; white-space: pre-wrap; font-size: 0.9rem; background: rgba(255,255,255,0.02); padding: 1rem; border: 1px solid rgba(255,255,255,0.05); border-radius: 4px;">--</div>
+                </div>
             </div>
         </div>
     </div>

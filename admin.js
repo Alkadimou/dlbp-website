@@ -213,6 +213,65 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // --- VIEW DETAILS LOGIC ---
+    const viewEventBtn = document.getElementById("view-event-btn");
+    const detailsModal = document.getElementById("details-modal");
+    const closeDetailsBtn = document.getElementById("close-details-btn");
+
+    async function loadDetails() {
+        if (!db || !currentEventId) return;
+        try {
+            const eventSnap = await getDoc(doc(db, "events", currentEventId));
+            if (eventSnap.exists()) {
+                const evData = eventSnap.data();
+                document.getElementById('details-event-name').textContent = evData.name || "NOME NON DEFINITO";
+                document.getElementById('details-event-location').textContent = evData.location || "SECRET LOCATION";
+                
+                const dateObj = evData.dateIso ? new Date(evData.dateIso) : null;
+                const dateStr = !dateObj || isNaN(dateObj) ? (evData.dateIso || "Data non definita") : dateObj.toLocaleDateString('it-IT', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                document.getElementById('details-event-date').textContent = dateStr;
+                
+                document.getElementById('details-event-start').textContent = evData.startTime || "--:--";
+                document.getElementById('details-event-end').textContent = evData.endTime || "--:--";
+                document.getElementById('details-event-status').innerHTML = evData.isOpen !== false ? '<span style="color:var(--success-color);">APERTE</span>' : '<span style="color:var(--error-color);">CHIUSE</span>';
+                document.getElementById('details-event-capacity').textContent = evData.maxCapacity || "100";
+                
+                const img = document.getElementById('details-event-flyer-img');
+                const noneSpan = document.getElementById('details-event-flyer-none');
+                if (evData.flyerUrl) {
+                    img.src = evData.flyerUrl;
+                    img.style.display = 'block';
+                    noneSpan.style.display = 'none';
+                } else {
+                    img.src = '';
+                    img.style.display = 'none';
+                    noneSpan.style.display = 'block';
+                }
+                
+                document.getElementById('details-event-desc').textContent = evData.description || "Nessuna descrizione definita.";
+            }
+        } catch (error) {
+            console.error("Errore caricamento dettagli:", error);
+        }
+    }
+
+    if (viewEventBtn && detailsModal) {
+        viewEventBtn.addEventListener("click", async () => {
+            if (!currentEventId) {
+                showModal("Nessun evento selezionato da visualizzare.");
+                return;
+            }
+            await loadDetails();
+            detailsModal.classList.remove('hidden');
+        });
+    }
+
+    if (closeDetailsBtn && detailsModal) {
+        closeDetailsBtn.addEventListener("click", () => {
+            detailsModal.classList.add('hidden');
+        });
+    }
+
     if (newEventBtn) {
         newEventBtn.addEventListener("click", () => {
             isCreatingNew = true;
