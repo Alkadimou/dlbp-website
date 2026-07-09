@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const gateMessage = document.getElementById("gate-message");
     const publicEventHeader = document.getElementById("public-event-header");
 
-    const PUBLIC_GATE_HASH = "9ef04625d1268dd4ad42e2dcb4922180cd2ab4ecf8a39753303dfac7086d6e0f"; // jerico
+    const PUBLIC_GATE_HASH = "c696c0a9f8d1a373840f501af566265e1fc09e1aaba4acbbee87c0c4b0312523"; // theprodigy
     let currentEventId = "act_1"; // Default fallback
     let currentEventName = "";
 
