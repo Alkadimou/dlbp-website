@@ -994,7 +994,6 @@ document.addEventListener("DOMContentLoaded", () => {
             let actionsHtml = `
                 <div style="display: flex; gap: 0.5rem; justify-content: flex-end; flex-wrap: wrap;">
                     <button class="checkin-btn action-btn-icon check" data-id="${user.id}" title="Segna Presente" style="${user.checked_in ? 'opacity:0.3; cursor:default;' : ''}">🚪</button>
-                    <button class="resend-email-btn action-btn-icon" data-id="${user.id}" title="Invia Email Singola">✉</button>
                 </div>
             `;
 
@@ -1071,53 +1070,6 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
 
-        // Single Resend Email Logic
-        document.querySelectorAll(".resend-email-btn").forEach(btn => {
-            btn.addEventListener("click", async (e) => {
-                const id = e.target.dataset.id;
-                const user = usersData.find(u => u.id === id);
-                if (!user) return;
-                
-                if (!await showConfirm(`Vuoi inviare l'email con la location segreta a ${user.name}?`)) return;
-
-                e.target.disabled = true;
-                e.target.style.opacity = "0.5";
-
-                let eventLocation = "Secret Location";
-                let eventDateStr = "Data Evento";
-                try {
-                    const eventSnap = await getDoc(doc(db, "events", currentEventId));
-                    if (eventSnap.exists()) {
-                        const ed = eventSnap.data();
-                        eventLocation = ed.location || "Secret Location";
-                        eventDateStr = ed.date || "Data Evento";
-                    }
-                } catch(e) {
-                    console.error("Failed to fetch event data", e);
-                }
-
-                try {
-                    if (EMAILJS_PUBLIC_KEY !== "YOUR_EMAILJS_PUBLIC_KEY") {
-                        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-                            to_name: user.name,
-                            to_email: user.email,
-                            secret_location: eventLocation,
-                            event_date: eventDateStr,
-                            qr_code_url: `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${user.id}`
-                        });
-                        await updateDoc(doc(db, "registrations", user.id), { email_sent: true });
-                    }
-                    showModal("Email inviata con successo!");
-                    loadUsers();
-                } catch (error) {
-                    console.error(`Failed to send email to ${user.email}:`, error);
-                    showModal("Errore durante l'invio dell'email.");
-                    e.target.disabled = false;
-                    e.target.style.opacity = "1";
-                }
-            });
-        });
-        
         // Trigger search filter if there's already text in the input
         if (searchInput && searchInput.value) {
             searchInput.dispatchEvent(new Event('input'));
@@ -1214,7 +1166,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const sendEmailsBtn = document.getElementById("send-emails-btn");
     if (sendEmailsBtn) {
         sendEmailsBtn.addEventListener("click", async () => {
-        if (!await showConfirm("ATTENZIONE: Stai per inviare la location segreta a TUTTI gli iscritti. Procedere?")) {
+        const selectedIds = Array.from(document.querySelectorAll(".user-checkbox:checked")).map(cb => cb.dataset.id);
+        if (selectedIds.length === 0) {
+            showModal("Seleziona almeno un iscritto a cui inviare gli accessi.");
+            return;
+        }
+
+        if (!await showConfirm(`Stai per inviare la location segreta a ${selectedIds.length} iscritti selezionati. Procedere?`)) {
             return;
         }
 
@@ -1238,36 +1196,41 @@ document.addEventListener("DOMContentLoaded", () => {
         let successCount = 0;
         let failCount = 0;
 
-        for (const user of usersData) {
-            if (user.email_sent !== true) {
-                try {
-                    if (EMAILJS_PUBLIC_KEY !== "YOUR_EMAILJS_PUBLIC_KEY") {
-                        await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-                            to_name: user.name,
-                            to_email: user.email,
-                            secret_location: eventLocation,
-                            event_date: eventDateStr,
-                            qr_code_url: `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${user.id}`
-                        });
-                        await updateDoc(doc(db, "registrations", user.id), { email_sent: true });
-                    } else {
-                        // Simulate email sending delay
-                        await new Promise(r => setTimeout(r, 500));
-                        console.log(`Simulated email sent to ${user.email}`);
-                    }
-                    successCount++;
-                } catch (error) {
-                    console.error(`Failed to send email to ${user.email}:`, error);
-                    failCount++;
+        const selectedUsers = usersData.filter(user => selectedIds.includes(user.id));
+
+        for (const user of selectedUsers) {
+            try {
+                if (EMAILJS_PUBLIC_KEY !== "YOUR_EMAILJS_PUBLIC_KEY") {
+                    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+                        to_name: user.name,
+                        to_email: user.email,
+                        secret_location: eventLocation,
+                        event_date: eventDateStr,
+                        qr_code_url: `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${user.id}`
+                    });
+                    await updateDoc(doc(db, "registrations", user.id), { email_sent: true });
+                } else {
+                    // Simulate email sending delay
+                    await new Promise(r => setTimeout(r, 500));
+                    console.log(`Simulated email sent to ${user.email}`);
                 }
+                successCount++;
+            } catch (error) {
+                console.error(`Failed to send email to ${user.email}:`, error);
+                failCount++;
             }
         }
 
         sendEmailsBtn.disabled = false;
-        sendEmailsBtn.textContent = "INVIA SECRET LOCATION";
+        sendEmailsBtn.textContent = "INVIA ACCESSI";
         
         adminMessage.textContent = `Operazione completata. Inviate: ${successCount}. Fallite: ${failCount}.`;
         adminMessage.className = "form-message success";
+        setTimeout(() => {
+            adminMessage.className = "form-message hidden";
+        }, 5000);
+        
+        loadUsers();
     });
     }
 
