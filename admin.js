@@ -684,7 +684,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const ticketHtml = user.email_sent ? `<span style="color: #4CAF50;">INVIATO</span>` : `<span style="color: #ffcc00;">NO</span>`;
 
             tr.innerHTML = `
-                <td data-label="SELEZIONA" style="text-align: center;"><input type="checkbox" class="user-checkbox" data-id="${user.id}"></td>
+                <td data-label="${escapeHtml(user.name)}" style="text-align: center;"><input type="checkbox" class="user-checkbox" data-id="${user.id}"></td>
                 <td data-label="NOME">${escapeHtml(user.name)}</td>
                 <td data-label="EMAIL" style="word-break: break-all;">${escapeHtml(user.email)}</td>
                 <td data-label="LISTA" style="color: #aaa; text-transform: uppercase; text-align: center;">${escapeHtml(user.invited_by) || '-'}</td>

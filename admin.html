@@ -279,7 +279,16 @@
                 width: auto !important;
                 height: auto !important;
             }
-            /* Hide the redundant "Seleziona" text on mobile if possible, or keep it */
+            .users-table td[data-label="NOME"] {
+                display: none !important;
+            }
+            .users-table td:first-child::before {
+                color: #fff;
+                font-size: 0.9rem;
+                text-transform: none;
+                font-weight: bold;
+                width: 70%;
+            }
         }
     </style>
 </head>
