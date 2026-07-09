@@ -997,7 +997,7 @@ input::placeholder {
     -webkit-backdrop-filter: blur(24px);
     border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 16px;
-    padding: 2.5rem;
+    padding: 1.5rem;
     text-align: left;
     transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
     opacity: 0;
@@ -1016,12 +1016,12 @@ input::placeholder {
 
 .event-card-inner {
     display: flex;
-    gap: 2rem;
+    gap: 1.5rem;
     align-items: flex-start;
 }
 
 .event-card-img {
-    width: 150px;
+    width: 130px;
     height: auto;
     object-fit: contain;
     flex-shrink: 0;
@@ -1040,7 +1040,7 @@ input::placeholder {
     font-size: 0.6rem;
     font-weight: 500;
     letter-spacing: 0.25em;
-    margin-bottom: 1.2rem;
+    margin-bottom: 0.5rem;
     text-transform: uppercase;
 }
 .status-open  { color: rgba(100, 255, 160, 0.8); }
@@ -1048,19 +1048,20 @@ input::placeholder {
 
 .event-card-title {
     font-family: 'Space Mono', monospace;
-    font-size: 1.8rem;
+    font-size: 1.4rem;
     font-weight: 400;
     letter-spacing: 0.03em;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.3rem;
     color: #fff;
+    line-height: 1.2;
 }
 
 .event-card-date {
     font-family: 'Space Mono', monospace;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 300;
     color: rgba(255, 255, 255, 0.4);
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     letter-spacing: 0.05em;
 }
 
