@@ -9,6 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#050508">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         .admin-container {
             max-width: 1200px;
@@ -344,6 +346,68 @@
                 text-overflow: ellipsis;
             }
         }
+
+        /* --- Analytics Styling --- */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        @media (max-width: 768px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .chart-card {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+        }
+        .chart-card h3 {
+            margin-top: 0;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 1rem;
+            text-align: center;
+            font-family: 'Space Mono', monospace;
+        }
+        .dashboard-grid {
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); 
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .kpi-box {
+            background: rgba(255,255,255,0.02);
+            padding: 1.5rem 1rem; 
+            text-align: center; 
+            border: 1px solid rgba(255,255,255,0.05); 
+            border-radius: 8px;
+            backdrop-filter: blur(5px);
+        }
+        .kpi-box.highlight {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.2); 
+        }
+        .kpi-box h4 {
+            color: rgba(255,255,255,0.5); 
+            font-size: 0.6rem; 
+            letter-spacing: 2px; 
+            margin-bottom: 0.5rem;
+            font-family: 'Space Mono', monospace;
+        }
+        .kpi-box.highlight h4 {
+            color: rgba(255,255,255,0.8);
+        }
+        .kpi-value {
+            font-size: 2rem; 
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+        }
     </style>
 </head>
 <body class="landing-page">
@@ -447,7 +511,7 @@
                         <input type="text" id="search-input" placeholder="Cerca nome o email...">
                     </div>
                     <div class="toolbar-actions">
-                        <button class="submit-btn" onclick="window.location.href='analytics'">ANALYTICS</button>
+                        <button id="analytics-btn" class="submit-btn">ANALYTICS</button>
                         <button id="export-csv-btn" class="submit-btn">ESPORTA</button>
                         <button id="delete-selected-btn" class="submit-btn" style="border-color: rgba(255, 50, 50, 0.4); color: rgba(255, 100, 100, 0.8);" disabled>ELIMINA</button>
                         <button id="send-emails-btn" class="submit-btn">INVIA ACCESSI</button>
@@ -618,6 +682,67 @@
                 <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                     <span style="color: rgba(255,255,255,0.5); font-size: 0.8rem;">DESCRIZIONE EVENTO</span>
                     <div id="details-event-desc" style="color: #fff; line-height: 1.6; white-space: pre-wrap; font-size: 0.9rem; background: rgba(255,255,255,0.02); padding: 1rem; border: 1px solid rgba(255,255,255,0.05); border-radius: 4px;">--</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analytics Modal -->
+    <div id="analytics-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 900px; max-height: 90vh; overflow-y: auto;">
+            <button id="close-analytics-btn" style="position: absolute; top: 1rem; right: 1rem; background: transparent; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; font-family: 'Space Mono', monospace;">&times;</button>
+            <h2 class="event-card-title" style="font-size: 1.2rem; margin-bottom: 2rem; color: var(--accent-color);">ANALYTICS EVENTO</h2>
+            
+            <div id="analytics-loading-placeholder" style="padding: 3rem; text-align: center; color: rgba(255,255,255,0.5); font-family: 'Space Mono', monospace; letter-spacing: 2px;">
+                CARICAMENTO STATISTICHE...
+            </div>
+            
+            <div id="analytics-modal-body" style="display: none;">
+                <!-- Numeri Chiave -->
+                <div class="dashboard-grid">
+                    <div class="kpi-box">
+                        <h4>ISCRITTI TOTALI</h4>
+                        <div class="kpi-value" id="stat-total">0</div>
+                    </div>
+                    <div class="kpi-box">
+                        <h4>APPROVATI</h4>
+                        <div class="kpi-value" id="stat-approved" style="color: rgba(100,255,100,0.8);">0</div>
+                    </div>
+                    <div class="kpi-box">
+                        <h4>IN ATTESA</h4>
+                        <div class="kpi-value" id="stat-pending" style="color: rgba(255,200,100,0.8);">0</div>
+                    </div>
+                    <div class="kpi-box highlight">
+                        <h4>PRESENTI ALLA PORTA</h4>
+                        <div class="kpi-value" id="stat-present">0</div>
+                    </div>
+                </div>
+
+                <!-- Grafici -->
+                <div class="charts-grid">
+                    <!-- Grafico a Linee: Iscrizioni nel tempo -->
+                    <div class="chart-card" style="grid-column: 1 / -1;">
+                        <h3>ANDAMENTO ISCRIZIONI</h3>
+                        <canvas id="timelineChart" height="120"></canvas>
+                    </div>
+                    
+                    <!-- Grafico a Torta: Status -->
+                    <div class="chart-card">
+                        <h3>FUNNEL DI APPROVAZIONE</h3>
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                    
+                    <!-- Grafico a Torta: No-show -->
+                    <div class="chart-card">
+                        <h3>CONVERSIONE (NO-SHOW RATE)</h3>
+                        <canvas id="conversionChart"></canvas>
+                    </div>
+
+                    <!-- Grafico a Barre: Picchi di Affluenza -->
+                    <div class="chart-card" style="grid-column: 1 / -1;">
+                        <h3>PICCHI DI AFFLUENZA (CHECK-IN)</h3>
+                        <canvas id="peakTrafficChart" height="120"></canvas>
+                    </div>
                 </div>
             </div>
         </div>

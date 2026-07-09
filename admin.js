@@ -23,6 +23,10 @@ let db;
 let auth;
 let currentEventId = null;
 let isCreatingNew = false;
+let timelineChart = null;
+let statusChart = null;
+let conversionChart = null;
+let peakTrafficChart = null;
 try {
     if (firebaseConfig.apiKey !== "YOUR_API_KEY") {
         const app = initializeApp(firebaseConfig);
@@ -272,6 +276,213 @@ document.addEventListener("DOMContentLoaded", () => {
     if (closeDetailsBtn && detailsModal) {
         closeDetailsBtn.addEventListener("click", () => {
             detailsModal.classList.add('hidden');
+            document.body.classList.remove('no-scroll');
+        });
+    }
+
+    // --- ANALYTICS MODAL LOGIC ---
+    const analyticsBtn = document.getElementById("analytics-btn");
+    const analyticsModal = document.getElementById("analytics-modal");
+    const closeAnalyticsBtn = document.getElementById("close-analytics-btn");
+    const analyticsLoading = document.getElementById("analytics-loading-placeholder");
+    const analyticsBody = document.getElementById("analytics-modal-body");
+
+    async function loadAnalyticsData() {
+        if (!db || !currentEventId) return;
+        analyticsLoading.style.display = "block";
+        analyticsBody.style.display = "none";
+        
+        try {
+            const q = query(collection(db, "registrations"), where("eventId", "==", currentEventId));
+            const querySnapshot = await getDocs(q);
+            
+            let total = 0;
+            let approved = 0;
+            let pending = 0;
+            let present = 0;
+            
+            const datesMap = {};
+            const trafficMap = {};
+
+            querySnapshot.forEach(docSnap => {
+                const user = docSnap.data();
+                total++;
+                if (user.status === "approved") approved++;
+                if (user.status === "pending") pending++;
+                if (user.checked_in) present++;
+
+                if (user.timestamp) {
+                    const dateObj = user.timestamp.toDate();
+                    const dateStr = dateObj.toISOString().split('T')[0];
+                    datesMap[dateStr] = (datesMap[dateStr] || 0) + 1;
+                }
+
+                if (user.checked_in && user.check_in_time) {
+                    const timeObj = user.check_in_time.toDate();
+                    let min = timeObj.getMinutes();
+                    min = min < 30 ? "00" : "30";
+                    const bucket = `${timeObj.getHours().toString().padStart(2, '0')}:${min}`;
+                    trafficMap[bucket] = (trafficMap[bucket] || 0) + 1;
+                }
+            });
+
+            // Update UI Counters
+            document.getElementById("stat-total").textContent = total;
+            document.getElementById("stat-approved").textContent = approved;
+            document.getElementById("stat-pending").textContent = pending;
+            document.getElementById("stat-present").textContent = present;
+
+            // Render Charts
+            renderAnalyticsCharts(datesMap, approved, pending, present, trafficMap);
+
+            analyticsLoading.style.display = "none";
+            analyticsBody.style.display = "block";
+        } catch (error) {
+            console.error("Errore caricamento dati analytics:", error);
+            showModal("Errore nel caricamento dei dati delle statistiche.");
+            analyticsLoading.style.display = "none";
+        }
+    }
+
+    function renderAnalyticsCharts(datesMap, approved, pending, present, trafficMap) {
+        if (timelineChart) timelineChart.destroy();
+        if (statusChart) statusChart.destroy();
+        if (conversionChart) conversionChart.destroy();
+        if (peakTrafficChart) peakTrafficChart.destroy();
+
+        // 1. Timeline Chart
+        const ctxTimeline = document.getElementById('timelineChart').getContext('2d');
+        const labels = Object.keys(datesMap).sort();
+        const dataPoints = labels.map(l => datesMap[l]);
+        
+        let cumulative = 0;
+        const cumulativeData = dataPoints.map(val => {
+            cumulative += val;
+            return cumulative;
+        });
+
+        timelineChart = new Chart(ctxTimeline, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Nuove Iscrizioni Giornaliere',
+                        data: dataPoints,
+                        borderColor: '#2ecc71',
+                        backgroundColor: 'rgba(46, 204, 113, 0.2)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Totale Iscritti',
+                        data: cumulativeData,
+                        borderColor: '#fff',
+                        borderDash: [5, 5],
+                        borderWidth: 1,
+                        fill: false,
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { labels: { color: '#fff', font: { family: 'Space Mono' } } }
+                },
+                scales: {
+                    x: { ticks: { color: '#888' }, grid: { color: '#333' } },
+                    y: { ticks: { color: '#888' }, grid: { color: '#333' }, beginAtZero: true }
+                }
+            }
+        });
+
+        // 2. Status Chart (Pending vs Approved)
+        const ctxStatus = document.getElementById('statusChart').getContext('2d');
+        statusChart = new Chart(ctxStatus, {
+            type: 'doughnut',
+            data: {
+                labels: ['Approvati', 'In Attesa', 'Altri'],
+                datasets: [{
+                    data: [approved, pending, 0],
+                    backgroundColor: ['#2ecc71', '#f1c40f', '#e74c3c'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom', labels: { color: '#fff', font: { family: 'Space Mono' } } }
+                }
+            }
+        });
+
+        // 3. Conversion Chart (No-Show Rate)
+        const ctxConversion = document.getElementById('conversionChart').getContext('2d');
+        const absent = approved - present;
+        conversionChart = new Chart(ctxConversion, {
+            type: 'pie',
+            data: {
+                labels: ['Presenti alla Porta', 'Assenti (No-Show)'],
+                datasets: [{
+                    data: [present, Math.max(0, absent)],
+                    backgroundColor: ['#3498db', '#333333'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom', labels: { color: '#fff', font: { family: 'Space Mono' } } }
+                }
+            }
+        });
+
+        // 4. Peak Traffic Chart (Bar)
+        const ctxTraffic = document.getElementById('peakTrafficChart').getContext('2d');
+        const trafficLabels = Object.keys(trafficMap).sort();
+        const trafficDataPoints = trafficLabels.map(l => trafficMap[l]);
+
+        peakTrafficChart = new Chart(ctxTraffic, {
+            type: 'bar',
+            data: {
+                labels: trafficLabels,
+                datasets: [{
+                    label: 'Ingressi per fascia oraria',
+                    data: trafficDataPoints,
+                    backgroundColor: '#e67e22',
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: { ticks: { color: '#888' }, grid: { display: false } },
+                    y: { ticks: { color: '#888' }, grid: { color: '#333' }, beginAtZero: true }
+                }
+            }
+        });
+    }
+
+    if (analyticsBtn && analyticsModal) {
+        analyticsBtn.addEventListener("click", async () => {
+            if (!currentEventId) {
+                showModal("Nessun evento selezionato di cui visualizzare le statistiche.");
+                return;
+            }
+            analyticsModal.classList.remove('hidden');
+            document.body.classList.add('no-scroll');
+            await loadAnalyticsData();
+        });
+    }
+
+    if (closeAnalyticsBtn && analyticsModal) {
+        closeAnalyticsBtn.addEventListener("click", () => {
+            analyticsModal.classList.add('hidden');
             document.body.classList.remove('no-scroll');
         });
     }
