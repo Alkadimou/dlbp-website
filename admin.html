@@ -329,7 +329,6 @@
                         <span style="font-size: 0.7rem; color: rgba(255,255,255,0.5); letter-spacing: 1px;">EVENTO:</span>
                         <select id="admin-event-selector" style="flex: 1; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 0.5rem; font-family: 'Space Mono', monospace; font-size: 0.8rem; cursor: pointer; border-radius: 4px; outline: none;"></select>
                         <button id="new-event-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1rem; font-size: 0.7rem; white-space: nowrap;">+ NUOVO</button>
-                        <button id="manage-pr-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1rem; font-size: 0.7rem; white-space: nowrap;">AREA PR</button>
                     </div>
                 </div>
             </div>
@@ -408,41 +407,37 @@
                 </div>
                 <div id="admin-message" class="form-message hidden"></div>
             </div>
+            <!-- PR Management Section -->
+            <div class="event-card-item" style="padding: 1.5rem; opacity: 1; transform: none; text-align: left; margin-top: 2rem;">
+                <h2 class="event-card-title" style="font-size: 1rem; margin-bottom: 1.5rem; letter-spacing: 2px;">GESTIONE PR</h2>
+                
+                <div style="display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap;">
+                    <input type="text" id="pr-name-input" placeholder="Nome PR (es. Marco Rossi)" style="flex: 1; min-width: 200px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.5rem; font-family: 'Space Mono', monospace; border-radius: 4px; outline: none;">
+                    <input type="text" id="pr-code-input" placeholder="Codice (es. marco24)" style="flex: 1; min-width: 200px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.5rem; font-family: 'Space Mono', monospace; border-radius: 4px; outline: none;">
+                    <button id="add-pr-btn" class="submit-btn" style="padding: 0.5rem 1rem; margin: 0;">AGGIUNGI</button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="pr-table">
+                        <thead>
+                            <tr>
+                                <th>NOME</th>
+                                <th>CODICE / LINK</th>
+                                <th>STATO</th>
+                                <th style="text-align: right;">AZIONI</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pr-table-body">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </section>
     </main>
 
     <!-- EmailJS SDK -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-
-    <!-- PR Management Modal -->
-    <div id="pr-modal" class="modal hidden">
-        <div class="modal-content" style="max-width: 600px; max-height: 90vh; overflow-y: auto;">
-            <button id="close-pr-modal-btn" style="position: absolute; top: 1rem; right: 1rem; background: transparent; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; font-family: 'Space Mono', monospace;">&times;</button>
-            <h2 class="event-card-title" style="font-size: 1.2rem; margin-bottom: 1.5rem;">GESTIONE PR</h2>
-            
-            <div style="display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap;">
-                <input type="text" id="pr-name-input" placeholder="Nome PR (es. Marco Rossi)" style="flex: 1; min-width: 200px;">
-                <input type="text" id="pr-code-input" placeholder="Codice (es. marco24)" style="flex: 1; min-width: 200px;">
-                <button id="add-pr-btn" class="submit-btn" style="padding: 0.5rem 1rem; margin: 0;">AGGIUNGI</button>
-            </div>
-
-            <div style="overflow-x: auto;">
-                <table class="pr-table">
-                    <thead>
-                        <tr>
-                            <th>NOME</th>
-                            <th>CODICE / LINK</th>
-                            <th>STATO</th>
-                            <th style="text-align: right;">AZIONI</th>
-                        </tr>
-                    </thead>
-                    <tbody id="pr-table-body">
-                        <!-- Populated by JS -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
 
     <!-- Settings Modal -->
     <div id="settings-modal" class="modal hidden">

@@ -550,6 +550,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.getElementById("app-main").style.maxWidth = "1200px";
                 await setupEventsIfNeeded();
                 await loadEventsList();
+                loadPRs();
             } else {
                 loginSection.style.display = "block";
                 dashboardSection.style.display = "none";
@@ -917,34 +918,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // --- PR MANAGEMENT LOGIC ---
-    const managePrBtn = document.getElementById('manage-pr-btn');
-    const prModal = document.getElementById('pr-modal');
-    const closePrModalBtn = document.getElementById('close-pr-modal-btn');
+    // manage-pr-btn e close-pr-modal-btn rimossi poiché la sezione PR non è più una modale
     const addPrBtn = document.getElementById('add-pr-btn');
     const prNameInput = document.getElementById('pr-name-input');
     const prCodeInput = document.getElementById('pr-code-input');
     const prTableBody = document.getElementById('pr-table-body');
     let unsubPrs = null;
-
-    managePrBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        console.log("PR button clicked!");
-        try {
-            prModal.classList.remove('hidden');
-            loadPRs();
-        } catch (err) {
-            console.error("Errore PR:", err);
-            showModal("Si è verificato un errore nell'apertura: " + err.message);
-        }
-    });
-
-    closePrModalBtn.addEventListener('click', () => {
-        prModal.classList.add('hidden');
-        if (unsubPrs) {
-            unsubPrs();
-            unsubPrs = null;
-        }
-    });
 
     addPrBtn.addEventListener('click', async () => {
         const name = prNameInput.value.trim();
