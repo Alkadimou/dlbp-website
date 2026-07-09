@@ -962,6 +962,7 @@ input::placeholder {
     max-width: 1000px;
     margin: 1rem auto 0 auto;
     gap: 1.5rem;
+    align-items: start;
 }
 
 /* Loading state */
@@ -1015,15 +1016,12 @@ input::placeholder {
 
 .event-card-inner {
     display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    align-items: center;
-    text-align: center;
+    gap: 2rem;
+    align-items: flex-start;
 }
 
 .event-card-img {
-    width: 100%;
-    max-width: 200px;
+    width: 150px;
     height: auto;
     object-fit: contain;
     flex-shrink: 0;
@@ -1032,10 +1030,9 @@ input::placeholder {
 }
 
 .event-card-content {
-    width: 100%;
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
-    align-items: center;
 }
 
 .event-card-status {
