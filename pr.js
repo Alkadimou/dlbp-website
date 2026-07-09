@@ -106,6 +106,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const baseUrl = window.location.origin + '/';
             inviteLinkInput.value = `${baseUrl}?pr=${code}`;
 
+            await loadAllEvents();
             startListening(code);
         } catch (error) {
             console.error("Errore login PR:", error);
@@ -130,12 +131,35 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 2000);
     });
 
+    let eventsMap = {};
+    async function loadAllEvents() {
+        if (!db) return;
+        try {
+            const q = query(collection(db, "events"));
+            const querySnapshot = await getDocs(q);
+            querySnapshot.forEach(doc => {
+                eventsMap[doc.id] = doc.data().name || "Evento Sconosciuto";
+            });
+        } catch (error) {
+            console.error("Error loading events for map:", error);
+        }
+    }
+
+    function escapeHtml(str) {
+        if (!str) return "";
+        return str
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
     function startListening(prCode) {
         if (!db) return;
         
         const q = query(
             collection(db, "registrations"), 
-            where("eventId", "==", currentEventId),
             where("invited_by", "==", prCode)
         );
 
@@ -143,18 +167,55 @@ document.addEventListener("DOMContentLoaded", () => {
             let total = 0;
             let approved = 0;
             let entered = 0;
+            
+            const tbody = document.getElementById("pr-guests-tbody");
+            const fragment = document.createDocumentFragment();
+            let registrationsList = [];
 
             snapshot.forEach((doc) => {
                 const data = doc.data();
+                registrationsList.push({ id: doc.id, ...data });
+                
                 total++;
                 if (data.status === "approved") approved++;
                 if (data.checked_in === true) entered++;
             });
 
+            // Sort registrations by timestamp descending
+            registrationsList.sort((a, b) => {
+                const timeA = a.timestamp ? (typeof a.timestamp.toDate === 'function' ? a.timestamp.toDate() : new Date(a.timestamp)) : 0;
+                const timeB = b.timestamp ? (typeof b.timestamp.toDate === 'function' ? b.timestamp.toDate() : new Date(b.timestamp)) : 0;
+                return timeB - timeA;
+            });
+
+            if (tbody) {
+                tbody.innerHTML = "";
+                if (registrationsList.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Nessun iscritto al momento.</td></tr>';
+                } else {
+                    registrationsList.forEach(reg => {
+                        const tr = document.createElement("tr");
+                        const eventName = eventsMap[reg.eventId] || "Evento Sconosciuto";
+                        const ticketStatus = reg.email_sent ? '<span style="color: #4CAF50;">INVIATO</span>' : '<span style="color: #ffcc00;">NO</span>';
+                        const checkinStatus = reg.checked_in ? '<span style="color: #4CAF50; font-weight: bold;">ENTRATO</span>' : '<span style="color: #888;">-</span>';
+                        
+                        tr.innerHTML = `
+                            <td data-label="NOME"><span class="truncate-mobile">${escapeHtml(reg.name)}</span></td>
+                            <td data-label="EMAIL"><span class="truncate-mobile" style="word-break: break-all;">${escapeHtml(reg.email)}</span></td>
+                            <td data-label="EVENTO"><span class="truncate-mobile" style="color:var(--accent-color);">${escapeHtml(eventName)}</span></td>
+                            <td data-label="TICKET" style="text-align: center;">${ticketStatus}</td>
+                            <td data-label="INGRESSO" style="text-align: center;">${checkinStatus}</td>
+                        `;
+                        fragment.appendChild(tr);
+                    });
+                    tbody.appendChild(fragment);
+                }
+            }
+
             // Animate numbers
-            animateValue(statTotal, parseInt(statTotal.textContent), total, 500);
-            animateValue(statApproved, parseInt(statApproved.textContent), approved, 500);
-            animateValue(statEntered, parseInt(statEntered.textContent), entered, 500);
+            animateValue(statTotal, parseInt(statTotal.textContent) || 0, total, 500);
+            animateValue(statApproved, parseInt(statApproved.textContent) || 0, approved, 500);
+            animateValue(statEntered, parseInt(statEntered.textContent) || 0, entered, 500);
         });
     }
 
