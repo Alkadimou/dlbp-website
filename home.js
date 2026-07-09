@@ -97,8 +97,20 @@ async function loadEvents() {
             return dateB - dateA;
         });
 
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const todayStr = `${year}-${month}-${day}`;
+
         const activeEvents = eventsArray.filter(e => e.isActive === true);
-        const pastEvents = eventsArray.filter(e => e.isActive !== true);
+        const pastEvents = eventsArray.filter(e => {
+            if (e.isActive === true) return false;
+            if (e.dateIso) {
+                return e.dateIso <= todayStr;
+            }
+            return true;
+        });
 
         if (activeEvents.length === 0) {
             eventsGrid.innerHTML = '<div class="no-events">NESSUN EVENTO IN PROGRAMMA</div>';
