@@ -199,6 +199,9 @@
         * { box-sizing: border-box; }
         
         @media (max-width: 768px) {
+            .toolbar-panel .toolbar-actions {
+                grid-template-columns: 1fr 1fr;
+            }
             .admin-actions > * {
                 flex: 1 1 100%;
                 text-align: center;
@@ -371,7 +374,7 @@
                     <div class="toolbar-input-group" style="flex: 1; min-width: 250px;">
                         <input type="text" id="search-input" placeholder="Cerca nome o email...">
                     </div>
-                    <div class="toolbar-actions" style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
+                    <div class="toolbar-actions">
                         <button class="submit-btn" onclick="window.location.href='analytics'">ANALYTICS</button>
                         <button id="export-csv-btn" class="submit-btn">ESPORTA</button>
                         <button id="delete-selected-btn" class="submit-btn" style="border-color: rgba(255, 50, 50, 0.4); color: rgba(255, 100, 100, 0.8);" disabled>ELIMINA</button>
