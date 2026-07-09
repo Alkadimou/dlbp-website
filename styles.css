@@ -1095,6 +1095,13 @@ input::placeholder {
     border-color: rgba(255, 255, 255, 0.3);
     color: #fff;
 }
+#past-events-grid .event-card-item:hover .event-card-btn::before {
+    left: -100%;
+}
+#past-events-grid .event-card-item:hover .event-card-btn {
+    border-color: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.2);
+}
 
 /* No events */
 .no-events {
