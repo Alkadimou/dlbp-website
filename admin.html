@@ -199,6 +199,33 @@
             font-family: 'Space Mono', monospace;
             border-radius: 4px;
         }
+        .search-container-dynamic {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            width: 100%;
+            margin-bottom: 2rem;
+        }
+        .search-input-wrapper {
+            width: 300px;
+            max-width: calc(100% - 130px);
+            transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .search-input-wrapper input {
+            width: 100%;
+            height: 42px;
+            padding: 0.5rem 1rem;
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.1);
+            font-family: 'Space Mono', monospace;
+            border-radius: 4px;
+            outline: none;
+        }
+        .search-input-wrapper:focus-within {
+            width: 100%;
+        }
         .toolbar-actions {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -511,9 +538,38 @@
                     <h2 class="event-card-title" style="font-size: 1rem; margin: 0; letter-spacing: 2px;">GESTIONE ISCRITTI</h2>
                 </div>
 
-                <div class="toolbar-panel unified-toolbar">
-                    <div class="toolbar-input-group" style="flex: 1; min-width: 250px;">
+                <div class="search-container-dynamic">
+                    <div class="search-input-wrapper">
                         <input type="text" id="search-input" placeholder="Cerca nome o email...">
+                    </div>
+                    <button id="filter-btn" class="submit-btn" style="margin: 0; min-height: unset; height: 42px; padding: 0.5rem 1.5rem; display: flex; align-items: center; gap: 0.5rem; border-color: rgba(255,255,255,0.2); color: rgba(255,255,255,0.8);">
+                        <span>FILTRI</span> <span style="font-size: 0.8rem;">▼</span>
+                    </button>
+                </div>
+
+                <!-- Filter Panel -->
+                <div id="filter-panel" style="display: none; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 6px; padding: 1rem; margin-bottom: 2rem; gap: 1rem; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 150px;">
+                        <label style="font-size: 0.7rem; color: rgba(255,255,255,0.5); display: block; margin-bottom: 0.5rem; letter-spacing: 1px;">STATO TICKET</label>
+                        <select id="filter-ticket" style="width: 100%; height: 38px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0 0.5rem; border-radius: 4px; font-family: 'Space Mono', monospace; outline: none;">
+                            <option value="all">TUTTI</option>
+                            <option value="sent">INVIATO</option>
+                            <option value="not_sent">NON INVIATO</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1; min-width: 150px;">
+                        <label style="font-size: 0.7rem; color: rgba(255,255,255,0.5); display: block; margin-bottom: 0.5rem; letter-spacing: 1px;">PRESENZA</label>
+                        <select id="filter-presence" style="width: 100%; height: 38px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0 0.5rem; border-radius: 4px; font-family: 'Space Mono', monospace; outline: none;">
+                            <option value="all">TUTTI</option>
+                            <option value="checked_in">ENTRATO</option>
+                            <option value="not_checked_in">NON ENTRATO</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1; min-width: 150px;">
+                        <label style="font-size: 0.7rem; color: rgba(255,255,255,0.5); display: block; margin-bottom: 0.5rem; letter-spacing: 1px;">LISTA PR</label>
+                        <select id="filter-pr" style="width: 100%; height: 38px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0 0.5rem; border-radius: 4px; font-family: 'Space Mono', monospace; outline: none;">
+                            <option value="all">TUTTE</option>
+                        </select>
                     </div>
                 </div>
                 

@@ -924,6 +924,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 totalCountDisplay.textContent = usersData.length;
             }
             
+            updatePrFilterDropdown();
             renderTable();
         } catch (error) {
             console.error("Error loading users:", error);
@@ -934,14 +935,52 @@ document.addEventListener("DOMContentLoaded", () => {
     function renderTable() {
         tbody.innerHTML = "";
         if (usersData.length === 0) {
-            tbody.innerHTML = "<tr><td colspan='3'>Nessun iscritto al momento.</td></tr>";
+            tbody.innerHTML = "<tr><td colspan='8' style='text-align:center;'>Nessun iscritto al momento.</td></tr>";
             adminMessage.className = "form-message hidden";
+            if (totalCountDisplay) totalCountDisplay.textContent = 0;
+            presentCountDisplay.textContent = 0;
+            return;
+        }
+
+        // Apply filters
+        const filterTicketVal = document.getElementById("filter-ticket") ? document.getElementById("filter-ticket").value : "all";
+        const filterPresenceVal = document.getElementById("filter-presence") ? document.getElementById("filter-presence").value : "all";
+        const filterPrVal = document.getElementById("filter-pr") ? document.getElementById("filter-pr").value : "all";
+        const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : "";
+
+        const filteredUsers = usersData.filter(user => {
+            // Search text filter
+            if (searchTerm) {
+                const name = (user.name || "").toLowerCase();
+                const email = (user.email || "").toLowerCase();
+                if (!name.includes(searchTerm) && !email.includes(searchTerm)) {
+                    return false;
+                }
+            }
+
+            // Ticket filter
+            if (filterTicketVal === "sent" && !user.email_sent) return false;
+            if (filterTicketVal === "not_sent" && user.email_sent) return false;
+
+            // Presence filter
+            if (filterPresenceVal === "checked_in" && !user.checked_in) return false;
+            if (filterPresenceVal === "not_checked_in" && user.checked_in) return false;
+
+            // PR filter
+            if (filterPrVal !== "all" && (user.invited_by || "").toLowerCase() !== filterPrVal.toLowerCase()) return false;
+
+            return true;
+        });
+
+        if (filteredUsers.length === 0) {
+            tbody.innerHTML = "<tr><td colspan='8' style='text-align:center;'>Nessun iscritto corrisponde ai filtri.</td></tr>";
+            presentCountDisplay.textContent = 0;
             return;
         }
 
         let presentCount = 0;
         const fragment = document.createDocumentFragment();
-        usersData.forEach(user => {
+        filteredUsers.forEach(user => {
             const tr = document.createElement("tr");
             
             let statusHtml = `<span style="color: #888;">-</span>`;
@@ -1085,25 +1124,56 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // --- SEARCH LOGIC ---
+    // --- SEARCH & FILTER LOGIC ---
     let searchTimeout;
     if (searchInput) {
-        searchInput.addEventListener("input", (e) => {
+        searchInput.addEventListener("input", () => {
             clearTimeout(searchTimeout);
             searchTimeout = setTimeout(() => {
-                const term = e.target.value.toLowerCase();
-                const rows = tbody.querySelectorAll("tr");
-                rows.forEach(row => {
-                    if (row.children.length < 3) return;
-                    const name = row.children[1].textContent.toLowerCase();
-                    const email = row.children[2].textContent.toLowerCase();
-                    if (name.includes(term) || email.includes(term)) {
-                        row.style.display = "";
-                    } else {
-                        row.style.display = "none";
-                    }
-                });
+                renderTable();
             }, 150);
+        });
+    }
+
+    const filterBtn = document.getElementById("filter-btn");
+    const filterPanel = document.getElementById("filter-panel");
+    if (filterBtn && filterPanel) {
+        filterBtn.addEventListener("click", () => {
+            if (filterPanel.style.display === "none" || filterPanel.style.display === "") {
+                filterPanel.style.display = "flex";
+                filterBtn.querySelector("span:last-child").textContent = "▲";
+            } else {
+                filterPanel.style.display = "none";
+                filterBtn.querySelector("span:last-child").textContent = "▼";
+            }
+        });
+    }
+
+    ["filter-ticket", "filter-presence", "filter-pr"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener("change", () => {
+                renderTable();
+            });
+        }
+    });
+
+    function updatePrFilterDropdown() {
+        const prSelect = document.getElementById("filter-pr");
+        if (!prSelect) return;
+        
+        const currentSelection = prSelect.value;
+        const uniquePrs = [...new Set(usersData.map(u => (u.invited_by || "").trim()).filter(Boolean))].sort();
+        
+        prSelect.innerHTML = '<option value="all">TUTTE</option>';
+        uniquePrs.forEach(pr => {
+            const opt = document.createElement("option");
+            opt.value = pr.toLowerCase();
+            opt.textContent = pr.toUpperCase();
+            if (pr.toLowerCase() === currentSelection.toLowerCase()) {
+                opt.selected = true;
+            }
+            prSelect.appendChild(opt);
         });
     }
 
