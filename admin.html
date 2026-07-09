@@ -25,9 +25,16 @@
         .users-table th, .users-table td {
             padding: 1rem;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            word-break: break-word;
+        }
+        .users-table td:nth-child(2),
+        .users-table td:nth-child(3),
+        .users-table td:nth-child(4),
+        .pr-table td:nth-child(1),
+        .pr-table td:nth-child(2) {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 0;
         }
         .users-table tbody tr:hover {
             background-color: rgba(255, 255, 255, 0.05);
@@ -248,7 +255,9 @@
                 padding-left: 45%;
                 min-height: 40px;
                 display: block;
-                word-break: break-all;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
             .pr-table td {
                 text-align: left !important;
