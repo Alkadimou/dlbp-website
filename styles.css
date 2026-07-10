@@ -1246,17 +1246,42 @@ input::placeholder {
         grid-template-columns: 1fr;
     }
     .event-card-item {
-        padding: 2rem 1.5rem;
+        padding: 1.2rem;
     }
     
     .event-card-inner {
         flex-direction: column;
-        gap: 1.5rem;
+        gap: 1rem;
+        align-items: center;
+        text-align: center;
     }
     
     .event-card-img {
-        width: 100%;
+        width: 110px;
         height: auto;
+        margin: 0 auto;
+    }
+    
+    .event-card-content {
+        align-items: center;
+        text-align: center;
+        width: 100%;
+    }
+    
+    .event-card-title {
+        font-size: 1.2rem;
+    }
+    
+    .event-card-date {
+        font-size: 0.7rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .event-card-btn {
+        padding: 0.5rem 1.5rem;
+        font-size: 0.65rem;
+        display: inline-block;
+        width: auto;
     }
     .blob-1 { width: 400px; height: 400px; }
     .blob-2 { width: 350px; height: 350px; }
