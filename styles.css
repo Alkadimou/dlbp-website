@@ -1304,57 +1304,19 @@ input::placeholder {
     .blob-2 { width: 350px; height: 350px; }
     .blob-3 { width: 300px; height: 300px; }
 
-    /* Table Mobile Card View */
+    /* Table Mobile View (Horizontal Scroll) */
     .table-responsive {
-        overflow-x: hidden !important;
-    }
-    .users-table thead, .pr-table thead {
-        display: none;
-    }
-    .users-table, .users-table tbody, .users-table tr, .users-table td,
-    .pr-table, .pr-table tbody, .pr-table tr, .pr-table td {
-        display: block;
         width: 100%;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+        margin-bottom: 1rem;
     }
-    .users-table tr, .pr-table tr {
-        margin-bottom: 1.5rem;
-        background: rgba(255, 255, 255, 0.02);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 8px;
-        padding: 0.5rem;
+    .users-table {
+        min-width: 500px;
     }
-    .users-table td, .pr-table td {
-        text-align: right !important;
-        padding: 0.75rem !important;
-        border-bottom: 1px dotted rgba(255, 255, 255, 0.1);
-        position: relative;
-        padding-left: 45% !important;
-        min-height: 40px;
-        display: block;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        max-width: none !important;
-    }
-    .users-table td:last-child, .pr-table td:last-child {
-        border-bottom: 0;
-    }
-    .users-table td::before, .pr-table td::before {
-        content: attr(data-label);
-        position: absolute;
-        left: 0.75rem;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 40%;
-        text-align: left;
-        font-weight: bold;
-        color: rgba(255, 255, 255, 0.5);
-        font-size: 0.7rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        overflow: visible;
-        text-overflow: unset;
-        white-space: nowrap;
+    .users-table th, .users-table td {
+        padding: 0.6rem 0.5rem !important;
+        font-size: 0.75rem !important;
     }
 }
 
