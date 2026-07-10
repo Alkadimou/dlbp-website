@@ -654,6 +654,17 @@ input::placeholder {
     padding: 1.2rem 1rem !important;
 }
 
+/* Table Responsive Helper */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 60vh;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 2rem;
+    border-radius: 4px;
+}
+
 /* Form Message Styled */
 .form-message {
     border-radius: 4px;
@@ -1292,6 +1303,59 @@ input::placeholder {
     .blob-1 { width: 400px; height: 400px; }
     .blob-2 { width: 350px; height: 350px; }
     .blob-3 { width: 300px; height: 300px; }
+
+    /* Table Mobile Card View */
+    .table-responsive {
+        overflow-x: hidden !important;
+    }
+    .users-table thead, .pr-table thead {
+        display: none;
+    }
+    .users-table, .users-table tbody, .users-table tr, .users-table td,
+    .pr-table, .pr-table tbody, .pr-table tr, .pr-table td {
+        display: block;
+        width: 100%;
+    }
+    .users-table tr, .pr-table tr {
+        margin-bottom: 1.5rem;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 0.5rem;
+    }
+    .users-table td, .pr-table td {
+        text-align: right !important;
+        padding: 0.75rem !important;
+        border-bottom: 1px dotted rgba(255, 255, 255, 0.1);
+        position: relative;
+        padding-left: 45% !important;
+        min-height: 40px;
+        display: block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: none !important;
+    }
+    .users-table td:last-child, .pr-table td:last-child {
+        border-bottom: 0;
+    }
+    .users-table td::before, .pr-table td::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 0.75rem;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 40%;
+        text-align: left;
+        font-weight: bold;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        overflow: visible;
+        text-overflow: unset;
+        white-space: nowrap;
+    }
 }
 
 /* ==================================================
