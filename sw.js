@@ -1,4 +1,4 @@
-const CACHE_NAME = 'dlbp-cache-v8';
+const CACHE_NAME = 'dlbp-cache-v9';
 const urlsToCache = [
   './',
   './',
