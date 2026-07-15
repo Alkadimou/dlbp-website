@@ -7,6 +7,7 @@
     --border-color: rgba(255, 255, 255, 0.15);
     --error-color: #ff3333;
     --success-color: #33ff77;
+    --transition: all 0.3s ease;
 }
 
 * {
@@ -50,10 +51,7 @@ body::before {
     pointer-events: none;
 }
 
-/* Analog Noise Overlay - Disabled for solid color blending */
-.noise-overlay {
-    display: none;
-}
+
 
 .container {
     width: 100%;
@@ -94,35 +92,7 @@ body::before {
     animation: slideUp 1.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.event-status {
-    font-size: 0.7rem;
-    letter-spacing: 2px;
-    color: var(--accent-color);
-    margin-bottom: 1.5rem;
-    display: inline-block;
-    border-bottom: 1px solid var(--accent-color);
-    padding-bottom: 0.2rem;
-}
 
-.event-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-    letter-spacing: -1px;
-}
-
-.event-date {
-    font-size: 0.9rem;
-    opacity: 0.7;
-    margin-bottom: 2rem;
-}
-
-.event-description {
-    font-size: 0.95rem;
-    opacity: 0.8;
-    margin-bottom: 3rem;
-    font-weight: 300;
-}
 
 /* Form Styles */
 .registration-form {
@@ -239,6 +209,9 @@ input::placeholder {
     text-align: center;
     padding: 1rem;
     border: 1px solid transparent;
+    border-radius: 4px;
+    background: rgba(255,255,255,0.05);
+    transition: opacity 0.3s ease;
 }
 
 .form-message.hidden {
@@ -255,14 +228,7 @@ input::placeholder {
     color: var(--error-color);
 }
 
-.status-attesa {
-    color: #888888 !important;
-}
 
-.status-entrato {
-    color: #33ff77 !important;
-    font-weight: bold;
-}
 
 /* Animations */
 @keyframes fadeIn {
@@ -346,10 +312,7 @@ input::placeholder {
     animation: pulse 1s infinite alternate;
 }
 
-@keyframes pulse {
-    0% { opacity: 1; transform: scale(1); }
-    100% { opacity: 0.8; transform: scale(0.98); }
-}
+
 
 /* Admin Dashboard Styles */
 .admin-global-header {
@@ -357,14 +320,7 @@ input::placeholder {
     padding: 1.5rem;
     border-radius: 4px;
 }
-.summary-card {
-    background: linear-gradient(145deg, rgba(20,20,20,0.8) 0%, rgba(0,0,0,0.9) 100%);
-    border-top: 2px solid var(--accent-color);
-}
-.small-btn {
-    padding: 0.4rem 0.8rem;
-    font-size: 0.75rem;
-}
+
 .kpi-box {
     transition: transform 0.3s ease;
 }
@@ -387,12 +343,7 @@ input::placeholder {
     border-bottom: 2px solid #333;
     letter-spacing: 1px;
 }
-.users-table td {
-    padding: 1rem;
-    border-bottom: 1px solid #222;
-    font-size: 0.9rem;
-    vertical-align: middle;
-}
+
 .users-table tbody tr {
     transition: background-color 0.2s ease;
 }
@@ -444,7 +395,7 @@ input::placeholder {
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 9999;
     opacity: 1;
     transition: opacity 0.3s ease;
 }
@@ -487,10 +438,7 @@ input::placeholder {
     transform: translateY(30px);
     transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
-.reveal.active {
-    opacity: 1;
-    transform: translateY(0);
-}
+
 
 .parallax-hover {
     transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -682,11 +630,7 @@ input::placeholder {
 }
 
 /* Form Message Styled */
-.form-message {
-    border-radius: 4px;
-    background: rgba(255,255,255,0.05);
-    transition: opacity 0.3s ease;
-}
+
 
 /* ==================================================
    LANDING PAGE — LUXURY EDITORIAL REDESIGN
@@ -1163,7 +1107,7 @@ input::placeholder {
 
 .site-footer .social-bottom,
 .site-footer .copyright-bottom-left,
-.site-footer .staff-btn {
+.site-footer #staff-btn {
     position: static;
     transform: none;
     width: auto;
@@ -1272,14 +1216,9 @@ input::placeholder {
     transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1),
                 transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.reveal.active {
-    opacity: 1;
-    transform: translateY(0);
-}
 
-.stagger-2 {
-    transition-delay: 0.3s;
-}
+
+
 
 /* ==================================================
    RESPONSIVE
@@ -1540,6 +1479,7 @@ input::placeholder {
 .menu-btn:hover {
     color: #fff;
 }
+
 
 .menu-overlay {
     position: fixed;
@@ -1857,7 +1797,7 @@ input::placeholder {
     -webkit-user-select: none;
 }
 
-.staff-btn {
+#staff-btn {
     position: absolute;
     bottom: 5vh;
     right: 10vw;
@@ -1875,7 +1815,7 @@ input::placeholder {
     outline: none;
 }
 
-.staff-btn:hover {
+#staff-btn:hover {
     color: #fff;
 }
 
@@ -1916,7 +1856,7 @@ input::placeholder {
         bottom: 4vh;
         font-size: 0.55rem;
     }
-    .staff-btn {
+    #staff-btn {
         right: auto;
         left: 0;
         width: 100%;

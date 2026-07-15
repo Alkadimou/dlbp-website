@@ -54,13 +54,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    loadActiveEvent();
-
-    // Check session
-    const savedPr = sessionStorage.getItem("dlbp_pr_code");
-    if (savedPr) {
-        login(savedPr);
-    }
+    loadActiveEvent().then(() => {
+        // Check session
+        const savedPr = sessionStorage.getItem("dlbp_pr_code");
+        if (savedPr) {
+            login(savedPr);
+        }
+    });
 
     loginBtn.addEventListener("click", () => {
         const code = prCodeInput.value.trim().toLowerCase();
@@ -160,7 +160,8 @@ document.addEventListener("DOMContentLoaded", () => {
         
         const q = query(
             collection(db, "registrations"), 
-            where("invited_by", "==", prCode)
+            where("invited_by", "==", prCode),
+            where("eventId", "==", currentEventId)
         );
 
         unsubscribe = onSnapshot(q, (snapshot) => {

@@ -134,16 +134,26 @@ document.addEventListener("DOMContentLoaded", () => {
         await loadActiveEvent();
         
         // Counter Live
-        if (unsubCounter) unsubCounter();
+        // Counter Live (Polling with getCountFromServer)
+        if (unsubCounter) clearInterval(unsubCounter);
         const qCount = query(collection(db, "registrations"), where("eventId", "==", activeEventId), where("checked_in", "==", true));
-        unsubCounter = onSnapshot(qCount, (snapshot) => {
-            const count = snapshot.size;
-            const max = activeEventData ? activeEventData.maxCapacity || 100 : 100;
-            const counterDiv = document.getElementById('live-counter');
-            if (counterDiv) {
-                counterDiv.innerHTML = `INGRESSI: <span style="color: ${count >= max ? 'var(--error-color)' : '#fff'}">${count}</span> / ${max}`;
+        
+        async function fetchScannerCount() {
+            try {
+                const snapshot = await getCountFromServer(qCount);
+                const count = snapshot.data().count;
+                const max = activeEventData ? activeEventData.maxCapacity || 100 : 100;
+                const counterDiv = document.getElementById('live-counter');
+                if (counterDiv) {
+                    counterDiv.innerHTML = `INGRESSI: <span style="color: ${count >= max ? 'var(--error-color)' : '#fff'}">${count}</span> / ${max}`;
+                }
+            } catch (e) {
+                console.error("Scanner counter update error:", e);
             }
-        });
+        }
+        
+        fetchScannerCount();
+        unsubCounter = setInterval(fetchScannerCount, 30000);
         
         // Initialize HTML5 QR Code Scanner
         html5QrcodeScanner = new Html5QrcodeScanner(

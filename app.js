@@ -143,11 +143,20 @@ document.addEventListener("DOMContentLoaded", () => {
     loadActiveEvent();
 
     async function hashPassword(password) {
-        const encoder = new TextEncoder();
-        const data = encoder.encode(password);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        try {
+            if (!crypto || !crypto.subtle) {
+                console.warn("crypto.subtle is not available. Using insecure fallback.");
+                return btoa(password); // Very insecure fallback, but prevents page crash on HTTP
+            }
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        } catch (err) {
+            console.error("Error hashing password", err);
+            return password; // Fallback
+        }
     }
 
     // No sessionStorage used: password must be entered on every reload.
@@ -312,43 +321,39 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // --- WOW FACTOR: Loader & Reveal Animations ---
-    window.addEventListener('load', () => {
-        const loader = document.getElementById('initial-loader');
-        
-        // Se il loader è già stato mostrato in questa sessione, lo saltiamo
-        if (loader && sessionStorage.getItem('visited') === 'true') {
-            loader.style.display = 'none';
-            initRevealAnimations();
-            return;
-        }
-
-        if (loader) {
-            const logo = loader.querySelector('.loader-logo');
-            // FASE 1: Caricamento iniziale (il logo è visibile)
+    // Loader Logic
+    const loader = document.getElementById('initial-loader');
+    
+    // Se il loader è già stato mostrato in questa sessione, lo saltiamo
+    if (loader && sessionStorage.getItem('visited') === 'true') {
+        loader.style.display = 'none';
+        initRevealAnimations();
+    } else if (loader) {
+        const logo = loader.querySelector('.loader-logo');
+        // FASE 1: Caricamento iniziale (il logo è visibile)
+        setTimeout(() => {
+            // Dopo il caricamento, il logo scompare in dissolvenza
+            if (logo) {
+                logo.style.transition = 'opacity 0.4s ease';
+                logo.style.opacity = '0'; 
+            }
+            
+            // FASE 2: Schermata completamente nera per 1.4 secondi
             setTimeout(() => {
-                // Dopo il caricamento, il logo scompare in dissolvenza
-                if (logo) {
-                    logo.style.transition = 'opacity 0.4s ease';
-                    logo.style.opacity = '0'; 
-                }
+                // FASE 3: Il loader (che copre tutto) viene rimosso istantaneamente.
+                loader.style.display = 'none';
                 
-                // FASE 2: Schermata completamente nera per 1.4 secondi
-                setTimeout(() => {
-                    // FASE 3: Il loader (che copre tutto) viene rimosso istantaneamente.
-                    loader.style.display = 'none';
-                    
-                    // Segnamo che il loader è stato completato per questa sessione
-                    sessionStorage.setItem('visited', 'true');
-                    
-                    // Ora avviamo le animazioni di ingresso (.reveal)
-                    initRevealAnimations();
-                }, 1400); 
-            }, 1500); // <-- Tempo di caricamento iniziale col logo visibile
+                // Segnamo che il loader è stato completato per questa sessione
+                sessionStorage.setItem('visited', 'true');
+                
+                // Ora avviamo le animazioni di ingresso (.reveal)
+                initRevealAnimations();
+            }, 1400); 
+        }, 1500); // <-- Tempo di caricamento iniziale col logo visibile
 
-        } else {
-            initRevealAnimations();
-        }
-    });
+    } else {
+        initRevealAnimations();
+    }
 
     function initRevealAnimations() {
         const reveals = document.querySelectorAll('.reveal');

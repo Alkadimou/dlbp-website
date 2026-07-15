@@ -812,22 +812,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
     exportCsvBtn.addEventListener("click", () => {
         if (usersData.length === 0) return;
-        let csvContent = "Nome,Email,PR,Data Richiesta,Stato Ingresso,Orario Ingresso\n";
-        usersData.forEach(user => {
-            const time = user.timestamp.toLocaleString('it-IT').replace(/,/g, '');
-            const status = user.checked_in ? "Entrato" : "Non Entrato";
-            const inTime = user.check_in_time ? user.check_in_time.toLocaleTimeString('it-IT') : "";
-            const pr = user.invited_by ? user.invited_by.toUpperCase() : "";
-            csvContent += `"${user.name}","${user.email}","${pr}","${time}","${status}","${inTime}"\n`;
-        });
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "dlbp_iscritti.csv";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+        try {
+            let csvContent = "Nome,Email,PR,Data Richiesta,Stato Ingresso,Orario Ingresso\n";
+            usersData.forEach(user => {
+                const time = user.timestamp.toLocaleString('it-IT').replace(/,/g, '');
+                const status = user.checked_in ? "Entrato" : "Non Entrato";
+                const inTime = user.check_in_time ? user.check_in_time.toLocaleTimeString('it-IT') : "";
+                const pr = user.invited_by ? user.invited_by.toUpperCase() : "";
+                csvContent += `"${user.name}","${user.email}","${pr}","${time}","${status}","${inTime}"\n`;
+            });
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "dlbp_iscritti.csv";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        } catch (err) {
+            console.error("Error exporting CSV:", err);
+            alert("Errore durante l'esportazione CSV.");
+        }
     });
 
     // --- LOGIN LOGIC ---
@@ -894,12 +899,14 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!db || !currentEventId) return;
         tbody.innerHTML = "<tr><td colspan='7' style='text-align: center;'>Caricamento dati...</td></tr>";
         
-        // Setup live counter
-        if (unsubAdminCounter) unsubAdminCounter();
+        // Setup live counter (Polling with getCountFromServer instead of onSnapshot to save massive bandwidth)
+        if (unsubAdminCounter) clearInterval(unsubAdminCounter);
         const qCount = query(collection(db, "registrations"), where("eventId", "==", currentEventId), where("checked_in", "==", true));
-        unsubAdminCounter = onSnapshot(qCount, (snapshot) => {
-            const count = snapshot.size;
+        
+        async function fetchCount() {
             try {
+                const snapshot = await getCountFromServer(qCount);
+                const count = snapshot.data().count;
                 const max = currentMaxCapacity;
                 const counterDiv = document.getElementById('present-count-dash');
                 if (counterDiv) {
@@ -913,7 +920,10 @@ document.addEventListener("DOMContentLoaded", () => {
             } catch (e) {
                 console.error("Counter update error:", e);
             }
-        });
+        }
+        
+        fetchCount();
+        unsubAdminCounter = setInterval(fetchCount, 30000); // Aggiorna ogni 30 secondi
         try {
             // Rimosso orderBy per evitare l'errore di indice composito mancante su Firebase
             const q = query(collection(db, "registrations"), where("eventId", "==", currentEventId));
@@ -1048,30 +1058,32 @@ document.addEventListener("DOMContentLoaded", () => {
         const userCheckboxes = document.querySelectorAll(".user-checkbox");
         
         function updateDeleteBtn() {
-            const anyChecked = Array.from(userCheckboxes).some(cb => cb.checked);
+            const anyChecked = Array.from(document.querySelectorAll('.user-checkbox')).some(cb => cb.checked);
             deleteSelectedBtn.disabled = !anyChecked;
             deleteSelectedBtn.style.opacity = anyChecked ? "1" : "0.5";
         }
 
-        selectAllCb.addEventListener("change", (e) => {
+        // Use properties to avoid attaching multiple event listeners on re-renders
+        selectAllCb.onchange = (e) => {
+            const userCheckboxes = document.querySelectorAll('.user-checkbox');
             userCheckboxes.forEach(cb => cb.checked = e.target.checked);
             updateDeleteBtn();
-        });
+        };
 
-        userCheckboxes.forEach(cb => {
-            cb.addEventListener("change", () => {
+        tbody.onchange = (e) => {
+            if (e.target.classList.contains('user-checkbox')) {
+                const userCheckboxes = document.querySelectorAll('.user-checkbox');
                 const allChecked = Array.from(userCheckboxes).every(c => c.checked);
                 selectAllCb.checked = allChecked;
                 updateDeleteBtn();
-            });
-        });
+            }
+        };
 
-
-
-        // Check-in Logic
-        document.querySelectorAll(".checkin-btn").forEach(btn => {
-            btn.addEventListener("click", async (e) => {
-                const id = e.target.dataset.id;
+        // Event Delegation for Check-in Logic
+        tbody.onclick = async (e) => {
+            const btn = e.target.closest('.checkin-btn');
+            if (btn) {
+                const id = btn.dataset.id;
                 const user = usersData.find(u => u.id === id);
                 if (user && user.checked_in) return;
                 try {
@@ -1080,8 +1092,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 } catch (error) {
                     console.error("Error checking in user", error);
                 }
-            });
-        });
+            }
+        };
 
         // Trigger search filter if there's already text in the input
         if (searchInput && searchInput.value) {
@@ -1096,7 +1108,7 @@ document.addEventListener("DOMContentLoaded", () => {
             clearTimeout(searchTimeout);
             searchTimeout = setTimeout(() => {
                 renderTable();
-            }, 150);
+            }, 350);
         });
     }
 
@@ -1193,6 +1205,8 @@ document.addEventListener("DOMContentLoaded", () => {
         sendEmailsBtn.textContent = "INVIO IN CORSO...";
         adminMessage.className = "form-message hidden";
 
+        try {
+
         let eventLocation = "Secret Location";
         let eventDateStr = "Data Evento";
         try {
@@ -1244,6 +1258,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 5000);
         
         loadUsers();
+        } catch (err) {
+            console.error("Error in email sending process:", err);
+            showModal("Errore imprevisto durante l'invio delle email.");
+            sendEmailsBtn.disabled = false;
+            sendEmailsBtn.textContent = "INVIA ACCESSI";
+        }
     });
     }
 
