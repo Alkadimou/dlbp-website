@@ -847,7 +847,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 await loadEventsList();
                 loadPRs();
             } else {
-                loginSection.style.display = "block";
+                loginSection.style.display = "flex";
                 dashboardSection.style.display = "none";
                 document.getElementById("app-main").style.maxWidth = "";
             }
