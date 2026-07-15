@@ -1713,16 +1713,20 @@ input::placeholder {
 }
 
 .main-nav {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    padding: 3.75rem 10vw 2.5rem 10vw;
+    padding: 1.8rem 10vw 1.4rem 10vw;
     display: flex;
     justify-content: space-between;
     align-items: center;
     z-index: 100;
-    background: transparent;
+    background: rgba(3, 3, 3, 0.5);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    transition: all 0.4s ease;
 }
 
 .nav-right {
@@ -1877,7 +1881,10 @@ input::placeholder {
 
 @media (max-width: 768px) {
     .main-nav {
-        padding: 2.25rem 1.5rem 1.5rem 1.5rem;
+        padding: 1.2rem 1.5rem 1rem 1.5rem;
+        background: rgba(3, 3, 3, 0.6);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
     }
     .nav-logo {
         width: 70px;
