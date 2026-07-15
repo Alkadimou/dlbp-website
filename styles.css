@@ -1148,13 +1148,17 @@ input::placeholder {
 .site-footer {
     position: relative;
     z-index: 2;
-    height: 15vh;
     width: 100%;
+    padding: 4rem 1.5rem;
+    background: rgba(3, 3, 3, 0.5);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255, 255, 255, 0.03);
 }
 
 @media (max-width: 768px) {
     .site-footer {
-        height: 25vh;
+        padding: 3rem 1.5rem;
     }
 }
 
