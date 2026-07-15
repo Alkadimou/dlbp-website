@@ -1817,7 +1817,7 @@ input::placeholder {
     width: 100%;
     display: flex;
     justify-content: center;
-    z-index: 10;
+    z-index: 100;
 }
 
 .social-icons {
@@ -1834,7 +1834,7 @@ input::placeholder {
     font-size: 0.65rem;
     color: rgba(255, 255, 255, 0.2);
     letter-spacing: 0.1em;
-    z-index: 10;
+    z-index: 100;
     pointer-events: none;
     user-select: none;
     -webkit-user-select: none;
@@ -1854,7 +1854,7 @@ input::placeholder {
     cursor: pointer;
     text-transform: uppercase;
     transition: color 0.3s ease;
-    z-index: 10;
+    z-index: 100;
     outline: none;
 }
 
