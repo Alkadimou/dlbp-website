@@ -1149,7 +1149,7 @@ input::placeholder {
 .site-footer {
     position: relative;
     width: 100%;
-    padding: 4rem 1.5rem;
+    padding: 2rem 1.5rem;
     background: #000000;
     border-top: none;
 }
@@ -1168,7 +1168,7 @@ input::placeholder {
 
 @media (max-width: 768px) {
     .site-footer {
-        padding: 3rem 1.5rem;
+        padding: 1.5rem 1rem;
     }
 }
 
@@ -1178,7 +1178,7 @@ input::placeholder {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1.5rem;
+    gap: 1rem;
 }
 
 .footer-logo-img {
