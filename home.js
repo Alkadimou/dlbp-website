@@ -132,7 +132,7 @@ async function loadEvents() {
 
                 const flyerHtml = ev.flyerUrl ? `<img src="${ev.flyerUrl}" alt="Locandina" class="event-card-img">` : '';
 
-                const eventUrl = `event?id=${ev.id}${prQuery}`;
+                const eventUrl = `event.html?id=${ev.id}${prQuery}`;
 
                 card.innerHTML = `
                     <a href="${eventUrl}" style="text-decoration: none; color: inherit; display: block; cursor: pointer;">
