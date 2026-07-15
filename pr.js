@@ -119,7 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
     logoutBtn.addEventListener("click", () => {
         sessionStorage.removeItem("dlbp_pr_code");
         if (unsubscribe) unsubscribe();
-        location.reload();
+        window.location.href = "pr.html";
     });
 
     copyBtn.addEventListener("click", () => {

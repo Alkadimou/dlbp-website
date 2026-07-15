@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (logoutBtn) {
         logoutBtn.addEventListener("click", () => {
             sessionStorage.removeItem("dlbp_scanner_auth");
-            window.location.reload();
+            window.location.href = "scanner.html";
         });
     }
 

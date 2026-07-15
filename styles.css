@@ -43,10 +43,7 @@ body::before {
     left: 0;
     width: 100%;
     height: 120px;
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
-    mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+    background: linear-gradient(to bottom, #050508 20%, transparent 100%);
     z-index: 98;
     pointer-events: none;
 }
@@ -437,6 +434,10 @@ input::placeholder {
     opacity: 0;
     transform: translateY(30px);
     transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 
@@ -1095,42 +1096,41 @@ input::placeholder {
 .site-footer {
     position: relative;
     width: 100%;
-    padding: 3rem 1.5rem 2rem 1.5rem;
-    background: #000000;
-    border-top: none;
+    padding: 3rem 10vw;
+    background: transparent;
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    gap: 1.5rem;
     z-index: 10;
 }
 
-.site-footer .social-bottom,
-.site-footer .copyright-bottom-left,
-.site-footer #staff-btn {
+.site-footer .social-bottom {
     position: static;
-    transform: none;
     width: auto;
-    bottom: auto;
-    left: auto;
-    right: auto;
+    display: flex;
+    justify-content: center;
 }
 
-.site-footer::before {
-    content: '';
+.site-footer .copyright-bottom-left {
     position: absolute;
-    top: -40px;
-    left: 0;
-    width: 100%;
-    height: 40px;
-    background: linear-gradient(to top, #000000 0%, transparent 100%);
-    pointer-events: none;
-    z-index: 99;
+    left: 10vw;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 @media (max-width: 768px) {
     .site-footer {
-        padding: 1.5rem 1rem;
+        flex-direction: column;
+        gap: 2.5rem;
+        padding: 3rem 1.5rem 4vh 1.5rem;
+    }
+    .site-footer .copyright-bottom-left {
+        position: static;
+        text-align: center;
+        font-size: 0.55rem;
+    }
+    .site-footer .social-bottom {
+        position: static;
     }
 }
 
@@ -1215,6 +1215,10 @@ input::placeholder {
     transform: translateY(40px);
     transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1),
                 transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 
@@ -1420,11 +1424,9 @@ input::placeholder {
     top: 0;
     left: 0;
     right: 0;
-    z-index: 10;
+    z-index: 100;
     padding: 1.5rem 2rem;
-    background: rgba(5, 5, 8, 0.6);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: transparent;
 }
 
 .back-link {
@@ -1798,20 +1800,16 @@ input::placeholder {
 }
 
 #staff-btn {
-    position: absolute;
-    bottom: 5vh;
-    right: 10vw;
     background: transparent;
     border: none;
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.5);
     font-family: 'Space Mono', monospace;
-    font-size: 0.65rem;
+    font-size: 0.75rem;
     font-weight: 700;
-    letter-spacing: 0.15em;
+    letter-spacing: 2px;
     cursor: pointer;
     text-transform: uppercase;
     transition: color 0.3s ease;
-    z-index: 100;
     outline: none;
 }
 
@@ -1840,7 +1838,7 @@ input::placeholder {
 }
 
 @media (max-width: 1050px) {
-    .social-bottom {
+    .hero-fullscreen .social-bottom {
         bottom: 10vh;
     }
     .social-icons {
@@ -1849,21 +1847,14 @@ input::placeholder {
         justify-content: center;
         padding: 0 1rem;
     }
-    .copyright-bottom-left {
+    .hero-fullscreen .copyright-bottom-left {
         left: 0;
         width: 100%;
         text-align: center;
         bottom: 4vh;
         font-size: 0.55rem;
     }
-    #staff-btn {
-        right: auto;
-        left: 0;
-        width: 100%;
-        text-align: center;
-        bottom: 1.5vh;
-        font-size: 0.55rem;
-    }
+
 }
 
 @media (max-width: 768px) {
