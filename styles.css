@@ -1238,9 +1238,6 @@ input::placeholder {
    RESPONSIVE
    ================================================== */
 @media (max-width: 768px) {
-    .nav-logo {
-        width: 80px;
-    }
     .hero-title {
         font-size: clamp(2rem, 10vw, 3.5rem);
         letter-spacing: 0.04em;
@@ -1881,6 +1878,9 @@ input::placeholder {
 @media (max-width: 768px) {
     .main-nav {
         padding: 2.25rem 1.5rem 1.5rem 1.5rem;
+    }
+    .nav-logo {
+        width: 70px;
     }
     .hero-tagline-center {
         font-size: 0.6rem;
