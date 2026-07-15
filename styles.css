@@ -34,6 +34,19 @@ body {
     position: relative;
 }
 
+/* Fading gradient overlay at the top to dissolve content under transparent header */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 120px;
+    background: linear-gradient(to bottom, #000000 60%, transparent 100%);
+    z-index: 99;
+    pointer-events: none;
+}
+
 /* Analog Noise Overlay - Disabled for solid color blending */
 .noise-overlay {
     display: none;
@@ -1722,10 +1735,10 @@ input::placeholder {
     justify-content: space-between;
     align-items: center;
     z-index: 100;
-    background: rgba(3, 3, 3, 0.5);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-bottom: none;
     transition: all 0.4s ease;
 }
 
@@ -1882,9 +1895,12 @@ input::placeholder {
 @media (max-width: 768px) {
     .main-nav {
         padding: 1.2rem 1.5rem 1rem 1.5rem;
-        background: rgba(3, 3, 3, 0.6);
-        backdrop-filter: blur(15px);
-        -webkit-backdrop-filter: blur(15px);
+        background: transparent;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+    body::before {
+        height: 90px;
     }
     .nav-logo {
         width: 70px;
