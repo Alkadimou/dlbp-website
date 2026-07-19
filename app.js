@@ -215,7 +215,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Se c'è il messaggio chiuso visibile, blocca
         if (closedMessage.style.display === "block") return;
         
-        const name = document.getElementById("name").value.trim();
+        const name = document.getElementById("name").value.trim().toUpperCase();
         const email = document.getElementById("email").value.trim();
         const privacyConsent = document.getElementById("privacy-consent").checked;
 
