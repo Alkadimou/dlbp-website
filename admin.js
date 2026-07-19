@@ -1022,6 +1022,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // PR filter
             if (filterPrVal !== "all" && (user.invited_by || "").toLowerCase() !== filterPrVal.toLowerCase()) return false;
 
+            return true;
         });
 
         // Sort filtered users
