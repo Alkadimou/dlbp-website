@@ -39,6 +39,37 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentEventId = "act_1"; // Definisci come predefinito
     let unsubscribe = null;
     let currentPrCode = "";
+    let currentSortField = "timestamp";
+    let currentSortOrder = "desc";
+    let registrationsList = [];
+
+    // Sort table headers setup
+    const prTableHead = document.querySelector(".users-table thead");
+    if (prTableHead) {
+        prTableHead.addEventListener("click", (e) => {
+            const th = e.target.closest("th");
+            if (th && th.dataset.sort) {
+                const field = th.dataset.sort;
+                if (currentSortField === field) {
+                    currentSortOrder = currentSortOrder === "asc" ? "desc" : "asc";
+                } else {
+                    currentSortField = field;
+                    currentSortOrder = "asc";
+                }
+                updateSortHeaders(prTableHead);
+                renderPrTable();
+            }
+        });
+    }
+
+    function updateSortHeaders(thead) {
+        thead.querySelectorAll("th[data-sort]").forEach(th => {
+            th.innerHTML = th.innerHTML.replace(/ [▲▼]/g, "");
+            if (th.dataset.sort === currentSortField) {
+                th.innerHTML += currentSortOrder === "asc" ? " ▲" : " ▼";
+            }
+        });
+    }
 
     // Load active event
     async function loadActiveEvent() {
@@ -169,9 +200,7 @@ document.addEventListener("DOMContentLoaded", () => {
             let approved = 0;
             let entered = 0;
             
-            const tbody = document.getElementById("pr-guests-tbody");
-            const fragment = document.createDocumentFragment();
-            let registrationsList = [];
+            registrationsList = [];
 
             snapshot.forEach((doc) => {
                 const data = doc.data();
@@ -182,42 +211,64 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (data.checked_in === true) entered++;
             });
 
-            // Sort registrations by timestamp descending
-            registrationsList.sort((a, b) => {
-                const timeA = a.timestamp ? (typeof a.timestamp.toDate === 'function' ? a.timestamp.toDate() : new Date(a.timestamp)) : 0;
-                const timeB = b.timestamp ? (typeof b.timestamp.toDate === 'function' ? b.timestamp.toDate() : new Date(b.timestamp)) : 0;
-                return timeB - timeA;
-            });
-
-            if (tbody) {
-                tbody.innerHTML = "";
-                if (registrationsList.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Nessun iscritto al momento.</td></tr>';
-                } else {
-                    registrationsList.forEach(reg => {
-                        const tr = document.createElement("tr");
-                        const eventName = eventsMap[reg.eventId] || "Evento Sconosciuto";
-                        const ticketStatus = reg.email_sent ? '<span style="color: #4CAF50;">INVIATO</span>' : '<span style="color: #ffcc00;">NO</span>';
-                        const checkinStatus = reg.checked_in ? '<span style="color: #4CAF50; font-weight: bold;">ENTRATO</span>' : '<span style="color: #888;">-</span>';
-                        
-                        tr.innerHTML = `
-                            <td data-label="NOME"><span class="truncate-mobile">${escapeHtml(reg.name)}</span></td>
-                            <td data-label="EMAIL"><span class="truncate-mobile" style="word-break: break-all;">${escapeHtml(reg.email)}</span></td>
-                            <td data-label="EVENTO"><span class="truncate-mobile" style="color:var(--accent-color);">${escapeHtml(eventName)}</span></td>
-                            <td data-label="TICKET" style="text-align: center;">${ticketStatus}</td>
-                            <td data-label="INGRESSO" style="text-align: center;">${checkinStatus}</td>
-                        `;
-                        fragment.appendChild(tr);
-                    });
-                    tbody.appendChild(fragment);
-                }
-            }
+            renderPrTable();
 
             // Animate numbers
             animateValue(statTotal, parseInt(statTotal.textContent) || 0, total, 500);
             animateValue(statApproved, parseInt(statApproved.textContent) || 0, approved, 500);
             animateValue(statEntered, parseInt(statEntered.textContent) || 0, entered, 500);
         });
+    }
+
+    function renderPrTable() {
+        const tbody = document.getElementById("pr-guests-tbody");
+        if (!tbody) return;
+
+        // Sort registrations
+        registrationsList.sort((a, b) => {
+            let valA, valB;
+            if (currentSortField === "timestamp") {
+                valA = a.timestamp ? (typeof a.timestamp.toDate === 'function' ? a.timestamp.toDate().getTime() : new Date(a.timestamp).getTime()) : 0;
+                valB = b.timestamp ? (typeof b.timestamp.toDate === 'function' ? b.timestamp.toDate().getTime() : new Date(b.timestamp).getTime()) : 0;
+            } else if (currentSortField === "eventId") {
+                valA = (eventsMap[a.eventId] || "").toLowerCase();
+                valB = (eventsMap[b.eventId] || "").toLowerCase();
+            } else if (currentSortField === "checked_in") {
+                valA = a.checked_in ? 1 : 0;
+                valB = b.checked_in ? 1 : 0;
+            } else {
+                valA = (a[currentSortField] || "").toString().toLowerCase();
+                valB = (b[currentSortField] || "").toString().toLowerCase();
+            }
+
+            if (valA < valB) return currentSortOrder === "asc" ? -1 : 1;
+            if (valA > valB) return currentSortOrder === "asc" ? 1 : -1;
+            return 0;
+        });
+
+        tbody.innerHTML = "";
+        if (registrationsList.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Nessun iscritto al momento.</td></tr>';
+            return;
+        }
+
+        const fragment = document.createDocumentFragment();
+        registrationsList.forEach(reg => {
+            const tr = document.createElement("tr");
+            const eventName = eventsMap[reg.eventId] || "Evento Sconosciuto";
+            const ticketStatus = reg.email_sent ? '<span style="color: #4CAF50;">INVIATO</span>' : '<span style="color: #ffcc00;">NO</span>';
+            const checkinStatus = reg.checked_in ? '<span style="color: #4CAF50; font-weight: bold;">ENTRATO</span>' : '<span style="color: #888;">-</span>';
+            
+            tr.innerHTML = `
+                <td data-label="NOME"><span class="truncate-mobile">${escapeHtml(reg.name)}</span></td>
+                <td data-label="EMAIL"><span class="truncate-mobile" style="word-break: break-all;">${escapeHtml(reg.email)}</span></td>
+                <td data-label="EVENTO"><span class="truncate-mobile" style="color:var(--accent-color);">${escapeHtml(eventName)}</span></td>
+                <td data-label="TICKET" style="text-align: center;">${ticketStatus}</td>
+                <td data-label="INGRESSO" style="text-align: center;">${checkinStatus}</td>
+            `;
+            fragment.appendChild(tr);
+        });
+        tbody.appendChild(fragment);
     }
 
     function animateValue(obj, start, end, duration) {

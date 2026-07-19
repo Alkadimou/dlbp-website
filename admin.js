@@ -89,8 +89,38 @@ document.addEventListener("DOMContentLoaded", () => {
     const setActiveBtn = document.getElementById("set-active-btn");
     
     let usersData = [];
+    let currentSortField = "timestamp";
+    let currentSortOrder = "desc";
     let unsubAdminCounter = null;
     let currentMaxCapacity = 100;
+
+    // Sort table headers setup
+    const userTableHead = document.querySelector(".users-table thead");
+    if (userTableHead) {
+        userTableHead.addEventListener("click", (e) => {
+            const th = e.target.closest("th");
+            if (th && th.dataset.sort) {
+                const field = th.dataset.sort;
+                if (currentSortField === field) {
+                    currentSortOrder = currentSortOrder === "asc" ? "desc" : "asc";
+                } else {
+                    currentSortField = field;
+                    currentSortOrder = "asc";
+                }
+                updateSortHeaders(userTableHead);
+                renderTable();
+            }
+        });
+    }
+
+    function updateSortHeaders(thead) {
+        thead.querySelectorAll("th[data-sort]").forEach(th => {
+            th.innerHTML = th.innerHTML.replace(/ [▲▼]/g, "");
+            if (th.dataset.sort === currentSortField) {
+                th.innerHTML += currentSortOrder === "asc" ? " ▲" : " ▼";
+            }
+        });
+    }
 
     async function setupEventsIfNeeded() {
         if (!db) return;
@@ -992,7 +1022,31 @@ document.addEventListener("DOMContentLoaded", () => {
             // PR filter
             if (filterPrVal !== "all" && (user.invited_by || "").toLowerCase() !== filterPrVal.toLowerCase()) return false;
 
-            return true;
+        });
+
+        // Sort filtered users
+        filteredUsers.sort((a, b) => {
+            let valA, valB;
+            if (currentSortField === "timestamp") {
+                valA = a.timestamp ? a.timestamp.getTime() : 0;
+                valB = b.timestamp ? b.timestamp.getTime() : 0;
+            } else if (currentSortField === "invited_by") {
+                valA = (a.invited_by || "").toLowerCase();
+                valB = (b.invited_by || "").toLowerCase();
+            } else if (currentSortField === "email_sent") {
+                valA = a.email_sent ? 1 : 0;
+                valB = b.email_sent ? 1 : 0;
+            } else if (currentSortField === "checked_in") {
+                valA = a.checked_in ? 1 : 0;
+                valB = b.checked_in ? 1 : 0;
+            } else {
+                valA = (a[currentSortField] || "").toString().toLowerCase();
+                valB = (b[currentSortField] || "").toString().toLowerCase();
+            }
+
+            if (valA < valB) return currentSortOrder === "asc" ? -1 : 1;
+            if (valA > valB) return currentSortOrder === "asc" ? 1 : -1;
+            return 0;
         });
 
         if (filteredUsers.length === 0) {
