@@ -107,6 +107,7 @@ async function loadEvents() {
         const activeEvents = eventsArray.filter(e => e.isActive === true);
         const pastEvents = eventsArray.filter(e => {
             if (e.isActive === true) return false;
+            if (e.isOpen === false) return true;
             if (e.dateIso) {
                 return e.dateIso <= todayStr;
             }
