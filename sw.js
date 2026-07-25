@@ -1,10 +1,9 @@
-const CACHE_NAME = 'dlbp-cache-v16';
+const CACHE_NAME = 'dlbp-cache-v17';
 const urlsToCache = [
   './',
-  './',
-  './styles.css',
-  './app.js',
-  './logo.jpg'
+  './css/styles.css',
+  './js/app.js',
+  './assets/logo.jpg'
 ];
 
 self.addEventListener('install', event => {
