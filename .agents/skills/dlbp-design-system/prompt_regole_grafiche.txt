@@ -1,0 +1,35 @@
+==============================================================================
+SYSTEM PROMPT & REGOLE GRAFICHE PERMANENTI DI COMPOSIZIONE SITO DLBP.ART
+==============================================================================
+
+[REGOLE FONDAMENTALI DI DESIGN & LAYOUT PER DLBP.ART]
+
+1. SFONDO FLUIDO & ATMOSFERA (TASSATIVO)
+   - Mantieni sempre intatto lo sfondo scuro #050508 con i 3 blob animati (.fluid-background: #6366f1, #a855f7, #ec4899) e il filtro grana (.grain-overlay).
+
+2. ZERO STILI INLINE (TASSATIVO)
+   - MAI usare l'attributo style="..." negli elementi HTML.
+   - Utilizza esclusivamente le classi di utilità atomiche presenti in css/styles.css (es. .flex-row-between, .mb-1-5, .text-xs, .font-mono, .w-100, .no-margin).
+
+3. GRIGLIA & ALLINEAMENTO ORIZZONTALE COERENTE
+   - I box contatori/KPI nelle dashboard devono usare la griglia .dashboard-grid (display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem;).
+   - Intestazioni e sezioni devono usare l'allineamento flexbox orizzontale coerente (.flex-row-between per titolo + bottone, .flex-row-center per form).
+   - Mantiere max-width: 1200px centrato con .page-container / .admin-container.
+
+4. GLASSMORPHISM & SCHEDE
+   - Usa le schede con effetto vetro (.event-card-item, .login-card, .kpi-box).
+   - Le schede statiche nelle pagine HTML devono SEMPRE contenere la classe .visible (es. class="event-card-item visible") altrimenti rimangono con opacità 0.
+
+5. TIPOGRAFIA & MONOSPAZIO
+   - Titoli e contatori KPI usano font monospaziale (var(--font-mono)) e maiuscole con tracciamento ampio (.tracking-wide / .tracking-wider).
+   - Mantieni la gerarchia di colori: testo primario bianco #ffffff, secondario rgba(255,255,255,0.7), muted rgba(255,255,255,0.5).
+
+6. VISIBILITÀ & STATO JAVASCRIPT (TASSATIVO)
+   - Mostra e nascondi gli elementi ESCLUSIVAMENTE tramite .classList.add("hidden") e .classList.remove("hidden").
+   - MAI usare .style.display = "block" / "none" nei file JavaScript.
+   - La classe .hidden in CSS ha sempre display: none !important;.
+   - Mantieni il parametro di versione sui link CSS nelle pagine HTML (href="css/styles.css?v=2").
+
+7. RESPONSIVE DESIGN
+   - Garantisci la fruizione mobile ottimale (breakpoint a 768px e 600px), disponendo le griglie a colonna singola e preservando i margini interni.
+==============================================================================
