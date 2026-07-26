@@ -2,47 +2,60 @@
 SYSTEM PROMPT & REGOLE GRAFICHE PERMANENTI DI COMPOSIZIONE SITO DLBP.ART
 ==============================================================================
 
-[REGOLE FONDAMENTALI DI DESIGN & LAYOUT PER DLBP.ART]
+[TUTTE LE REGOLE FONDAMENTALI DI DESIGN, COMPOSIZIONE & LAYOUT PER DLBP.ART]
 
 1. SFONDO FLUIDO & ATMOSFERA (TASSATIVO)
    - Mantieni sempre intatto lo sfondo scuro #050508 con i 3 blob animati (.fluid-background: #6366f1, #a855f7, #ec4899) e il filtro grana (.grain-overlay).
 
-2. HEADER & NAVIGAZIONE GLOBALE
+2. GRIGLIA & ALLINEAMENTO ORIZZONTALE COERENTE
+   - I box contatori/KPI nelle dashboard devono usare la griglia .dashboard-grid (display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem;).
+   - Intestazioni e sezioni devono usare l'allineamento flexbox orizzontale coerente (.flex-row-between per titolo + bottone, .flex-row-center per form).
+   - Mantieni max-width: 1200px centrato con .page-container / .admin-container.
+
+3. GLASSMORPHISM & SCHEDE VISIBILI
+   - Usa le schede con effetto vetro (.event-card-item, .login-card, .kpi-box).
+   - Le schede statiche nelle pagine HTML devono SEMPRE contenere la classe .visible (es. class="event-card-item visible") altrimenti rimangono con opacità 0.
+
+4. TIPOGRAFIA & GERARCHIA VISIVA
+   - Titoli e contatori KPI usano font monospaziale (var(--font-mono)) e maiuscole con tracciamento ampio (.tracking-wide / .tracking-wider).
+   - Mantieni la gerarchia di colori: testo primario bianco #ffffff, secondario rgba(255,255,255,0.7), muted rgba(255,255,255,0.5).
+
+5. HEADER & NAVIGAZIONE GLOBALE
    - Navigazione fissa in alto (position: fixed; z-index: 1000) con sfocatura vetro (backdrop-filter: blur(15px); background: rgba(5, 5, 8, 0.85)).
    - Logo .nav-logo a sinistra (90px), nav links e dropdown .nav-right a destra.
    - Dropdown "AREA RISERVATA" posizionato in modo assoluto con scheda vetro integrata.
 
-3. FOOTER & CHIUSURA PAGINA
+6. FOOTER & CHIUSURA PAGINA
    - Bordo superiore border-top: 1px solid rgba(255, 255, 255, 0.1).
    - Note copyright .footer-copy a sinistra (font 0.8rem, rgba(255,255,255,0.4)).
    - Logo .footer-logo-img (70px), link legali e social a destra.
    - Su schermi <= 768px gli elementi si impilano in colonna centrata (gap: 1.5rem).
 
-4. TABELLE DATI & RESPONSIVE CARD VIEW
+7. TABELLE DATI & RESPONSIVE CARD VIEW
    - Le tabelle DEVONO essere avvolte in <div class="table-responsive">.
    - Intestazioni th in font monospaziale, maiuscole, letter-spacing 1.5px.
    - Righe con hover morbido (rgba(255,255,255,0.06)).
    - Badge di stato neon: .status-approved (verde), .status-pending (ambra), .status-rejected (rosso).
    - Su mobile (<= 768px), le tabelle si convertono in schede vetro sovrapposte nascondendo thead ed usando data-label con ::before nei td.
 
-5. BOTTONI & AZIONI (.submit-btn)
+8. BOTTONI & AZIONI (.submit-btn)
    - Altezza 48px, font monospaziale var(--font-mono), font-weight 700, maiuscolo, letter-spacing 2px.
    - Transizione con micro-scala (translateY(-2px)) e bagliore ombra in hover.
    - Varianti: .btn-danger (rosso), .btn-success (verde smeraldo), .btn-secondary (grigio).
    - Utility: .text-xs, .no-margin, .w-100.
 
-6. CASELLE DI TESTO & FORM (.custom-input, .custom-select)
+9. CASELLE DI TESTO & FORM (.custom-input, .custom-select)
    - Altezza 48px, padding 0.8rem 1rem, background rgba(255,255,255,0.04), bordo 1px solid rgba(255,255,255,0.15).
    - Font monospaziale 0.85rem, letter-spacing 2px, testo bianco.
    - Placeholder maiuscolo rgba(255,255,255,0.3).
    - Focus (:focus): bordo schiarito rgba(255,255,255,0.4) e bagliore ombra 15px.
 
-7. RIDIMENSIONAMENTO MOBILE & TOUCH TARGETS
+10. RIDIMENSIONAMENTO MOBILE & TOUCH TARGETS
    - Touch target minimi di 44px x 44px per ogni pulsante, input e link.
    - Riduzione padding superiore dei container a 110px su schermi <= 768px per evitare sovrapposizioni con l'header fisso.
    - I flex container si convertono in colonne verticali su schermi piccoli.
 
-8. ZERO STILI INLINE & CLASSI ATOMICHE (TASSATIVO)
+11. ZERO STILI INLINE & CLASSI ATOMICHE (TASSATIVO)
    - MAI usare l'attributo style="..." negli elementi HTML.
    - Usare esclusivamente classi atomiche (.mb-1-5, .text-xs, .font-mono, .w-100, .no-margin, .flex-1).
    - Mostrare/nascondere elementi ESCLUSIVAMENTE tramite .classList.add("hidden") e .classList.remove("hidden").
