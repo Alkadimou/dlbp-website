@@ -1025,7 +1025,7 @@ input::placeholder {
 }
 
 #login-section.hidden, .login-card.hidden {
-    display: none !important;
+    display: none;
 }
 
 .login-card:hover, #login-section:hover {
@@ -2325,7 +2325,7 @@ input::placeholder {
 .text-2xl { font-size: 2rem !important; }
 .font-bold { font-weight: 700 !important; }
 .no-margin { margin: 0 !important; }
-.hidden { display: none !important; }
+.hidden { display: none; }
 .bg-transparent { background: transparent !important; }
 .cursor-pointer { cursor: pointer; }
 .uppercase { text-transform: uppercase; }
