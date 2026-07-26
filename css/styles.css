@@ -47,8 +47,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-    padding-top: 130px;
+    justify-content: center;
     position: relative;
 }
 
@@ -1005,7 +1004,7 @@ input::placeholder {
 /* Unified Login Card (Admin, PR, Scanner) */
 .login-card, #login-section {
     max-width: 420px;
-    width: 90%;
+    width: 100%;
     margin: 1.5rem auto 3rem auto;
     padding: 2.5rem 2rem;
     background: var(--glass-bg);
@@ -1519,7 +1518,7 @@ input::placeholder {
     z-index: 2;
     max-width: 1100px;
     margin: 0 auto;
-    padding: 10rem 2rem 4rem;
+    padding: 130px 2rem 4rem 2rem !important;
     text-align: center;
     flex: 1 0 auto;
     width: 100%;
@@ -1930,6 +1929,9 @@ input::placeholder {
 }
 
 @media (max-width: 768px) {
+    .eventi-page {
+        padding: 110px 1.2rem 3rem 1.2rem !important;
+    }
     .main-nav {
         padding: 1.2rem 1.5rem 1rem 1.5rem;
         background: transparent;
