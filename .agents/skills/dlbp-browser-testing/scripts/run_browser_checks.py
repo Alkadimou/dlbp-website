@@ -46,7 +46,8 @@ def run_tests():
 
         # 1. TEST LANDING PAGE (index.html)
         print("\n[1/5] Collaudo Landing Page (index.html)...")
-        page.goto(f"{BASE_URL}/index.html", wait_until="networkidle")
+        page.goto(f"{BASE_URL}/index.html", wait_until="domcontentloaded", timeout=10000)
+        page.wait_for_timeout(1000)
         title = page.title()
         print(f"  - Titolo Pagina: {title}")
         if "DLBP" not in title:
@@ -56,7 +57,7 @@ def run_tests():
         staff_btn = page.locator("#staff-btn")
         if staff_btn.is_visible():
             staff_btn.click()
-            time.sleep(0.3)
+            page.wait_for_timeout(300)
             dropdown = page.locator("#staff-dropdown")
             if dropdown.is_visible():
                 print("  - Menu Area Riservata: OK")
@@ -67,7 +68,8 @@ def run_tests():
 
         # 2. TEST ADMIN DASHBOARD (admin.html)
         print("\n[2/5] Collaudo Admin Panel (admin.html)...")
-        page.goto(f"{BASE_URL}/admin.html", wait_until="networkidle")
+        page.goto(f"{BASE_URL}/admin.html", wait_until="domcontentloaded", timeout=10000)
+        page.wait_for_timeout(1000)
 
         # Login Test
         email_input = page.locator("#admin-email")
@@ -78,7 +80,7 @@ def run_tests():
             email_input.fill("admin@dlbp.it")
             pwd_input.fill("admin123")
             login_btn.click()
-            page.wait_for_timeout(2000)
+            page.wait_for_timeout(1500)
 
         # Verify Dashboard Elements
         dash_section = page.locator("#dashboard-section")
@@ -96,7 +98,8 @@ def run_tests():
 
         # 3. TEST PAGINA EVENTI (eventi.html)
         print("\n[3/5] Collaudo Pagina Eventi (eventi.html)...")
-        page.goto(f"{BASE_URL}/eventi.html", wait_until="networkidle")
+        page.goto(f"{BASE_URL}/eventi.html", wait_until="domcontentloaded", timeout=10000)
+        page.wait_for_timeout(1000)
         events_grid = page.locator("#events-grid")
         if events_grid.is_visible():
             print("  - Griglia Prossimi Eventi: OK")
@@ -104,13 +107,15 @@ def run_tests():
 
         # 4. TEST AREA PR (pr.html)
         print("\n[4/5] Collaudo Area PR (pr.html)...")
-        page.goto(f"{BASE_URL}/pr.html", wait_until="networkidle")
+        page.goto(f"{BASE_URL}/pr.html", wait_until="domcontentloaded", timeout=10000)
+        page.wait_for_timeout(1000)
         page.screenshot(path=f"{SCREENSHOT_DIR}/e2e_pr.png")
         print("  - Area PR caricata correttamente.")
 
         # 5. TEST SCANNER (scanner.html)
         print("\n[5/5] Collaudo Scanner (scanner.html)...")
-        page.goto(f"{BASE_URL}/scanner.html", wait_until="networkidle")
+        page.goto(f"{BASE_URL}/scanner.html", wait_until="domcontentloaded", timeout=10000)
+        page.wait_for_timeout(1000)
         page.screenshot(path=f"{SCREENSHOT_DIR}/e2e_scanner.png")
         print("  - Pagina Scanner caricata correttamente.")
 
