@@ -1,0 +1,25 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Events collection: public read, write requires authentication
+    match /events/{eventId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // Registrations collection:
+    // - Public creation (guestlist registration on site)
+    // - Read, update, and delete require staff/admin authentication
+    match /registrations/{regId} {
+      allow create: if true;
+      allow read, update, delete: if request.auth != null;
+    }
+
+    // PRs collection: public read, write requires authentication
+    match /prs/{prId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+  }
+}
