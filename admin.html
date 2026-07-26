@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DLBP | Admin Panel</title>
     <link rel="icon" href="assets/logo.jpg" type="image/jpeg">
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/styles.css?v=2">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
@@ -77,24 +77,24 @@
             <div class="event-card-item mb-2 text-left">
                 <h2 class="event-card-title mb-1-5 tracking-wider">GESTIONE EVENTO</h2>
                 
-                <div class="event-selector-wrapper" class="event-selector-wrapper flex-row-center w-100 mb-2">
+                <div class="event-selector-wrapper flex-row-center w-100 mb-2">
                     <span class="text-xs opacity-50 tracking-wide">EVENTO:</span>
                     <select id="admin-event-selector" class="custom-select flex-1"></select>
                     <button id="new-event-btn" class="submit-btn no-margin text-xs">+ NUOVO</button>
                 </div>
 
-                <div class="kpi-grid" class="kpi-grid mb-1-5">
+                <div class="kpi-grid mb-1-5">
                     <div class="kpi-box">
                         <h4 class="opacity-50 text-xs tracking-wider mb-0-5">CAPIENZA</h4>
-                        <div class="kpi-value" class="kpi-value text-xl font-mono" id="capacity-display">0</div>
+                        <div class="kpi-value text-xl font-mono" id="capacity-display">0</div>
                     </div>
                     <div class="kpi-box">
                         <h4 class="opacity-50 text-xs tracking-wider mb-0-5">ISCRITTI</h4>
-                        <div class="kpi-value" id="stat-total-dash" class="kpi-value text-xl font-mono">0</div>
+                        <div class="kpi-value text-xl font-mono" id="stat-total-dash">0</div>
                     </div>
                     <div class="kpi-box highlight">
                         <h4 class="opacity-70 text-xs tracking-wider mb-0-5">INGRESSI LIVE</h4>
-                        <div class="kpi-value" id="present-count-dash" class="kpi-value text-2xl font-mono font-bold">0</div>
+                        <div class="kpi-value text-2xl font-mono font-bold" id="present-count-dash">0</div>
                     </div>
                 </div>
                 
@@ -214,18 +214,18 @@
     <div id="settings-modal" class="modal hidden">
         <div class="modal-large">
             <button id="close-settings-btn" class="modal-close-btn bg-transparent no-margin cursor-pointer">&times;</button>
-            <h2 id="settings-panel-title" class="event-card-title" class="event-card-title text-lg mb-1-5">MODIFICA EVENTO ESISTENTE</h2>
+            <h2 id="settings-panel-title" class="event-card-title text-lg mb-1-5">MODIFICA EVENTO ESISTENTE</h2>
             
             <div class="flex-col-left">
-                <div class="settings-item" class="submit-btn w-100">
+                <div class="settings-item submit-btn w-100">
                     <label class="form-label-inline">NOME EVENTO</label>
                     <input type="text" id="event-name-input" placeholder="es: TXK.NØX Act II" class="flex-1">
                 </div>
-                <div class="settings-item" class="submit-btn w-100">
+                <div class="settings-item submit-btn w-100">
                     <label class="form-label-inline">SECRET LOCATION</label>
                     <input type="text" id="event-location-input" placeholder="Indirizzo (per email)" class="flex-1">
                 </div>
-                <div class="settings-item" class="submit-btn w-100">
+                <div class="settings-item submit-btn w-100">
                     <label class="form-label-inline">PASSWORD GUESTLIST</label>
                     <input type="text" id="event-password-input" placeholder="Lascia vuoto per nessun gate (accesso diretto)" class="flex-1">
                 </div>
@@ -278,12 +278,12 @@
     <div id="details-modal" class="modal hidden">
         <div class="modal-large">
             <button id="close-details-btn" class="modal-close-btn bg-transparent no-margin cursor-pointer">&times;</button>
-            <h2 class="event-card-title" class="event-card-title text-lg mb-2">DETTAGLI EVENTO</h2>
+            <h2 class="event-card-title text-lg mb-2">DETTAGLI EVENTO</h2>
             
             <div class="flex-col-left font-mono">
                 <div class="details-item">
                     <span class="details-item-label">NOME EVENTO</span>
-                    <span id="details-event-name" class="details-item-value" class="font-bold">--</span>
+                    <span id="details-event-name" class="details-item-value font-bold">--</span>
                 </div>
                 <div class="details-item">
                     <span class="details-item-label">SECRET LOCATION</span>
@@ -304,11 +304,11 @@
                     </div>
                 </div>
                 <div class="details-row-group">
-                    <div class="details-row-item" class="filter-col flex-1">
+                    <div class="details-row-item filter-col flex-1">
                         <span class="details-item-label">LISTE APERTE</span>
                         <span id="details-event-status" class="details-item-value">--</span>
                     </div>
-                    <div class="details-row-item" class="filter-col flex-1">
+                    <div class="details-row-item filter-col flex-1">
                         <span class="details-item-label">CAPIENZA LOCALE</span>
                         <span id="details-event-capacity" class="details-item-value">--</span>
                     </div>
@@ -332,7 +332,7 @@
     <div id="analytics-modal" class="modal hidden">
         <div class="modal-xl">
             <button id="close-analytics-btn" class="modal-close-btn bg-transparent no-margin cursor-pointer">&times;</button>
-            <h2 class="event-card-title" class="event-card-title text-lg mb-2">ANALYTICS EVENTO</h2>
+            <h2 class="event-card-title text-lg mb-2">ANALYTICS EVENTO</h2>
             
             <div id="analytics-loading-placeholder">
                 CARICAMENTO STATISTICHE...
@@ -351,7 +351,7 @@
                     </div>
                     <div class="kpi-box">
                         <h4>IN ATTESA</h4>
-                        <div class="kpi-value" id="stat-pending" class="kpi-value text-warning">0</div>
+                        <div class="kpi-value text-warning" id="stat-pending">0</div>
                     </div>
                     <div class="kpi-box highlight">
                         <h4>PRESENTI ALLA PORTA</h4>

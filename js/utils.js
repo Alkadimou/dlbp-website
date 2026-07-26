@@ -15,7 +15,7 @@ function getOverlay() {
         
         const btnContainer = document.createElement('div');
         btnContainer.id = 'custom-modal-btn-container';
-        btnContainer.style.display = 'flex';
+        btnContainer.classList.remove("hidden");
         btnContainer.style.gap = '1rem';
         btnContainer.style.justifyContent = 'center';
         

@@ -98,7 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (code.length < 2) {
             loginMessage.textContent = "Inserisci un codice valido.";
             loginMessage.className = "form-message error";
-            loginMessage.style.display = "block";
+            loginMessage.classList.remove("hidden");
             return;
         }
         login(code);
@@ -117,7 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (prsSnap.empty) {
                 loginMessage.textContent = "Codice PR non valido o disabilitato.";
                 loginMessage.className = "form-message error";
-                loginMessage.style.display = "block";
+                loginMessage.classList.remove("hidden");
                 return;
             }
             
@@ -127,8 +127,8 @@ document.addEventListener("DOMContentLoaded", () => {
             currentPrCode = code;
             sessionStorage.setItem("dlbp_pr_code", code);
             
-            loginSection.style.display = "none";
-            dashboardSection.style.display = "block";
+            loginSection.classList.add("hidden");
+            dashboardSection.classList.remove("hidden");
             document.getElementById("app-main").style.maxWidth = "800px";
             
             prWelcome.textContent = `DASHBOARD PR: ${prName.toUpperCase()}`;
@@ -143,7 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("Errore login PR:", error);
             loginMessage.textContent = "Errore di connessione al database.";
             loginMessage.className = "form-message error";
-            loginMessage.style.display = "block";
+            loginMessage.classList.remove("hidden");
         }
     }
 

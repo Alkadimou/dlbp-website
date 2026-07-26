@@ -278,12 +278,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 const noneSpan = document.getElementById('details-event-flyer-none');
                 if (evData.flyerUrl) {
                     img.src = evData.flyerUrl;
-                    img.style.display = 'block';
-                    noneSpan.style.display = 'none';
+                    img.classList.remove("hidden");
+                    noneSpan.classList.add("hidden");
                 } else {
                     img.src = '';
-                    img.style.display = 'none';
-                    noneSpan.style.display = 'block';
+                    img.classList.add("hidden");
+                    noneSpan.classList.remove("hidden");
                 }
                 
                 document.getElementById('details-event-desc').textContent = evData.description || "Nessuna descrizione definita.";
@@ -321,8 +321,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function loadAnalyticsData() {
         if (!db || !currentEventId) return;
-        analyticsLoading.style.display = "block";
-        analyticsBody.style.display = "none";
+        analyticsLoading.classList.remove("hidden");
+        analyticsBody.classList.add("hidden");
         
         try {
             const q = query(collection(db, "registrations"), where("eventId", "==", currentEventId));
@@ -367,12 +367,12 @@ document.addEventListener("DOMContentLoaded", () => {
             // Render Charts
             renderAnalyticsCharts(datesMap, approved, pending, present, trafficMap);
 
-            analyticsLoading.style.display = "none";
-            analyticsBody.style.display = "block";
+            analyticsLoading.classList.add("hidden");
+            analyticsBody.classList.remove("hidden");
         } catch (error) {
             console.error("Errore caricamento dati analytics:", error);
             showModal("Errore nel caricamento dei dati delle statistiche.");
-            analyticsLoading.style.display = "none";
+            analyticsLoading.classList.add("hidden");
         }
     }
 
@@ -870,15 +870,15 @@ document.addEventListener("DOMContentLoaded", () => {
     if (auth) {
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                loginSection.style.display = "none";
-                dashboardSection.style.display = "block";
+                loginSection.classList.add("hidden");
+                dashboardSection.classList.remove("hidden");
                 document.getElementById("app-main").style.maxWidth = "1200px";
                 await setupEventsIfNeeded();
                 await loadEventsList();
                 loadPRs();
             } else {
-                loginSection.style.display = "flex";
-                dashboardSection.style.display = "none";
+                loginSection.classList.remove("hidden");
+                dashboardSection.classList.add("hidden");
                 document.getElementById("app-main").style.maxWidth = "";
             }
         });
@@ -892,7 +892,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!email || !pwd) {
             loginMessage.textContent = "Inserisci email e password.";
             loginMessage.className = "form-message error";
-            loginMessage.style.display = "block";
+            loginMessage.classList.remove("hidden");
             return;
         }
 
@@ -906,7 +906,7 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("Login error:", error);
             loginMessage.textContent = "Credenziali errate o utente non trovato.";
             loginMessage.className = "form-message error";
-            loginMessage.style.display = "block";
+            loginMessage.classList.remove("hidden");
         } finally {
             loginBtn.disabled = false;
             loginBtn.textContent = "ACCEDI";
@@ -1171,11 +1171,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const filterPanel = document.getElementById("filter-panel");
     if (filterBtn && filterPanel) {
         filterBtn.addEventListener("click", () => {
-            if (filterPanel.style.display === "none" || filterPanel.style.display === "") {
-                filterPanel.style.display = "flex";
+            if (filterPanel.classList.contains("hidden")) {
+                filterPanel.classList.remove("hidden");
                 filterBtn.querySelector("span:last-child").textContent = "▲";
             } else {
-                filterPanel.style.display = "none";
+                filterPanel.classList.add("hidden");
                 filterBtn.querySelector("span:last-child").textContent = "▼";
             }
         });

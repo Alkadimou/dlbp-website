@@ -93,13 +93,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 hasPassword = currentEventPassword !== "";
 
                 if (!hasPassword) {
-                    gateSection.style.display = "none";
-                    publicEventHeader.style.display = "block";
-                    registrationSection.style.display = "block";
+                    gateSection.classList.add("hidden");
+                    publicEventHeader.classList.remove("hidden");
+                    registrationSection.classList.remove("hidden");
                 } else {
-                    gateSection.style.display = "block";
-                    publicEventHeader.style.display = "none";
-                    registrationSection.style.display = "none";
+                    gateSection.classList.remove("hidden");
+                    publicEventHeader.classList.add("hidden");
+                    registrationSection.classList.add("hidden");
                 }
                 
                 // Update UI
@@ -117,9 +117,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
                 if (flyerEl && ev.flyerUrl && ev.flyerUrl.trim() !== "") {
                     flyerEl.src = ev.flyerUrl;
-                    flyerEl.style.display = "block";
+                    flyerEl.classList.remove("hidden");
                 } else if (flyerEl) {
-                    flyerEl.style.display = "none";
+                    flyerEl.classList.add("hidden");
                 }
                 if (descEl && ev.description && ev.description.trim() !== "") {
                     descEl.innerHTML = ev.description.replace(/\n/g, '<br>');
@@ -127,8 +127,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 
                 // Set form state based on event
                 if (ev.isOpen === false) {
-                    form.style.display = "none";
-                    closedMessage.style.display = "block";
+                    form.classList.add("hidden");
+                    closedMessage.classList.remove("hidden");
                 }
             } else {
                 // Fallback to legacy check if events collection doesn't exist yet
@@ -174,13 +174,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         
         if (isAuthorized) {
-            gateSection.style.display = "none";
-            publicEventHeader.style.display = "block";
-            registrationSection.style.display = "block";
+            gateSection.classList.add("hidden");
+            publicEventHeader.classList.remove("hidden");
+            registrationSection.classList.remove("hidden");
         } else {
             gateMessage.textContent = "ACCESSO NEGATO";
             gateMessage.className = "form-message error";
-            gateMessage.style.display = "block";
+            gateMessage.classList.remove("hidden");
         }
     });
 
@@ -198,8 +198,8 @@ document.addEventListener("DOMContentLoaded", () => {
             if (configSnap.exists()) {
                 const config = configSnap.data();
                 if (config.isOpen === false) {
-                    form.style.display = "none";
-                    closedMessage.style.display = "block";
+                    form.classList.add("hidden");
+                    closedMessage.classList.remove("hidden");
                     return false;
                 }
             }
@@ -326,7 +326,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
     // Se il loader è già stato mostrato in questa sessione, lo saltiamo
     if (loader && sessionStorage.getItem('visited') === 'true') {
-        loader.style.display = 'none';
+        loader.classList.add("hidden");
         initRevealAnimations();
     } else if (loader) {
         const logo = loader.querySelector('.loader-logo');
@@ -341,7 +341,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // FASE 2: Schermata completamente nera per 1.4 secondi
             setTimeout(() => {
                 // FASE 3: Il loader (che copre tutto) viene rimosso istantaneamente.
-                loader.style.display = 'none';
+                loader.classList.add("hidden");
                 
                 // Segnamo che il loader è stato completato per questa sessione
                 sessionStorage.setItem('visited', 'true');

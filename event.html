@@ -6,7 +6,7 @@
     <title>DLBP | Registrazione</title>
     <meta name="description" content="Drink Love Breathe Peace. Exclusive artistic movement and private events.">
     <link rel="icon" href="assets/logo.jpg" type="image/jpeg">
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/styles.css?v=2">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -59,13 +59,13 @@
         <section class="event-section fade-in stagger-1">
             <div class="event-card-item flex-col-center text-center">
                 
-                <div id="public-event-header" class="reveal active hidden w-100 mb-2" class="reveal active">
+                <div id="public-event-header" class="reveal active hidden w-100 mb-2">
                     <div class="event-card-status status-open">PROSSIMO EVENTO // NUMERO CHIUSO</div>
-                    <h1 class="event-card-title" id="public-event-title" class="event-card-title mt-1">TXK.NØX</h1>
-                    <p class="event-card-date" id="public-event-date" class="event-card-date no-margin mt-0-5">SABATO 04/07 | 16:00 - 21:00</p>
+                    <h1 class="event-card-title mt-1" id="public-event-title">TXK.NØX</h1>
+                    <p class="event-card-date no-margin mt-0-5" id="public-event-date">SABATO 04/07 | 16:00 - 21:00</p>
                 </div>
 
-                <div id="gate-section" class="submit-btn w-100" class="reveal active">
+                <div id="gate-section" class="submit-btn w-100 reveal active">
                     <h3 class="text-lg font-bold tracking-widest mb-0-5 uppercase">INGRESSO RISERVATO</h3>
                     <p class="opacity-50 text-sm tracking-wider mb-2">INSERISCI LA PASSWORD</p>
                     <div class="form-group mb-1-5">
@@ -77,8 +77,8 @@
                     <div id="gate-message" class="form-message hidden"></div>
                 </div>
 
-                <div id="registration-section" class="fade-in stagger-3 hidden w-100 mt-1" class="fade-in stagger-3">
-                    <p class="event-description" id="public-event-description" class="event-description opacity-70 mb-2-5">
+                <div id="registration-section" class="fade-in stagger-3 hidden w-100 mt-1">
+                    <p class="event-description opacity-70 mb-2-5" id="public-event-description">
                         Un'esperienza immersiva e riservata. 
                         L'accesso è strettamente limitato. Inserisci i tuoi dati per richiedere l'iscrizione.
                         La location esatta (segreta) verrà comunicata solo agli iscritti selezionati 24h prima dell'evento.
@@ -96,13 +96,13 @@
                         <div class="form-group">
                             <input type="email" id="email" name="email" required placeholder="EMAIL">
                         </div>
-                        <div class="form-group privacy-checkbox" class="form-group privacy-checkbox flex-row-left">
+                        <div class="form-group privacy-checkbox flex-row-left">
                             <input type="checkbox" id="privacy-consent" name="privacy-consent" required class="checkbox-input">
                             <label for="privacy-consent" class="text-xs opacity-50 cursor-pointer">
                                 Acconsento al trattamento dei miei dati personali per ricevere il biglietto d'ingresso e le comunicazioni relative agli eventi secondo le vigenti normative sulla privacy.
                             </label>
                         </div>
-                        <button type="submit" class="submit-btn" id="submit-btn" class="submit-btn w-100">
+                        <button type="submit" class="submit-btn w-100" id="submit-btn">
                             <span class="btn-text">RICHIEDI ACCESSO</span>
                         </button>
                         <div id="form-message" class="form-message hidden"></div>

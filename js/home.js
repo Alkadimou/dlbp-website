@@ -25,12 +25,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const loader = document.getElementById('initial-loader');
     if (loader) {
         if (sessionStorage.getItem('visited')) {
-            loader.style.display = 'none';
+            loader.classList.add("hidden");
         } else {
             setTimeout(() => {
                 loader.style.opacity = '0';
                 setTimeout(() => {
-                    loader.style.display = 'none';
+                    loader.classList.add("hidden");
                     sessionStorage.setItem('visited', 'true');
                 }, 500);
             }, 1000);

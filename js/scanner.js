@@ -48,8 +48,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (sessionStorage.getItem("dlbp_scanner_auth") === "true") {
-        loginSection.style.display = "none";
-        scannerSection.style.display = "block";
+        loginSection.classList.add("hidden");
+        scannerSection.classList.remove("hidden");
         startScanner();
     }
 
@@ -59,8 +59,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (hashedInput === SECRET_HASH) { 
             sessionStorage.setItem("dlbp_scanner_auth", "true");
-            loginSection.style.display = "none";
-            scannerSection.style.display = "block";
+            loginSection.classList.add("hidden");
+            scannerSection.classList.remove("hidden");
             startScanner();
         } else {
             loginMessage.textContent = "Accesso negato.";
@@ -185,12 +185,12 @@ document.addEventListener("DOMContentLoaded", () => {
             html5QrcodeScanner.pause(true);
         }
         
-        readerDiv.style.display = "none";
-        statusBox.style.display = "block";
+        readerDiv.classList.add("hidden");
+        statusBox.classList.remove("hidden");
         statusBox.className = "status-box"; // reset
         statusTitle.textContent = "VERIFICA IN CORSO...";
         statusDetails.innerHTML = "Controllo nel database...";
-        nextScanBtn.style.display = "none";
+        nextScanBtn.classList.add("hidden");
 
         try {
             const ticketId = decodedText.trim();
@@ -290,8 +290,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     nextScanBtn.addEventListener("click", () => {
         isProcessing = false;
-        statusBox.style.display = "none";
-        readerDiv.style.display = "block";
+        statusBox.classList.add("hidden");
+        readerDiv.classList.remove("hidden");
         if (html5QrcodeScanner) {
             html5QrcodeScanner.resume();
         }
