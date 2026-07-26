@@ -47,7 +47,8 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    padding-top: 130px;
     position: relative;
 }
 
@@ -1004,8 +1005,8 @@ input::placeholder {
 /* Unified Login Card (Admin, PR, Scanner) */
 .login-card, #login-section {
     max-width: 420px;
-    width: 100%;
-    margin: 3rem auto;
+    width: 90%;
+    margin: 1.5rem auto 3rem auto;
     padding: 2.5rem 2rem;
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
