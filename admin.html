@@ -52,10 +52,10 @@
         <!-- Login Section -->
         <section id="login-section" class="login-card">
             <h2>ACCESSO ADMIN</h2>
-            <div class="form-group" style="margin-bottom: 1.5rem;">
+            <div class="form-group mb-1-5">
                 <input type="email" id="admin-email" placeholder="EMAIL" required>
             </div>
-            <div class="form-group" style="margin-bottom: 1.5rem;">
+            <div class="form-group mb-1-5">
                 <input type="password" id="admin-password" placeholder="PASSWORD" required>
             </div>
             <button id="login-btn" class="submit-btn">ACCEDI</button>
@@ -63,85 +63,85 @@
         </section>
 
         <!-- Dashboard Section -->
-        <section id="dashboard-section" class="fade-in stagger-1" style="display: none; width: 100%; max-width: 1000px; margin: 0 auto;">
+        <section id="dashboard-section" class="fade-in stagger-1 hidden w-100">
             
             <!-- Global Header -->
-            <div class="admin-global-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem;">
-                <div style="display: flex; align-items: center; gap: 1rem; justify-content: space-between; flex: 1 1 100%; max-width: 100%;">
-                    <h2 class="event-card-title" style="font-size: 1.2rem; margin: 0;">ADMIN DASHBOARD</h2>
-                    <button id="logout-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1rem; border-color: rgba(255, 50, 50, 0.4); color: rgba(255, 100, 100, 0.8); font-size: 0.7rem; white-space: nowrap; flex-shrink: 0; min-width: max-content;">ESCI</button>
+            <div class="admin-global-header flex-row-between border-bottom mb-2">
+                <div class="flex-row-between flex-1">
+                    <h2 class="event-card-title text-lg no-margin">ADMIN DASHBOARD</h2>
+                    <button id="logout-btn" class="submit-btn btn-danger no-margin text-xs">ESCI</button>
                 </div>
             </div>
 
             <!-- Event Selector & Details (Merged Card) -->
-            <div class="event-card-item" style="margin-bottom: 2rem; padding: 1.5rem; text-align: left; opacity: 1; transform: none;">
-                <h2 class="event-card-title" style="font-size: 1rem; margin-bottom: 1.5rem; letter-spacing: 2px;">GESTIONE EVENTO</h2>
+            <div class="event-card-item mb-2 text-left">
+                <h2 class="event-card-title mb-1-5 tracking-wider">GESTIONE EVENTO</h2>
                 
-                <div class="event-selector-wrapper" style="display: flex; align-items: center; gap: 0.5rem; width: 100%; margin-bottom: 2rem;">
-                    <span style="font-size: 0.7rem; color: rgba(255,255,255,0.5); letter-spacing: 1px;">EVENTO:</span>
-                    <select id="admin-event-selector" style="flex: 1; background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); padding: 0.5rem; font-family: 'Space Mono', monospace; font-size: 0.8rem; cursor: pointer; border-radius: 4px; outline: none;"></select>
-                    <button id="new-event-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1rem; font-size: 0.7rem; white-space: nowrap;">+ NUOVO</button>
+                <div class="event-selector-wrapper" class="event-selector-wrapper flex-row-center w-100 mb-2">
+                    <span class="text-xs opacity-50 tracking-wide">EVENTO:</span>
+                    <select id="admin-event-selector" class="custom-select flex-1"></select>
+                    <button id="new-event-btn" class="submit-btn no-margin text-xs">+ NUOVO</button>
                 </div>
 
-                <div class="kpi-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
-                    <div class="kpi-box" style="background: rgba(255,255,255,0.02); padding: 1rem; text-align: center; border: 1px solid rgba(255,255,255,0.05); border-radius: 8px;">
-                        <h4 style="color: rgba(255,255,255,0.5); font-size: 0.6rem; letter-spacing: 2px; margin-bottom: 0.5rem;">CAPIENZA</h4>
-                        <div class="kpi-value" style="font-size: 1.5rem; font-family: 'Space Mono', monospace;" id="capacity-display">0</div>
+                <div class="kpi-grid" class="kpi-grid mb-1-5">
+                    <div class="kpi-box">
+                        <h4 class="opacity-50 text-xs tracking-wider mb-0-5">CAPIENZA</h4>
+                        <div class="kpi-value" class="kpi-value text-xl font-mono" id="capacity-display">0</div>
                     </div>
-                    <div class="kpi-box" style="background: rgba(255,255,255,0.02); padding: 1rem; text-align: center; border: 1px solid rgba(255,255,255,0.05); border-radius: 8px;">
-                        <h4 style="color: rgba(255,255,255,0.5); font-size: 0.6rem; letter-spacing: 2px; margin-bottom: 0.5rem;">ISCRITTI</h4>
-                        <div class="kpi-value" id="stat-total-dash" style="font-size: 1.5rem; font-family: 'Space Mono', monospace;">0</div>
+                    <div class="kpi-box">
+                        <h4 class="opacity-50 text-xs tracking-wider mb-0-5">ISCRITTI</h4>
+                        <div class="kpi-value" id="stat-total-dash" class="kpi-value text-xl font-mono">0</div>
                     </div>
-                    <div class="kpi-box highlight" style="background: rgba(255,255,255,0.05); padding: 1rem; text-align: center; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px;">
-                        <h4 style="color: rgba(255,255,255,0.8); font-size: 0.6rem; letter-spacing: 2px; margin-bottom: 0.5rem;">INGRESSI LIVE</h4>
-                        <div class="kpi-value" id="present-count-dash" style="font-size: 2rem; font-family: 'Space Mono', monospace; font-weight: 700;">0</div>
+                    <div class="kpi-box highlight">
+                        <h4 class="opacity-70 text-xs tracking-wider mb-0-5">INGRESSI LIVE</h4>
+                        <div class="kpi-value" id="present-count-dash" class="kpi-value text-2xl font-mono font-bold">0</div>
                     </div>
                 </div>
                 
                 <div class="summary-bottom-actions">
                     <button id="view-event-btn" class="submit-btn">DETTAGLI</button>
                     <button id="edit-event-btn" class="submit-btn">MODIFICA</button>
-                    <button id="delete-event-btn" class="submit-btn" style="border-color: rgba(255, 50, 50, 0.4); color: rgba(255, 100, 100, 0.8);">ELIMINA EVENTO</button>
-                    <button id="set-active-btn" class="submit-btn" style="border-color: rgba(46, 204, 113, 0.4); color: rgba(46, 204, 113, 0.9);">RENDI ATTIVO</button>
+                    <button id="delete-event-btn" class="submit-btn btn-danger">ELIMINA EVENTO</button>
+                    <button id="set-active-btn" class="submit-btn btn-success">RENDI ATTIVO</button>
                 </div>
             </div>
 
             <!-- Users Section -->
-            <div class="event-card-item" style="padding: 1.5rem; opacity: 1; transform: none; text-align: left;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
-                    <h2 class="event-card-title" style="font-size: 1rem; margin: 0; letter-spacing: 2px;">GESTIONE ISCRITTI</h2>
+            <div class="event-card-item text-left">
+                <div class="flex-row-between mb-1-5">
+                    <h2 class="event-card-title no-margin tracking-wider">GESTIONE ISCRITTI</h2>
                 </div>
 
                 <div class="search-container-dynamic">
                     <div class="search-input-wrapper">
                         <input type="text" id="search-input" placeholder="Cerca nome o email...">
                     </div>
-                    <button id="filter-btn" class="submit-btn" style="margin: 0; min-height: unset; height: 42px; padding: 0.5rem 1.5rem; display: flex; align-items: center; gap: 0.5rem; border-color: rgba(255,255,255,0.2); color: rgba(255,255,255,0.8);">
-                        <span>FILTRI</span> <span style="font-size: 0.8rem;">▼</span>
+                    <button id="filter-btn" class="submit-btn no-margin flex-row-center btn-secondary">
+                        <span>FILTRI</span> <span class="text-sm">▼</span>
                     </button>
                 </div>
 
                 <!-- Filter Panel -->
-                <div id="filter-panel" style="display: none; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 6px; padding: 1rem; margin-bottom: 2rem; gap: 1rem; flex-wrap: wrap;">
-                    <div style="flex: 1; min-width: 150px;">
-                        <label style="font-size: 0.7rem; color: rgba(255,255,255,0.5); display: block; margin-bottom: 0.5rem; letter-spacing: 1px;">STATO TICKET</label>
-                        <select id="filter-ticket" style="width: 100%; height: 38px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0 0.5rem; border-radius: 4px; font-family: 'Space Mono', monospace; outline: none;">
+                <div id="filter-panel" class="filter-panel hidden flex-row-between mb-2">
+                    <div class="filter-col flex-1">
+                        <label class="text-xs opacity-50 tracking-wide mb-0-5">STATO TICKET</label>
+                        <select id="filter-ticket" class="custom-select w-100">
                             <option value="all">TUTTI</option>
                             <option value="sent">INVIATO</option>
                             <option value="not_sent">NON INVIATO</option>
                         </select>
                     </div>
-                    <div style="flex: 1; min-width: 150px;">
-                        <label style="font-size: 0.7rem; color: rgba(255,255,255,0.5); display: block; margin-bottom: 0.5rem; letter-spacing: 1px;">PRESENZA</label>
-                        <select id="filter-presence" style="width: 100%; height: 38px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0 0.5rem; border-radius: 4px; font-family: 'Space Mono', monospace; outline: none;">
+                    <div class="filter-col flex-1">
+                        <label class="text-xs opacity-50 tracking-wide mb-0-5">PRESENZA</label>
+                        <select id="filter-presence" class="custom-select w-100">
                             <option value="all">TUTTI</option>
                             <option value="checked_in">ENTRATO</option>
                             <option value="not_checked_in">NON ENTRATO</option>
                         </select>
                     </div>
-                    <div style="flex: 1; min-width: 150px;">
-                        <label style="font-size: 0.7rem; color: rgba(255,255,255,0.5); display: block; margin-bottom: 0.5rem; letter-spacing: 1px;">LISTA PR</label>
-                        <select id="filter-pr" style="width: 100%; height: 38px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0 0.5rem; border-radius: 4px; font-family: 'Space Mono', monospace; outline: none;">
+                    <div class="filter-col flex-1">
+                        <label class="text-xs opacity-50 tracking-wide mb-0-5">LISTA PR</label>
+                        <select id="filter-pr" class="custom-select w-100">
                             <option value="all">TUTTE</option>
                         </select>
                     </div>
@@ -151,16 +151,16 @@
                     <table class="users-table">
                     <thead>
                         <tr>
-                            <th style="width: 40px; text-align: center;">
-                                <input type="checkbox" id="select-all-cb" style="width: auto;">
+                            <th class="col-checkbox text-center">
+                                <input type="checkbox" id="select-all-cb" class="w-auto">
                             </th>
-                            <th data-sort="name" style="width: 30%; cursor: pointer; user-select: none;">NOME</th>
-                            <th data-sort="email" style="width: 15%; cursor: pointer; user-select: none;">EMAIL</th>
-                            <th data-sort="invited_by" style="width: 9%; text-align: center; cursor: pointer; user-select: none;">PR</th>
-                            <th data-sort="email_sent" style="width: 8%; text-align: center; cursor: pointer; user-select: none;">TICKET</th>
-                            <th data-sort="checked_in" style="width: 13%; white-space: nowrap; cursor: pointer; user-select: none;">INGRESSO</th>
-                            <th data-sort="timestamp" style="width: 13%; white-space: nowrap; cursor: pointer; user-select: none;">DATA</th>
-                            <th style="width: 12%; text-align: right; white-space: nowrap;">AZIONI</th>
+                            <th data-sort="name" class="col-name cursor-pointer">NOME</th>
+                            <th data-sort="email" class="col-email cursor-pointer">EMAIL</th>
+                            <th data-sort="invited_by" class="col-pr text-center cursor-pointer">PR</th>
+                            <th data-sort="email_sent" class="col-ticket text-center cursor-pointer">TICKET</th>
+                            <th data-sort="checked_in" class="col-data cursor-pointer">INGRESSO</th>
+                            <th data-sort="timestamp" class="col-data cursor-pointer">DATA</th>
+                            <th class="col-azioni text-right">AZIONI</th>
                         </tr>
                     </thead>
                     <tbody id="users-tbody">
@@ -172,20 +172,20 @@
                 <div class="toolbar-actions">
                     <button id="analytics-btn" class="submit-btn">ANALYTICS</button>
                     <button id="export-csv-btn" class="submit-btn">ESPORTA</button>
-                    <button id="delete-selected-btn" class="submit-btn" style="border-color: rgba(255, 50, 50, 0.4); color: rgba(255, 100, 100, 0.8);" disabled>ELIMINA</button>
-                    <button id="send-emails-btn" class="submit-btn" style="border-color: rgba(46, 204, 113, 0.4); color: rgba(46, 204, 113, 0.9);">INVIA ACCESSI</button>
+                    <button id="delete-selected-btn" class="submit-btn btn-danger" disabled>ELIMINA</button>
+                    <button id="send-emails-btn" class="submit-btn btn-success">INVIA ACCESSI</button>
                 </div>
                 
                 <div id="admin-message" class="form-message hidden"></div>
             </div>
             <!-- PR Management Section -->
-            <div class="event-card-item" style="padding: 1.5rem; opacity: 1; transform: none; text-align: left; margin-top: 2rem;">
-                <h2 class="event-card-title" style="font-size: 1rem; margin-bottom: 1.5rem; letter-spacing: 2px;">GESTIONE PR</h2>
+            <div class="event-card-item text-left mt-2">
+                <h2 class="event-card-title mb-1-5 tracking-wider">GESTIONE PR</h2>
                 
-                <div style="display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; justify-content: flex-end;">
-                    <input type="text" id="pr-name-input" placeholder="Nome PR (es. Marco Rossi)" style="flex: 1; min-width: 200px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.5rem; font-family: 'Space Mono', monospace; border-radius: 4px; outline: none;">
-                    <input type="text" id="pr-code-input" placeholder="Codice (es. marco24)" style="flex: 1; min-width: 200px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.5rem; font-family: 'Space Mono', monospace; border-radius: 4px; outline: none;">
-                    <button id="add-pr-btn" class="submit-btn" style="padding: 0.5rem 1rem; margin: 0;">AGGIUNGI</button>
+                <div class="flex-row-end mb-2">
+                    <input type="text" id="pr-name-input" placeholder="Nome PR (es. Marco Rossi)" class="custom-input flex-1 min-w-200">
+                    <input type="text" id="pr-code-input" placeholder="Codice (es. marco24)" class="custom-input flex-1 min-w-200">
+                    <button id="add-pr-btn" class="submit-btn no-margin">AGGIUNGI</button>
                 </div>
 
                 <div class="table-responsive">
@@ -195,7 +195,7 @@
                                 <th>NOME</th>
                                 <th>CODICE / LINK</th>
                                 <th>STATO</th>
-                                <th style="text-align: right;">AZIONI</th>
+                                <th class="text-right">AZIONI</th>
                             </tr>
                         </thead>
                         <tbody id="pr-table-body">
@@ -212,40 +212,40 @@
 
     <!-- Settings Modal -->
     <div id="settings-modal" class="modal hidden">
-        <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
-            <button id="close-settings-btn" style="position: absolute; top: 1rem; right: 1rem; background: transparent; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; font-family: 'Space Mono', monospace;">&times;</button>
-            <h2 id="settings-panel-title" class="event-card-title" style="font-size: 1.2rem; margin-bottom: 1.5rem;">MODIFICA EVENTO ESISTENTE</h2>
+        <div class="modal-large">
+            <button id="close-settings-btn" class="modal-close-btn bg-transparent no-margin cursor-pointer">&times;</button>
+            <h2 id="settings-panel-title" class="event-card-title" class="event-card-title text-lg mb-1-5">MODIFICA EVENTO ESISTENTE</h2>
             
-            <div style="display: flex; flex-direction: column; gap: 1rem; width: 100%; text-align: left;">
-                <div class="settings-item" style="width: 100%;">
-                    <label style="width: 150px; flex-shrink: 0;">NOME EVENTO</label>
-                    <input type="text" id="event-name-input" placeholder="es: TXK.NØX Act II" style="flex: 1;">
+            <div class="flex-col-left">
+                <div class="settings-item" class="submit-btn w-100">
+                    <label class="form-label-inline">NOME EVENTO</label>
+                    <input type="text" id="event-name-input" placeholder="es: TXK.NØX Act II" class="flex-1">
                 </div>
-                <div class="settings-item" style="width: 100%;">
-                    <label style="width: 150px; flex-shrink: 0;">SECRET LOCATION</label>
-                    <input type="text" id="event-location-input" placeholder="Indirizzo (per email)" style="flex: 1;">
+                <div class="settings-item" class="submit-btn w-100">
+                    <label class="form-label-inline">SECRET LOCATION</label>
+                    <input type="text" id="event-location-input" placeholder="Indirizzo (per email)" class="flex-1">
                 </div>
-                <div class="settings-item" style="width: 100%;">
-                    <label style="width: 150px; flex-shrink: 0;">PASSWORD GUESTLIST</label>
-                    <input type="text" id="event-password-input" placeholder="Lascia vuoto per nessun gate (accesso diretto)" style="flex: 1;">
+                <div class="settings-item" class="submit-btn w-100">
+                    <label class="form-label-inline">PASSWORD GUESTLIST</label>
+                    <input type="text" id="event-password-input" placeholder="Lascia vuoto per nessun gate (accesso diretto)" class="flex-1">
                 </div>
-                <div style="display: flex; gap: 1rem; flex-wrap: wrap; width: 100%;">
-                    <div class="settings-item" style="flex-grow: 2; min-width: 150px;">
-                        <label style="width: auto;">DATA EVENTO</label>
-                        <input type="date" id="event-date-input" style="flex: 1;">
+                <div class="details-row w-100">
+                    <div class="flex-2 min-w-150">
+                        <label class="w-auto">DATA EVENTO</label>
+                        <input type="date" id="event-date-input" class="flex-1">
                     </div>
-                    <div class="settings-item" style="flex-grow: 1; min-width: 100px;">
-                        <label style="width: auto;">INIZIO</label>
-                        <input type="time" id="event-start-time-input" style="flex: 1;">
+                    <div class="flex-1 min-w-100">
+                        <label class="w-auto">INIZIO</label>
+                        <input type="time" id="event-start-time-input" class="flex-1">
                     </div>
-                    <div class="settings-item" style="flex-grow: 1; min-width: 100px;">
-                        <label style="width: auto;">FINE</label>
-                        <input type="time" id="event-end-time-input" style="flex: 1;">
+                    <div class="flex-1 min-w-100">
+                        <label class="w-auto">FINE</label>
+                        <input type="time" id="event-end-time-input" class="flex-1">
                     </div>
                 </div>
             </div>
             
-            <div style="display: flex; gap: 2rem; flex-wrap: wrap; width: 100%; margin-top: 1.5rem; align-items: center;">
+            <div class="flex-row-center mt-1-5 w-100">
                 <div class="settings-item">
                     <label>LISTE APERTE</label>
                     <label class="toggle-switch">
@@ -258,71 +258,71 @@
                     <input type="number" id="capacity-input" class="capacity-input" value="100">
                 </div>
             </div>
-            <div class="settings-item" style="width: 100%; margin-top: 1.5rem; text-align: left; display: block;">
-                <label style="display: block; margin-bottom: 0.5rem;">CARICA FLYER (JPEG/PNG)</label>
-                <input type="file" id="flyer-input" accept="image/*" style="width: 100%;">
-                <div id="current-flyer-preview" style="margin-top: 10px; font-size: 0.7rem; color: rgba(255,255,255,0.5);">Nessun flyer caricato.</div>
+            <div class="settings-item w-100 mt-1-5 text-left">
+                <label class="form-label-block">CARICA FLYER (JPEG/PNG)</label>
+                <input type="file" id="flyer-input" accept="image/*" class="submit-btn w-100">
+                <div id="current-flyer-preview" class="mt-1 text-xs opacity-50">Nessun flyer caricato.</div>
             </div>
-            <div style="margin-top: 1.5rem; width: 100%; text-align: left;">
-                <label style="font-size: 0.7rem; color: rgba(255,255,255,0.5); letter-spacing: 1px; display: block; margin-bottom: 0.5rem;">DESCRIZIONE EVENTO</label>
-                <textarea id="desc-input" rows="4" style="width: 100%; padding: 1rem; background: rgba(255,255,255,0.03); color: #fff; border: 1px solid rgba(255,255,255,0.1); font-family: 'Space Mono', monospace; border-radius: 4px; resize: vertical; box-shadow: inset 0 2px 10px rgba(0,0,0,0.1); outline: none;"></textarea>
+            <div class="mt-1-5 w-100 text-left">
+                <label class="text-xs opacity-50 tracking-wide form-label-block">DESCRIZIONE EVENTO</label>
+                <textarea id="desc-input" rows="4" class="textarea-input w-100"></textarea>
             </div>
             
-            <div style="display: flex; gap: 1rem; margin-top: 2.5rem; width: 100%;">
-                <button id="save-content-btn" class="submit-btn" style="flex: 2; border-color: rgba(255,255,255,0.8); color: #fff;">SALVA DETTAGLI</button>
+            <div class="flex-row-center mt-2-5 w-100">
+                <button id="save-content-btn" class="submit-btn flex-2">SALVA DETTAGLI</button>
             </div>
         </div>
     </div>
 
     <!-- Details Modal -->
     <div id="details-modal" class="modal hidden">
-        <div class="modal-content" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
-            <button id="close-details-btn" style="position: absolute; top: 1rem; right: 1rem; background: transparent; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; font-family: 'Space Mono', monospace;">&times;</button>
-            <h2 class="event-card-title" style="font-size: 1.2rem; margin-bottom: 2rem; color: var(--accent-color);">DETTAGLI EVENTO</h2>
+        <div class="modal-large">
+            <button id="close-details-btn" class="modal-close-btn bg-transparent no-margin cursor-pointer">&times;</button>
+            <h2 class="event-card-title" class="event-card-title text-lg mb-2">DETTAGLI EVENTO</h2>
             
-            <div style="display: flex; flex-direction: column; gap: 1.5rem; width: 100%; text-align: left; font-family: 'Space Mono', monospace;">
+            <div class="flex-col-left font-mono">
                 <div class="details-item">
                     <span class="details-item-label">NOME EVENTO</span>
-                    <span id="details-event-name" class="details-item-value" style="font-weight: bold;">--</span>
+                    <span id="details-event-name" class="details-item-value" class="font-bold">--</span>
                 </div>
                 <div class="details-item">
                     <span class="details-item-label">SECRET LOCATION</span>
                     <span id="details-event-location" class="details-item-value">--</span>
                 </div>
                 <div class="details-row-group">
-                    <div class="details-row-item" style="flex: 2; min-width: 150px;">
+                    <div class="details-row-item flex-2 min-w-150">
                         <span class="details-item-label">DATA EVENTO</span>
                         <span id="details-event-date" class="details-item-value">--</span>
                     </div>
-                    <div class="details-row-item" style="flex: 1; min-width: 100px;">
+                    <div class="details-row-item flex-1 min-w-100">
                         <span class="details-label-short">INIZIO</span>
                         <span id="details-event-start" class="details-item-value">--</span>
                     </div>
-                    <div class="details-row-item" style="flex: 1; min-width: 100px;">
+                    <div class="details-row-item flex-1 min-w-100">
                         <span class="details-label-short">FINE</span>
                         <span id="details-event-end" class="details-item-value">--</span>
                     </div>
                 </div>
                 <div class="details-row-group">
-                    <div class="details-row-item" style="flex: 1; min-width: 150px;">
+                    <div class="details-row-item" class="filter-col flex-1">
                         <span class="details-item-label">LISTE APERTE</span>
                         <span id="details-event-status" class="details-item-value">--</span>
                     </div>
-                    <div class="details-row-item" style="flex: 1; min-width: 150px;">
+                    <div class="details-row-item" class="filter-col flex-1">
                         <span class="details-item-label">CAPIENZA LOCALE</span>
                         <span id="details-event-capacity" class="details-item-value">--</span>
                     </div>
                 </div>
-                <div style="display: flex; flex-direction: column; gap: 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.8rem;">
-                    <span style="color: rgba(255,255,255,0.5); font-size: 0.8rem;">FLYER DELL'EVENTO</span>
-                    <div id="details-event-flyer-preview" style="margin-top: 10px; max-width: 100%; max-height: 300px; overflow: hidden; border-radius: 8px; display: flex; justify-content: flex-start;">
-                        <img id="details-event-flyer-img" src="" alt="Flyer Evento" style="max-width: 100%; max-height: 300px; display: none; object-fit: contain; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1);">
-                        <span id="details-event-flyer-none" style="color: rgba(255,255,255,0.4); font-size: 0.8rem;">Nessun flyer caricato</span>
+                <div class="flex-col-left border-bottom mb-1">
+                    <span class="opacity-50 text-sm">FLYER DELL'EVENTO</span>
+                    <div id="details-event-flyer-preview" class="flyer-preview-box">
+                        <img id="details-event-flyer-img" src="" alt="Flyer Evento" class="flyer-preview-img">
+                        <span id="details-event-flyer-none" class="opacity-50 text-sm">Nessun flyer caricato</span>
                     </div>
                 </div>
-                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                    <span style="color: rgba(255,255,255,0.5); font-size: 0.8rem;">DESCRIZIONE EVENTO</span>
-                    <div id="details-event-desc" style="color: #fff; line-height: 1.6; white-space: pre-wrap; font-size: 0.9rem; background: rgba(255,255,255,0.02); padding: 1rem; border: 1px solid rgba(255,255,255,0.05); border-radius: 4px;">--</div>
+                <div class="flex-col-left mb-0-5">
+                    <span class="opacity-50 text-sm">DESCRIZIONE EVENTO</span>
+                    <div id="details-event-desc" class="details-box">--</div>
                 </div>
             </div>
         </div>
@@ -330,15 +330,15 @@
 
     <!-- Analytics Modal -->
     <div id="analytics-modal" class="modal hidden">
-        <div class="modal-content" style="max-width: 900px; max-height: 90vh; overflow-y: auto;">
-            <button id="close-analytics-btn" style="position: absolute; top: 1rem; right: 1rem; background: transparent; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; font-family: 'Space Mono', monospace;">&times;</button>
-            <h2 class="event-card-title" style="font-size: 1.2rem; margin-bottom: 2rem; color: var(--accent-color);">ANALYTICS EVENTO</h2>
+        <div class="modal-xl">
+            <button id="close-analytics-btn" class="modal-close-btn bg-transparent no-margin cursor-pointer">&times;</button>
+            <h2 class="event-card-title" class="event-card-title text-lg mb-2">ANALYTICS EVENTO</h2>
             
-            <div id="analytics-loading-placeholder" style="padding: 3rem; text-align: center; color: rgba(255,255,255,0.5); font-family: 'Space Mono', monospace; letter-spacing: 2px;">
+            <div id="analytics-loading-placeholder">
                 CARICAMENTO STATISTICHE...
             </div>
             
-            <div id="analytics-modal-body" style="display: none;">
+            <div id="analytics-modal-body">
                 <!-- Numeri Chiave -->
                 <div class="dashboard-grid">
                     <div class="kpi-box">
@@ -347,11 +347,11 @@
                     </div>
                     <div class="kpi-box">
                         <h4>APPROVATI</h4>
-                        <div class="kpi-value" id="stat-approved" style="color: rgba(100,255,100,0.8);">0</div>
+                        <div class="kpi-value" id="stat-approved">0</div>
                     </div>
                     <div class="kpi-box">
                         <h4>IN ATTESA</h4>
-                        <div class="kpi-value" id="stat-pending" style="color: rgba(255,200,100,0.8);">0</div>
+                        <div class="kpi-value" id="stat-pending" class="kpi-value text-warning">0</div>
                     </div>
                     <div class="kpi-box highlight">
                         <h4>PRESENTI ALLA PORTA</h4>
@@ -362,7 +362,7 @@
                 <!-- Grafici -->
                 <div class="charts-grid">
                     <!-- Grafico a Linee: Iscrizioni nel tempo -->
-                    <div class="chart-card" style="grid-column: 1 / -1;">
+                    <div class="chart-card col-span-full">
                         <h3>ANDAMENTO ISCRIZIONI</h3>
                         <canvas id="timelineChart" height="120"></canvas>
                     </div>
@@ -380,7 +380,7 @@
                     </div>
 
                     <!-- Grafico a Barre: Picchi di Affluenza -->
-                    <div class="chart-card" style="grid-column: 1 / -1;">
+                    <div class="chart-card col-span-full">
                         <h3>PICCHI DI AFFLUENZA (CHECK-IN)</h3>
                         <canvas id="peakTrafficChart" height="120"></canvas>
                     </div>

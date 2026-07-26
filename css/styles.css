@@ -2282,5 +2282,68 @@ input::placeholder {
     transform: translateY(-2px);
 }
 
+/* ==========================================================================
+   STRUCTURAL UTILITIES (ZERO INLINE STYLES)
+   ========================================================================== */
+.flex-row-between { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+.flex-row-center { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 1rem; }
+.flex-row-end { display: flex; justify-content: flex-end; align-items: center; flex-wrap: wrap; gap: 1rem; }
+.flex-row-left { display: flex; align-items: flex-start; gap: 1rem; text-align: left; }
+.flex-col-center { display: flex; flex-direction: column; align-items: center; }
+.flex-col-left { display: flex; flex-direction: column; gap: 1rem; width: 100%; text-align: left; }
+.flex-1 { flex: 1; }
+.flex-2 { flex: 2; }
+.min-w-200 { min-width: 200px; }
+.min-w-150 { min-width: 150px; }
+.min-w-100 { min-width: 100px; }
+.border-bottom { border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem; }
+.mb-0-5 { margin-bottom: 0.5rem !important; }
+.mb-1 { margin-bottom: 1rem !important; }
+.mb-1-5 { margin-bottom: 1.5rem !important; }
+.mb-2 { margin-bottom: 2rem !important; }
+.mb-2-5 { margin-bottom: 2.5rem !important; }
+.mt-0-5 { margin-top: 0.5rem !important; }
+.mt-1 { margin-top: 1rem !important; }
+.mt-1-5 { margin-top: 1.5rem !important; }
+.mt-2 { margin-top: 2rem !important; }
+.w-100 { width: 100% !important; }
+.w-auto { width: auto !important; }
+.text-center { text-align: center !important; }
+.text-left { text-align: left !important; }
+.text-right { text-align: right !important; }
+.font-mono { font-family: var(--font-mono) !important; }
+.tracking-wide { letter-spacing: 1px !important; }
+.tracking-wider { letter-spacing: 2px !important; }
+.tracking-widest { letter-spacing: 3px !important; }
+.opacity-50 { opacity: 0.5 !important; }
+.opacity-70 { opacity: 0.7 !important; }
+.text-xs { font-size: 0.7rem !important; }
+.text-sm { font-size: 0.8rem !important; }
+.text-md { font-size: 1rem !important; }
+.text-lg { font-size: 1.2rem !important; }
+.text-xl { font-size: 1.5rem !important; }
+.text-2xl { font-size: 2rem !important; }
+.font-bold { font-weight: 700 !important; }
+.no-margin { margin: 0 !important; }
+.hidden { display: none !important; }
+.bg-transparent { background: transparent !important; }
+.cursor-pointer { cursor: pointer; }
+.uppercase { text-transform: uppercase; }
+.text-danger { color: rgba(255, 100, 100, 0.8) !important; }
+.text-success { color: rgba(100, 255, 100, 0.9) !important; }
+.text-warning { color: rgba(255, 200, 100, 0.8) !important; }
+.modal-large { max-width: 800px; max-height: 90vh; overflow-y: auto; }
+.modal-xl { max-width: 900px; max-height: 90vh; overflow-y: auto; }
+.custom-input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.5rem; font-family: 'Space Mono', monospace; border-radius: 4px; outline: none; }
+.textarea-input { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 1rem; font-family: 'Space Mono', monospace; border-radius: 4px; resize: vertical; box-shadow: inset 0 2px 10px rgba(0,0,0,0.1); outline: none; }
+.alert-danger { padding: 2rem; border: 1px solid rgba(255, 100, 100, 0.4); background: rgba(255,51,51,0.05); border-radius: 8px; }
+.form-label-inline { width: 150px; flex-shrink: 0; }
+.form-label-block { display: block; margin-bottom: 0.5rem; }
+.details-row { display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+.details-box { background: rgba(255,255,255,0.02); padding: 1rem; border: 1px solid rgba(255,255,255,0.05); border-radius: 4px; color: #fff; line-height: 1.6; white-space: pre-wrap; font-size: 0.9rem; }
+.flyer-preview-box { margin-top: 10px; max-width: 100%; max-height: 300px; overflow: hidden; border-radius: 8px; display: flex; justify-content: flex-start; }
+.flyer-preview-img { max-width: 100%; max-height: 300px; display: none; object-fit: contain; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); }
+
+
 
 

@@ -49,7 +49,7 @@
         <!-- Login Section -->
         <section id="login-section" class="login-card">
             <h2>ACCESSO PR</h2>
-            <div class="form-group" style="margin-bottom: 1.5rem;">
+            <div class="form-group mb-1-5">
                 <input type="password" id="pr-code" placeholder="CODICE PR" required>
             </div>
             <button id="login-btn" class="submit-btn">ACCEDI</button>
@@ -57,10 +57,10 @@
         </section>
 
         <!-- Dashboard Section -->
-        <section id="dashboard-section" class="fade-in stagger-1" style="display: none; width: 100%;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem;">
-                <h2 id="pr-welcome" class="event-card-title" style="margin: 0; font-size: 1.2rem;">DASHBOARD PR</h2>
-                <button id="logout-btn" class="submit-btn" style="margin: 0; padding: 0.5rem 1rem; border-color: rgba(255, 50, 50, 0.4); color: rgba(255, 100, 100, 0.8); font-size: 0.7rem;">ESCI</button>
+        <section id="dashboard-section" class="fade-in stagger-1 hidden w-100">
+            <div class="flex-row-between border-bottom mb-2">
+                <h2 id="pr-welcome" class="event-card-title text-lg no-margin">DASHBOARD PR</h2>
+                <button id="logout-btn" class="submit-btn btn-danger no-margin text-xs">ESCI</button>
             </div>
             <div class="dashboard-grid">
                 <div class="kpi-box">
@@ -77,30 +77,30 @@
                 </div>
             </div>
 
-            <div class="event-card-item" style="opacity: 1; transform: none; padding: 2rem; text-align: center;">
-                <h3 style="font-size: 0.8rem; margin-bottom: 1.5rem; letter-spacing: 1px; color: rgba(255,255,255,0.7); font-family: 'Space Mono', monospace;">IL TUO LINK DI INVITO</h3>
-                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-                    <input type="text" id="invite-link" readonly style="flex-grow: 1; text-align: center;">
-                    <button id="copy-btn" class="submit-btn" style="margin: 0; padding: 0 2rem; flex-shrink: 0;">COPIA</button>
+            <div class="event-card-item text-center">
+                <h3 class="text-sm tracking-wide opacity-70 font-mono mb-1-5">IL TUO LINK DI INVITO</h3>
+                <div class="flex-row-center">
+                    <input type="text" id="invite-link" readonly class="text-center flex-1">
+                    <button id="copy-btn" class="submit-btn no-margin">COPIA</button>
                 </div>
             </div>
 
             <!-- PR Guests List Section -->
-            <div class="event-card-item" style="opacity: 1; transform: none; padding: 2rem; text-align: left; margin-top: 2rem;">
-                <h3 style="font-size: 0.8rem; margin-bottom: 1.5rem; letter-spacing: 1px; color: rgba(255,255,255,0.7); font-family: 'Space Mono', monospace;">ISCRITTI ASSOCIATI</h3>
+            <div class="event-card-item text-left mt-2">
+                <h3 class="text-sm tracking-wide opacity-70 font-mono mb-1-5">ISCRITTI ASSOCIATI</h3>
                 <div class="table-responsive">
-                    <table class="users-table" style="width: 100%;">
+                    <table class="submit-btn w-100">
                         <thead>
                             <tr>
-                                <th data-sort="name" style="width: 35%; cursor: pointer; user-select: none;">NOME</th>
-                                <th data-sort="email" style="width: 20%; cursor: pointer; user-select: none;">EMAIL</th>
-                                <th data-sort="eventId" style="width: 20%; cursor: pointer; user-select: none;">EVENTO</th>
-                                <th style="width: 12%; text-align: center;">TICKET</th>
-                                <th data-sort="checked_in" style="width: 13%; text-align: center; cursor: pointer; user-select: none;">INGRESSO</th>
+                                <th data-sort="name" class="col-name cursor-pointer">NOME</th>
+                                <th data-sort="email" class="col-email cursor-pointer">EMAIL</th>
+                                <th data-sort="eventId" class="col-email cursor-pointer">EVENTO</th>
+                                <th class="col-ticket text-center">TICKET</th>
+                                <th data-sort="checked_in">INGRESSO</th>
                             </tr>
                         </thead>
                         <tbody id="pr-guests-tbody">
-                            <tr><td colspan="5" style="text-align: center;">Caricamento iscritti...</td></tr>
+                            <tr><td colspan="5" class="text-center">Caricamento iscritti...</td></tr>
                         </tbody>
                     </table>
                 </div>

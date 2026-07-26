@@ -51,7 +51,7 @@
         <!-- Login Section -->
         <section id="login-section" class="login-card">
             <h2>ACCESSO SCANNER</h2>
-            <div class="form-group" style="margin-bottom: 1.5rem;">
+            <div class="form-group mb-1-5">
                 <input type="password" id="scanner-password" placeholder="PASSWORD" required>
             </div>
             <button id="login-btn" class="submit-btn" aria-label="Accedi allo scanner">ACCEDI</button>
@@ -59,13 +59,13 @@
         </section>
 
         <!-- Scanner Section -->
-        <section id="scanner-section" class="fade-in stagger-1" style="display: none; width: 100%; max-width: 600px; margin: 0 auto;">
-            <div class="event-card-item" style="opacity: 1; transform: none; padding: 2rem;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
-                    <h2 class="event-card-title" style="font-size: 1.2rem; margin: 0;">SCANNER QR</h2>
-                    <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
-                        <div id="live-counter" style="font-size: 0.9rem; font-weight: bold; color: rgba(255,255,255,0.8); border: 1px solid rgba(255,255,255,0.2); padding: 0.5rem 1rem; background: rgba(255,255,255,0.05); border-radius: 4px; font-family: 'Space Mono', monospace;">INGRESSI: -- / --</div>
-                        <button id="logout-btn" class="submit-btn" style="padding: 0.5rem 1rem; margin: 0; min-height: unset; height: auto; font-size: 0.8rem; background: transparent; border-color: rgba(255, 50, 50, 0.4); color: rgba(255, 100, 100, 0.8);">ESCI</button>
+        <section id="scanner-section" class="fade-in stagger-1 hidden w-100">
+            <div class="event-card-item">
+                <div class="flex-row-between mb-1-5">
+                    <h2 class="event-card-title text-lg no-margin">SCANNER QR</h2>
+                    <div class="flex-row-center">
+                        <div id="live-counter" class="live-counter-box text-sm font-bold opacity-70 font-mono">INGRESSI: -- / --</div>
+                        <button id="logout-btn" class="submit-btn btn-danger no-margin text-sm bg-transparent">ESCI</button>
                     </div>
                 </div>
                 
@@ -74,7 +74,7 @@
                 <div id="status-box" class="status-box">
                     <h3 id="status-title">STATUS</h3>
                     <div id="status-details" class="user-details"></div>
-                    <button id="next-scan-btn" class="submit-btn" style="margin-top: 1.5rem; width: 100%;">PROSSIMO BIGLIETTO</button>
+                    <button id="next-scan-btn" class="submit-btn mt-1-5 w-100">PROSSIMO BIGLIETTO</button>
                 </div>
             </div>
         </section>
