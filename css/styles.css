@@ -1223,12 +1223,20 @@ input::placeholder {
 .site-footer {
     position: relative;
     width: 100%;
-    padding: 3rem 10vw;
+    padding: 2.5rem 10vw;
     background: transparent;
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 10;
+    z-index: 100;
+    box-sizing: border-box;
+}
+
+.hero-fullscreen .site-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
 }
 
 .site-footer .social-bottom {
@@ -1243,16 +1251,24 @@ input::placeholder {
     left: 10vw;
     top: 50%;
     transform: translateY(-50%);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.4);
+    letter-spacing: 0.1em;
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 @media (max-width: 768px) {
     .site-footer {
         flex-direction: column;
-        gap: 2.5rem;
-        padding: 3rem 1.5rem 4vh 1.5rem;
+        gap: 1.25rem;
+        padding: 1.5rem 1.2rem;
     }
     .site-footer .copyright-bottom-left {
         position: static;
+        transform: none;
         text-align: center;
         font-size: 0.55rem;
     }
@@ -1896,34 +1912,10 @@ input::placeholder {
     -webkit-user-select: none;
 }
 
-.social-bottom {
-    position: absolute;
-    bottom: 3.5vh;
-    left: 0;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    z-index: 100;
-}
-
 .social-icons {
     display: flex;
     gap: 1.5rem;
     align-items: center;
-}
-
-.copyright-bottom-left {
-    position: absolute;
-    bottom: 3.5vh;
-    left: 10vw;
-    font-family: 'Space Mono', monospace;
-    font-size: 0.65rem;
-    color: rgba(255, 255, 255, 0.2);
-    letter-spacing: 0.1em;
-    z-index: 100;
-    pointer-events: none;
-    user-select: none;
-    -webkit-user-select: none;
 }
 
 #staff-btn {
@@ -1965,23 +1957,12 @@ input::placeholder {
 }
 
 @media (max-width: 1050px) {
-    .hero-fullscreen .social-bottom {
-        bottom: 6vh;
-    }
     .social-icons {
         gap: 1rem;
         flex-wrap: wrap;
         justify-content: center;
         padding: 0 1rem;
     }
-    .hero-fullscreen .copyright-bottom-left {
-        left: 0;
-        width: 100%;
-        text-align: center;
-        bottom: 2vh;
-        font-size: 0.55rem;
-    }
-
 }
 
 @media (max-width: 768px) {
