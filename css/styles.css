@@ -24,12 +24,36 @@
     --radius-sm: 4px;
     --radius-md: 8px;
     --radius-lg: 12px;
+    --btn-height: 48px;
 }
 
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+button,
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+.submit-btn,
+.btn-secondary,
+.btn-danger,
+.btn-success,
+.event-card-btn,
+.custom-modal-btn,
+.nav-right button {
+    height: var(--btn-height, 48px) !important;
+    min-height: var(--btn-height, 48px) !important;
+    max-height: var(--btn-height, 48px) !important;
+    box-sizing: border-box !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    line-height: 1 !important;
 }
 
 html, body {
@@ -145,8 +169,14 @@ input::placeholder {
 }
 
 .submit-btn {
-    display: inline-block;
-    padding: 1rem 2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: var(--btn-height, 48px);
+    min-height: var(--btn-height, 48px);
+    max-height: var(--btn-height, 48px);
+    padding: 0 1.5rem;
+    line-height: 1;
     border: 1px solid rgba(255, 255, 255, 0.2);
     background: transparent;
     color: rgba(255, 255, 255, 0.7);
@@ -162,6 +192,7 @@ input::placeholder {
     transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
     position: relative;
     overflow: hidden;
+    box-sizing: border-box;
 }
 
 .submit-btn::before {
