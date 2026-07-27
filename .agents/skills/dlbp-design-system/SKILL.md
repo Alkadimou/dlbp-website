@@ -124,4 +124,11 @@ Va consultata e applicata integralmente ogni volta che viene richiesta una modif
 - **Uso Classi Atomiche**: Usare solo classi da `css/styles.css` (`.mb-1`, `.mb-2`, `.text-xs`, `.text-xl`, `.font-mono`, `.w-100`, `.flex-1`, ecc.).
 - **Gestione Visibilità JS**: Mostrare/nascondere elementi **esclusivamente** con `.classList.add("hidden")` e `.classList.remove("hidden")`.
 - **Regola `.hidden`**: La classe `.hidden` possiede `display: none !important;` per garantire un cambio di stato infallibile.
-- **Parametro Versione**: Mantenere `href="css/styles.css?v=2"` per il bypass della cache.
+- **Parametro Versione**: Mantenere `href="css/styles.css?v=10"` per il bypass della cache.
+
+---
+
+## 🧪 12. Collaudo Empirico Tassativo tramite Emulatore Browser (Playwright)
+- **Verifica e Test Autonomi Obbligatori**: Per **ogni singola modifica estetica, di layout, di footer, di header o di ridimensionamento mobile**, è **tassativamente obbligatorio** eseguire test con l'emulatore browser (Playwright Headless Chromium) e uno script di misurazione numerica delle coordinate/bounding box ($X, Y, width, height$).
+- **Iterazione all'Infinito fino al Goal**: L'agente DEVE eseguire i test dell'emulatore browser in autonomia, analizzare le discrepanze numeriche o i difetti visivi ed applicare correzioni successive in un ciclo continuo ("loop di correzione autonoma") fino al completo e perfetto raggiungimento del goal senza fermarsi a stime approssimative.
+

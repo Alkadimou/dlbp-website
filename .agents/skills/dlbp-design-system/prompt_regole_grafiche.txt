@@ -60,5 +60,9 @@ SYSTEM PROMPT & REGOLE GRAFICHE PERMANENTI DI COMPOSIZIONE SITO DLBP.ART
    - Usare esclusivamente classi atomiche (.mb-1-5, .text-xs, .font-mono, .w-100, .no-margin, .flex-1).
    - Mostrare/nascondere elementi ESCLUSIVAMENTE tramite .classList.add("hidden") e .classList.remove("hidden").
    - La classe .hidden in CSS ha sempre display: none !important;.
-   - Mantenere href="css/styles.css?v=2" per il bypass della cache.
+   - Mantenere href="css/styles.css?v=10" per il bypass della cache.
+
+12. COLLAUDO EMPIRICO TASSATIVO TRAMITE EMULATORE BROWSER (PLAYWRIGHT)
+   - Per ogni singola modifica estetica, di layout, di footer, di header o di ridimensionamento mobile, è tassativamente obbligatorio eseguire test con l'emulatore browser (Playwright Headless Chromium) e uno script di misurazione numerica delle coordinate ($X, Y, width, height$).
+   - L'agente DEVE eseguire i test dell'emulatore browser in autonomia, analizzare le discrepanze numeriche o i difetti visivi ed applicare correzioni successive in un ciclo continuo ("loop di correzione autonoma") fino al completo e perfetto raggiungimento del goal senza fermarsi a stime approssimative.
 ==============================================================================
