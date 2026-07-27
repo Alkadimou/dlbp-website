@@ -1223,7 +1223,7 @@ input::placeholder {
 .site-footer {
     position: relative;
     width: 100%;
-    padding: 2.5rem 10vw;
+    padding: 1.2rem 10vw;
     background: transparent;
     display: flex;
     justify-content: center;
@@ -1263,8 +1263,8 @@ input::placeholder {
 @media (max-width: 768px) {
     .site-footer {
         flex-direction: column;
-        gap: 1.25rem;
-        padding: 1.5rem 1.2rem;
+        gap: 1rem;
+        padding: 1rem 1.2rem;
     }
     .site-footer .copyright-bottom-left {
         position: static;
