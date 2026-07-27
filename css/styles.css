@@ -1898,7 +1898,7 @@ input::placeholder {
 
 .social-bottom {
     position: absolute;
-    bottom: 5vh;
+    bottom: 3.5vh;
     left: 0;
     width: 100%;
     display: flex;
@@ -1914,7 +1914,7 @@ input::placeholder {
 
 .copyright-bottom-left {
     position: absolute;
-    bottom: 5vh;
+    bottom: 3.5vh;
     left: 10vw;
     font-family: 'Space Mono', monospace;
     font-size: 0.65rem;
@@ -1966,7 +1966,7 @@ input::placeholder {
 
 @media (max-width: 1050px) {
     .hero-fullscreen .social-bottom {
-        bottom: 10vh;
+        bottom: 6vh;
     }
     .social-icons {
         gap: 1rem;
@@ -1978,7 +1978,7 @@ input::placeholder {
         left: 0;
         width: 100%;
         text-align: center;
-        bottom: 4vh;
+        bottom: 2vh;
         font-size: 0.55rem;
     }
 
