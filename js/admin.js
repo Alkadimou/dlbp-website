@@ -717,7 +717,7 @@ document.addEventListener("DOMContentLoaded", () => {
             } catch (error) {
                 console.error("Errore durante l'eliminazione:", error);
                 showModal("Si è verificato un errore durante l'eliminazione.");
-                deleteEventBtn.textContent = "ELIMINA EVENTO";
+                deleteEventBtn.textContent = "ELIMINA";
                 deleteEventBtn.disabled = false;
             }
         });
