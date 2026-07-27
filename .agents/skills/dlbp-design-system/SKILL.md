@@ -132,3 +132,10 @@ Va consultata e applicata integralmente ogni volta che viene richiesta una modif
 - **Verifica e Test Autonomi Obbligatori**: Per **ogni singola modifica estetica, di layout, di footer, di header o di ridimensionamento mobile**, è **tassativamente obbligatorio** eseguire test con l'emulatore browser (Playwright Headless Chromium) e uno script di misurazione numerica delle coordinate/bounding box ($X, Y, width, height$).
 - **Iterazione all'Infinito fino al Goal**: L'agente DEVE eseguire i test dell'emulatore browser in autonomia, analizzare le discrepanze numeriche o i difetti visivi ed applicare correzioni successive in un ciclo continuo ("loop di correzione autonoma") fino al completo e perfetto raggiungimento del goal senza fermarsi a stime approssimative.
 
+---
+
+## 🧠 13. Auto-Aggiornamento Dinamico delle Skill & Prevenzione Errori (TASSATIVO)
+- **Evoluzione Continua del Design System**: Ad ogni nuova modifica, soluzione di bug, decisione architetturale o introduzione di pattern (es. dipendenze CDN come FontAwesome, layout Flexbox unificati, gestione altezze bottoni a `48px`, `table-responsive`, bypass cache `?v=N`), l'agente **DEVE aggiornare ed espandere automaticamente** sia `SKILL.md` che `prompt_regole_grafiche.txt`.
+- **Prevenzione Errore & Contratto tra Pagine**: Ogni nuova regola o funzione aggiunta deve essere codificata per impedire errori futuri e garantire che TUTTE le 6 pagine del sito (`index.html`, `eventi.html`, `admin.html`, `pr.html`, `scanner.html`, `event.html`) mantengano una **totale ed infrangibile coerenza stilistica, logica di sviluppo e zero-regressione**.
+
+
