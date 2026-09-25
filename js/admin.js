@@ -1,6 +1,6 @@
 import { showModal, showConfirm } from './utils.js';
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, setDoc, getDoc, query, deleteDoc, updateDoc, where, addDoc, writeBatch, onSnapshot, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, getDocs, doc, setDoc, getDoc, query, deleteDoc, updateDoc, where, addDoc, writeBatch, onSnapshot, orderBy, getCountFromServer } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 // TODO: Replace with your actual Firebase config
@@ -1346,6 +1346,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const prTableBody = document.getElementById('pr-table-body');
     let unsubPrs = null;
 
+    // Refuse to turn an existing admin/scanner account into a PR (it would lose its role)
+    async function emailHasOtherRole(email) {
+        const staffSnap = await getDoc(doc(db, "staff", email));
+        return staffSnap.exists() && staffSnap.data().role !== "pr";
+    }
+
     addPrBtn.addEventListener('click', async () => {
         const name = prNameInput.value.trim();
         const code = prCodeInput.value.trim().toLowerCase();
@@ -1357,6 +1363,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
+            if (await emailHasOtherRole(email)) {
+                showModal("Questa email appartiene già a un account admin o scanner.");
+                return;
+            }
             // The PR entry and its login role (/staff/{email}) are written together
             const batch = writeBatch(db);
             batch.set(doc(collection(db, "prs")), {
@@ -1419,12 +1429,41 @@ document.addEventListener("DOMContentLoaded", () => {
                     <td data-label="CODICE / LINK"><span class="truncate-mobile" style="color:var(--accent-color);">${escapeHtml(prCode)}</span><br><small style="color:#666;">${escapeHtml(link)}</small></td>
                     <td data-label="STATO"><span class="truncate-mobile">${pr.isActive ? '<span style="color:var(--success-color);">ATTIVO</span>' : '<span style="color:var(--error-color);">DISABILITATO</span>'}</span></td>
                     <td data-label="AZIONI" style="text-align: right;">
+                        ${prEmail ? '' : `<button class="submit-btn link-pr-btn" data-id="${prId}" data-code="${escapeHtml(prCode)}" style="padding: 0.3rem 0.6rem; font-size: 0.8rem; min-width: unset; margin: 0 0.3rem 0 0;">COLLEGA EMAIL</button>`}
                         <button class="submit-btn delete-pr-btn" data-id="${prId}" data-email="${escapeHtml(prEmail)}" style="padding: 0.3rem 0.6rem; background: var(--error-color); border: none; font-size: 0.8rem; min-width: unset; margin: 0;">ELIMINA</button>
                     </td>
                 `;
                 fragment.appendChild(tr);
             });
             prTableBody.appendChild(fragment);
+
+            // PRs created before staff login have no email: link one to give them access
+            document.querySelectorAll('.link-pr-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const id = e.target.getAttribute('data-id');
+                    const code = e.target.getAttribute('data-code');
+                    const input = prompt(`Email di accesso del PR "${code}":`);
+                    if (input === null) return;
+                    const email = input.trim().toLowerCase();
+                    if (!/^[^@ ]+@[^@ ]+[.][^@ ]+$/.test(email)) {
+                        showModal("Email non valida.");
+                        return;
+                    }
+                    try {
+                        if (await emailHasOtherRole(email)) {
+                            showModal("Questa email appartiene già a un account admin o scanner.");
+                            return;
+                        }
+                        const batch = writeBatch(db);
+                        batch.update(doc(db, "prs", id), { email: email });
+                        batch.set(doc(db, "staff", email), { role: "pr", prCode: code });
+                        await batch.commit();
+                    } catch (error) {
+                        console.error("Errore collegamento email PR:", error);
+                        showModal("Impossibile collegare l'email al PR.");
+                    }
+                });
+            });
 
             document.querySelectorAll('.delete-pr-btn').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
