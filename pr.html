@@ -51,7 +51,10 @@
         <section id="login-section" class="login-card">
             <h2>ACCESSO PR</h2>
             <div class="form-group mb-1-5">
-                <input type="password" id="pr-code" placeholder="CODICE PR" required>
+                <input type="email" id="pr-email" placeholder="EMAIL" required>
+            </div>
+            <div class="form-group mb-1-5">
+                <input type="password" id="pr-password" placeholder="PASSWORD" required>
             </div>
             <button id="login-btn" class="submit-btn">ACCEDI</button>
             <div id="login-message" class="form-message hidden"></div>
@@ -143,6 +146,6 @@
             });
         }
     </script>
-    <script type="module" src="js/pr.js"></script>
+    <script type="module" src="js/pr.js?v=2"></script>
 </body>
 </html>
