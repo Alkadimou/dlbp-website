@@ -1,3 +1,4 @@
+import os
 from playwright.sync_api import sync_playwright
 
 def test_admin_counter():
@@ -14,8 +15,9 @@ def test_admin_counter():
         page.goto("http://127.0.0.1:8080/admin.html")
 
         print("Filling admin login...")
-        page.fill("#admin-email", "admin@dlbp.it")
-        page.fill("#admin-password", "admin2024!")
+        # Credentials of an admin account (never commit them)
+        page.fill("#admin-email", os.environ["DLBP_ADMIN_EMAIL"])
+        page.fill("#admin-password", os.environ["DLBP_ADMIN_PASSWORD"])
         page.click("#login-btn")
 
         print("Waiting 3s for Firebase data to load...")

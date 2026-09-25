@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const gateMessage = document.getElementById("gate-message");
     const publicEventHeader = document.getElementById("public-event-header");
 
-    const PUBLIC_GATE_HASH = "c696c0a9f8d1a373840f501af566265e1fc09e1aaba4acbbee87c0c4b0312523"; // theprodigy
+    const PUBLIC_GATE_HASH = "c696c0a9f8d1a373840f501af566265e1fc09e1aaba4acbbee87c0c4b0312523";
     let currentEventId = "act_1"; // Default fallback
     let currentEventName = "";
     let currentEventPassword = "";
