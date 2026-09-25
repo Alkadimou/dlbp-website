@@ -45,6 +45,7 @@ def test_admin():
         page.evaluate("""
             document.getElementById('pr-name-input').value = 'Test PR';
             document.getElementById('pr-code-input').value = 'testpr123';
+            document.getElementById('pr-email-input').value = 'testpr123@example.com';
             document.getElementById('add-pr-btn').click();
         """)
 

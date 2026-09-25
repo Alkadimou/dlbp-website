@@ -870,6 +870,21 @@ document.addEventListener("DOMContentLoaded", () => {
     if (auth) {
         onAuthStateChanged(auth, async (user) => {
             if (user) {
+                // Only accounts with role "admin" in /staff/{email} may use the dashboard
+                let role = null;
+                try {
+                    const staffSnap = await getDoc(doc(db, "staff", user.email.toLowerCase()));
+                    role = staffSnap.exists() ? staffSnap.data().role : null;
+                } catch (error) {
+                    console.error("Error checking staff role:", error);
+                }
+                if (role !== "admin") {
+                    await signOut(auth);
+                    loginMessage.textContent = "Account non abilitato al pannello admin.";
+                    loginMessage.className = "form-message error";
+                    loginMessage.classList.remove("hidden");
+                    return;
+                }
                 loginSection.classList.add("hidden");
                 dashboardSection.classList.remove("hidden");
                 document.getElementById("app-main").style.maxWidth = "1200px";
@@ -1327,27 +1342,35 @@ document.addEventListener("DOMContentLoaded", () => {
     const addPrBtn = document.getElementById('add-pr-btn');
     const prNameInput = document.getElementById('pr-name-input');
     const prCodeInput = document.getElementById('pr-code-input');
+    const prEmailInput = document.getElementById('pr-email-input');
     const prTableBody = document.getElementById('pr-table-body');
     let unsubPrs = null;
 
     addPrBtn.addEventListener('click', async () => {
         const name = prNameInput.value.trim();
         const code = prCodeInput.value.trim().toLowerCase();
+        const email = prEmailInput.value.trim().toLowerCase();
         
-        if (!name || !code) {
-            showModal("Inserisci sia Nome che Codice.");
+        if (!name || !code || !email) {
+            showModal("Inserisci Nome, Codice ed Email.");
             return;
         }
 
         try {
-            await addDoc(collection(db, "prs"), {
+            // The PR entry and its login role (/staff/{email}) are written together
+            const batch = writeBatch(db);
+            batch.set(doc(collection(db, "prs")), {
                 name: name,
                 code: code,
+                email: email,
                 isActive: true,
                 createdAt: new Date()
             });
+            batch.set(doc(db, "staff", email), { role: "pr", prCode: code });
+            await batch.commit();
             prNameInput.value = '';
             prCodeInput.value = '';
+            prEmailInput.value = '';
         } catch (error) {
             console.error("Error adding PR:", error);
             showModal("Errore nell'aggiunta del PR.");
@@ -1387,15 +1410,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 const prId = pr.id;
                 const prCode = pr.code || "";
                 const prName = pr.name || "";
+                const prEmail = pr.email || "";
                 const link = `?pr=${prCode}`;
                 
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td data-label="NOME" title="${escapeHtml(prName)}"><span class="truncate-mobile">${escapeHtml(prName)}</span></td>
+                    <td data-label="NOME" title="${escapeHtml(prName)}"><span class="truncate-mobile">${escapeHtml(prName)}</span>${prEmail ? `<br><small style="color:#666;">${escapeHtml(prEmail)}</small>` : ''}</td>
                     <td data-label="CODICE / LINK"><span class="truncate-mobile" style="color:var(--accent-color);">${escapeHtml(prCode)}</span><br><small style="color:#666;">${escapeHtml(link)}</small></td>
                     <td data-label="STATO"><span class="truncate-mobile">${pr.isActive ? '<span style="color:var(--success-color);">ATTIVO</span>' : '<span style="color:var(--error-color);">DISABILITATO</span>'}</span></td>
                     <td data-label="AZIONI" style="text-align: right;">
-                        <button class="submit-btn delete-pr-btn" data-id="${prId}" style="padding: 0.3rem 0.6rem; background: var(--error-color); border: none; font-size: 0.8rem; min-width: unset; margin: 0;">ELIMINA</button>
+                        <button class="submit-btn delete-pr-btn" data-id="${prId}" data-email="${escapeHtml(prEmail)}" style="padding: 0.3rem 0.6rem; background: var(--error-color); border: none; font-size: 0.8rem; min-width: unset; margin: 0;">ELIMINA</button>
                     </td>
                 `;
                 fragment.appendChild(tr);
@@ -1405,9 +1429,14 @@ document.addEventListener("DOMContentLoaded", () => {
             document.querySelectorAll('.delete-pr-btn').forEach(btn => {
                 btn.addEventListener('click', async (e) => {
                     const id = e.target.getAttribute('data-id');
+                    const email = e.target.getAttribute('data-email');
                     if (await showConfirm("Vuoi davvero eliminare questo PR?")) {
                         try {
-                            await deleteDoc(doc(db, "prs", id));
+                            // Also revoke the PR's login role
+                            const batch = writeBatch(db);
+                            batch.delete(doc(db, "prs", id));
+                            if (email) batch.delete(doc(db, "staff", email));
+                            await batch.commit();
                         } catch (error) {
                             console.error("Errore eliminazione PR:", error);
                             showModal("Impossibile eliminare il PR.");

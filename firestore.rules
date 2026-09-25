@@ -2,24 +2,56 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Only admins can create accounts (public sign-up is disabled in Firebase Auth),
-    // so any signed-in user is staff.
-    function isStaff() {
-      return request.auth != null;
+    // Staff roles live in /staff/{email} (lowercased email as document ID):
+    //   { role: "admin" | "scanner" | "pr", prCode: "<code>" (pr only) }
+    // Accounts are created only by the admin in the Firebase Console
+    // (public sign-up is disabled), so the token email is trusted.
+    function staffPath() {
+      return /databases/$(database)/documents/staff/$(request.auth.token.email.lower());
     }
 
-    // Events: public read, write requires authentication
+    function isStaff() {
+      return request.auth != null && request.auth.token.email is string && exists(staffPath());
+    }
+
+    function hasRole(role) {
+      return isStaff() && get(staffPath()).data.role == role;
+    }
+
+    function isAdmin() {
+      return hasRole('admin');
+    }
+
+    function isScanner() {
+      return hasRole('scanner');
+    }
+
+    // A PR may only see guests who registered with their own code
+    function isPrFor(code) {
+      return hasRole('pr') && get(staffPath()).data.prCode == code;
+    }
+
+    // Staff: each account can read its own role, only admins manage roles
+    match /staff/{email} {
+      allow read: if isAdmin() || (request.auth != null && request.auth.token.email is string
+                                   && request.auth.token.email.lower() == email);
+      allow write: if isAdmin();
+    }
+
+    // Events: public read, write by admins
     match /events/{eventId} {
       allow read: if true;
-      allow write: if isStaff();
+      allow write: if isAdmin();
     }
 
     // Registrations:
     // - Public creation (guestlist registration on site), with validated fields
-    // - Read, update, and delete require staff authentication
+    // - Admins: full access. Scanner: read and check-in only. PR: read own guests only.
     match /registrations/{regId} {
-      allow create: if isStaff() || isValidRegistration(request.resource.data);
-      allow read, update, delete: if isStaff();
+      allow create: if isAdmin() || isValidRegistration(request.resource.data);
+      allow read: if isAdmin() || isScanner() || isPrFor(resource.data.invited_by);
+      allow update: if isAdmin() || (isScanner() && isCheckIn());
+      allow delete: if isAdmin();
     }
 
     function isValidRegistration(data) {
@@ -38,15 +70,23 @@ service cloud.firestore {
         && data.timestamp == request.time;
     }
 
-    // PRs: staff only (PR codes must not be publicly listable)
+    // Scanner may only flip checked_in to true and set the check-in time
+    function isCheckIn() {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['checked_in', 'check_in_time'])
+        && resource.data.checked_in != true
+        && request.resource.data.checked_in == true;
+    }
+
+    // PRs: admins manage them, a PR can read their own entry
     match /prs/{prId} {
-      allow read, write: if isStaff();
+      allow read: if isAdmin() || isPrFor(resource.data.code);
+      allow write: if isAdmin();
     }
 
     // Legacy global settings (registration open/closed)
     match /settings/{docId} {
       allow read: if true;
-      allow write: if isStaff();
+      allow write: if isAdmin();
     }
   }
 }
