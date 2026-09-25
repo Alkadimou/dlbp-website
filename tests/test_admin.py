@@ -1,3 +1,4 @@
+import os
 from playwright.sync_api import sync_playwright
 
 def test_admin():
@@ -16,7 +17,9 @@ def test_admin():
         page.goto("http://127.0.0.1:8080/admin.html")
 
         print("Filling login...")
-        page.fill("#admin-password", "Admin2024!")
+        # Credentials of an admin account (never commit them)
+        page.fill("#admin-email", os.environ["DLBP_ADMIN_EMAIL"])
+        page.fill("#admin-password", os.environ["DLBP_ADMIN_PASSWORD"])
         page.click("#login-btn")
 
         print("Waiting 3s for login...")
