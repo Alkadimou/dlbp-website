@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, addDoc, serverTimestamp, doc, getDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, serverTimestamp, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 // TODO: Replace with your actual Firebase configuration from the Firebase Console
 const firebaseConfig = {
@@ -159,6 +159,14 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // Deterministic registration ID: event ID + first 32 hex chars of SHA-256(lowercased email).
+    async function registrationId(eventId, email) {
+        const data = new TextEncoder().encode(email.trim().toLowerCase());
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hex = Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+        return `${eventId}_${hex.slice(0, 32)}`;
+    }
+
     // No sessionStorage used: password must be entered on every reload.
 
     gateBtn.addEventListener("click", async () => {
@@ -229,6 +237,12 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
+        // Same limits as isValidRegistration() in firestore.rules
+        if (name.length > 100 || email.length > 254 || !/^[^@ ]+@[^@ ]+[.][^@ ]+$/.test(email)) {
+            showMessage("Controlla nome ed email.", "error");
+            return;
+        }
+
         // UI Loading state
         submitBtn.disabled = true;
         btnText.textContent = "IN ELABORAZIONE...";
@@ -236,28 +250,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
         try {
             if (db) {
-                // Anti-spam check
-                const q = query(collection(db, "registrations"), where("email", "==", email), where("eventId", "==", currentEventId));
-                const querySnapshot = await getDocs(q);
-                if (!querySnapshot.empty) {
+                // Anti-spam check: one registration per email per event.
+                // The doc ID is derived from event + email, and the rules only allow
+                // the public to create (not overwrite), so a duplicate is rejected
+                // without the public ever reading the guest list.
+                const regId = await registrationId(currentEventId, email);
+                try {
+                    await setDoc(doc(db, "registrations", regId), {
+                        name: name,
+                        email: email,
+                        eventId: currentEventId,
+                        invited_by: prCode ? prCode.slice(0, 50) : null, // Track PR referrals
+                        checked_in: false, // New field for QR code system
+                        status: "approved", // Automatically approved
+                        email_sent: false, // Track if secret location was sent
+                        privacy_consent: privacyConsent, // Privacy consent flag
+                        timestamp: serverTimestamp()
+                    });
+                } catch (writeError) {
+                    if (writeError.code !== "permission-denied") throw writeError;
                     showMessage("Questa email risulta già in lista per l'evento.", "error");
                     submitBtn.disabled = false;
                     btnText.textContent = "RICHIEDI ACCESSO";
                     return;
                 }
-
-                // Actual Firebase write
-                await addDoc(collection(db, "registrations"), {
-                    name: name,
-                    email: email,
-                    eventId: currentEventId,
-                    invited_by: prCode, // Track PR referrals
-                    checked_in: false, // New field for QR code system
-                    status: "approved", // Automatically approved
-                    email_sent: false, // Track if secret location was sent
-                    privacy_consent: privacyConsent, // Privacy consent flag
-                    timestamp: serverTimestamp()
-                });
             } else {
                 // Simulated delay if Firebase is not yet configured
                 await new Promise(resolve => setTimeout(resolve, 1500));

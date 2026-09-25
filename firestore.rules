@@ -2,24 +2,51 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Events collection: public read, write requires authentication
+    // Only admins can create accounts (public sign-up is disabled in Firebase Auth),
+    // so any signed-in user is staff.
+    function isStaff() {
+      return request.auth != null;
+    }
+
+    // Events: public read, write requires authentication
     match /events/{eventId} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if isStaff();
     }
 
-    // Registrations collection:
-    // - Public creation (guestlist registration on site)
-    // - Read, update, and delete require staff/admin authentication
+    // Registrations:
+    // - Public creation (guestlist registration on site), with validated fields
+    // - Read, update, and delete require staff authentication
     match /registrations/{regId} {
-      allow create: if true;
-      allow read, update, delete: if request.auth != null;
+      allow create: if isStaff() || isValidRegistration(request.resource.data);
+      allow read, update, delete: if isStaff();
     }
 
-    // PRs collection: public read, write requires authentication
+    function isValidRegistration(data) {
+      return data.keys().hasOnly(['name', 'email', 'eventId', 'invited_by', 'checked_in',
+                                  'status', 'email_sent', 'privacy_consent', 'timestamp'])
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 100
+        && data.email is string && data.email.size() <= 254
+        && data.email.matches('^[^@ ]+@[^@ ]+[.][^@ ]+$')
+        && data.eventId is string
+        && exists(/databases/$(database)/documents/events/$(data.eventId))
+        && (data.invited_by == null || (data.invited_by is string && data.invited_by.size() <= 50))
+        && data.checked_in == false
+        && data.status == 'approved'
+        && data.email_sent == false
+        && data.privacy_consent == true
+        && data.timestamp == request.time;
+    }
+
+    // PRs: staff only (PR codes must not be publicly listable)
     match /prs/{prId} {
+      allow read, write: if isStaff();
+    }
+
+    // Legacy global settings (registration open/closed)
+    match /settings/{docId} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if isStaff();
     }
   }
 }
