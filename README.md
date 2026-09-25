@@ -13,11 +13,10 @@ L'infrastruttura è stata costruita per essere veloce, gratuita, sicura e dal de
 ## Riepilogo degli Asset Creati
 *   `index.html`: Landing page pubblica per la registrazione.
 *   `admin.html`: Pannello di controllo segreto.
-*   `styles.css`: Foglio di stile globale (Vanilla CSS) per l'estetica scura, minimale e reattiva.
-*   `app.js`: Logica client-side per inviare i dati a Firebase.
-*   `admin.js`: Logica del pannello admin per leggere da Firebase e comunicare con le API di EmailJS.
-*   `logo.jpg`: Il logo ufficiale integrato ovunque (sito ed email).
-*   `email_template.md`: Il codice sorgente del template email "brutalista".
+*   `css/styles.css`: Foglio di stile globale (Vanilla CSS) per l'estetica scura, minimale e reattiva.
+*   `js/app.js`: Logica client-side per inviare i dati a Firebase.
+*   `js/admin.js`: Logica del pannello admin per leggere da Firebase e comunicare con le API di EmailJS.
+*   `assets/logo.jpg`: Il logo ufficiale integrato ovunque (sito ed email).
 
 ## Prossimi Sviluppi Consigliati
 Se in futuro vorrai espandere il progetto, potremmo integrare:
