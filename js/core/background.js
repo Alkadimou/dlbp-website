@@ -10,7 +10,7 @@ const THREE_URL = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.mi
 
 export const MOODS = {
     strobo:   { word: 'drink',   hex: 0xff2a3c, deep: 0x4d0712 }, // rosso strobo
-    magenta:  { word: 'love',    hex: 0xa3245e, deep: 0x2e0719 }, // bordeaux UV
+    magenta:  { word: 'love',    hex: 0x8a2c80, deep: 0x250a24 }, // bordeaux violaceo
     breathe:  { word: 'breathe', hex: 0x1fa39a, deep: 0x062f35 }, // petrolio
     ghiaccio: { word: 'peace',   hex: 0xcfe6ff, deep: 0x34506e }  // ghiaccio, luce del mattino
 };
