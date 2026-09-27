@@ -760,6 +760,46 @@ html:has(.modal:not(.hidden)) {
     display: none;
 }
 
+/* ==================================================
+   VIDEO DI SFONDO (home, eventi, iscrizione)
+   ================================================== */
+.video-background {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+    /* Si vede finché il video non parte (o se il telefono blocca l'autoplay) */
+    background: #050508 url('../assets/bg-video-poster.jpg') center / cover no-repeat;
+}
+
+.video-background video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Velo scuro sopra il video, così testi e pulsanti restano leggibili */
+.video-background::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(5,5,8,0.72);
+}
+
+/* In home c'è poco testo: il video si vede di più */
+.hero-fullscreen .video-background::after {
+    background: linear-gradient(to bottom, rgba(5,5,8,0.45) 0%, rgba(5,5,8,0.8) 100%);
+}
+
+/* Chi ha chiesto meno animazioni vede solo il primo fotogramma */
+@media (prefers-reduced-motion: reduce) {
+    .video-background video {
+        display: none;
+    }
+}
+
 .blob {
     position: absolute;
     border-radius: 50%;
