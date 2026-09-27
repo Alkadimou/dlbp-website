@@ -70,11 +70,12 @@ service cloud.firestore {
         && data.timestamp == request.time;
     }
 
-    // Scanner may only flip checked_in to true and set the check-in time
+    // Scanner may only flip checked_in to true and set the check-in time (as a Firestore Timestamp)
     function isCheckIn() {
       return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['checked_in', 'check_in_time'])
         && resource.data.checked_in != true
-        && request.resource.data.checked_in == true;
+        && request.resource.data.checked_in == true
+        && request.resource.data.check_in_time is timestamp;
     }
 
     // PRs: admins manage them, a PR can read their own entry
