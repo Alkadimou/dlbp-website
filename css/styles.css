@@ -439,6 +439,9 @@ input::placeholder {
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 5vh 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
     z-index: 9999;
     opacity: 1;
     transition: opacity 0.3s ease;
@@ -2403,8 +2406,9 @@ html:has(.modal:not(.hidden)) {
     transition: background 0.2s ease, border-color 0.2s ease;
 }
 .modal .modal-close-btn:hover { background: rgba(255, 255, 255, 0.1) !important; border-color: rgba(255, 255, 255, 0.4); }
-.modal-large { max-width: 800px; max-height: 90vh; overflow-y: auto; overscroll-behavior: contain; }
-.modal-xl { max-width: 900px; max-height: 90vh; overflow-y: auto; overscroll-behavior: contain; }
+/* margin auto: centrata se entra nello schermo, altrimenti parte dall'alto e scorre lo sfondo */
+.modal-large { max-width: 800px; margin: auto; }
+.modal-xl { max-width: 900px; margin: auto; }
 .custom-input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.5rem; font-family: 'Space Mono', monospace; border-radius: 4px; outline: none; }
 .custom-select { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.15); color: #ffffff; padding: 0.6rem 2.5rem 0.6rem 1rem; font-family: var(--font-mono); font-size: 0.85rem; border-radius: var(--radius-md); outline: none; cursor: pointer; min-width: 0; max-width: 100%; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; box-sizing: border-box; transition: var(--transition-normal); appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.6)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; }
 .custom-select option { background: #0f0f19; color: #ffffff; }
