@@ -404,12 +404,12 @@ async function init() {
                 state.burstEnd = t + 460;
                 state.pending = ORDER[(ORDER.indexOf(state.mood) + 1) % ORDER.length];
                 state.swapAt = t + 170;
-                state.nextBurst = t + 2500 + Math.random() * 2500;
+                state.nextBurst = t + 2000 + Math.random() * 2000;
             } else {
                 state.power = 0.3 + Math.random() * 0.7;
                 state.burstEnd = t + 90 + Math.random() * 340;
                 // a volte un secondo colpo subito dopo, come un segnale che salta
-                state.nextBurst = Math.random() < 0.3 ? t + 420 : t + 2200 + Math.random() * 2600;
+                state.nextBurst = Math.random() < 0.3 ? t + 420 : t + 1800 + Math.random() * 2000;
             }
         }
         if (state.pending && t >= state.swapAt) {
