@@ -9,11 +9,11 @@
 const THREE_URL = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
 
 export const MOODS = {
-    drink:    { word: 'drink',   hex: 0xff6a2b, deep: 0xb3121f }, // brace
+    drink:    { word: 'drink',   hex: 0xc8642a, deep: 0x5a1a0c }, // rame
     strobo:   { word: 'drink',   hex: 0xff2a3c, deep: 0x4d0712 }, // rosso strobo
-    love:     { word: 'love',    hex: 0x9b4dff, deep: 0x3b1487 }, // viola elettrico
-    magenta:  { word: 'love',    hex: 0xe0338a, deep: 0x4a0a31 }, // magenta scuro, luce UV
-    breathe:  { word: 'breathe', hex: 0x36e0d0, deep: 0x0b4f66 }, // acqua
+    love:     { word: 'love',    hex: 0x6d3bd8, deep: 0x1f0d4f }, // ultravioletto
+    magenta:  { word: 'love',    hex: 0xa3245e, deep: 0x2e0719 }, // bordeaux UV
+    breathe:  { word: 'breathe', hex: 0x1fa39a, deep: 0x062f35 }, // petrolio
     laser:    { word: 'breathe', hex: 0x3d7bff, deep: 0x0b1f66 }, // blu laser
     peace:    { word: 'peace',   hex: 0xe9e3d3, deep: 0xb89350 }, // argento e alba
     ghiaccio: { word: 'peace',   hex: 0xcfe6ff, deep: 0x34506e }  // ghiaccio, luce del mattino
@@ -40,11 +40,20 @@ function readMood() {
 }
 
 const cssHex = (n) => '#' + n.toString(16).padStart(6, '0');
+
+// luminanza relativa (WCAG) di un colore 0xRRGGBB
+function luminance(n) {
+    const lin = (c) => { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+    return 0.2126 * lin((n >> 16) & 255) + 0.7152 * lin((n >> 8) & 255) + 0.0722 * lin(n & 255);
+}
+
 function setCssMood(m) {
     const root = document.documentElement;
     root.dataset.mood = m;
     root.style.setProperty('--mood', cssHex(MOODS[m].hex));
     root.style.setProperty('--mood-deep', cssHex(MOODS[m].deep));
+    // testo dei bottoni pieni: chiaro sui colori scuri, scuro su quelli chiari
+    root.style.setProperty('--on-mood', luminance(MOODS[m].hex) < 0.18 ? '#f3f2ee' : '#050508');
 }
 
 const state = { mood: readMood(), glitch: 0, power: 0, seed: 0, lastSeed: 0, burstEnd: 0, nextBurst: 2500, bursts: 0, pending: null, swapAt: 0 };
