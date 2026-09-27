@@ -212,7 +212,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         statusTitle.textContent = "LOCALE PIENO";
                         statusDetails.innerHTML = `
                             <strong>Attenzione:</strong> Capienza massima raggiunta!<br><br>
-                            Il biglietto di <strong>${escapeHtml(userData.name)}</strong> è valido, ma il locale è pieno. Non è stato annullato.
+                            Il biglietto di <strong>${escapeHtml(userData.name)}</strong> è valido, ma il locale è pieno. L'ingresso non è stato registrato: il biglietto resta valido.
                         `;
                     } else {
                         // Valid, not checked in, and capacity not exceeded
@@ -225,7 +225,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         statusBox.classList.add("status-success");
                         statusTitle.textContent = "ACCESSO CONSENTITO";
                         statusDetails.innerHTML = `
-                            Biglietto valido e annullato correttamente.<br><br>
+                            Biglietto valido: può entrare.<br>Ingresso registrato.<br><br>
                             <strong>Nome:</strong> ${escapeHtml(userData.name)}<br>
                             <strong>Email:</strong> ${escapeHtml(userData.email)}
                         `;
