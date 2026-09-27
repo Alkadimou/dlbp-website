@@ -1,6 +1,8 @@
 // Sfondo del sito: elica di DNA in metallo liquido (Three.js) con glitch a scatti.
-// Si attiva su ogni elemento .site-background della pagina. Il colore segue la parola del motto:
-// per ora si sceglie con ?mood=drink|love|breathe|peace nell'indirizzo (resta per tutta la visita).
+// Si attiva su ogni elemento .site-background della pagina. Il colore segue la parola del motto
+// e cambia da solo ogni CYCLE_EVERY glitch, nell'ordine della serata (drink → love → breathe → peace).
+// ?mood=drink|love|breathe|peace nell'indirizzo sceglie il colore di partenza; il colore
+// raggiunto resta per tutta la visita, anche cambiando pagina.
 // Con data-lite sull'elemento (scanner) gira in versione leggera.
 
 const THREE_URL = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
@@ -12,18 +14,27 @@ export const MOODS = {
     peace:   { hex: 0xe9e3d3, deep: 0xb89350 }
 };
 const DEFAULT_MOOD = 'breathe';
+const ORDER = ['drink', 'love', 'breathe', 'peace'];
+const CYCLE_EVERY = 3;
+
+function saveMood(mood) {
+    try { sessionStorage.setItem('dlbp-mood', mood); } catch (e) { /* sessionStorage non disponibile */ }
+}
 
 function readMood() {
     const fromUrl = new URLSearchParams(location.search).get('mood');
+    if (MOODS[fromUrl]) {
+        saveMood(fromUrl);
+        return fromUrl;
+    }
     try {
-        if (fromUrl && MOODS[fromUrl]) sessionStorage.setItem('dlbp-mood', fromUrl);
         const saved = sessionStorage.getItem('dlbp-mood');
-        if (saved && MOODS[saved]) return saved;
+        if (MOODS[saved]) return saved;
     } catch (e) { /* sessionStorage non disponibile */ }
-    return MOODS[fromUrl] ? fromUrl : DEFAULT_MOOD;
+    return DEFAULT_MOOD;
 }
 
-const state = { mood: readMood(), glitch: 0, power: 0, seed: 0, lastSeed: 0, burstEnd: 0, nextBurst: 2500 };
+const state = { mood: readMood(), glitch: 0, power: 0, seed: 0, lastSeed: 0, burstEnd: 0, nextBurst: 2500, bursts: 0, pending: null, swapAt: 0 };
 document.documentElement.dataset.mood = state.mood;
 
 const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -124,13 +135,19 @@ function createView(THREE, host) {
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
 
+    // un riflesso già pronto per ogni colore, così il cambio è istantaneo
     const pmrem = new THREE.PMREMGenerator(renderer);
+    const envUniforms = { uMood: { value: new THREE.Color() } };
     const envScene = new THREE.Scene();
     envScene.add(new THREE.Mesh(new THREE.SphereGeometry(10, 64, 32), new THREE.ShaderMaterial({
-        side: THREE.BackSide, vertexShader: ENV_VERT, fragmentShader: ENV_FRAG,
-        uniforms: { uMood: { value: linear(mood.hex) } }
+        side: THREE.BackSide, vertexShader: ENV_VERT, fragmentShader: ENV_FRAG, uniforms: envUniforms
     })));
-    scene.environment = pmrem.fromScene(envScene, 0.02).texture;
+    const envs = {};
+    ORDER.forEach((m) => {
+        envUniforms.uMood.value.copy(linear(MOODS[m].hex));
+        envs[m] = pmrem.fromScene(envScene, 0.02).texture;
+    });
+    scene.environment = envs[state.mood];
 
     const bgMat = new THREE.ShaderMaterial({
         depthWrite: false, toneMapped: false, vertexShader: BG_VERT, fragmentShader: BG_FRAG,
@@ -214,7 +231,8 @@ function createView(THREE, host) {
     }
     const dustGeo = new THREE.BufferGeometry();
     dustGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    const dust = new THREE.Points(dustGeo, new THREE.PointsMaterial({ color: linear(mood.hex), size: 0.035, transparent: true, opacity: 0.75, depthWrite: false }));
+    const dustMat = new THREE.PointsMaterial({ color: linear(mood.hex), size: 0.035, transparent: true, opacity: 0.75, depthWrite: false });
+    const dust = new THREE.Points(dustGeo, dustMat);
     const dust2 = new THREE.Points(dustGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.022, transparent: true, opacity: 0.5, depthWrite: false }));
     dust2.rotation.y = 1.7;
     scene.add(dust, dust2);
@@ -252,6 +270,16 @@ function createView(THREE, host) {
     window.addEventListener('resize', resize);
 
     return {
+        setMood(m) {
+            const c = linear(MOODS[m].hex);
+            scene.environment = envs[m];
+            moodMat.color.copy(c);
+            moodMat.emissive.copy(c);
+            dustMat.color.copy(c);
+            bgMat.uniforms.uMood.value.copy(c);
+            bgMat.uniforms.uDeep.value.copy(linear(MOODS[m].deep));
+            post.uniforms.uMood.value.setHex(MOODS[m].hex);
+        },
         render(t) {
             const sec = t / 1000;
             timeU.value = sec;
@@ -338,14 +366,35 @@ async function init() {
         return;
     }
 
+    function applyMood(m) {
+        state.mood = m;
+        document.documentElement.dataset.mood = m;
+        saveMood(m);
+        views.forEach((v) => v.setMood(m));
+    }
+
     let running = false;
     function frame(t) {
         if (document.hidden) { running = false; return; }
         if (t > state.nextBurst) {
-            state.power = 0.3 + Math.random() * 0.7;
-            state.burstEnd = t + 90 + Math.random() * 340;
-            // a volte un secondo colpo subito dopo, come un segnale che salta
-            state.nextBurst = Math.random() < 0.3 ? t + 420 : t + 2500 + Math.random() * 4000;
+            state.bursts++;
+            if (state.bursts % CYCLE_EVERY === 0) {
+                // colpo forte: il colore passa alla parola successiva del motto a metà glitch
+                state.power = 1;
+                state.burstEnd = t + 460;
+                state.pending = ORDER[(ORDER.indexOf(state.mood) + 1) % ORDER.length];
+                state.swapAt = t + 170;
+                state.nextBurst = t + 3000 + Math.random() * 3000;
+            } else {
+                state.power = 0.3 + Math.random() * 0.7;
+                state.burstEnd = t + 90 + Math.random() * 340;
+                // a volte un secondo colpo subito dopo, come un segnale che salta
+                state.nextBurst = Math.random() < 0.3 ? t + 420 : t + 2500 + Math.random() * 4000;
+            }
+        }
+        if (state.pending && t >= state.swapAt) {
+            applyMood(state.pending);
+            state.pending = null;
         }
         let g = 0;
         if (t < state.burstEnd) {
