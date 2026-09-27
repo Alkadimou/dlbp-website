@@ -2382,9 +2382,6 @@ input::placeholder {
 .text-success { color: rgba(100, 255, 100, 0.9) !important; }
 .text-warning { color: rgba(255, 200, 100, 0.8) !important; }
 .modal .modal-close-btn {
-    position: sticky;
-    top: 0;
-    z-index: 2;
     display: flex !important;
     width: 44px;
     height: 44px !important;
@@ -2392,7 +2389,7 @@ input::placeholder {
     max-height: 44px !important;
     margin: 0 0 0.5rem auto !important;
     padding: 0 !important;
-    background: rgba(0, 0, 0, 0.6) !important;
+    background: transparent !important;
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: var(--radius-md);
     color: #fff;
