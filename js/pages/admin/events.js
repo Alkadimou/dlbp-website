@@ -3,6 +3,7 @@
 // di un evento con tutti i suoi iscritti.
 import { db, collection, doc, query, where, getDoc, getDocs, setDoc, updateDoc, deleteDoc, writeBatch } from "../../core/firebase.js";
 import { showModal, showConfirm } from "../../core/modal.js";
+import { toMillis } from "../../core/dates.js";
 import { state } from "./state.js";
 import { loadEventSettings, setEditMode } from "./event-form.js";
 import { loadUsers } from "./guests.js";
@@ -64,8 +65,8 @@ export async function loadEventsList() {
 
         // Ordinamento decrescente (più recenti prima)
         eventsArray.sort((a, b) => {
-            const dateA = a.createdAt ? a.createdAt.toMillis() : 0;
-            const dateB = b.createdAt ? b.createdAt.toMillis() : 0;
+            const dateA = toMillis(a.createdAt);
+            const dateB = toMillis(b.createdAt);
             return dateB - dateA;
         });
 

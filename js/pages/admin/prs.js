@@ -4,6 +4,7 @@
 import { db, collection, doc, onSnapshot, writeBatch } from "../../core/firebase.js";
 import { getStaffProfile } from "../../core/staff-login.js";
 import { escapeHtml } from "../../core/html.js";
+import { toMillis } from "../../core/dates.js";
 import { showModal, showConfirm } from "../../core/modal.js";
 
 const addPrBtn = document.getElementById('add-pr-btn');
@@ -75,15 +76,7 @@ export function loadPRs() {
         });
         
         // Ordinamento sicuro
-        prsList.sort((a, b) => {
-            const getMs = (val) => {
-                if (!val) return 0;
-                if (typeof val.toMillis === 'function') return val.toMillis();
-                if (val instanceof Date) return val.getTime();
-                return 0;
-            };
-            return getMs(b.createdAt) - getMs(a.createdAt);
-        });
+        prsList.sort((a, b) => toMillis(b.createdAt) - toMillis(a.createdAt));
 
         const fragment = document.createDocumentFragment();
         prsList.forEach((pr) => {

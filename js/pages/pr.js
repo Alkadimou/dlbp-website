@@ -6,6 +6,7 @@ import { auth, signOut } from "../core/firebase-auth.js";
 import { setupStaffLogin } from "../core/staff-login.js";
 import { setupSortableHeaders, compareValues } from "../core/table-sort.js";
 import { escapeHtml } from "../core/html.js";
+import { toMillis } from "../core/dates.js";
 import { initStaffMenu } from "../core/nav.js";
 
 initStaffMenu();
@@ -166,8 +167,8 @@ document.addEventListener("DOMContentLoaded", () => {
         registrationsList.sort((a, b) => {
             let valA, valB;
             if (sort.field === "timestamp") {
-                valA = a.timestamp ? (typeof a.timestamp.toDate === 'function' ? a.timestamp.toDate().getTime() : new Date(a.timestamp).getTime()) : 0;
-                valB = b.timestamp ? (typeof b.timestamp.toDate === 'function' ? b.timestamp.toDate().getTime() : new Date(b.timestamp).getTime()) : 0;
+                valA = toMillis(a.timestamp);
+                valB = toMillis(b.timestamp);
             } else if (sort.field === "eventId") {
                 valA = (eventsMap[a.eventId] || "").toLowerCase();
                 valB = (eventsMap[b.eventId] || "").toLowerCase();

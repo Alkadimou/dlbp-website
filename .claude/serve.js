@@ -1,10 +1,10 @@
-// Minimal static file server for local previews: node .claude/serve.js [port]
+// Minimal static file server for local previews: node .claude/serve.js [port] (or PORT env)
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
 
 const root = path.resolve(__dirname, '..');
-const port = Number(process.argv[2]) || 8000;
+const port = Number(process.env.PORT) || Number(process.argv[2]) || 8000;
 const types = {
   '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript',
   '.json': 'application/json', '.png': 'image/png', '.jpg': 'image/jpeg',
