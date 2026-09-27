@@ -1743,10 +1743,17 @@ html:has(.modal:not(.hidden)) {
 .hero-bg-fallback {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: linear-gradient(to bottom, rgba(5,5,8,0.7) 0%, rgba(5,5,8,1) 100%), url('https://images.unsplash.com/photo-1574169208507-84376144848b?q=80&w=2000&auto=format&fit=crop') no-repeat center center/cover;
+    background: linear-gradient(to bottom, rgba(5,5,8,0.7) 0%, rgba(5,5,8,1) 100%), url('../assets/hero-bg.jpg') no-repeat center center/cover;
     background-attachment: fixed;
     z-index: 0;
     animation: kenBurns 20s ease-in-out infinite alternate;
+}
+
+/* Schermi verticali (telefoni): la stessa immagine non ruotata riempie meglio lo schermo */
+@media (orientation: portrait) {
+    .hero-bg-fallback {
+        background-image: linear-gradient(to bottom, rgba(5,5,8,0.7) 0%, rgba(5,5,8,1) 100%), url('../assets/hero-bg-portrait.jpg');
+    }
 }
 
 @keyframes kenBurns {
