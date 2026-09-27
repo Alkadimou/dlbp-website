@@ -1247,31 +1247,35 @@ html:has(.modal:not(.hidden)) {
 /* ==================================================
    FOOTER
    ================================================== */
+/* Griglia a 3 colonne: copyright a sinistra, icone al centro, colonna destra vuota.
+   Le colonne non possono sovrapporsi a nessuna larghezza. */
 .site-footer {
     position: relative;
     width: 100%;
     margin-top: auto;
     padding: 1.5rem 10vw;
     background: transparent;
-    display: flex;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
+    column-gap: 2rem;
     z-index: 100;
     box-sizing: border-box;
 }
 
 .site-footer .social-bottom {
-    position: static;
+    grid-column: 2;
+    grid-row: 1;
     width: auto;
     display: flex;
     justify-content: center;
 }
 
 .site-footer .copyright-bottom-left {
-    position: absolute;
-    left: 10vw;
-    top: 50%;
-    transform: translateY(-50%);
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: start;
+    white-space: nowrap;
     font-family: 'Space Mono', monospace;
     font-size: 0.65rem;
     color: rgba(255, 255, 255, 0.4);
@@ -1281,20 +1285,18 @@ html:has(.modal:not(.hidden)) {
     -webkit-user-select: none;
 }
 
-@media (max-width: 768px) {
+/* Tablet e telefoni: icone sopra, copyright sotto, tutto centrato */
+@media (max-width: 1024px) {
     .site-footer {
+        display: flex;
         flex-direction: column;
         gap: 1.25rem;
         padding: 1.25rem 1.2rem;
     }
     .site-footer .copyright-bottom-left {
-        position: static;
-        transform: none;
         text-align: center;
+        white-space: normal;
         font-size: 0.55rem;
-    }
-    .site-footer .social-bottom {
-        position: static;
     }
 }
 
