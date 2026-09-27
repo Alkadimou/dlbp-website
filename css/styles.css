@@ -1483,6 +1483,11 @@ input::placeholder {
         text-overflow: unset;
         white-space: nowrap;
     }
+    /* Checkbox di selezione iscritto: allineata a destra come gli altri valori della card */
+    .users-table .user-checkbox {
+        width: auto;
+        margin: 0;
+    }
 }
 
 /* ==================================================
