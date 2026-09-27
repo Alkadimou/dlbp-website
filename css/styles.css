@@ -2488,6 +2488,132 @@ html:has(.modal:not(.hidden)) {
 .flyer-preview-box { margin-top: 10px; max-width: 100%; max-height: 300px; overflow: hidden; border-radius: 8px; display: flex; justify-content: flex-start; }
 .flyer-preview-img { max-width: 100%; max-height: 300px; display: none; object-fit: contain; border-radius: 4px; border: 1px solid rgba(255,255,255,0.1); }
 
+/* ==================================================
+   PAGINA ISCRIZIONE EVENTO (event.html)
+   ================================================== */
+.registration-card {
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem;
+    text-align: center;
+}
+/* È un modulo: niente "sollevamento" al passaggio del mouse */
+.registration-card:hover {
+    transform: none;
+    background: rgba(255, 255, 255, 0.03);
+    box-shadow: none;
+    border-color: rgba(255, 255, 255, 0.06);
+}
 
+.registration-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 1.75rem;
+    margin-bottom: 1.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.registration-flyer {
+    width: 100%;
+    max-width: 240px;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+.registration-card .event-card-status {
+    margin-bottom: 0.75rem;
+}
+.registration-card .event-card-title {
+    font-size: 1.5rem;
+    text-align: center;
+    margin: 0 0 0.5rem;
+}
+.registration-card .event-card-date {
+    font-size: 0.75rem;
+    text-align: center;
+    margin: 0;
+}
 
+.registration-description {
+    font-size: 0.8rem;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.65);
+    margin: 0 0 2rem;
+}
 
+.registration-card .registration-form {
+    gap: 1rem;
+    text-align: left;
+}
+.registration-card .alert-danger {
+    margin-bottom: 1rem;
+}
+
+/* Casella privacy: piccola, allineata al testo */
+.privacy-checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin: 0.25rem 0;
+}
+.privacy-checkbox input[type="checkbox"] {
+    flex: 0 0 18px;
+    width: 18px;
+    height: 18px;
+    margin: 2px 0 0;
+    padding: 0;
+    box-shadow: none;
+    accent-color: #ffffff;
+    cursor: pointer;
+}
+.privacy-checkbox label {
+    font-size: 0.7rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+}
+
+.registration-card #submit-btn {
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+/* Riquadro password (solo per gli eventi che ce l'hanno) */
+.registration-gate {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.registration-gate h3 {
+    font-size: 1rem;
+    letter-spacing: 0.2em;
+    margin: 0;
+}
+.registration-gate p {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0 0 0.5rem;
+}
+.registration-gate input {
+    text-align: center;
+    letter-spacing: 0.2em;
+}
+.registration-gate .submit-btn {
+    width: 100%;
+    margin-top: 0;
+}
+
+@media (max-width: 768px) {
+    .registration-card {
+        padding: 2rem 1.25rem;
+    }
+    .registration-card .event-card-title {
+        font-size: 1.25rem;
+    }
+    .registration-flyer {
+        max-width: 200px;
+    }
+}
