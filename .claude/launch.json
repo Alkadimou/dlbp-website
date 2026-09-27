@@ -5,7 +5,8 @@
       "name": "dlbp-site",
       "runtimeExecutable": "node",
       "runtimeArgs": [".claude/serve.js", "8000"],
-      "port": 8000
+      "port": 8000,
+      "autoPort": true
     }
   ]
 }

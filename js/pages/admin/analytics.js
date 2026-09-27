@@ -2,6 +2,7 @@
 // selezionato e prepara i dati per i grafici (iscrizioni per giorno, ingressi per mezz'ora).
 import { db, collection, query, where, getDocs } from "../../core/firebase.js";
 import { showModal } from "../../core/modal.js";
+import { toDate } from "../../core/dates.js";
 import { state } from "./state.js";
 import { renderAnalyticsCharts } from "./charts.js";
 
@@ -32,14 +33,14 @@ async function loadAnalyticsData() {
             if (user.status === "pending") pending++;
             if (user.checked_in) present++;
 
-            if (user.timestamp) {
-                const dateObj = user.timestamp.toDate();
+            const dateObj = toDate(user.timestamp);
+            if (dateObj) {
                 const dateStr = dateObj.toISOString().split('T')[0];
                 datesMap[dateStr] = (datesMap[dateStr] || 0) + 1;
             }
 
-            if (user.checked_in && user.check_in_time) {
-                const timeObj = user.check_in_time.toDate();
+            const timeObj = user.checked_in ? toDate(user.check_in_time) : null;
+            if (timeObj) {
                 let min = timeObj.getMinutes();
                 min = min < 30 ? "00" : "30";
                 const bucket = `${timeObj.getHours().toString().padStart(2, '0')}:${min}`;

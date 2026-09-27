@@ -2,6 +2,7 @@
 // e li mostra come card. Gli eventi attivi portano a event.html per la registrazione.
 import { db, collection, query, getDocs } from "../core/firebase.js";
 import { initStaffMenu } from "../core/nav.js";
+import { toMillis } from "../core/dates.js";
 import { initRevealAnimations } from "../core/reveal.js";
 
 initStaffMenu();
@@ -70,8 +71,8 @@ async function loadEvents() {
 
         // Sort by createdAt descending
         eventsArray.sort((a, b) => {
-            const dateA = a.createdAt ? a.createdAt.toMillis() : 0;
-            const dateB = b.createdAt ? b.createdAt.toMillis() : 0;
+            const dateA = toMillis(a.createdAt);
+            const dateB = toMillis(b.createdAt);
             return dateB - dateA;
         });
 

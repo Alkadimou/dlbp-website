@@ -3,6 +3,7 @@
 // ingresso manuale (pulsante 🚪), contatore "INGRESSI LIVE" ed esportazione CSV.
 import { db, collection, doc, query, where, getDocs, getCountFromServer, updateDoc } from "../../core/firebase.js";
 import { escapeHtml } from "../../core/html.js";
+import { toDate } from "../../core/dates.js";
 import { setupSortableHeaders, compareValues } from "../../core/table-sort.js";
 import { state } from "./state.js";
 
@@ -62,8 +63,8 @@ export async function loadUsers() {
             state.usersData.push({
                 id: doc.id,
                 ...data,
-                timestamp: data.timestamp ? data.timestamp.toDate() : new Date(),
-                check_in_time: data.check_in_time ? data.check_in_time.toDate() : null
+                timestamp: toDate(data.timestamp, new Date()),
+                check_in_time: toDate(data.check_in_time)
             });
         });
 
