@@ -6,7 +6,7 @@
     <title>DLBP | Drink Love Breathe Peace</title>
     <meta name="description" content="DLBP — An exclusive artistic movement. Private events, curated experiences, underground culture.">
     <link rel="icon" href="assets/logo.jpg" type="image/jpeg">
-    <link rel="stylesheet" href="css/styles.css?v=13">
+    <link rel="stylesheet" href="css/styles.css?v=14">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
@@ -49,7 +49,11 @@
 
     <!-- HERO SECTION -->
     <section class="hero-fullscreen" id="hero">
-        <div class="hero-bg-fallback"></div>
+        <div class="video-background" aria-hidden="true">
+            <video autoplay muted loop playsinline poster="assets/bg-video-poster.jpg">
+                <source src="assets/bg-video.mp4" type="video/mp4">
+            </video>
+        </div>
         <div class="grain-overlay"></div>
         <div class="hero-tagline-center reveal">DRINK · LOVE · BREATHE · PEACE</div>
         <a href="eventi.html" class="event-card-btn hero-next-event-btn" id="next-event-btn" hidden>PROSSIMO EVENTO</a>
