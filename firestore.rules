@@ -71,14 +71,11 @@ service cloud.firestore {
         && data.timestamp == request.time;
     }
 
-    // Nome e cognome separati (facoltativi, per le pagine vecchie ancora in cache):
-    // se ci sono, devono esserci entrambi e "name" deve essere "NOME COGNOME".
+    // Nome e cognome separati, obbligatori: "name" deve essere "NOME COGNOME".
     function hasValidNameParts(data) {
-      return (!('first_name' in data) && !('last_name' in data))
-        || ('first_name' in data && 'last_name' in data
-            && data.first_name is string && data.first_name.size() > 0 && data.first_name.size() <= 50
-            && data.last_name is string && data.last_name.size() > 0 && data.last_name.size() <= 50
-            && data.name == data.first_name + ' ' + data.last_name);
+      return data.first_name is string && data.first_name.size() > 0 && data.first_name.size() <= 50
+        && data.last_name is string && data.last_name.size() > 0 && data.last_name.size() <= 50
+        && data.name == data.first_name + ' ' + data.last_name;
     }
 
     // Scanner may only flip checked_in to true and set the check-in time (as a Firestore Timestamp)
