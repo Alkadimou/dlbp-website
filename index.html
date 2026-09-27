@@ -73,22 +73,6 @@
     </footer>
 
     <!-- JS -->
-    <script>
-        // Staff Dropdown Toggle Logic
-        const staffBtn = document.getElementById('staff-btn');
-        const staffDropdown = document.getElementById('staff-dropdown');
-
-        if (staffBtn && staffDropdown) {
-            staffBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                staffDropdown.classList.toggle('show');
-            });
-
-            document.addEventListener('click', () => {
-                staffDropdown.classList.remove('show');
-            });
-        }
-    </script>
-    <script type="module" src="js/home.js"></script>
+    <script type="module" src="js/pages/home.js?v=1"></script>
 </body>
 </html>

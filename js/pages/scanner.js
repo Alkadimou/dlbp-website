@@ -1,27 +1,13 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, doc, getDoc, updateDoc, collection, query, where, getCountFromServer, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+// Pagina scanner.html: legge i QR code dei biglietti con la fotocamera e segna l'ingresso
+// (registrations/{id}.checked_in). Controlla evento giusto, approvazione, doppio ingresso e capienza.
+// Accesso: account staff con ruolo "scanner" o "admin".
+import { db, doc, getDoc, updateDoc, collection, query, where, getCountFromServer, getDocs } from "../core/firebase.js";
+import { auth, signOut } from "../core/firebase-auth.js";
+import { setupStaffLogin } from "../core/staff-login.js";
+import { escapeHtml } from "../core/html.js";
+import { initStaffMenu } from "../core/nav.js";
 
-// TODO: Replace with your actual Firebase config
-const firebaseConfig = {
-  apiKey: "AIzaSyD6THmnRAG_8YL1PLWSL7I2_WKLv-fioWk",
-  authDomain: "dlbp-website.firebaseapp.com",
-  projectId: "dlbp-website",
-  storageBucket: "dlbp-website.firebasestorage.app",
-  messagingSenderId: "51111322366",
-  appId: "1:51111322366:web:813b96994d6a1f2fbefbaf",
-  measurementId: "G-6HC9LRZWV9"
-};
-
-let db;
-let auth;
-try {
-    const app = initializeApp(firebaseConfig);
-    db = getFirestore(app);
-    auth = getAuth(app);
-} catch (e) {
-    console.error("Firebase init error", e);
-}
+initStaffMenu();
 
 document.addEventListener("DOMContentLoaded", () => {
     const loginSection = document.getElementById("login-section");
@@ -40,71 +26,26 @@ document.addEventListener("DOMContentLoaded", () => {
     let unsubCounter = null;
 
     // --- LOGIN LOGIC ---
-    // Firebase Auth: the account needs role "scanner" or "admin" in /staff/{email}
-    const emailInput = document.getElementById("scanner-email");
-
-    function showLoginError(text) {
-        loginMessage.textContent = text;
-        loginMessage.className = "form-message error";
-        loginMessage.classList.remove("hidden");
-    }
-
     let scannerStarted = false;
-    onAuthStateChanged(auth, async (user) => {
-        if (!user) {
+    setupStaffLogin({
+        emailInput: document.getElementById("scanner-email"),
+        passwordInput,
+        loginBtn,
+        loginMessage,
+        isAllowed: (profile) => profile.role === "scanner" || profile.role === "admin",
+        deniedMessage: "Account non abilitato allo scanner.",
+        loginErrorMessage: "Accesso negato.",
+        onSignedIn: () => {
+            loginSection.classList.add("hidden");
+            scannerSection.classList.remove("hidden");
+            if (!scannerStarted) {
+                scannerStarted = true;
+                startScanner();
+            }
+        },
+        onSignedOut: () => {
             loginSection.classList.remove("hidden");
             scannerSection.classList.add("hidden");
-            return;
-        }
-        try {
-            const staffSnap = await getDoc(doc(db, "staff", user.email.toLowerCase()));
-            const role = staffSnap.exists() ? staffSnap.data().role : null;
-            if (role !== "scanner" && role !== "admin") {
-                await signOut(auth);
-                showLoginError("Account non abilitato allo scanner.");
-                return;
-            }
-        } catch (error) {
-            console.error("Error checking staff role:", error);
-            await signOut(auth);
-            showLoginError("Errore di connessione al database.");
-            return;
-        }
-        loginSection.classList.add("hidden");
-        scannerSection.classList.remove("hidden");
-        if (!scannerStarted) {
-            scannerStarted = true;
-            startScanner();
-        }
-    });
-
-    loginBtn.addEventListener("click", async () => {
-        const email = emailInput.value.trim();
-        const pwd = passwordInput.value;
-        if (!email || !pwd) {
-            showLoginError("Inserisci email e password.");
-            return;
-        }
-        loginBtn.disabled = true;
-        try {
-            await signInWithEmailAndPassword(auth, email, pwd);
-            // onAuthStateChanged will handle the UI switch
-        } catch (error) {
-            console.error("Login error:", error);
-            showLoginError("Accesso negato.");
-        } finally {
-            loginBtn.disabled = false;
-        }
-    });
-
-    passwordInput.addEventListener("keyup", (e) => {
-        if (e.key === "Enter") {
-            loginBtn.click();
-        }
-    });
-    emailInput.addEventListener("keyup", (e) => {
-        if (e.key === "Enter") {
-            passwordInput.focus();
         }
     });
 
@@ -196,16 +137,6 @@ document.addEventListener("DOMContentLoaded", () => {
             /* verbose= */ false
         );
         html5QrcodeScanner.render(onScanSuccess, onScanFailure);
-    }
-
-    function escapeHtml(unsafe) {
-        if (!unsafe) return '';
-        return unsafe.toString()
-             .replace(/&/g, "&amp;")
-             .replace(/</g, "&lt;")
-             .replace(/>/g, "&gt;")
-             .replace(/"/g, "&quot;")
-             .replace(/'/g, "&#039;");
     }
 
     let isProcessing = false;

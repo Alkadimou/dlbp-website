@@ -1,24 +1,10 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+// Pagine index.html (home) ed eventi.html: carica gli eventi da Firestore (collezione "events")
+// e li mostra come card. Gli eventi attivi portano a event.html per la registrazione.
+import { db, collection, query, getDocs } from "../core/firebase.js";
+import { initStaffMenu } from "../core/nav.js";
+import { initRevealAnimations } from "../core/reveal.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyD6THmnRAG_8YL1PLWSL7I2_WKLv-fioWk",
-  authDomain: "dlbp-website.firebaseapp.com",
-  projectId: "dlbp-website",
-  storageBucket: "dlbp-website.firebasestorage.app",
-  messagingSenderId: "51111322366",
-  appId: "1:51111322366:web:813b96994d6a1f2fbefbaf",
-  measurementId: "G-6HC9LRZWV9"
-};
-
-let app;
-let db;
-try {
-    app = initializeApp(firebaseConfig);
-    db = getFirestore(app);
-} catch (e) {
-    console.error("Firebase initialization error", e);
-}
+initStaffMenu();
 
 document.addEventListener("DOMContentLoaded", () => {
     // Hide loader
@@ -48,17 +34,8 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Intersection Observer for scroll animations (.reveal elements)
-    const revealObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('active');
-                observer.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+    // Scroll animations (.reveal elements)
+    initRevealAnimations();
 
     loadEvents();
 });
