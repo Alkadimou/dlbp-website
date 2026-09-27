@@ -105,28 +105,26 @@ document.addEventListener("DOMContentLoaded", () => {
         try { audioError.play(); } catch(e) { playBeep(300, 'sawtooth', 0.5); }
     }
 
+    // Contatore degli ingressi dell'evento attivo (ogni 30 secondi e dopo ogni scansione)
+    async function fetchScannerCount() {
+        try {
+            const qCount = query(collection(db, "registrations"), where("eventId", "==", activeEventId), where("checked_in", "==", true));
+            const snapshot = await getCountFromServer(qCount);
+            const count = snapshot.data().count;
+            const max = activeEventData ? activeEventData.maxCapacity || 100 : 100;
+            const counterDiv = document.getElementById('live-counter');
+            if (counterDiv) {
+                counterDiv.innerHTML = `INGRESSI: <span style="color: ${count >= max ? 'var(--error-color)' : '#fff'}">${count}</span> / ${max}`;
+            }
+        } catch (e) {
+            console.error("Scanner counter update error:", e);
+        }
+    }
+
     async function startScanner() {
         await loadActiveEvent();
-        
-        // Counter Live
-        // Counter Live (Polling with getCountFromServer)
+
         if (unsubCounter) clearInterval(unsubCounter);
-        const qCount = query(collection(db, "registrations"), where("eventId", "==", activeEventId), where("checked_in", "==", true));
-        
-        async function fetchScannerCount() {
-            try {
-                const snapshot = await getCountFromServer(qCount);
-                const count = snapshot.data().count;
-                const max = activeEventData ? activeEventData.maxCapacity || 100 : 100;
-                const counterDiv = document.getElementById('live-counter');
-                if (counterDiv) {
-                    counterDiv.innerHTML = `INGRESSI: <span style="color: ${count >= max ? 'var(--error-color)' : '#fff'}">${count}</span> / ${max}`;
-                }
-            } catch (e) {
-                console.error("Scanner counter update error:", e);
-            }
-        }
-        
         fetchScannerCount();
         unsubCounter = setInterval(fetchScannerCount, 30000);
         
@@ -247,6 +245,10 @@ document.addEventListener("DOMContentLoaded", () => {
             statusTitle.textContent = "ERRORE DI SISTEMA";
             statusDetails.innerHTML = "Impossibile contattare il database. Riprova.";
         }
+
+        // Esito mostrato: il bottone "PROSSIMO BIGLIETTO" riattiva la fotocamera
+        nextScanBtn.classList.remove("hidden");
+        fetchScannerCount();
     }
 
     function onScanFailure(error) {
