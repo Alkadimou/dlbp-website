@@ -6,7 +6,7 @@ Il pubblico vede gli eventi e si iscrive in lista; lo staff gestisce eventi e is
 - **Frontend:** HTML, CSS e JavaScript senza framework né build. I file del repository sono quelli che vanno online.
 - **Hosting:** GitHub Pages, pubblicato automaticamente a ogni push su `main`.
 - **Database e login:** Firebase (progetto `dlbp-website`, piano gratuito Spark): Firestore + Authentication.
-- **Email:** EmailJS (conferma d'iscrizione e biglietto con QR code).
+- **Email:** EmailJS (biglietto con location e QR code, inviato subito all'iscrizione; l'admin può reinviarlo con INVIA ACCESSI).
 
 ## Pagine
 
@@ -66,7 +66,7 @@ Ogni file JavaScript inizia con un breve commento che spiega a cosa serve.
 | Collezione | Contenuto | Chi può leggere / scrivere |
 |---|---|---|
 | `events` | un documento per evento: `name`, `date` (testo mostrato), `dateIso`, `startTime`, `endTime`, `location`, `password` (d'ingresso, facoltativa), `flyerUrl` (immagine Base64), `description`, `maxCapacity`, `isOpen` (iscrizioni aperte), `isActive` (evento in corso), `createdAt` | tutti leggono, admin scrive |
-| `registrations` | un iscritto per evento. ID = `<eventId>_<hash dell'email>`, così la stessa email non può iscriversi due volte. Campi: `name`, `email`, `eventId`, `invited_by` (codice PR), `status`, `checked_in`, `check_in_time`, `email_sent`, `privacy_consent`, `timestamp` | il pubblico può solo creare; admin tutto; scanner legge e segna l'ingresso; il PR legge solo i propri iscritti |
+| `registrations` | un iscritto per evento. ID = `<eventId>_<hash dell'email>`, così la stessa email non può iscriversi due volte. Campi: `name`, `email`, `eventId`, `invited_by` (codice PR), `status`, `checked_in`, `check_in_time`, `email_sent`, `privacy_consent`, `timestamp` | il pubblico può solo creare e poi segnare `email_sent` da false a true; admin tutto; scanner legge e segna l'ingresso; il PR legge solo i propri iscritti |
 | `prs` | `name`, `code`, `email`, `isActive`, `createdAt` | admin |
 | `staff` | ruoli dello staff, ID = email in minuscolo: `role` (`admin`, `scanner`, `pr`), `prCode` per i PR | admin; ognuno legge il proprio |
 | `settings` | `config`: vecchie impostazioni di prima della gestione multi-evento | tutti leggono, admin scrive |

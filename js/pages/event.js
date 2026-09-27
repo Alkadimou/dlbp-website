@@ -1,8 +1,9 @@
 // Pagina event.html?id=<evento>: mostra l'evento, chiede la password d'ingresso (se c'è)
-// e registra l'iscritto in Firestore ("registrations"), poi invia l'email di conferma.
+// e registra l'iscritto in Firestore ("registrations"), poi invia subito l'email del biglietto
+// (location + QR code) e segna email_sent.
 // Un link con ?pr=<codice> associa l'iscrizione a quel PR (campo invited_by).
-import { db, serverTimestamp, doc, getDoc, setDoc } from "../core/firebase.js";
-import { initEmailJs, isEmailJsLoaded, sendEmail, EMAIL_TEMPLATES } from "../core/email.js";
+import { db, serverTimestamp, doc, getDoc, setDoc, updateDoc } from "../core/firebase.js";
+import { initEmailJs, isEmailJsLoaded, sendTicketEmail } from "../core/email.js";
 import { initStaffMenu } from "../core/nav.js";
 import { initRevealAnimations } from "../core/reveal.js";
 
@@ -12,7 +13,7 @@ initEmailJs();
 // Versione del modulo di iscrizione. Va aumentata insieme a js/form-version.json ogni volta che
 // cambiano i campi del modulo o le regole delle iscrizioni: chi ha ancora la pagina vecchia
 // vedrà "ricarica la pagina" invece di un errore.
-const FORM_VERSION = 3;
+const FORM_VERSION = 4;
 
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("registration-form");
@@ -31,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const PUBLIC_GATE_HASH = "c696c0a9f8d1a373840f501af566265e1fc09e1aaba4acbbee87c0c4b0312523";
     let currentEventId = "act_1"; // Default fallback
-    let currentEventName = "";
+    let currentEvent = {}; // dati dell'evento, servono per l'email del biglietto
     let currentEventPassword = "";
     let hasPassword = false;
 
@@ -64,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (docSnap.exists()) {
                 const ev = docSnap.data();
                 currentEventId = eventId;
-                currentEventName = ev.name || "";
+                currentEvent = ev;
                 
                 // Set password state and check for bypass
                 currentEventPassword = (ev.password || "").trim().toLowerCase();
@@ -258,13 +259,14 @@ document.addEventListener("DOMContentLoaded", () => {
         btnText.textContent = "IN ELABORAZIONE...";
         messageDiv.className = "form-message hidden";
 
+        let regId = null;
         try {
             if (db) {
                 // Anti-spam check: one registration per email per event.
                 // The doc ID is derived from event + email, and the rules only allow
                 // the public to create (not overwrite), so a duplicate is rejected
                 // without the public ever reading the guest list.
-                const regId = await registrationId(currentEventId, email);
+                regId = await registrationId(currentEventId, email);
                 try {
                     await setDoc(doc(db, "registrations", regId), {
                         name: name,
@@ -297,18 +299,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.log("Simulated saving to DB:", { name, email });
             }
 
-            // Send email confirmation
-            try {
-                if (isEmailJsLoaded()) {
-                    await sendEmail(EMAIL_TEMPLATES.registrationPending, {
-                        to_name: name,
-                        to_email: email,
-                        event_name: currentEventName || "Evento"
-                    });
-                    console.log("Email inviata con successo.");
+            // Email del biglietto (location + QR code). Se non parte, l'iscrizione resta valida
+            // e l'admin può reinviarla con "INVIA ACCESSI" (email_sent resta false).
+            if (regId && isEmailJsLoaded()) {
+                try {
+                    await sendTicketEmail({ id: regId, name, email }, currentEvent);
+                    await updateDoc(doc(db, "registrations", regId), { email_sent: true });
+                } catch (err) {
+                    console.error("Errore invio email del biglietto:", err);
                 }
-            } catch (err) {
-                console.error("Errore invio email di registrazione:", err);
             }
 
             submitBtn.disabled = false;
@@ -327,7 +326,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     document.body.classList.remove("no-scroll");
                 };
             } else {
-                showMessage("Richiesta inviata. Sarai contattato se selezionato.", "success");
+                showMessage("Iscrizione completata. Ti abbiamo inviato via email il biglietto con il QR code.", "success");
             }
             form.reset();
         } catch (error) {
