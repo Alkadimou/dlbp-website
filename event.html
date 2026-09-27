@@ -68,7 +68,7 @@
                         <p class="registration-description" id="public-event-description">
                             Un'esperienza immersiva e riservata. 
                             L'accesso è strettamente limitato. Inserisci i tuoi dati per richiedere l'iscrizione.
-                            La location esatta (segreta) verrà comunicata solo agli iscritti selezionati 24h prima dell'evento.
+                            Dopo l'iscrizione riceverai via email la location e il QR code per l'ingresso.
                         </p>
                     </div>
                 </div>
@@ -141,10 +141,11 @@
     <!-- SUCCESS MODAL -->
     <div id="success-modal" class="modal hidden">
         <div class="modal-content">
-            <h2 class="tracking-wider mb-1 text-lg">RICHIESTA RICEVUTA</h2>
+            <h2 class="tracking-wider mb-1 text-lg">ISCRIZIONE COMPLETATA</h2>
             <p class="opacity-50 text-sm mb-2-5">
                 I tuoi dati sono stati registrati con successo.<br>
-                Se selezionato, riceverai la Secret Location via email 24h prima dell'evento.
+                Ti abbiamo inviato via email la location e il QR code per l'ingresso.<br>
+                Se non la trovi, controlla anche nello spam.
             </p>
             <button id="close-modal-btn" class="submit-btn w-100">CHIUDI</button>
         </div>
@@ -153,6 +154,6 @@
     <!-- JS -->
     <!-- EmailJS SDK -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script type="module" src="js/pages/event.js?v=4"></script>
+    <script type="module" src="js/pages/event.js?v=5"></script>
 </body>
 </html>

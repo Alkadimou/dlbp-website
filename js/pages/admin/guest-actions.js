@@ -1,7 +1,8 @@
 // Admin – azioni sugli iscritti selezionati: eliminazione definitiva e invio dell'email
 // con location segreta e QR code del biglietto (EmailJS, template "ticket_confirm").
+// Il biglietto parte già da solo all'iscrizione: qui serve per reinviarlo o per chi non l'ha ricevuto.
 import { db, doc, getDoc, updateDoc, writeBatch } from "../../core/firebase.js";
-import { sendEmail, EMAIL_TEMPLATES } from "../../core/email.js";
+import { sendTicketEmail } from "../../core/email.js";
 import { showModal, showConfirm } from "../../core/modal.js";
 import { state } from "./state.js";
 import { loadUsers, getSelectedGuestIds } from "./guests.js";
@@ -63,14 +64,11 @@ export function initGuestActions() {
 
         try {
 
-        let eventLocation = "Secret Location";
-        let eventDateStr = "Data Evento";
+        let eventData = {};
         try {
             const eventSnap = await getDoc(doc(db, "events", state.currentEventId));
             if (eventSnap.exists()) {
-                const ed = eventSnap.data();
-                eventLocation = ed.location || "Secret Location";
-                eventDateStr = ed.date || "Data Evento";
+                eventData = eventSnap.data();
             }
         } catch(e) {
             console.error("Failed to fetch event data", e);
@@ -83,13 +81,7 @@ export function initGuestActions() {
 
         for (const user of selectedUsers) {
             try {
-                await sendEmail(EMAIL_TEMPLATES.ticket, {
-                    to_name: user.name,
-                    to_email: user.email,
-                    secret_location: eventLocation,
-                    event_date: eventDateStr,
-                    qr_code_url: `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${user.id}`
-                });
+                await sendTicketEmail(user, eventData);
                 await updateDoc(doc(db, "registrations", user.id), { email_sent: true });
                 successCount++;
             } catch (error) {

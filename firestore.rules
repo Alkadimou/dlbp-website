@@ -47,10 +47,11 @@ service cloud.firestore {
     // Registrations:
     // - Public creation (guestlist registration on site), with validated fields
     // - Admins: full access. Scanner: read and check-in only. PR: read own guests only.
+    // - Public: after registering, may only mark the ticket email as sent (email_sent false -> true).
     match /registrations/{regId} {
       allow create: if isAdmin() || isValidRegistration(request.resource.data);
       allow read: if isAdmin() || isScanner() || isPrFor(resource.data.invited_by);
-      allow update: if isAdmin() || (isScanner() && isCheckIn());
+      allow update: if isAdmin() || (isScanner() && isCheckIn()) || isTicketEmailSent();
       allow delete: if isAdmin();
     }
 
@@ -84,6 +85,13 @@ service cloud.firestore {
         && resource.data.checked_in != true
         && request.resource.data.checked_in == true
         && request.resource.data.check_in_time is timestamp;
+    }
+
+    // Il sito segna che l'email del biglietto è partita: cambia solo email_sent, da false a true
+    function isTicketEmailSent() {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['email_sent'])
+        && resource.data.email_sent == false
+        && request.resource.data.email_sent == true;
     }
 
     // PRs: admins manage them, a PR can read their own entry
