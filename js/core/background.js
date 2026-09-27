@@ -1,5 +1,5 @@
 // Sfondo del sito: elica di DNA in metallo liquido (Three.js) con glitch a scatti.
-// Si attiva su ogni elemento .site-background della pagina. Ogni parola del motto ha due colori
+// Si attiva su ogni elemento .site-background della pagina. Ogni parola del motto ha uno o due colori
 // da luci di club; il colore cambia da solo ogni CYCLE_EVERY glitch, seguendo ORDER (l'arco della serata).
 // ?mood=<colore> o ?mood=<parola> nell'indirizzo sceglie il colore di partenza; il colore
 // raggiunto resta per tutta la visita, anche cambiando pagina.
@@ -9,7 +9,6 @@
 const THREE_URL = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
 
 export const MOODS = {
-    drink:    { word: 'drink',   hex: 0xc8642a, deep: 0x5a1a0c }, // rame
     strobo:   { word: 'drink',   hex: 0xff2a3c, deep: 0x4d0712 }, // rosso strobo
     love:     { word: 'love',    hex: 0x6d3bd8, deep: 0x1f0d4f }, // ultravioletto
     magenta:  { word: 'love',    hex: 0xa3245e, deep: 0x2e0719 }, // bordeaux UV
@@ -19,7 +18,7 @@ export const MOODS = {
     ghiaccio: { word: 'peace',   hex: 0xcfe6ff, deep: 0x34506e }  // ghiaccio, luce del mattino
 };
 const DEFAULT_MOOD = 'breathe';
-const ORDER = ['drink', 'strobo', 'love', 'magenta', 'breathe', 'laser', 'peace', 'ghiaccio'];
+const ORDER = ['strobo', 'love', 'magenta', 'breathe', 'laser', 'peace', 'ghiaccio'];
 const CYCLE_EVERY = 3;
 
 function saveMood(mood) {
@@ -27,8 +26,10 @@ function saveMood(mood) {
 }
 
 function readMood() {
-    const fromUrl = new URLSearchParams(location.search).get('mood');
-    if (MOODS[fromUrl]) {
+    const param = new URLSearchParams(location.search).get('mood');
+    // accetta sia un colore (?mood=laser) sia una parola del motto (?mood=drink → il suo primo colore)
+    const fromUrl = MOODS[param] ? param : ORDER.find((id) => MOODS[id].word === param);
+    if (fromUrl) {
         saveMood(fromUrl);
         return fromUrl;
     }
