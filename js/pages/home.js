@@ -39,7 +39,40 @@ document.addEventListener("DOMContentLoaded", () => {
     initRevealAnimations();
 
     loadEvents();
+    loadNextEventButton();
 });
+
+// Home: mostra il bottone "Prossimo evento" sotto la scritta, se c'è almeno un evento attivo.
+// Tra gli eventi attivi sceglie quello con la data più vicina da oggi in poi.
+async function loadNextEventButton() {
+    const btn = document.getElementById("next-event-btn");
+    if (!btn || !db) return;
+
+    try {
+        const snapshot = await getDocs(query(collection(db, "events")));
+        const activeEvents = [];
+        snapshot.forEach((doc) => {
+            const ev = { id: doc.id, ...doc.data() };
+            if (ev.isActive === true) activeEvents.push(ev);
+        });
+        if (activeEvents.length === 0) return;
+
+        const todayStr = new Date().toLocaleDateString("sv-SE"); // formato AAAA-MM-GG
+        const upcoming = activeEvents
+            .filter(e => e.dateIso && e.dateIso >= todayStr)
+            .sort((a, b) => a.dateIso.localeCompare(b.dateIso));
+        // Se nessun evento attivo ha una data futura, usa il più recente (come la pagina Eventi)
+        const next = upcoming[0] ||
+            activeEvents.sort((a, b) => toMillis(b.createdAt) - toMillis(a.createdAt))[0];
+
+        const prCode = new URLSearchParams(window.location.search).get("pr");
+        const prQuery = prCode ? `&pr=${encodeURIComponent(prCode)}` : "";
+        btn.href = `event.html?id=${encodeURIComponent(next.id)}${prQuery}`;
+        btn.hidden = false;
+    } catch (error) {
+        console.error("Error loading next event:", error);
+    }
+}
 
 async function loadEvents() {
     if (!db) return;
