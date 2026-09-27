@@ -4,3 +4,6 @@ __pycache__/
 # Firestore backups and guest-list scripts contain personal data: keep them local only
 archive/backups/
 scripts/db_guests/
+
+# macOS
+.DS_Store

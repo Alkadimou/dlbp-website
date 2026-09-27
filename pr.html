@@ -130,22 +130,6 @@
         <div class="copyright-bottom-left">© 2026 DLBP — All rights reserved</div>
     </footer>
 
-    <script>
-        // Staff Dropdown Toggle Logic
-        const staffBtn = document.getElementById('staff-btn');
-        const staffDropdown = document.getElementById('staff-dropdown');
-
-        if (staffBtn && staffDropdown) {
-            staffBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                staffDropdown.classList.toggle('show');
-            });
-
-            document.addEventListener('click', () => {
-                staffDropdown.classList.remove('show');
-            });
-        }
-    </script>
-    <script type="module" src="js/pr.js?v=2"></script>
+    <script type="module" src="js/pages/pr.js?v=3"></script>
 </body>
 </html>

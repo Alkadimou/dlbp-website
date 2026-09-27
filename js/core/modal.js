@@ -1,4 +1,4 @@
-// utils.js
+// Finestre di avviso e di conferma (showModal / showConfirm) usate al posto di alert() e confirm().
 
 function getOverlay() {
     let overlay = document.getElementById('custom-modal-overlay');

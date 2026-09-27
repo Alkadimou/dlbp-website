@@ -1,40 +1,13 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, serverTimestamp, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+// Pagina event.html?id=<evento>: mostra l'evento, chiede la password d'ingresso (se c'è)
+// e registra l'iscritto in Firestore ("registrations"), poi invia l'email di conferma.
+// Un link con ?pr=<codice> associa l'iscrizione a quel PR (campo invited_by).
+import { db, serverTimestamp, doc, getDoc, setDoc } from "../core/firebase.js";
+import { initEmailJs, isEmailJsLoaded, sendEmail, EMAIL_TEMPLATES } from "../core/email.js";
+import { initStaffMenu } from "../core/nav.js";
+import { initRevealAnimations } from "../core/reveal.js";
 
-// TODO: Replace with your actual Firebase configuration from the Firebase Console
-const firebaseConfig = {
-  apiKey: "AIzaSyD6THmnRAG_8YL1PLWSL7I2_WKLv-fioWk",
-  authDomain: "dlbp-website.firebaseapp.com",
-  projectId: "dlbp-website",
-  storageBucket: "dlbp-website.firebasestorage.app",
-  messagingSenderId: "51111322366",
-  appId: "1:51111322366:web:813b96994d6a1f2fbefbaf",
-  measurementId: "G-6HC9LRZWV9"
-};
-
-// EmailJS config
-const EMAILJS_PUBLIC_KEY = "XIMzE429r_DY-U4nl";
-const EMAILJS_SERVICE_ID = "service_ndbmwte";
-const EMAILJS_REGISTRATION_TEMPLATE_ID = "reg_pending";
-
-// Initialize EmailJS
-if (typeof emailjs !== 'undefined') {
-    emailjs.init(EMAILJS_PUBLIC_KEY);
-}
-
-// Initialize Firebase only if the config is updated
-let app;
-let db;
-try {
-    if (firebaseConfig.apiKey !== "YOUR_API_KEY") {
-        app = initializeApp(firebaseConfig);
-        db = getFirestore(app);
-    } else {
-        console.warn("Firebase config is missing. Database operations will be simulated.");
-    }
-} catch (e) {
-    console.error("Firebase initialization error", e);
-}
+initStaffMenu();
+initEmailJs();
 
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("registration-form");
@@ -282,15 +255,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Send email confirmation
             try {
-                if (typeof emailjs !== 'undefined' && EMAILJS_PUBLIC_KEY !== "YOUR_EMAILJS_PUBLIC_KEY") {
-                    await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_REGISTRATION_TEMPLATE_ID, {
+                if (isEmailJsLoaded()) {
+                    await sendEmail(EMAIL_TEMPLATES.registrationPending, {
                         to_name: name,
                         to_email: email,
                         event_name: currentEventName || "Evento"
                     });
                     console.log("Email inviata con successo.");
-                } else if (typeof emailjs !== 'undefined') {
-                    console.warn("Invio email saltato: EmailJS non è configurato.");
                 }
             } catch (err) {
                 console.error("Errore invio email di registrazione:", err);
@@ -337,13 +308,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // --- WOW FACTOR: Loader & Reveal Animations ---
+    const REVEAL_MARGIN = "0px 0px -50px 0px";
     // Loader Logic
     const loader = document.getElementById('initial-loader');
     
     // Se il loader è già stato mostrato in questa sessione, lo saltiamo
     if (loader && sessionStorage.getItem('visited') === 'true') {
         loader.classList.add("hidden");
-        initRevealAnimations();
+        initRevealAnimations(REVEAL_MARGIN);
     } else if (loader) {
         const logo = loader.querySelector('.loader-logo');
         // FASE 1: Caricamento iniziale (il logo è visibile)
@@ -363,28 +335,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 sessionStorage.setItem('visited', 'true');
                 
                 // Ora avviamo le animazioni di ingresso (.reveal)
-                initRevealAnimations();
+                initRevealAnimations(REVEAL_MARGIN);
             }, 1400); 
         }, 1500); // <-- Tempo di caricamento iniziale col logo visibile
 
     } else {
-        initRevealAnimations();
-    }
-
-    function initRevealAnimations() {
-        const reveals = document.querySelectorAll('.reveal');
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, {
-            threshold: 0.1,
-            rootMargin: "0px 0px -50px 0px"
-        });
-
-        reveals.forEach(el => observer.observe(el));
+        initRevealAnimations(REVEAL_MARGIN);
     }
 });

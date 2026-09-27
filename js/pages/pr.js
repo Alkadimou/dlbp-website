@@ -1,26 +1,14 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, query, where, getDocs, onSnapshot, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+// Pagina pr.html: ogni PR vede in tempo reale gli iscritti arrivati con il proprio link (?pr=<codice>)
+// per l'evento attivo, e può copiare il link d'invito.
+// Accesso: account staff con ruolo "pr" e campo prCode; il PR deve essere attivo nella collezione "prs".
+import { db, collection, query, where, getDocs, onSnapshot } from "../core/firebase.js";
+import { auth, signOut } from "../core/firebase-auth.js";
+import { setupStaffLogin } from "../core/staff-login.js";
+import { setupSortableHeaders, compareValues } from "../core/table-sort.js";
+import { escapeHtml } from "../core/html.js";
+import { initStaffMenu } from "../core/nav.js";
 
-// TODO: Replace with your actual Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyD6THmnRAG_8YL1PLWSL7I2_WKLv-fioWk",
-  authDomain: "dlbp-website.firebaseapp.com",
-  projectId: "dlbp-website",
-  storageBucket: "dlbp-website.firebasestorage.app",
-  messagingSenderId: "51111322366",
-  appId: "1:51111322366:web:813b96994d6a1f2fbefbaf",
-  measurementId: "G-6HC9LRZWV9"
-};
-
-let app, db, auth;
-try {
-    app = initializeApp(firebaseConfig);
-    db = getFirestore(app);
-    auth = getAuth(app);
-} catch (e) {
-    console.error("Firebase initialization error", e);
-}
+initStaffMenu();
 
 document.addEventListener("DOMContentLoaded", () => {
     const loginSection = document.getElementById("login-section");
@@ -42,37 +30,10 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentEventId = "act_1"; // Definisci come predefinito
     let unsubscribe = null;
     let currentPrCode = "";
-    let currentSortField = "timestamp";
-    let currentSortOrder = "desc";
+    const sort = { field: "timestamp", order: "desc" };
     let registrationsList = [];
 
-    // Sort table headers setup
-    const prTableHead = document.querySelector(".users-table thead");
-    if (prTableHead) {
-        prTableHead.addEventListener("click", (e) => {
-            const th = e.target.closest("th");
-            if (th && th.dataset.sort) {
-                const field = th.dataset.sort;
-                if (currentSortField === field) {
-                    currentSortOrder = currentSortOrder === "asc" ? "desc" : "asc";
-                } else {
-                    currentSortField = field;
-                    currentSortOrder = "asc";
-                }
-                updateSortHeaders(prTableHead);
-                renderPrTable();
-            }
-        });
-    }
-
-    function updateSortHeaders(thead) {
-        thead.querySelectorAll("th[data-sort]").forEach(th => {
-            th.innerHTML = th.innerHTML.replace(/ [▲▼]/g, "");
-            if (th.dataset.sort === currentSortField) {
-                th.innerHTML += currentSortOrder === "asc" ? " ▲" : " ▼";
-            }
-        });
-    }
+    setupSortableHeaders(document.querySelector(".users-table thead"), sort, () => renderPrTable());
 
     // Load active event
     async function loadActiveEvent() {
@@ -88,61 +49,22 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    function showLoginError(text) {
-        loginMessage.textContent = text;
-        loginMessage.className = "form-message error";
-        loginMessage.classList.remove("hidden");
-    }
-
-    // Firebase Auth: the account needs role "pr" and its prCode in /staff/{email}
     const activeEventLoaded = loadActiveEvent();
-    onAuthStateChanged(auth, async (user) => {
-        if (!user) {
+    const { showLoginError } = setupStaffLogin({
+        emailInput,
+        passwordInput,
+        loginBtn,
+        loginMessage,
+        isAllowed: (profile) => profile.role === "pr" && !!profile.prCode,
+        deniedMessage: "Account non abilitato all'area PR.",
+        onSignedIn: async (profile) => {
+            await activeEventLoaded;
+            await openDashboard(profile.prCode);
+        },
+        onSignedOut: () => {
             loginSection.classList.remove("hidden");
             dashboardSection.classList.add("hidden");
-            return;
         }
-        await activeEventLoaded;
-        try {
-            const staffSnap = await getDoc(doc(db, "staff", user.email.toLowerCase()));
-            const staff = staffSnap.exists() ? staffSnap.data() : {};
-            if (staff.role !== "pr" || !staff.prCode) {
-                await signOut(auth);
-                showLoginError("Account non abilitato all'area PR.");
-                return;
-            }
-            await openDashboard(staff.prCode);
-        } catch (error) {
-            console.error("Errore login PR:", error);
-            await signOut(auth);
-            showLoginError("Errore di connessione al database.");
-        }
-    });
-
-    loginBtn.addEventListener("click", async () => {
-        const email = emailInput.value.trim();
-        const pwd = passwordInput.value;
-        if (!email || !pwd) {
-            showLoginError("Inserisci email e password.");
-            return;
-        }
-        loginBtn.disabled = true;
-        try {
-            await signInWithEmailAndPassword(auth, email, pwd);
-            // onAuthStateChanged will open the dashboard
-        } catch (error) {
-            console.error("Login error:", error);
-            showLoginError("Credenziali errate o utente non trovato.");
-        } finally {
-            loginBtn.disabled = false;
-        }
-    });
-
-    passwordInput.addEventListener("keyup", (e) => {
-        if (e.key === "Enter") loginBtn.click();
-    });
-    emailInput.addEventListener("keyup", (e) => {
-        if (e.key === "Enter") passwordInput.focus();
     });
 
     async function openDashboard(code) {
@@ -202,16 +124,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    function escapeHtml(str) {
-        if (!str) return "";
-        return str
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-    }
-
     function startListening(prCode) {
         if (!db) return;
         
@@ -253,23 +165,21 @@ document.addEventListener("DOMContentLoaded", () => {
         // Sort registrations
         registrationsList.sort((a, b) => {
             let valA, valB;
-            if (currentSortField === "timestamp") {
+            if (sort.field === "timestamp") {
                 valA = a.timestamp ? (typeof a.timestamp.toDate === 'function' ? a.timestamp.toDate().getTime() : new Date(a.timestamp).getTime()) : 0;
                 valB = b.timestamp ? (typeof b.timestamp.toDate === 'function' ? b.timestamp.toDate().getTime() : new Date(b.timestamp).getTime()) : 0;
-            } else if (currentSortField === "eventId") {
+            } else if (sort.field === "eventId") {
                 valA = (eventsMap[a.eventId] || "").toLowerCase();
                 valB = (eventsMap[b.eventId] || "").toLowerCase();
-            } else if (currentSortField === "checked_in") {
+            } else if (sort.field === "checked_in") {
                 valA = a.checked_in ? 1 : 0;
                 valB = b.checked_in ? 1 : 0;
             } else {
-                valA = (a[currentSortField] || "").toString().toLowerCase();
-                valB = (b[currentSortField] || "").toString().toLowerCase();
+                valA = (a[sort.field] || "").toString().toLowerCase();
+                valB = (b[sort.field] || "").toString().toLowerCase();
             }
 
-            if (valA < valB) return currentSortOrder === "asc" ? -1 : 1;
-            if (valA > valB) return currentSortOrder === "asc" ? 1 : -1;
-            return 0;
+            return compareValues(valA, valB, sort.order);
         });
 
         tbody.innerHTML = "";

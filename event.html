@@ -143,24 +143,8 @@
     </div>
 
     <!-- JS -->
-    <script>
-        // Staff Dropdown Toggle Logic
-        const staffBtn = document.getElementById('staff-btn');
-        const staffDropdown = document.getElementById('staff-dropdown');
-
-        if (staffBtn && staffDropdown) {
-            staffBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                staffDropdown.classList.toggle('show');
-            });
-
-            document.addEventListener('click', () => {
-                staffDropdown.classList.remove('show');
-            });
-        }
-    </script>
     <!-- EmailJS SDK -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script type="module" src="js/app.js"></script>
+    <script type="module" src="js/pages/event.js?v=1"></script>
 </body>
 </html>
