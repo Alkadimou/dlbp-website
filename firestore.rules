@@ -55,9 +55,10 @@ service cloud.firestore {
     }
 
     function isValidRegistration(data) {
-      return data.keys().hasOnly(['name', 'email', 'eventId', 'invited_by', 'checked_in',
-                                  'status', 'email_sent', 'privacy_consent', 'timestamp'])
+      return data.keys().hasOnly(['name', 'first_name', 'last_name', 'email', 'eventId', 'invited_by',
+                                  'checked_in', 'status', 'email_sent', 'privacy_consent', 'timestamp'])
         && data.name is string && data.name.size() > 0 && data.name.size() <= 100
+        && hasValidNameParts(data)
         && data.email is string && data.email.size() <= 254
         && data.email.matches('^[^@ ]+@[^@ ]+[.][^@ ]+$')
         && data.eventId is string
@@ -68,6 +69,16 @@ service cloud.firestore {
         && data.email_sent == false
         && data.privacy_consent == true
         && data.timestamp == request.time;
+    }
+
+    // Nome e cognome separati (facoltativi, per le pagine vecchie ancora in cache):
+    // se ci sono, devono esserci entrambi e "name" deve essere "NOME COGNOME".
+    function hasValidNameParts(data) {
+      return (!('first_name' in data) && !('last_name' in data))
+        || ('first_name' in data && 'last_name' in data
+            && data.first_name is string && data.first_name.size() > 0 && data.first_name.size() <= 50
+            && data.last_name is string && data.last_name.size() > 0 && data.last_name.size() <= 50
+            && data.name == data.first_name + ' ' + data.last_name);
     }
 
     // Scanner may only flip checked_in to true and set the check-in time (as a Firestore Timestamp)

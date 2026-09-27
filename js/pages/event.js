@@ -196,11 +196,11 @@ document.addEventListener("DOMContentLoaded", () => {
         // Se c'è il messaggio chiuso visibile, blocca
         if (closedMessage.style.display === "block") return;
         
-        // Nome e cognome sono due caselle, ma si salvano insieme nel campo "name" ("NOME COGNOME"),
-        // come si aspettano admin, scanner, area PR, email e le regole del database.
-        const firstName = document.getElementById("first-name").value.trim().replace(/\s+/g, " ");
-        const lastName = document.getElementById("last-name").value.trim().replace(/\s+/g, " ");
-        const name = `${firstName} ${lastName}`.toUpperCase();
+        // Nome e cognome si salvano separati (first_name, last_name) e anche insieme nel campo
+        // "name" ("NOME COGNOME"), che usano admin, scanner, area PR ed email.
+        const firstName = document.getElementById("first-name").value.trim().replace(/\s+/g, " ").toUpperCase();
+        const lastName = document.getElementById("last-name").value.trim().replace(/\s+/g, " ").toUpperCase();
+        const name = `${firstName} ${lastName}`;
         const email = document.getElementById("email").value.trim();
         const privacyConsent = document.getElementById("privacy-consent").checked;
 
@@ -215,7 +215,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         // Same limits as isValidRegistration() in firestore.rules
-        if (name.length > 100 || email.length > 254 || !/^[^@ ]+@[^@ ]+[.][^@ ]+$/.test(email)) {
+        if (firstName.length > 50 || lastName.length > 50 || name.length > 100 || email.length > 254 || !/^[^@ ]+@[^@ ]+[.][^@ ]+$/.test(email)) {
             showMessage("Controlla nome ed email.", "error");
             return;
         }
@@ -235,6 +235,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 try {
                     await setDoc(doc(db, "registrations", regId), {
                         name: name,
+                        first_name: firstName,
+                        last_name: lastName,
                         email: email,
                         eventId: currentEventId,
                         invited_by: prCode ? prCode.slice(0, 50) : null, // Track PR referrals
