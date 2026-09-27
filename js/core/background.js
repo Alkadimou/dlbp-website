@@ -72,9 +72,10 @@ void main(){
 const BG_VERT = 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }';
 // Sfumatura come nei flyer: il colore della serata sale verso il nero
 const BG_FRAG = `
-uniform vec3 uMood; uniform vec3 uDeep; uniform vec2 uGlow; varying vec2 vUv;
+uniform vec3 uMood; uniform vec3 uDeep; uniform vec2 uGlow; uniform float uAspect; uniform float uRadius; varying vec2 vUv;
 void main(){
-  float d = smoothstep(0.62, 0.0, length((vUv - uGlow) * vec2(1.0, 0.8)));
+  // distanza misurata in altezze di schermo, così il bagliore resta rotondo su ogni formato
+  float d = smoothstep(uRadius, 0.0, length((vUv - uGlow) * vec2(uAspect, 0.8)));
   vec3 c = mix(vec3(0.0), uDeep * 0.55, smoothstep(0.0, 0.8, d));
   c += uMood * 0.22 * pow(d, 3.0);
   gl_FragColor = linearToOutputTexel(vec4(c, 1.0));
@@ -151,9 +152,10 @@ function createView(THREE, host) {
 
     const bgMat = new THREE.ShaderMaterial({
         depthWrite: false, toneMapped: false, vertexShader: BG_VERT, fragmentShader: BG_FRAG,
-        uniforms: { uMood: { value: linear(mood.hex) }, uDeep: { value: linear(mood.deep) }, uGlow: { value: new THREE.Vector2(0.58, 0.4) } }
+        uniforms: { uMood: { value: linear(mood.hex) }, uDeep: { value: linear(mood.deep) }, uGlow: { value: new THREE.Vector2(0.58, 0.4) }, uAspect: { value: 1 }, uRadius: { value: 0.62 } }
     });
-    const bg = new THREE.Mesh(new THREE.PlaneGeometry(17, 17), bgMat);
+    // il pannello viene ridimensionato in resize() per coprire sempre tutto lo schermo
+    const bg = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), bgMat);
     bg.position.z = -9;
     scene.add(bg);
 
@@ -263,8 +265,13 @@ function createView(THREE, host) {
         holder.rotation.z = landscape ? -1.0 : -0.4;
         holder.position.x = landscape ? 1.2 : 0.3;
         camera.position.set(0, 0, landscape ? 12 : 16.5);
-        bgMat.uniforms.uGlow.value.set(landscape ? 0.62 : 0.55, landscape ? 0.38 : 0.42);
         camera.updateProjectionMatrix();
+        const dist = camera.position.z - bg.position.z;
+        const viewH = 2 * dist * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+        bg.scale.set(viewH * camera.aspect * 1.05, viewH * 1.05, 1);
+        bgMat.uniforms.uAspect.value = camera.aspect;
+        bgMat.uniforms.uRadius.value = landscape ? 0.9 : 0.62;
+        bgMat.uniforms.uGlow.value.set(landscape ? 0.64 : 0.55, landscape ? 0.4 : 0.42);
     }
     resize();
     window.addEventListener('resize', resize);
