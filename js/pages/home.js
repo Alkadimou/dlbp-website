@@ -143,7 +143,7 @@ async function loadEvents() {
                     card.className = 'event-card-item fade-in';
                     card.style.opacity = '0.5';
                     
-                    const flyerHtml = ev.flyerUrl ? `<img src="${ev.flyerUrl}" alt="Locandina" class="event-card-img" style="filter: grayscale(100%);">` : '';
+                    const flyerHtml = ev.flyerUrl ? `<img src="${ev.flyerUrl}" alt="Locandina" class="event-card-img">` : '';
 
                     card.innerHTML = `
                         <div class="event-card-inner">
