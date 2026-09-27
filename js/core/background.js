@@ -14,11 +14,10 @@ export const MOODS = {
     magenta:  { word: 'love',    hex: 0xa3245e, deep: 0x2e0719 }, // bordeaux UV
     breathe:  { word: 'breathe', hex: 0x1fa39a, deep: 0x062f35 }, // petrolio
     laser:    { word: 'breathe', hex: 0x3d7bff, deep: 0x0b1f66 }, // blu laser
-    peace:    { word: 'peace',   hex: 0xe9e3d3, deep: 0xb89350 }, // argento e alba
     ghiaccio: { word: 'peace',   hex: 0xcfe6ff, deep: 0x34506e }  // ghiaccio, luce del mattino
 };
 const DEFAULT_MOOD = 'breathe';
-const ORDER = ['strobo', 'love', 'magenta', 'breathe', 'laser', 'peace', 'ghiaccio'];
+const ORDER = ['strobo', 'love', 'magenta', 'breathe', 'laser', 'ghiaccio'];
 const CYCLE_EVERY = 3;
 
 function saveMood(mood) {
