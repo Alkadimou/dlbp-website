@@ -244,11 +244,6 @@ function renderTable() {
             }
         }
     };
-
-    // Trigger search filter if there's already text in the input
-    if (searchInput && searchInput.value) {
-        searchInput.dispatchEvent(new Event('input'));
-    }
 }
 
 function updatePrFilterDropdown() {
