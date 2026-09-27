@@ -15,6 +15,7 @@ Dati su Firebase (progetto `dlbp-website`, piano gratuito Spark): Firestore + Au
 
 ## Regole di lavoro
 - Ogni modifica va su un branch e in una PR verso `main`, mai commit diretti su `main`.
+- Se cambiano i campi del modulo di iscrizione (`event.html`) o le regole delle iscrizioni, aumentare insieme `FORM_VERSION` in `js/pages/event.js` e `registrationForm` in `js/form-version.json`: chi ha la pagina vecchia vedrà "ricarica la pagina".
 - Quando cambiano gli script JS, aumentare la versione `?v=` nel tag `<script type="module">` della pagina (il file d'ingresso). I moduli importati possono restare in cache fino a ~10 minuti.
 - Nell'anteprima, `pr.html` scollega gli account che non sono PR: non aprirla mentre si è collegati come admin.
 - Il repository è pubblico: mai committare credenziali, backup del database o dati personali degli iscritti (`archive/backups/` e `scripts/db_guests/` sono in `.gitignore`).
