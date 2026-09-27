@@ -2340,6 +2340,10 @@ html:has(.modal:not(.hidden)) {
         width: 100%;
         box-sizing: border-box;
     }
+    /* Se i bottoni sono dispari, l'ultimo occupa tutta la riga */
+    .summary-bottom-actions .submit-btn:last-child:nth-child(odd) {
+        grid-column: 1 / -1;
+    }
     .toolbar-actions .submit-btn,
     .summary-bottom-actions .submit-btn {
         width: 100% !important;

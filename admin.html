@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DLBP | Admin Panel</title>
     <link rel="icon" href="assets/logo.jpg" type="image/jpeg">
-    <link rel="stylesheet" href="css/styles.css?v=16">
+    <link rel="stylesheet" href="css/styles.css?v=17">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -104,6 +104,7 @@
                     <button id="edit-event-btn" class="submit-btn">MODIFICA</button>
                     <button id="delete-event-btn" class="submit-btn btn-danger">ELIMINA</button>
                     <button id="set-active-btn" class="submit-btn btn-success">RENDI ATTIVO</button>
+                    <button id="toggle-list-btn" class="submit-btn">CHIUDI LISTA</button>
                 </div>
             </div>
 
@@ -248,13 +249,6 @@
             </div>
             
             <div class="flex-row-center mt-1-5 w-100">
-                <div class="settings-item">
-                    <label>LISTE APERTE</label>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="list-toggle" checked>
-                        <span class="slider"></span>
-                    </label>
-                </div>
                 <div class="settings-item">
                     <label>CAPIENZA LOCALE</label>
                     <input type="number" id="capacity-input" class="capacity-input" value="100">
@@ -408,6 +402,6 @@
         <div class="copyright-bottom-left">© 2026 DLBP — All rights reserved</div>
     </footer>
 
-    <script type="module" src="js/pages/admin/main.js?v=7"></script>
+    <script type="module" src="js/pages/admin/main.js?v=8"></script>
 </body>
 </html>
