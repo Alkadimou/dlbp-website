@@ -196,11 +196,15 @@ document.addEventListener("DOMContentLoaded", () => {
         // Se c'è il messaggio chiuso visibile, blocca
         if (closedMessage.style.display === "block") return;
         
-        const name = document.getElementById("name").value.trim().toUpperCase();
+        // Nome e cognome sono due caselle, ma si salvano insieme nel campo "name" ("NOME COGNOME"),
+        // come si aspettano admin, scanner, area PR, email e le regole del database.
+        const firstName = document.getElementById("first-name").value.trim().replace(/\s+/g, " ");
+        const lastName = document.getElementById("last-name").value.trim().replace(/\s+/g, " ");
+        const name = `${firstName} ${lastName}`.toUpperCase();
         const email = document.getElementById("email").value.trim();
         const privacyConsent = document.getElementById("privacy-consent").checked;
 
-        if (!name || !email) {
+        if (!firstName || !lastName || !email) {
             showMessage("Tutti i campi sono obbligatori.", "error");
             return;
         }
@@ -270,7 +274,8 @@ document.addEventListener("DOMContentLoaded", () => {
             submitBtn.disabled = false;
             submitBtn.classList.remove("loading-pulse");
             btnText.textContent = "RICHIEDI ACCESSO";
-            document.getElementById("name").value = "";
+            document.getElementById("first-name").value = "";
+            document.getElementById("last-name").value = "";
             document.getElementById("email").value = "";
             
             const modal = document.getElementById("success-modal");
