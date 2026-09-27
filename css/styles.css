@@ -2554,6 +2554,18 @@ html:has(.modal:not(.hidden)) {
     margin-bottom: 1rem;
 }
 
+/* Nome e cognome affiancati (uno sotto l'altro sui telefoni piccoli) */
+.name-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+@media (max-width: 480px) {
+    .name-row {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* Casella privacy: piccola, allineata al testo */
 .privacy-checkbox {
     display: flex;
