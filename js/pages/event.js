@@ -9,6 +9,11 @@ import { initRevealAnimations } from "../core/reveal.js";
 initStaffMenu();
 initEmailJs();
 
+// Versione del modulo di iscrizione. Va aumentata insieme a js/form-version.json ogni volta che
+// cambiano i campi del modulo o le regole delle iscrizioni: chi ha ancora la pagina vecchia
+// vedrà "ricarica la pagina" invece di un errore.
+const FORM_VERSION = 3;
+
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("registration-form");
     const messageDiv = document.getElementById("form-message");
@@ -114,6 +119,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Load active event immediately
     loadActiveEvent();
+
+    // Pagina vecchia (in cache) con il modulo a una sola casella per nome e cognome
+    if (!document.getElementById("first-name")) {
+        showReloadNeeded();
+    }
+
+    // Mostra il messaggio "ricarica la pagina" e trasforma il bottone in "RICARICA LA PAGINA"
+    function showReloadNeeded() {
+        showMessage("Stai usando una versione vecchia del modulo. Ricarica la pagina e riprova.", "error");
+        submitBtn.disabled = false;
+        btnText.textContent = "RICARICA LA PAGINA";
+        submitBtn.onclick = (e) => {
+            e.preventDefault();
+            window.location.reload();
+        };
+    }
+
+    // true se sul sito c'è già una versione più nuova del modulo di questa pagina
+    async function isFormOutdated() {
+        try {
+            const res = await fetch(`js/form-version.json?t=${Date.now()}`, { cache: "no-store" });
+            if (!res.ok) return false;
+            const data = await res.json();
+            return data.registrationForm !== FORM_VERSION;
+        } catch (err) {
+            return false;
+        }
+    }
 
     async function hashPassword(password) {
         try {
@@ -248,6 +281,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     });
                 } catch (writeError) {
                     if (writeError.code !== "permission-denied") throw writeError;
+                    // Rifiuto: o la pagina è vecchia (campi diversi da quelli richiesti) o l'email è già in lista
+                    if (await isFormOutdated()) {
+                        showReloadNeeded();
+                        return;
+                    }
                     showMessage("Questa email risulta già in lista per l'evento.", "error");
                     submitBtn.disabled = false;
                     btnText.textContent = "RICHIEDI ACCESSO";
