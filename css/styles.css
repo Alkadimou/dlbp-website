@@ -741,6 +741,25 @@ html:has(.modal:not(.hidden)) {
     pointer-events: none;
 }
 
+/* Immagine di sfondo sfocata (stessa della home) al posto delle bolle colorate */
+.fluid-background::before {
+    content: '';
+    position: absolute;
+    inset: -40px;
+    background: linear-gradient(rgba(5,5,8,0.55), rgba(5,5,8,0.55)), url('../assets/hero-bg.jpg') center / cover no-repeat;
+    filter: blur(10px);
+}
+
+@media (orientation: portrait) {
+    .fluid-background::before {
+        background-image: linear-gradient(rgba(5,5,8,0.55), rgba(5,5,8,0.55)), url('../assets/hero-bg-portrait.jpg');
+    }
+}
+
+.fluid-background .blob {
+    display: none;
+}
+
 .blob {
     position: absolute;
     border-radius: 50%;
