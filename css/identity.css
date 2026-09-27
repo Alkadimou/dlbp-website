@@ -1,16 +1,12 @@
 /* ==================================================
    IDENTITÀ "CROMO NERO, COLORE VIVO"
    Si carica dopo styles.css e ne sovrascrive colori, caratteri e forme.
-   Il colore della serata (--mood) viene da data-mood su <html>, impostato da js/core/background.js.
+   Il colore della serata (--mood, --mood-deep) lo imposta js/core/background.js su <html>,
+   dove sono definiti gli 8 colori del motto; qui sotto c'è solo quello di partenza.
    ================================================== */
 :root {
-    --drink: #ff6a2b;   --drink-deep: #b3121f;
-    --love: #9b4dff;    --love-deep: #3b1487;
-    --breathe: #36e0d0; --breathe-deep: #0b4f66;
-    --peace: #e9e3d3;   --peace-deep: #b89350;
-
-    --mood: var(--breathe);
-    --mood-deep: var(--breathe-deep);
+    --mood: #36e0d0;
+    --mood-deep: #0b4f66;
 
     --ink: #eceaf4;
     --panel: rgba(5, 5, 8, 0.8);
@@ -23,10 +19,6 @@
     --radius-md: 0;
     --radius-lg: 0;
 }
-:root[data-mood="drink"]   { --mood: var(--drink);   --mood-deep: var(--drink-deep); }
-:root[data-mood="love"]    { --mood: var(--love);    --mood-deep: var(--love-deep); }
-:root[data-mood="breathe"] { --mood: var(--breathe); --mood-deep: var(--breathe-deep); }
-:root[data-mood="peace"]   { --mood: var(--peace);   --mood-deep: var(--peace-deep); }
 
 /* ---------- Sfondo ---------- */
 .site-background {

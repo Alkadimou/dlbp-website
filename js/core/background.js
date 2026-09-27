@@ -1,20 +1,25 @@
 // Sfondo del sito: elica di DNA in metallo liquido (Three.js) con glitch a scatti.
-// Si attiva su ogni elemento .site-background della pagina. Il colore segue la parola del motto
-// e cambia da solo ogni CYCLE_EVERY glitch, nell'ordine della serata (drink → love → breathe → peace).
-// ?mood=drink|love|breathe|peace nell'indirizzo sceglie il colore di partenza; il colore
+// Si attiva su ogni elemento .site-background della pagina. Ogni parola del motto ha due colori
+// da luci di club; il colore cambia da solo ogni CYCLE_EVERY glitch, seguendo ORDER (l'arco della serata).
+// ?mood=<colore> o ?mood=<parola> nell'indirizzo sceglie il colore di partenza; il colore
 // raggiunto resta per tutta la visita, anche cambiando pagina.
+// Il colore arriva al CSS come --mood e --mood-deep su <html>.
 // Con data-lite sull'elemento (scanner) gira in versione leggera.
 
 const THREE_URL = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
 
 export const MOODS = {
-    drink:   { hex: 0xff6a2b, deep: 0xb3121f },
-    love:    { hex: 0x9b4dff, deep: 0x3b1487 },
-    breathe: { hex: 0x36e0d0, deep: 0x0b4f66 },
-    peace:   { hex: 0xe9e3d3, deep: 0xb89350 }
+    drink:    { word: 'drink',   hex: 0xff6a2b, deep: 0xb3121f }, // brace
+    strobo:   { word: 'drink',   hex: 0xff2a3c, deep: 0x4d0712 }, // rosso strobo
+    love:     { word: 'love',    hex: 0x9b4dff, deep: 0x3b1487 }, // viola elettrico
+    magenta:  { word: 'love',    hex: 0xe0338a, deep: 0x4a0a31 }, // magenta scuro, luce UV
+    breathe:  { word: 'breathe', hex: 0x36e0d0, deep: 0x0b4f66 }, // acqua
+    laser:    { word: 'breathe', hex: 0x3d7bff, deep: 0x0b1f66 }, // blu laser
+    peace:    { word: 'peace',   hex: 0xe9e3d3, deep: 0xb89350 }, // argento e alba
+    ghiaccio: { word: 'peace',   hex: 0xcfe6ff, deep: 0x34506e }  // ghiaccio, luce del mattino
 };
 const DEFAULT_MOOD = 'breathe';
-const ORDER = ['drink', 'love', 'breathe', 'peace'];
+const ORDER = ['drink', 'strobo', 'love', 'magenta', 'breathe', 'laser', 'peace', 'ghiaccio'];
 const CYCLE_EVERY = 3;
 
 function saveMood(mood) {
@@ -34,8 +39,16 @@ function readMood() {
     return DEFAULT_MOOD;
 }
 
+const cssHex = (n) => '#' + n.toString(16).padStart(6, '0');
+function setCssMood(m) {
+    const root = document.documentElement;
+    root.dataset.mood = m;
+    root.style.setProperty('--mood', cssHex(MOODS[m].hex));
+    root.style.setProperty('--mood-deep', cssHex(MOODS[m].deep));
+}
+
 const state = { mood: readMood(), glitch: 0, power: 0, seed: 0, lastSeed: 0, burstEnd: 0, nextBurst: 2500, bursts: 0, pending: null, swapAt: 0 };
-document.documentElement.dataset.mood = state.mood;
+setCssMood(state.mood);
 
 const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -328,7 +341,7 @@ function startSequence(el) {
         seq.shift();
         seq.push(BASES[(Math.random() * 4) | 0]);
         const out = seq.slice();
-        const word = state.mood.toUpperCase();
+        const word = MOODS[state.mood].word.toUpperCase();
         const cycle = (performance.now() - t0) % 7000;
         if (cycle > 3800) {
             const start = ((LEN - word.length) / 2) | 0;
@@ -375,7 +388,7 @@ async function init() {
 
     function applyMood(m) {
         state.mood = m;
-        document.documentElement.dataset.mood = m;
+        setCssMood(m);
         saveMood(m);
         views.forEach((v) => v.setMood(m));
     }
@@ -391,12 +404,12 @@ async function init() {
                 state.burstEnd = t + 460;
                 state.pending = ORDER[(ORDER.indexOf(state.mood) + 1) % ORDER.length];
                 state.swapAt = t + 170;
-                state.nextBurst = t + 2000 + Math.random() * 2000;
+                state.nextBurst = t + 2500 + Math.random() * 2500;
             } else {
                 state.power = 0.3 + Math.random() * 0.7;
                 state.burstEnd = t + 90 + Math.random() * 340;
                 // a volte un secondo colpo subito dopo, come un segnale che salta
-                state.nextBurst = Math.random() < 0.3 ? t + 420 : t + 1800 + Math.random() * 2000;
+                state.nextBurst = Math.random() < 0.3 ? t + 420 : t + 2200 + Math.random() * 2600;
             }
         }
         if (state.pending && t >= state.swapAt) {
