@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, query, where, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, query, where, getDocs, onSnapshot, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 // TODO: Replace with your actual Firebase configuration
 const firebaseConfig = {
@@ -12,10 +13,11 @@ const firebaseConfig = {
   measurementId: "G-6HC9LRZWV9"
 };
 
-let app, db;
+let app, db, auth;
 try {
     app = initializeApp(firebaseConfig);
     db = getFirestore(app);
+    auth = getAuth(app);
 } catch (e) {
     console.error("Firebase initialization error", e);
 }
@@ -23,7 +25,8 @@ try {
 document.addEventListener("DOMContentLoaded", () => {
     const loginSection = document.getElementById("login-section");
     const dashboardSection = document.getElementById("dashboard-section");
-    const prCodeInput = document.getElementById("pr-code");
+    const emailInput = document.getElementById("pr-email");
+    const passwordInput = document.getElementById("pr-password");
     const loginBtn = document.getElementById("login-btn");
     const loginMessage = document.getElementById("login-message");
     const logoutBtn = document.getElementById("logout-btn");
@@ -85,71 +88,94 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    loadActiveEvent().then(() => {
-        // Check session
-        const savedPr = sessionStorage.getItem("dlbp_pr_code");
-        if (savedPr) {
-            login(savedPr);
-        }
-    });
-
-    loginBtn.addEventListener("click", () => {
-        const code = prCodeInput.value.trim().toLowerCase();
-        if (code.length < 2) {
-            loginMessage.textContent = "Inserisci un codice valido.";
-            loginMessage.className = "form-message error";
-            loginMessage.classList.remove("hidden");
-            return;
-        }
-        login(code);
-    });
-
-    prCodeInput.addEventListener("keyup", (e) => {
-        if (e.key === "Enter") loginBtn.click();
-    });
-
-    async function login(code) {
-        if (!db) return;
-        
-        try {
-            const prsQuery = query(collection(db, "prs"), where("code", "==", code), where("isActive", "==", true));
-            const prsSnap = await getDocs(prsQuery);
-            if (prsSnap.empty) {
-                loginMessage.textContent = "Codice PR non valido o disabilitato.";
-                loginMessage.className = "form-message error";
-                loginMessage.classList.remove("hidden");
-                return;
-            }
-            
-            const prData = prsSnap.docs[0].data();
-            const prName = prData.name;
-
-            currentPrCode = code;
-            sessionStorage.setItem("dlbp_pr_code", code);
-            
-            loginSection.classList.add("hidden");
-            dashboardSection.classList.remove("hidden");
-            document.getElementById("app-main").style.maxWidth = "800px";
-            
-            prWelcome.textContent = `DASHBOARD PR: ${prName.toUpperCase()}`;
-            
-            // Generate invite link
-            const baseUrl = window.location.origin + '/';
-            inviteLinkInput.value = `${baseUrl}?pr=${code}`;
-
-            await loadAllEvents();
-            startListening(code);
-        } catch (error) {
-            console.error("Errore login PR:", error);
-            loginMessage.textContent = "Errore di connessione al database.";
-            loginMessage.className = "form-message error";
-            loginMessage.classList.remove("hidden");
-        }
+    function showLoginError(text) {
+        loginMessage.textContent = text;
+        loginMessage.className = "form-message error";
+        loginMessage.classList.remove("hidden");
     }
 
-    logoutBtn.addEventListener("click", () => {
-        sessionStorage.removeItem("dlbp_pr_code");
+    // Firebase Auth: the account needs role "pr" and its prCode in /staff/{email}
+    const activeEventLoaded = loadActiveEvent();
+    onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+            loginSection.classList.remove("hidden");
+            dashboardSection.classList.add("hidden");
+            return;
+        }
+        await activeEventLoaded;
+        try {
+            const staffSnap = await getDoc(doc(db, "staff", user.email.toLowerCase()));
+            const staff = staffSnap.exists() ? staffSnap.data() : {};
+            if (staff.role !== "pr" || !staff.prCode) {
+                await signOut(auth);
+                showLoginError("Account non abilitato all'area PR.");
+                return;
+            }
+            await openDashboard(staff.prCode);
+        } catch (error) {
+            console.error("Errore login PR:", error);
+            await signOut(auth);
+            showLoginError("Errore di connessione al database.");
+        }
+    });
+
+    loginBtn.addEventListener("click", async () => {
+        const email = emailInput.value.trim();
+        const pwd = passwordInput.value;
+        if (!email || !pwd) {
+            showLoginError("Inserisci email e password.");
+            return;
+        }
+        loginBtn.disabled = true;
+        try {
+            await signInWithEmailAndPassword(auth, email, pwd);
+            // onAuthStateChanged will open the dashboard
+        } catch (error) {
+            console.error("Login error:", error);
+            showLoginError("Credenziali errate o utente non trovato.");
+        } finally {
+            loginBtn.disabled = false;
+        }
+    });
+
+    passwordInput.addEventListener("keyup", (e) => {
+        if (e.key === "Enter") loginBtn.click();
+    });
+    emailInput.addEventListener("keyup", (e) => {
+        if (e.key === "Enter") passwordInput.focus();
+    });
+
+    async function openDashboard(code) {
+        const prsQuery = query(collection(db, "prs"), where("code", "==", code), where("isActive", "==", true));
+        const prsSnap = await getDocs(prsQuery);
+        if (prsSnap.empty) {
+            await signOut(auth);
+            showLoginError("Codice PR non valido o disabilitato.");
+            return;
+        }
+
+        const prData = prsSnap.docs[0].data();
+        const prName = prData.name;
+
+        currentPrCode = code;
+
+        loginSection.classList.add("hidden");
+        dashboardSection.classList.remove("hidden");
+        document.getElementById("app-main").style.maxWidth = "800px";
+
+        prWelcome.textContent = `DASHBOARD PR: ${prName.toUpperCase()}`;
+
+        // Generate invite link
+        const baseUrl = window.location.origin + '/';
+        inviteLinkInput.value = `${baseUrl}?pr=${code}`;
+
+        await loadAllEvents();
+        startListening(code);
+    }
+
+    logoutBtn.addEventListener("click", async () => {
         if (unsubscribe) unsubscribe();
+        await signOut(auth);
         window.location.href = "pr.html";
     });
 

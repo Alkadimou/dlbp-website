@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getFirestore, doc, getDoc, updateDoc, collection, query, where, getCountFromServer, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 // TODO: Replace with your actual Firebase config
 const firebaseConfig = {
@@ -13,9 +14,11 @@ const firebaseConfig = {
 };
 
 let db;
+let auth;
 try {
     const app = initializeApp(firebaseConfig);
     db = getFirestore(app);
+    auth = getAuth(app);
 } catch (e) {
     console.error("Firebase init error", e);
 }
@@ -37,34 +40,60 @@ document.addEventListener("DOMContentLoaded", () => {
     let unsubCounter = null;
 
     // --- LOGIN LOGIC ---
-    const SECRET_HASH = "871c074e5911bd5418aa264ca0b0b0e09705189f84ce28d415d1fad0dcadda15"; // Hash of "dlbpscan"
+    // Firebase Auth: the account needs role "scanner" or "admin" in /staff/{email}
+    const emailInput = document.getElementById("scanner-email");
 
-    async function hashPassword(password) {
-        const encoder = new TextEncoder();
-        const data = encoder.encode(password);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    function showLoginError(text) {
+        loginMessage.textContent = text;
+        loginMessage.className = "form-message error";
+        loginMessage.classList.remove("hidden");
     }
 
-    if (sessionStorage.getItem("dlbp_scanner_auth") === "true") {
+    let scannerStarted = false;
+    onAuthStateChanged(auth, async (user) => {
+        if (!user) {
+            loginSection.classList.remove("hidden");
+            scannerSection.classList.add("hidden");
+            return;
+        }
+        try {
+            const staffSnap = await getDoc(doc(db, "staff", user.email.toLowerCase()));
+            const role = staffSnap.exists() ? staffSnap.data().role : null;
+            if (role !== "scanner" && role !== "admin") {
+                await signOut(auth);
+                showLoginError("Account non abilitato allo scanner.");
+                return;
+            }
+        } catch (error) {
+            console.error("Error checking staff role:", error);
+            await signOut(auth);
+            showLoginError("Errore di connessione al database.");
+            return;
+        }
         loginSection.classList.add("hidden");
         scannerSection.classList.remove("hidden");
-        startScanner();
-    }
+        if (!scannerStarted) {
+            scannerStarted = true;
+            startScanner();
+        }
+    });
 
     loginBtn.addEventListener("click", async () => {
+        const email = emailInput.value.trim();
         const pwd = passwordInput.value;
-        const hashedInput = await hashPassword(pwd);
-
-        if (hashedInput === SECRET_HASH) { 
-            sessionStorage.setItem("dlbp_scanner_auth", "true");
-            loginSection.classList.add("hidden");
-            scannerSection.classList.remove("hidden");
-            startScanner();
-        } else {
-            loginMessage.textContent = "Accesso negato.";
-            loginMessage.className = "form-message error";
+        if (!email || !pwd) {
+            showLoginError("Inserisci email e password.");
+            return;
+        }
+        loginBtn.disabled = true;
+        try {
+            await signInWithEmailAndPassword(auth, email, pwd);
+            // onAuthStateChanged will handle the UI switch
+        } catch (error) {
+            console.error("Login error:", error);
+            showLoginError("Accesso negato.");
+        } finally {
+            loginBtn.disabled = false;
         }
     });
 
@@ -73,11 +102,16 @@ document.addEventListener("DOMContentLoaded", () => {
             loginBtn.click();
         }
     });
+    emailInput.addEventListener("keyup", (e) => {
+        if (e.key === "Enter") {
+            passwordInput.focus();
+        }
+    });
 
     const logoutBtn = document.getElementById("logout-btn");
     if (logoutBtn) {
-        logoutBtn.addEventListener("click", () => {
-            sessionStorage.removeItem("dlbp_scanner_auth");
+        logoutBtn.addEventListener("click", async () => {
+            await signOut(auth);
             window.location.href = "scanner.html";
         });
     }

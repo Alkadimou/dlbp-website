@@ -1,3 +1,4 @@
+import os
 from playwright.sync_api import sync_playwright
 
 def test_pr():
@@ -13,8 +14,10 @@ def test_pr():
         print("Navigating to pr.html...")
         page.goto("http://127.0.0.1:8080/pr.html")
 
-        print("Filling PR login with testpr123...")
-        page.fill("#pr-code", "testpr123")
+        # Credentials of a staff account with role "pr" (never commit them)
+        print("Filling PR login...")
+        page.fill("#pr-email", os.environ["DLBP_PR_EMAIL"])
+        page.fill("#pr-password", os.environ["DLBP_PR_PASSWORD"])
         page.click("#login-btn")
 
         print("Waiting 5s for PR dashboard to load...")

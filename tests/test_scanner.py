@@ -1,3 +1,4 @@
+import os
 from playwright.sync_api import sync_playwright
 
 def test_scanner():
@@ -14,8 +15,10 @@ def test_scanner():
         page.goto("http://127.0.0.1:8080/scanner.html")
 
         print("Filling scanner login...")
-        page.wait_for_selector("#scanner-password", state="visible")
-        page.fill("#scanner-password", "dlbpscan")
+        # Credentials of a staff account with role "scanner" (never commit them)
+        page.wait_for_selector("#scanner-email", state="visible")
+        page.fill("#scanner-email", os.environ["DLBP_SCANNER_EMAIL"])
+        page.fill("#scanner-password", os.environ["DLBP_SCANNER_PASSWORD"])
         page.click("#login-btn")
 
         print("Waiting for scanner section to be visible...")
