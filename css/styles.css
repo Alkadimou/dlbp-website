@@ -2617,13 +2617,15 @@ html:has(.modal:not(.hidden)) {
     .registration-header {
         flex-direction: row;
         align-items: center;
-        gap: 2rem;
+        gap: 1.5rem;
         text-align: left;
     }
+    /* Stessa misura delle locandine nella pagina Eventi */
     .registration-flyer {
-        flex: 0 0 220px;
-        width: 220px;
+        flex: 0 0 130px;
+        width: 130px;
         margin-bottom: 0;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     }
     .registration-info {
         flex: 1;
