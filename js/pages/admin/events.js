@@ -100,6 +100,7 @@ export async function loadEventsList() {
 
 export function initEvents() {
     const setActiveBtn = document.getElementById("set-active-btn");
+    const toggleListBtn = document.getElementById("toggle-list-btn");
     const deleteEventBtn = document.getElementById("delete-event-btn");
 
     if (adminEventSelector) {
@@ -136,6 +137,35 @@ export function initEvents() {
                 await loadEventsList();
             } catch (error) {
                 console.error("Error setting active event:", error);
+                showModal("Errore durante l'operazione.");
+            }
+        });
+    }
+
+    // Apre o chiude le iscrizioni (lista) dell'evento selezionato
+    if (toggleListBtn) {
+        toggleListBtn.addEventListener("click", async () => {
+            if (!state.currentEventId) return;
+
+            try {
+                const currentDoc = await getDoc(doc(db, "events", state.currentEventId));
+                if (!currentDoc.exists()) return;
+
+                const isOpen = currentDoc.data().isOpen !== false;
+
+                if (isOpen) {
+                    if (!await showConfirm("Vuoi CHIUDERE la lista? Nessuno potrà più iscriversi a questo evento.")) return;
+                    await updateDoc(doc(db, "events", state.currentEventId), { isOpen: false });
+                    showModal("Lista chiusa!");
+                } else {
+                    if (!await showConfirm("Vuoi RIAPRIRE la lista? Le persone potranno di nuovo iscriversi.")) return;
+                    await updateDoc(doc(db, "events", state.currentEventId), { isOpen: true });
+                    showModal("Lista aperta!");
+                }
+
+                await loadEventSettings();
+            } catch (error) {
+                console.error("Error toggling list:", error);
                 showModal("Errore durante l'operazione.");
             }
         });

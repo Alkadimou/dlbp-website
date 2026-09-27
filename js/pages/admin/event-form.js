@@ -5,11 +5,11 @@ import { db, collection, doc, getDoc, addDoc, updateDoc } from "../../core/fireb
 import { showModal } from "../../core/modal.js";
 import { state } from "./state.js";
 
-const listToggle = document.getElementById("list-toggle");
 const capacityInput = document.getElementById("capacity-input");
 const capacityDisplay = document.getElementById("capacity-display");
 const settingsPanel = document.getElementById("settings-modal");
 const setActiveBtn = document.getElementById("set-active-btn");
+const toggleListBtn = document.getElementById("toggle-list-btn");
 
 // Mette il pannello in modalità "modifica evento esistente".
 export function setEditMode() {
@@ -48,7 +48,6 @@ export async function loadEventSettings() {
             document.getElementById('event-date-input').value = evData.dateIso || "";
             document.getElementById('event-start-time-input').value = evData.startTime || "";
             document.getElementById('event-end-time-input').value = evData.endTime || "";
-            listToggle.checked = evData.isOpen !== false; // default true
             capacityInput.value = evData.maxCapacity || 100;
             capacityDisplay.textContent = evData.maxCapacity || 100;
             state.maxCapacity = evData.maxCapacity || 100;
@@ -72,6 +71,19 @@ export async function loadEventSettings() {
                     setActiveBtn.textContent = "RENDI ATTIVO";
                     setActiveBtn.style.borderColor = "rgba(46, 204, 113, 0.4)";
                     setActiveBtn.style.color = "rgba(46, 204, 113, 0.9)";
+                }
+            }
+
+            // Aggiorna lo stato visivo del pulsante "Apri/Chiudi lista"
+            if (toggleListBtn) {
+                if (evData.isOpen !== false) {
+                    toggleListBtn.textContent = "CHIUDI LISTA";
+                    toggleListBtn.style.borderColor = "rgba(255, 50, 50, 0.4)";
+                    toggleListBtn.style.color = "rgba(255, 100, 100, 0.8)";
+                } else {
+                    toggleListBtn.textContent = "APRI LISTA";
+                    toggleListBtn.style.borderColor = "rgba(46, 204, 113, 0.4)";
+                    toggleListBtn.style.color = "rgba(46, 204, 113, 0.9)";
                 }
             }
         }
@@ -237,7 +249,7 @@ export function initEventForm({ onSaved }) {
                     flyerUrl: flyerUrl || "",
                     description: description || "",
                     maxCapacity: parseInt(document.getElementById('capacity-input').value) || 100,
-                    isOpen: document.getElementById('list-toggle').checked,
+                    isOpen: true,
                     isActive: false,
                     createdAt: new Date()
                 });
@@ -254,7 +266,6 @@ export function initEventForm({ onSaved }) {
                 showModal("Nuovo evento creato con successo!");
             } else {
                 const cap = parseInt(document.getElementById('capacity-input').value) || 100;
-                const isOpen = document.getElementById('list-toggle').checked;
                 
                 const updates = {
                     name: name,
@@ -265,8 +276,7 @@ export function initEventForm({ onSaved }) {
                     startTime: startTime,
                     endTime: endTime,
                     description: description,
-                    maxCapacity: cap,
-                    isOpen: isOpen
+                    maxCapacity: cap
                 };
                 if (flyerUrl) updates.flyerUrl = flyerUrl;
                 
