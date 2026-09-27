@@ -5,8 +5,11 @@
    dove sono definiti gli 8 colori del motto; qui sotto c'è solo quello di partenza.
    ================================================== */
 :root {
-    --mood: #36e0d0;
-    --mood-deep: #0b4f66;
+    --mood: #1fa39a;
+    --mood-deep: #062f35;
+    --on-mood: #050508;
+    /* per i testi colorati su fondo nero: il colore della serata un po' schiarito */
+    --mood-text: color-mix(in srgb, var(--mood) 70%, #ffffff);
 
     --ink: #eceaf4;
     --panel: rgba(5, 5, 8, 0.8);
@@ -91,7 +94,7 @@ body,
     font-family: 'Space Mono', monospace;
     font-size: 0.6rem;
     letter-spacing: 0.22em;
-    color: var(--mood);
+    color: var(--mood-text);
     white-space: nowrap;
     max-width: 92vw;
     overflow: hidden;
@@ -139,13 +142,13 @@ select,
 .submit-btn:not(.outline-btn):not(:disabled),
 .hero-next-event-btn {
     background: var(--mood) !important;
-    color: #050508 !important;
+    color: var(--on-mood, #050508) !important;
     border-color: var(--mood) !important;
     font-weight: 700;
 }
 .submit-btn:not(.outline-btn):not(:disabled):hover,
 .hero-next-event-btn:hover {
-    color: #050508 !important;
+    color: var(--on-mood, #050508) !important;
     filter: brightness(1.08);
 }
 .submit-btn:not(.outline-btn):not(:disabled)::after,
@@ -167,7 +170,7 @@ select,
 }
 
 .nav-right a.active,
-.nav-right button.active { color: var(--mood) !important; }
+.nav-right button.active { color: var(--mood-text) !important; }
 
 input:focus,
 textarea:focus,
