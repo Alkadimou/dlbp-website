@@ -1,0 +1,198 @@
+/* ==================================================
+   IDENTITÀ "CROMO NERO, COLORE VIVO"
+   Si carica dopo styles.css e ne sovrascrive colori, caratteri e forme.
+   Il colore della serata (--mood, --mood-deep) lo imposta js/core/background.js su <html>,
+   dove sono definiti gli 8 colori del motto; qui sotto c'è solo quello di partenza.
+   ================================================== */
+:root {
+    --mood: #36e0d0;
+    --mood-deep: #0b4f66;
+
+    --ink: #eceaf4;
+    --panel: rgba(5, 5, 8, 0.8);
+    --panel-line: rgba(236, 234, 244, 0.12);
+
+    --f-display: 'League Gothic', 'Oswald', 'Arial Narrow', Impact, sans-serif;
+    --f-body: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
+
+    --radius-sm: 0;
+    --radius-md: 0;
+    --radius-lg: 0;
+}
+
+/* ---------- Sfondo ---------- */
+.site-background {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+    /* si vede finché l'elica non è pronta, o se il telefono non supporta il 3D */
+    background: radial-gradient(80% 70% at 62% 60%, color-mix(in srgb, var(--mood-deep) 45%, #000) 0%, #000 75%);
+}
+.site-background canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 1.2s ease;
+}
+.site-background.ready canvas { opacity: 1; }
+
+/* ---------- Caratteri ---------- */
+/* testi in IBM Plex Sans; date, orari ed etichette restano in Space Mono dove styles.css lo indica */
+body,
+.landing-page { font-family: var(--f-body); }
+
+.event-card-title,
+.section-title,
+.page-title,
+.login-card h2,
+#login-section h2,
+#success-section h2 {
+    font-family: var(--f-display) !important;
+    font-weight: 400 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.02em !important;
+    line-height: 0.95 !important;
+    text-wrap: balance;
+}
+.event-card-title { font-size: 2.1rem; }
+.event-card-title.text-lg { font-size: 2.4rem !important; }
+.section-title { font-size: 3rem; }
+.page-title { font-size: 2.6rem; }
+.login-card h2, #login-section h2 { font-size: 2.6rem !important; margin-bottom: 1rem !important; }
+
+/* Etichette delle sezioni (Prossimi eventi, Eventi passati): titoli veri, leggibili sopra l'elica */
+.section-label {
+    font-family: var(--f-display) !important;
+    font-size: 2.6rem !important;
+    font-weight: 400 !important;
+    letter-spacing: 0.04em !important;
+    line-height: 1;
+    color: var(--ink) !important;
+    text-shadow: 0 0 10px #000, 0 0 30px #000;
+}
+.no-events {
+    color: rgba(236, 234, 244, 0.6) !important;
+    text-shadow: 0 0 8px #000, 0 0 24px #000;
+}
+
+.hero-tagline-center {
+    font-family: 'Space Mono', monospace;
+    color: var(--ink);
+    letter-spacing: 0.4em;
+    text-shadow: 0 0 6px #000, 0 0 18px #000;
+}
+.dna-seq {
+    position: relative;
+    z-index: 10;
+    margin-top: 1rem;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.22em;
+    color: var(--mood);
+    white-space: nowrap;
+    max-width: 92vw;
+    overflow: hidden;
+    text-align: center;
+    opacity: 0.85;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* ---------- Forme: angoli vivi, pannelli scuri senza sfocatura ---------- */
+input,
+textarea,
+select,
+.submit-btn,
+.event-card-btn,
+.custom-select,
+#search-input,
+.form-message,
+.event-card-item,
+.event-card,
+.login-card,
+#login-section,
+.custom-modal,
+.dropdown-content {
+    border-radius: 0 !important;
+}
+
+.event-card,
+.event-card-item,
+.login-card,
+#login-section,
+.custom-modal,
+.dropdown-content {
+    background: var(--panel) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: 1px solid var(--panel-line) !important;
+}
+.event-card-item:hover { border-color: color-mix(in srgb, var(--mood) 45%, transparent) !important; }
+
+/* Le locandine restano a colori pieni */
+.event-card-item img { border-radius: 0 !important; }
+
+/* ---------- Bottoni: pieni, con un riflesso che passa come sul cromo ---------- */
+.submit-btn:not(.outline-btn):not(:disabled),
+.hero-next-event-btn {
+    background: var(--mood) !important;
+    color: #050508 !important;
+    border-color: var(--mood) !important;
+    font-weight: 700;
+}
+.submit-btn:not(.outline-btn):not(:disabled):hover,
+.hero-next-event-btn:hover {
+    color: #050508 !important;
+    filter: brightness(1.08);
+}
+.submit-btn:not(.outline-btn):not(:disabled)::after,
+.hero-next-event-btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 40%;
+    left: -60%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.85), transparent);
+    transform: skewX(-20deg);
+    animation: chromeGlint 4.5s ease-in-out infinite;
+    pointer-events: none;
+}
+@keyframes chromeGlint {
+    0%, 70% { left: -60%; }
+    100% { left: 130%; }
+}
+
+.nav-right a.active,
+.nav-right button.active { color: var(--mood) !important; }
+
+input:focus,
+textarea:focus,
+select:focus,
+#search-input:focus {
+    border-color: var(--mood) !important;
+}
+
+/* ---------- Glitch sui titoli, insieme all'elica ---------- */
+body.glitching .event-card-title,
+body.glitching .section-title,
+body.glitching .page-title,
+body.glitching .section-label,
+body.glitching .hero-tagline-center,
+body.glitching .login-card h2,
+body.glitching #login-section h2,
+body.glitching .nav-logo {
+    transform: translateX(var(--gx, 0));
+    text-shadow: -3px 0 var(--mood), 3px 0 rgba(255, 255, 255, 0.75);
+}
+body.glitching .nav-logo {
+    filter: drop-shadow(-3px 0 var(--mood)) drop-shadow(3px 0 rgba(255, 255, 255, 0.6));
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .submit-btn:not(.outline-btn):not(:disabled)::after,
+    .hero-next-event-btn::after { animation: none; display: none; }
+}
