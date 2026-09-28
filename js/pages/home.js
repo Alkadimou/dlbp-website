@@ -1,6 +1,6 @@
 // Pagine index.html (home) ed eventi.html: carica gli eventi da Firestore (collezione "events")
 // e li mostra come card. Gli eventi attivi portano a event.html per la registrazione.
-import { db, collection, query, getDocs } from "../core/firebase.js";
+import { db, collection, query, where, getDocs } from "../core/firebase.js";
 import { initStaffMenu } from "../core/nav.js";
 import { toMillis } from "../core/dates.js";
 import { initRevealAnimations } from "../core/reveal.js";
@@ -38,7 +38,8 @@ async function loadNextEventButton() {
     if (!btn || !db) return;
 
     try {
-        const snapshot = await getDocs(query(collection(db, "events")));
+        // Solo gli eventi attivi: così non si scaricano le locandine di tutti gli altri
+        const snapshot = await getDocs(query(collection(db, "events"), where("isActive", "==", true)));
         const activeEvents = [];
         snapshot.forEach((doc) => {
             const ev = { id: doc.id, ...doc.data() };

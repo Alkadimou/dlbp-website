@@ -4,7 +4,8 @@
 // ?mood=<colore> o ?mood=<parola> nell'indirizzo sceglie il colore di partenza; il colore
 // raggiunto resta per tutta la visita, anche cambiando pagina.
 // Il colore arriva al CSS come --mood e --mood-deep su <html>.
-// Con data-lite sull'elemento (scanner) gira in versione leggera.
+// Con data-lite sull'elemento (scanner) gira in versione leggera. Sugli schermi a 120 Hz o più
+// disegna al massimo circa 60 fotogrammi al secondo, per consumare meno batteria.
 // Con data-tap (pagine pubbliche) il cursore è una croce su tutta la pagina tranne link, bottoni e campi
 // (css/identity.css) e un clic dove c'è la croce fa partire un glitch, come nell'artifact "Cromo e Colore".
 
@@ -403,8 +404,13 @@ async function init() {
     }
 
     let running = false;
+    let lastDraw = 0;
     function frame(t) {
         if (document.hidden) { running = false; return; }
+        // Schermi a 120 Hz o più: disegna un fotogramma sì e uno no, così restano almeno 60 al secondo
+        // (a 60 e 90 Hz non cambia nulla). Il movimento dipende da t: velocità, glitch e colori restano uguali.
+        if (t - lastDraw < 10) { requestAnimationFrame(frame); return; }
+        lastDraw = t;
         if (t > state.nextBurst) {
             state.bursts++;
             if (state.bursts % CYCLE_EVERY === 0) {
