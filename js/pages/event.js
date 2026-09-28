@@ -66,7 +66,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 const ev = docSnap.data();
                 currentEventId = eventId;
                 currentEvent = ev;
-                
+                if (ev.name) document.title = `DLBP | ${ev.name}`; // nome dell'evento nella scheda del browser
+
                 // Set password state and check for bypass
                 currentEventPassword = (ev.password || "").trim().toLowerCase();
                 hasPassword = currentEventPassword !== "";

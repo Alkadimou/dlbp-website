@@ -1,0 +1,7 @@
+# Google e gli altri motori di ricerca possono leggere tutto il sito.
+# Le pagine dello staff (admin, scanner, area PR) hanno <meta name="robots" content="noindex">
+# e quindi non compaiono nelle ricerche.
+User-agent: *
+Allow: /
+
+Sitemap: https://dlbp.art/sitemap.xml
