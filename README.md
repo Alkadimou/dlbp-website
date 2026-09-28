@@ -27,7 +27,7 @@ Un link con `?pr=<codice>` (per esempio `https://dlbp.art/?pr=mario`) collega l'
 - Sfondo con l'elica di DNA in cromo e il motto DRINK · LOVE · BREATHE · PEACE (vedi [Aspetto](#aspetto)).
 - Sotto il motto c'è una sequenza di DNA che ogni tanto si decifra nella parola del colore attuale.
 - Il bottone **PROSSIMO EVENTO** compare solo se c'è almeno un evento attivo.
-  - Porta all'evento attivo con la data più vicina da oggi in poi; se nessuno ha una data futura, al più recente. Salta gli eventi con capienza 0.
+  - Porta all'evento attivo con la data più vicina da oggi in poi; se nessuno ha una data futura, al più recente. Vale anche per gli eventi con capienza 0, che aprono la pagina dell'evento senza modulo.
   - Mantiene il codice `?pr=`.
 - Alla prima visita della sessione compare per circa 1,5 secondi una schermata con il logo.
 

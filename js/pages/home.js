@@ -37,9 +37,9 @@ function isViewOnly(ev) {
     return ev.maxCapacity === 0;
 }
 
-// Home: mostra il bottone "Prossimo evento" sotto la scritta, se c'è almeno un evento attivo
-// con iscrizioni (capienza diversa da 0).
-// Tra questi sceglie quello con la data più vicina da oggi in poi.
+// Home: mostra il bottone "Prossimo evento" sotto la scritta, se c'è almeno un evento attivo.
+// Tra gli eventi attivi sceglie quello con la data più vicina da oggi in poi.
+// Vale anche per gli eventi con capienza 0: la loro pagina mostra l'evento senza modulo.
 async function loadNextEventButton() {
     const btn = document.getElementById("next-event-btn");
     if (!btn || !db) return;
@@ -50,7 +50,7 @@ async function loadNextEventButton() {
         const activeEvents = [];
         snapshot.forEach((doc) => {
             const ev = { id: doc.id, ...doc.data() };
-            if (ev.isActive === true && !isViewOnly(ev)) activeEvents.push(ev);
+            if (ev.isActive === true) activeEvents.push(ev);
         });
         if (activeEvents.length === 0) return;
 
