@@ -1587,9 +1587,6 @@ html::-webkit-scrollbar {
 .custom-select:focus { border-color: rgba(255, 255, 255, 0.4); background-color: rgba(255, 255, 255, 0.08); }
 .textarea-input { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 1rem; font-family: 'Space Mono', monospace; border-radius: 4px; resize: vertical; box-shadow: inset 0 2px 10px rgba(0,0,0,0.1); outline: none; }
 .alert-danger { padding: 2rem; border: 1px solid rgba(255, 100, 100, 0.4); background: rgba(255,51,51,0.05); border-radius: 8px; }
-/* Avviso positivo (es. evento senza iscrizioni): stesso verde di .status-open */
-.alert-success { padding: 2rem; border: 1px solid rgba(100, 255, 160, 0.4); background: rgba(100, 255, 160, 0.05); border-radius: 8px; }
-.alert-success h3 { color: rgba(100, 255, 160, 0.8); }
 .search-container-dynamic { display: flex; align-items: center; gap: 1rem; width: 100%; margin-bottom: 1.5rem; }
 .search-input-wrapper { flex: 1; min-width: 0; }
 #search-input { width: 100%; height: 48px; padding: 0.8rem 1rem; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: var(--radius-md); color: #ffffff; font-family: var(--font-mono); font-size: 0.85rem; outline: none; box-sizing: border-box; transition: var(--transition-normal); }
@@ -1667,7 +1664,7 @@ html::-webkit-scrollbar {
     text-align: left;
 }
 .registration-card .alert-danger,
-.registration-card .alert-success {
+.registration-card .alert-mood {
     margin-bottom: 1rem;
 }
 

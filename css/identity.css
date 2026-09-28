@@ -151,6 +151,28 @@ select,
 /* Le locandine restano a colori pieni */
 .event-card-item img { border-radius: 0 !important; }
 
+/* ---------- Stati ed avvisi ---------- */
+/* Etichette di stato (ISCRIZIONI APERTE, PROSSIMO EVENTO...): nel colore della serata */
+.status-open { color: var(--mood-text) !important; }
+
+/* Riquadri di avviso sotto l'evento: angoli vivi, pannello scuro, titolo in Space Mono */
+.alert { border-radius: 0 !important; }
+.alert h3 {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+}
+.alert p { color: rgba(236, 234, 244, 0.7); }
+/* Avviso non negativo (es. evento senza iscrizioni): bordo e titolo nel colore della serata */
+.alert-mood {
+    padding: 2rem;
+    background: var(--panel);
+    border: 1px solid color-mix(in srgb, var(--mood) 45%, transparent);
+}
+.alert-mood h3 { color: var(--mood-text); }
+
 /* ---------- Bottoni: pieni, con un riflesso che passa come sul cromo ---------- */
 .submit-btn:not(.outline-btn):not(:disabled),
 .hero-next-event-btn {
