@@ -1,7 +1,7 @@
 // Admin – gestione degli eventi: menu a tendina per scegliere l'evento, "RENDI ATTIVO/INATTIVO"
 // (l'evento attivo è quello mostrato al pubblico e usato da scanner e PR) ed eliminazione
 // di un evento con tutti i suoi iscritti.
-import { db, collection, doc, query, where, getDoc, getDocs, setDoc, updateDoc, deleteDoc, writeBatch } from "../../core/firebase.js";
+import { db, collection, doc, query, where, getDoc, getDocs, getCountFromServer, setDoc, updateDoc, deleteDoc, writeBatch } from "../../core/firebase.js";
 import { showModal, showConfirm } from "../../core/modal.js";
 import { toMillis } from "../../core/dates.js";
 import { state } from "./state.js";
@@ -15,8 +15,9 @@ const adminEventSelector = document.getElementById("admin-event-selector");
 export async function setupEventsIfNeeded() {
     if (!db) return;
     try {
-        const eventsSnap = await getDocs(collection(db, "events"));
-        if (eventsSnap.empty) {
+        // Conta gli eventi senza scaricarli (con le locandine): la lista vera la carica loadEventsList
+        const countSnap = await getCountFromServer(collection(db, "events"));
+        if (countSnap.data().count === 0) {
             console.log("No events found, migrating legacy settings to act_1...");
             let oldMaxCapacity = 100;
             let oldIsOpen = true;

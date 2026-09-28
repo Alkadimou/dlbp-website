@@ -1,7 +1,7 @@
 // Pagina pr.html: ogni PR vede in tempo reale gli iscritti arrivati con il proprio link (?pr=<codice>)
 // per l'evento attivo, e può copiare il link d'invito.
 // Accesso: account staff con ruolo "pr" e campo prCode; il PR deve essere attivo nella collezione "prs".
-import { db, collection, query, where, getDocs, onSnapshot } from "../core/firebase.js";
+import { db, collection, doc, query, where, getDoc, getDocs, onSnapshot } from "../core/firebase.js";
 import { auth, signOut } from "../core/firebase-auth.js";
 import { setupStaffLogin } from "../core/staff-login.js";
 import { setupSortableHeaders, compareValues } from "../core/table-sort.js";
@@ -33,8 +33,9 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentPrCode = "";
     const sort = { field: "timestamp", order: "desc" };
     let registrationsList = [];
+    let eventsMap = {}; // nome dell'evento mostrato, per la colonna EVENTO
 
-    setupSortableHeaders(document.querySelector(".users-table thead"), sort, () => renderPrTable());
+    setupSortableHeaders(document.querySelector(".pr-table thead"), sort, () => renderPrTable());
 
     // Load active event
     async function loadActiveEvent() {
@@ -43,7 +44,9 @@ document.addEventListener("DOMContentLoaded", () => {
             const q = query(collection(db, "events"), where("isActive", "==", true));
             const querySnapshot = await getDocs(q);
             if (!querySnapshot.empty) {
-                currentEventId = querySnapshot.docs[0].id;
+                const activeEvent = querySnapshot.docs[0];
+                currentEventId = activeEvent.id;
+                eventsMap[activeEvent.id] = activeEvent.data().name || "Evento Sconosciuto";
             }
         } catch (error) {
             console.error("Error loading active event:", error);
@@ -92,7 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const baseUrl = window.location.origin + '/';
         inviteLinkInput.value = `${baseUrl}?pr=${code}`;
 
-        await loadAllEvents();
+        await loadEventName();
         startListening(code);
     }
 
@@ -111,17 +114,17 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 2000);
     });
 
-    let eventsMap = {};
-    async function loadAllEvents() {
-        if (!db) return;
+    // Nome dell'evento mostrato: la tabella ha solo iscritti di currentEventId, quindi basta quello.
+    // Di solito arriva già da loadActiveEvent; altrimenti (evento di riserva "act_1") si legge solo quel documento.
+    async function loadEventName() {
+        if (!db || eventsMap[currentEventId]) return;
         try {
-            const q = query(collection(db, "events"));
-            const querySnapshot = await getDocs(q);
-            querySnapshot.forEach(doc => {
-                eventsMap[doc.id] = doc.data().name || "Evento Sconosciuto";
-            });
+            const eventSnap = await getDoc(doc(db, "events", currentEventId));
+            if (eventSnap.exists()) {
+                eventsMap[currentEventId] = eventSnap.data().name || "Evento Sconosciuto";
+            }
         } catch (error) {
-            console.error("Error loading events for map:", error);
+            console.error("Error loading event name:", error);
         }
     }
 
