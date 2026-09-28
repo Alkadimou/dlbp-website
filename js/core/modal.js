@@ -15,9 +15,7 @@ function getOverlay() {
         
         const btnContainer = document.createElement('div');
         btnContainer.id = 'custom-modal-btn-container';
-        btnContainer.classList.remove("hidden");
-        btnContainer.style.gap = '1rem';
-        btnContainer.style.justifyContent = 'center';
+        btnContainer.className = 'custom-modal-actions';
         
         modal.appendChild(text);
         modal.appendChild(btnContainer);
@@ -35,7 +33,7 @@ export function showModal(message) {
     btnContainer.innerHTML = ''; // Clear existing buttons
     
     const btn = document.createElement('button');
-    btn.className = 'modal-close-btn';
+    btn.className = 'modal-close-btn is-primary';
     btn.textContent = 'OK';
     btn.onclick = () => {
         overlay.classList.remove('active');
@@ -58,9 +56,7 @@ export function showConfirm(message) {
         btnContainer.innerHTML = ''; // Clear existing buttons
         
         const btnCancel = document.createElement('button');
-        btnCancel.className = 'modal-close-btn';
-        btnCancel.style.background = 'transparent';
-        btnCancel.style.border = '1px solid var(--border-color)';
+        btnCancel.className = 'modal-close-btn is-ghost';
         btnCancel.textContent = 'ANNULLA';
         btnCancel.onclick = () => {
             overlay.classList.remove('active');
@@ -69,7 +65,7 @@ export function showConfirm(message) {
         };
         
         const btnConfirm = document.createElement('button');
-        btnConfirm.className = 'modal-close-btn';
+        btnConfirm.className = 'modal-close-btn is-primary';
         btnConfirm.textContent = 'CONFERMA';
         btnConfirm.onclick = () => {
             overlay.classList.remove('active');

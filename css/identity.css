@@ -61,7 +61,8 @@ body,
 .page-title,
 .login-card h2,
 #login-section h2,
-#success-section h2 {
+#success-section h2,
+.modal-content h2 {
     font-family: var(--f-display) !important;
     font-weight: 400 !important;
     text-transform: uppercase;
@@ -74,6 +75,7 @@ body,
 .section-title { font-size: 3rem; }
 .page-title { font-size: 2.6rem; }
 .login-card h2, #login-section h2 { font-size: 2.6rem !important; margin-bottom: 1rem !important; }
+.modal-content h2 { font-size: 2.4rem !important; }
 
 /* Etichette delle sezioni (Prossimi eventi, Eventi passati): titoli veri, leggibili sopra l'elica */
 .section-label {
@@ -127,6 +129,7 @@ select,
 .login-card,
 #login-section,
 .custom-modal,
+.modal-content,
 .dropdown-content {
     border-radius: 0 !important;
 }
@@ -136,6 +139,7 @@ select,
 .login-card,
 #login-section,
 .custom-modal,
+.modal-content,
 .dropdown-content {
     background: var(--panel) !important;
     backdrop-filter: none !important;
@@ -188,6 +192,79 @@ select:focus,
     border-color: var(--mood) !important;
 }
 
+/* ---------- Finestre (avvisi, conferme, iscrizione completata) ---------- */
+.custom-modal,
+.modal-content {
+    background: rgba(5, 5, 8, 0.92) !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+.custom-modal p {
+    font-family: var(--f-body);
+    font-size: 0.95rem;
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+}
+.custom-modal-actions,
+#custom-modal-btn-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+}
+.custom-modal .modal-close-btn {
+    position: relative;
+    overflow: hidden;
+    min-width: 9rem;
+    padding: 0 1.75rem;
+    border-radius: 0;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    transition: filter 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+/* bottone principale (OK, CONFERMA): pieno nel colore della serata, come .submit-btn */
+.custom-modal .modal-close-btn.is-primary {
+    background: var(--mood);
+    border: 1px solid var(--mood);
+    color: var(--on-mood, #050508);
+}
+.custom-modal .modal-close-btn.is-primary:hover {
+    background: var(--mood);
+    filter: brightness(1.08);
+}
+.custom-modal .modal-close-btn.is-primary::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 40%;
+    left: -60%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.85), transparent);
+    transform: skewX(-20deg);
+    animation: chromeGlint 4.5s ease-in-out infinite;
+    pointer-events: none;
+}
+/* ANNULLA: vuoto, bordo sottile */
+.custom-modal .modal-close-btn.is-ghost {
+    background: transparent;
+    border: 1px solid rgba(236, 234, 244, 0.24);
+    color: rgba(236, 234, 244, 0.7);
+}
+.custom-modal .modal-close-btn.is-ghost:hover {
+    background: rgba(236, 234, 244, 0.06);
+    border-color: rgba(236, 234, 244, 0.5);
+    color: var(--ink);
+}
+@media (max-width: 480px) {
+    .custom-modal { padding: 2rem 1.25rem; }
+    .custom-modal .modal-close-btn { flex: 1 1 100%; }
+    /* CONFERMA sopra, ANNULLA sotto */
+    .custom-modal-actions .is-primary { order: -1; }
+}
+
 /* ---------- Glitch sui titoli, insieme all'elica ---------- */
 body.glitching .event-card-title,
 body.glitching .section-title,
@@ -196,6 +273,7 @@ body.glitching .section-label,
 body.glitching .hero-tagline-center,
 body.glitching .login-card h2,
 body.glitching #login-section h2,
+body.glitching .modal-content h2,
 body.glitching .nav-logo {
     transform: translateX(var(--gx, 0));
     text-shadow: -3px 0 var(--mood), 3px 0 rgba(255, 255, 255, 0.75);
@@ -206,5 +284,6 @@ body.glitching .nav-logo {
 
 @media (prefers-reduced-motion: reduce) {
     .submit-btn:not(.outline-btn):not(:disabled)::after,
-    .hero-next-event-btn::after { animation: none; display: none; }
+    .hero-next-event-btn::after,
+    .custom-modal .modal-close-btn.is-primary::after { animation: none; display: none; }
 }
