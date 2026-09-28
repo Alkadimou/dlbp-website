@@ -37,7 +37,7 @@ jobs:
         # Only the public site goes online: tests, scripts, archive and docs stay in the repository
         run: |
           mkdir _site
-          cp *.html manifest.json CNAME _site/
+          cp *.html manifest.json CNAME robots.txt sitemap.xml _site/
           cp -R css js assets _site/
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
