@@ -1,6 +1,6 @@
 // Pagine index.html (home) ed eventi.html: carica gli eventi da Firestore (collezione "events")
-// e li mostra come card. Gli eventi attivi portano a event.html per la registrazione,
-// tranne quelli con capienza 0: si vedono nella lista ma senza link né iscrizioni.
+// e li mostra come card. Gli eventi attivi portano a event.html per la registrazione;
+// quelli con capienza 0 (PROSSIMAMENTE) aprono la stessa pagina, che mostra solo i dettagli.
 import { db, collection, query, where, getDocs } from "../core/firebase.js";
 import { initStaffMenu } from "../core/nav.js";
 import { toMillis } from "../core/dates.js";
@@ -141,27 +141,14 @@ async function loadEvents() {
                 const card = document.createElement('div');
                 card.className = 'event-card-item fade-in';
                 
+                // Capienza 0: la pagina dell'evento si apre, ma mostra solo i dettagli (niente modulo)
+                const viewOnly = isViewOnly(ev);
                 const isOpen = ev.isOpen !== false;
-                const statusText = isOpen ? 'ISCRIZIONI APERTE' : 'GUESTLIST CLOSED';
-                const statusClass = isOpen ? 'status-open' : 'status-closed';
+                const statusText = viewOnly ? 'PROSSIMAMENTE' : (isOpen ? 'ISCRIZIONI APERTE' : 'GUESTLIST CLOSED');
+                const statusClass = viewOnly || isOpen ? 'status-open' : 'status-closed';
+                const btnText = viewOnly || !isOpen ? 'DETTAGLI' : 'SCOPRI / ACCEDI';
 
                 const flyerHtml = ev.flyerUrl ? `<img src="${ev.flyerUrl}" alt="Locandina" class="event-card-img">` : '';
-
-                if (isViewOnly(ev)) {
-                    // Solo da vedere: card senza link e senza bottone
-                    card.innerHTML = `
-                        <div class="event-card-inner">
-                            ${flyerHtml}
-                            <div class="event-card-content">
-                                <div class="event-card-status status-open">PROSSIMAMENTE</div>
-                                <h3 class="event-card-title">${breakableTitle(ev.name)}</h3>
-                                <div class="event-card-date">${ev.date}</div>
-                            </div>
-                        </div>
-                    `;
-                    activeFragment.appendChild(card);
-                    return;
-                }
 
                 const eventUrl = `event.html?id=${ev.id}${prQuery}`;
 
@@ -174,7 +161,7 @@ async function loadEvents() {
                                 <h3 class="event-card-title">${breakableTitle(ev.name)}</h3>
                                 <div class="event-card-date">${ev.date}</div>
                                 <span class="event-card-btn">
-                                    ${isOpen ? 'SCOPRI / ACCEDI' : 'DETTAGLI'}
+                                    ${btnText}
                                 </span>
                             </div>
                         </div>

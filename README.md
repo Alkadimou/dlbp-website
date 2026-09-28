@@ -33,7 +33,7 @@ Un link con `?pr=<codice>` (per esempio `https://dlbp.art/?pr=mario`) collega l'
 
 ### Eventi (`eventi.html`)
 - **Prossimi eventi**: gli eventi attivi, con locandina, data, stato (ISCRIZIONI APERTE o GUESTLIST CLOSED) e link all'iscrizione. Il link mantiene `?pr=`.
-  - **Capienza 0 = evento solo da vedere:** la card compare con PROSSIMAMENTE, senza link né bottone.
+  - **Capienza 0 = evento solo da vedere:** la card compare con PROSSIMAMENTE e il bottone DETTAGLI, e apre la pagina dell'evento senza modulo.
 - **Eventi passati**: gli eventi non attivi con la lista chiusa o con la data passata, segnati come ARCHIVIATO.
 
 ### Iscrizione (`event.html?id=<evento>`)
