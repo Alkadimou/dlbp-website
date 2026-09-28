@@ -19,7 +19,7 @@ async function loadDetails() {
             document.getElementById('details-event-start').textContent = evData.startTime || "--:--";
             document.getElementById('details-event-end').textContent = evData.endTime || "--:--";
             document.getElementById('details-event-status').innerHTML = evData.isOpen !== false ? '<span style="color:var(--success-color);">APERTE</span>' : '<span style="color:var(--error-color);">CHIUSE</span>';
-            document.getElementById('details-event-capacity').textContent = evData.maxCapacity || "100";
+            document.getElementById('details-event-capacity').textContent = evData.maxCapacity === 0 ? "0 (SOLO VISIBILE, SENZA ISCRIZIONI)" : (evData.maxCapacity || "100");
 
             const img = document.getElementById('details-event-flyer-img');
             const noneSpan = document.getElementById('details-event-flyer-none');

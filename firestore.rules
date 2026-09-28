@@ -64,6 +64,8 @@ service cloud.firestore {
         && data.email.matches('^[^@ ]+@[^@ ]+[.][^@ ]+$')
         && data.eventId is string
         && exists(/databases/$(database)/documents/events/$(data.eventId))
+        // Capienza 0 = evento solo da vedere, senza iscrizioni
+        && get(/databases/$(database)/documents/events/$(data.eventId)).data.get('maxCapacity', 100) != 0
         && (data.invited_by == null || (data.invited_by is string && data.invited_by.size() <= 50))
         && data.checked_in == false
         && data.status == 'approved'

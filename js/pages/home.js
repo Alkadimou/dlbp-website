@@ -1,5 +1,6 @@
 // Pagine index.html (home) ed eventi.html: carica gli eventi da Firestore (collezione "events")
-// e li mostra come card. Gli eventi attivi portano a event.html per la registrazione.
+// e li mostra come card. Gli eventi attivi portano a event.html per la registrazione,
+// tranne quelli con capienza 0: si vedono nella lista ma senza link né iscrizioni.
 import { db, collection, query, where, getDocs } from "../core/firebase.js";
 import { initStaffMenu } from "../core/nav.js";
 import { toMillis } from "../core/dates.js";
@@ -31,8 +32,14 @@ document.addEventListener("DOMContentLoaded", () => {
     loadNextEventButton();
 });
 
-// Home: mostra il bottone "Prossimo evento" sotto la scritta, se c'è almeno un evento attivo.
-// Tra gli eventi attivi sceglie quello con la data più vicina da oggi in poi.
+// Capienza 0 = evento solo da vedere: niente pagina di iscrizione.
+function isViewOnly(ev) {
+    return ev.maxCapacity === 0;
+}
+
+// Home: mostra il bottone "Prossimo evento" sotto la scritta, se c'è almeno un evento attivo
+// con iscrizioni (capienza diversa da 0).
+// Tra questi sceglie quello con la data più vicina da oggi in poi.
 async function loadNextEventButton() {
     const btn = document.getElementById("next-event-btn");
     if (!btn || !db) return;
@@ -43,7 +50,7 @@ async function loadNextEventButton() {
         const activeEvents = [];
         snapshot.forEach((doc) => {
             const ev = { id: doc.id, ...doc.data() };
-            if (ev.isActive === true) activeEvents.push(ev);
+            if (ev.isActive === true && !isViewOnly(ev)) activeEvents.push(ev);
         });
         if (activeEvents.length === 0) return;
 
@@ -139,6 +146,22 @@ async function loadEvents() {
                 const statusClass = isOpen ? 'status-open' : 'status-closed';
 
                 const flyerHtml = ev.flyerUrl ? `<img src="${ev.flyerUrl}" alt="Locandina" class="event-card-img">` : '';
+
+                if (isViewOnly(ev)) {
+                    // Solo da vedere: card senza link e senza bottone
+                    card.innerHTML = `
+                        <div class="event-card-inner">
+                            ${flyerHtml}
+                            <div class="event-card-content">
+                                <div class="event-card-status status-open">PROSSIMAMENTE</div>
+                                <h3 class="event-card-title">${breakableTitle(ev.name)}</h3>
+                                <div class="event-card-date">${ev.date}</div>
+                            </div>
+                        </div>
+                    `;
+                    activeFragment.appendChild(card);
+                    return;
+                }
 
                 const eventUrl = `event.html?id=${ev.id}${prQuery}`;
 

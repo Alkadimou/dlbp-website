@@ -11,6 +11,13 @@ const settingsPanel = document.getElementById("settings-modal");
 const setActiveBtn = document.getElementById("set-active-btn");
 const toggleListBtn = document.getElementById("toggle-list-btn");
 
+// Capienza scritta nel form. 0 è valido: evento solo da vedere, senza iscrizioni.
+// Se il campo è vuoto o non valido si usa 100.
+function readCapacity() {
+    const cap = parseInt(capacityInput.value, 10);
+    return Number.isNaN(cap) || cap < 0 ? 100 : cap;
+}
+
 // Mette il pannello in modalità "modifica evento esistente".
 export function setEditMode() {
     state.isCreatingNew = false;
@@ -35,9 +42,10 @@ export async function loadEventSettings() {
             document.getElementById('event-date-input').value = evData.dateIso || "";
             document.getElementById('event-start-time-input').value = evData.startTime || "";
             document.getElementById('event-end-time-input').value = evData.endTime || "";
-            capacityInput.value = evData.maxCapacity || 100;
-            capacityDisplay.textContent = evData.maxCapacity || 100;
-            state.maxCapacity = evData.maxCapacity || 100;
+            const cap = evData.maxCapacity ?? 100;
+            capacityInput.value = cap;
+            capacityDisplay.textContent = cap;
+            state.maxCapacity = cap;
             
             const previewDiv = document.getElementById('current-flyer-preview');
             if (evData.flyerUrl) {
@@ -235,7 +243,7 @@ export function initEventForm({ onSaved }) {
                     password: document.getElementById('event-password-input').value.trim(),
                     flyerUrl: flyerUrl || "",
                     description: description || "",
-                    maxCapacity: parseInt(document.getElementById('capacity-input').value) || 100,
+                    maxCapacity: readCapacity(),
                     isOpen: true,
                     isActive: false,
                     createdAt: new Date()
@@ -252,7 +260,7 @@ export function initEventForm({ onSaved }) {
                 await onSaved();
                 showModal("Nuovo evento creato con successo!");
             } else {
-                const cap = parseInt(document.getElementById('capacity-input').value) || 100;
+                const cap = readCapacity();
                 
                 const updates = {
                     name: name,
@@ -269,6 +277,7 @@ export function initEventForm({ onSaved }) {
                 
                 await updateDoc(doc(db, "events", state.currentEventId), updates);
                 capacityDisplay.textContent = cap;
+                state.maxCapacity = cap;
                 await onSaved();
                 showModal("Dettagli evento salvati con successo!");
             }
