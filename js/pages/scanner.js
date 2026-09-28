@@ -140,6 +140,16 @@ document.addEventListener("DOMContentLoaded", () => {
         fetchScannerCount();
         unsubCounter = setInterval(fetchScannerCount, 30000);
         
+        // La libreria ricorda l'ultima fotocamera usata e la avvia da sola: la dimentichiamo
+        // (il permesso resta ricordato) così la fotocamera parte solo con "Start Scanning".
+        try {
+            const saved = JSON.parse(localStorage.getItem("HTML5_QRCODE_DATA"));
+            if (saved && saved.lastUsedCameraId) {
+                saved.lastUsedCameraId = null;
+                localStorage.setItem("HTML5_QRCODE_DATA", JSON.stringify(saved));
+            }
+        } catch (e) { /* niente di salvato: la libreria parte comunque senza avvio automatico */ }
+
         // Initialize HTML5 QR Code Scanner
         html5QrcodeScanner = new Html5QrcodeScanner(
             "reader",
