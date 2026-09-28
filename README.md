@@ -84,6 +84,7 @@ Un link con `?pr=<codice>` (per esempio `https://dlbp.art/?pr=mario`) collega l'
 
 ### Scanner (`scanner.html`, ruolo `scanner` o `admin`)
 - Legge il QR del biglietto con la fotocamera.
+- La fotocamera parte solo quando si preme "Start Scanning", anche se il permesso è già stato dato.
 - **Controlla, in ordine:**
   - che il biglietto esista;
   - che sia dell'evento attivo;
