@@ -6,13 +6,15 @@
     <title>DLBP | Eventi</title>
     <meta name="description" content="DLBP — Prossimi eventi e guestlist.">
     <link rel="icon" href="assets/logo.jpg" type="image/jpeg">
-    <link rel="stylesheet" href="css/styles.css?v=6">
+    <link rel="stylesheet" href="css/styles.css?v=20">
     <link rel="stylesheet" href="css/identity.css?v=5">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
+    <!-- Firebase scaricato subito: stessa versione di js/core/firebase.js, da aggiornare insieme -->
+    <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js">
+    <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js">
     <link href="https://fonts.googleapis.com/css2?family=League+Gothic&family=IBM+Plex+Sans:wght@300;400;500&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     <meta name="theme-color" content="#050508">
 </head>
@@ -64,14 +66,14 @@
         <div class="social-bottom">
             <div class="social-icons">
                 <a href="https://instagram.com/dlbp.art" target="_blank" rel="noopener" aria-label="Instagram">
-                    <i class="fab fa-instagram"></i>
+                    <svg class="social-icon" viewBox="0 0 448 512" aria-hidden="true"><use href="assets/social-icons.svg#instagram"></use></svg>
                 </a>
-                <span aria-label="Facebook"><i class="fab fa-facebook-f"></i></span>
-                <span aria-label="TikTok"><i class="fab fa-tiktok"></i></span>
-                <span aria-label="Telegram"><i class="fab fa-telegram-plane"></i></span>
-                <span aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></span>
-                <span aria-label="YouTube"><i class="fab fa-youtube"></i></span>
-                <span aria-label="SoundCloud"><i class="fab fa-soundcloud"></i></span>
+                <span aria-label="Facebook"><svg class="social-icon" viewBox="0 0 320 512" aria-hidden="true"><use href="assets/social-icons.svg#facebook-f"></use></svg></span>
+                <span aria-label="TikTok"><svg class="social-icon" viewBox="0 0 448 512" aria-hidden="true"><use href="assets/social-icons.svg#tiktok"></use></svg></span>
+                <span aria-label="Telegram"><svg class="social-icon" viewBox="0 0 496 512" aria-hidden="true"><use href="assets/social-icons.svg#telegram"></use></svg></span>
+                <span aria-label="WhatsApp"><svg class="social-icon" viewBox="0 0 448 512" aria-hidden="true"><use href="assets/social-icons.svg#whatsapp"></use></svg></span>
+                <span aria-label="YouTube"><svg class="social-icon" viewBox="0 0 576 512" aria-hidden="true"><use href="assets/social-icons.svg#youtube"></use></svg></span>
+                <span aria-label="SoundCloud"><svg class="social-icon" viewBox="0 0 640 512" aria-hidden="true"><use href="assets/social-icons.svg#soundcloud"></use></svg></span>
             </div>
         </div>
         <div class="copyright-bottom-left">© 2026 DLBP — All rights reserved</div>
@@ -79,6 +81,6 @@
 
     <!-- JS -->
     <script type="module" src="js/core/background.js?v=14"></script>
-    <script type="module" src="js/pages/home.js?v=3"></script>
+    <script type="module" src="js/pages/home.js?v=5"></script>
 </body>
 </html>
