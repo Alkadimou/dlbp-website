@@ -5,8 +5,8 @@
 // raggiunto resta per tutta la visita, anche cambiando pagina.
 // Il colore arriva al CSS come --mood e --mood-deep su <html>.
 // Con data-lite sull'elemento (scanner) gira in versione leggera.
-// Con data-tap (pagine pubbliche) un clic nelle zone vuote, dove si vede l'elica, fa partire un glitch
-// e sopra quelle zone il cursore diventa una croce, come nell'artifact "Cromo e Colore".
+// Con data-tap (pagine pubbliche) il cursore è una croce su tutta la pagina tranne link, bottoni e campi
+// (css/identity.css) e un clic dove c'è la croce fa partire un glitch, come nell'artifact "Cromo e Colore".
 
 const THREE_URL = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
 
@@ -19,8 +19,6 @@ export const MOODS = {
 const DEFAULT_MOOD = 'breathe';
 const ORDER = ['strobo', 'magenta', 'breathe', 'ghiaccio'];
 const CYCLE_EVERY = 3;
-// zone senza contenuto: lì sotto si vede solo l'elica
-const TAP_SPOTS = 'html, body, .hero-fullscreen, .page-container, .event-section, .events-grid';
 
 function saveMood(mood) {
     try { sessionStorage.setItem('dlbp-mood', mood); } catch (e) { /* sessionStorage non disponibile */ }
@@ -446,16 +444,9 @@ async function init() {
     start();
 
     if ([...hosts].some((h) => h.hasAttribute('data-tap'))) {
-        const root = document.documentElement;
-        const isSpot = (el) => el instanceof Element && el.matches(TAP_SPOTS);
-        document.addEventListener('pointermove', (e) => {
-            if (e.pointerType !== 'mouse') return;
-            const on = isSpot(e.target);
-            if (on !== root.classList.contains('bg-tap')) root.classList.toggle('bg-tap', on);
-        }, { passive: true });
-        // clic sull'elica: glitch breve, non conta per il cambio colore
+        // clic dove il cursore è una croce: glitch breve, non conta per il cambio colore
         document.addEventListener('click', (e) => {
-            if (!isSpot(e.target)) return;
+            if (!(e.target instanceof Element) || getComputedStyle(e.target).cursor !== 'crosshair') return;
             const sel = window.getSelection();
             if (sel && !sel.isCollapsed) return;
             state.power = 0.9;
