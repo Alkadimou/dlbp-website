@@ -1,8 +1,8 @@
 /* ==================================================
    IDENTITÀ "CROMO NERO, COLORE VIVO"
    Si carica dopo styles.css e ne sovrascrive colori, caratteri e forme.
-   Il colore della serata (--mood, --mood-deep) lo imposta js/core/background.js su <html>,
-   dove sono definiti gli 8 colori del motto; qui sotto c'è solo quello di partenza.
+   Il colore della serata (--mood, --mood-deep, --on-mood) lo imposta js/core/background.js su <html>,
+   dove sono definiti i 4 colori del motto; qui sotto c'è solo quello di partenza (Breathe).
    ================================================== */
 :root {
     --mood: #1fa39a;
