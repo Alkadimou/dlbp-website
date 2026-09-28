@@ -454,6 +454,15 @@ html:has(.modal:not(.hidden)) {
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
+/* La pagina scorre ma la sua barra non si vede: così tutte le pagine hanno la stessa larghezza
+   e menu e footer non si spostano passando da una pagina lunga a una corta.
+   Le barre di tabelle e finestre (qui sopra) restano. */
+html {
+    scrollbar-width: none;
+}
+html::-webkit-scrollbar {
+    display: none;
+}
 
 /* Modifiche Tabelle (users-table / pr-table) */
 .users-table tbody tr, .pr-table tbody tr {
@@ -524,6 +533,12 @@ html:has(.modal:not(.hidden)) {
 }
 .section-label::before { left: -30px; }
 .section-label::after  { right: -30px; }
+
+/* Titoli lunghi senza spazi (es. "BATU/TXK.NØX/RADIO"): vanno a capo invece di allargare la card
+   oltre lo schermo del telefono (home.js aggiunge un punto di a capo dopo ogni "/") */
+.events-grid .event-card-title {
+    overflow-wrap: anywhere;
+}
 
 .events-grid {
     display: grid;
