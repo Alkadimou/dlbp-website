@@ -41,6 +41,9 @@
     transition: opacity 1.2s ease;
 }
 .site-background.ready canvas { opacity: 1; }
+/* sopra le zone vuote il cursore è una croce: un clic fa partire un glitch (background.js, data-tap) */
+.bg-tap,
+.bg-tap body { cursor: crosshair; }
 
 /* ---------- Caratteri ---------- */
 /* testi in IBM Plex Sans; date, orari ed etichette restano in Space Mono dove styles.css lo indica */

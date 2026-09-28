@@ -5,6 +5,8 @@
 // raggiunto resta per tutta la visita, anche cambiando pagina.
 // Il colore arriva al CSS come --mood e --mood-deep su <html>.
 // Con data-lite sull'elemento (scanner) gira in versione leggera.
+// Con data-tap (pagine pubbliche) un clic nelle zone vuote, dove si vede l'elica, fa partire un glitch
+// e sopra quelle zone il cursore diventa una croce, come nell'artifact "Cromo e Colore".
 
 const THREE_URL = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
 
@@ -17,6 +19,8 @@ export const MOODS = {
 const DEFAULT_MOOD = 'breathe';
 const ORDER = ['strobo', 'magenta', 'breathe', 'ghiaccio'];
 const CYCLE_EVERY = 3;
+// zone senza contenuto: lì sotto si vede solo l'elica
+const TAP_SPOTS = 'html, body, .hero-fullscreen, .page-container, .event-section, .events-grid';
 
 function saveMood(mood) {
     try { sessionStorage.setItem('dlbp-mood', mood); } catch (e) { /* sessionStorage non disponibile */ }
@@ -440,6 +444,24 @@ async function init() {
     }
     document.addEventListener('visibilitychange', start);
     start();
+
+    if ([...hosts].some((h) => h.hasAttribute('data-tap'))) {
+        const root = document.documentElement;
+        const isSpot = (el) => el instanceof Element && el.matches(TAP_SPOTS);
+        document.addEventListener('pointermove', (e) => {
+            if (e.pointerType !== 'mouse') return;
+            const on = isSpot(e.target);
+            if (on !== root.classList.contains('bg-tap')) root.classList.toggle('bg-tap', on);
+        }, { passive: true });
+        // clic sull'elica: glitch breve, non conta per il cambio colore
+        document.addEventListener('click', (e) => {
+            if (!isSpot(e.target)) return;
+            const sel = window.getSelection();
+            if (sel && !sel.isCollapsed) return;
+            state.power = 0.9;
+            state.burstEnd = performance.now() + 380;
+        });
+    }
 }
 
 // parte dopo il caricamento della pagina, così non rallenta il resto
