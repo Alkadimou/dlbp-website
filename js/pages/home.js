@@ -24,17 +24,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Scroll Down Indicator Logic
-    const scrollIndicator = document.querySelector('.scroll-indicator');
-    if (scrollIndicator) {
-        scrollIndicator.addEventListener('click', () => {
-            const eventsSection = document.getElementById('events');
-            if (eventsSection) {
-                eventsSection.scrollIntoView({ behavior: 'smooth' });
-            }
-        });
-    }
-
     // Scroll animations (.reveal elements)
     initRevealAnimations();
 
@@ -203,6 +192,7 @@ async function loadEvents() {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('visible');
+                    observer.unobserve(entry.target); // una volta comparsa, la card resta visibile
                 }
             });
         }, { threshold: 0.1 });

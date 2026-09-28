@@ -89,7 +89,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 
                 if (titleEl) {
                     titleEl.textContent = ev.name;
-                    titleEl.setAttribute("data-text", ev.name);
                 }
                 if (dateEl) {
                     dateEl.textContent = ev.date;

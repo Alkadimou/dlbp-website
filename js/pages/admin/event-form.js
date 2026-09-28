@@ -28,20 +28,7 @@ export async function loadEventSettings() {
         const eventSnap = await getDoc(doc(db, "events", state.currentEventId));
         if (eventSnap.exists()) {
             const evData = eventSnap.data();
-            
-            const summaryTitle = document.getElementById("summary-event-title");
-            const summaryDate = document.getElementById("summary-event-date");
-            if (summaryTitle) summaryTitle.textContent = evData.name || "NOME EVENTO";
-            if (summaryDate) {
-                if (evData.dateIso) {
-                    const dateObj = new Date(evData.dateIso);
-                    const dateStr = isNaN(dateObj) ? evData.dateIso : dateObj.toLocaleDateString('it-IT', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-                    summaryDate.innerHTML = `<i class="fas fa-calendar-alt"></i> ${dateStr}`;
-                } else {
-                    summaryDate.innerHTML = `<i class="fas fa-calendar-alt"></i> Data non definita`;
-                }
-            }
-            
+
             document.getElementById('event-name-input').value = evData.name || "";
             document.getElementById('event-location-input').value = evData.location || "";
             document.getElementById('event-password-input').value = evData.password || "";
