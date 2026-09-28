@@ -1354,6 +1354,11 @@ html::-webkit-scrollbar {
 #reader button:hover {
     background-color: rgba(255,255,255,0.1);
 }
+/* La regola generale dei bottoni (display: inline-flex !important) impediva alla libreria
+   dello scanner di nascondere "Start Scanning" / "Stop Scanning": qui vince il suo display: none. */
+#reader button[style*="display: none"] {
+    display: none !important;
+}
 .status-box {
     padding: 2rem;
     margin-top: 2rem;
