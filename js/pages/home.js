@@ -64,6 +64,12 @@ async function loadNextEventButton() {
     }
 }
 
+// Nei titoli delle card permette di andare a capo dopo ogni "/" (es. "BATU/TXK.NØX/RADIO FLARE"),
+// così sui telefoni i nomi lunghi non allargano la card oltre lo schermo.
+function breakableTitle(name) {
+    return String(name).replace(/\//g, "/<wbr>");
+}
+
 async function loadEvents() {
     if (!db) return;
     const eventsGrid = document.getElementById("events-grid");
@@ -142,7 +148,7 @@ async function loadEvents() {
                             ${flyerHtml}
                             <div class="event-card-content">
                                 <div class="event-card-status ${statusClass}">${statusText}</div>
-                                <h3 class="event-card-title">${ev.name}</h3>
+                                <h3 class="event-card-title">${breakableTitle(ev.name)}</h3>
                                 <div class="event-card-date">${ev.date}</div>
                                 <span class="event-card-btn">
                                     ${isOpen ? 'SCOPRI / ACCEDI' : 'DETTAGLI'}
@@ -174,7 +180,7 @@ async function loadEvents() {
                             ${flyerHtml}
                             <div class="event-card-content">
                                 <div class="event-card-status status-closed" style="border-color: rgba(255,255,255,0.1); color: rgba(255,255,255,0.4);">EVENTO CONCLUSO</div>
-                                <h3 class="event-card-title" style="color: rgba(255,255,255,0.6);">${ev.name}</h3>
+                                <h3 class="event-card-title" style="color: rgba(255,255,255,0.6);">${breakableTitle(ev.name)}</h3>
                                 <div class="event-card-date" style="color: rgba(255,255,255,0.3);">${ev.date}</div>
                                 <span class="event-card-btn" style="background: rgba(255,255,255,0.02); color: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.05); cursor: default; pointer-events: none; text-align: center; display: block; padding: 0.8rem; font-size: 0.8rem; text-transform: uppercase;">
                                     ARCHIVIATO
