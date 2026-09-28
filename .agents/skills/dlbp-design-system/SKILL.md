@@ -60,6 +60,8 @@ Chi cambia la palette la cambia in entrambi i file e avvisa il proprietario, che
   - riflesso di cromo che passa ogni 4,5 secondi (`chromeGlint`).
 - **Colori di stato:**
   - link e voci di menu attive in `--mood-text`;
+  - etichette di stato (ISCRIZIONI APERTE, PROSSIMAMENTE, PROSSIMO EVENTO) in `--mood-text`, mai in verde;
+  - riquadri di avviso (`.alert`): angoli vivi, titolo in Space Mono. Rosso (`.alert-danger`) solo per i "no" come GUESTLIST CLOSED; per gli avvisi normali `.alert-mood`, con bordo e titolo nel colore della serata;
   - campi in focus con il bordo in `--mood`.
 - **Icone social del footer:** vengono da `assets/social-icons.svg` (Font Awesome Free 6.4.0) e si usano così:
   `<svg class="social-icon" viewBox="0 0 448 512" aria-hidden="true"><use href="assets/social-icons.svg#instagram"></use></svg>`.
