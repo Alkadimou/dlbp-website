@@ -2,6 +2,7 @@
 // e registra l'iscritto in Firestore ("registrations"), poi invia subito l'email del biglietto
 // (location + QR code) e segna email_sent.
 // Un link con ?pr=<codice> associa l'iscrizione a quel PR (campo invited_by).
+// Con capienza 0 l'evento è solo da vedere: niente password né modulo, solo il messaggio.
 import { db, serverTimestamp, doc, getDoc, setDoc, updateDoc } from "../core/firebase.js";
 import { initEmailJs, isEmailJsLoaded, sendTicketEmail } from "../core/email.js";
 import { initStaffMenu } from "../core/nav.js";
@@ -13,7 +14,7 @@ initEmailJs();
 // Versione del modulo di iscrizione. Va aumentata insieme a js/form-version.json ogni volta che
 // cambiano i campi del modulo o le regole delle iscrizioni: chi ha ancora la pagina vecchia
 // vedrà "ricarica la pagina" invece di un errore.
-const FORM_VERSION = 4;
+const FORM_VERSION = 5;
 
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("registration-form");
@@ -35,6 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentEvent = {}; // dati dell'evento, servono per l'email del biglietto
     let currentEventPassword = "";
     let hasPassword = false;
+    let registrationsClosed = false;
 
     // --- CHECK PR PARAMETER ---
     const urlParams = new URLSearchParams(window.location.search);
@@ -72,7 +74,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 currentEventPassword = (ev.password || "").trim().toLowerCase();
                 hasPassword = currentEventPassword !== "";
 
-                if (!hasPassword) {
+                const viewOnly = ev.maxCapacity === 0;
+
+                if (!hasPassword || viewOnly) {
                     gateSection.classList.add("hidden");
                     publicEventHeader.classList.remove("hidden");
                     registrationSection.classList.remove("hidden");
@@ -105,7 +109,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
                 
                 // Set form state based on event
-                if (ev.isOpen === false) {
+                if (viewOnly) {
+                    registrationsClosed = true;
+                    form.classList.add("hidden");
+                    closedMessage.querySelector("h3").textContent = "NIENTE ISCRIZIONI";
+                    closedMessage.querySelector("p").textContent = "Per questo evento non serve iscriversi alla guestlist.";
+                    closedMessage.classList.remove("hidden");
+                } else if (ev.isOpen === false) {
+                    registrationsClosed = true;
                     form.classList.add("hidden");
                     closedMessage.classList.remove("hidden");
                 }
@@ -227,8 +238,8 @@ document.addEventListener("DOMContentLoaded", () => {
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
         
-        // Se c'è il messaggio chiuso visibile, blocca
-        if (closedMessage.style.display === "block") return;
+        // Iscrizioni chiuse o evento solo da vedere: blocca
+        if (registrationsClosed) return;
         
         // Nome e cognome si salvano separati (first_name, last_name) e anche insieme nel campo
         // "name" ("NOME COGNOME"), che usano admin, scanner, area PR ed email.

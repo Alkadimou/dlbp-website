@@ -27,12 +27,13 @@ Un link con `?pr=<codice>` (per esempio `https://dlbp.art/?pr=mario`) collega l'
 - Sfondo con l'elica di DNA in cromo e il motto DRINK · LOVE · BREATHE · PEACE (vedi [Aspetto](#aspetto)).
 - Sotto il motto c'è una sequenza di DNA che ogni tanto si decifra nella parola del colore attuale.
 - Il bottone **PROSSIMO EVENTO** compare solo se c'è almeno un evento attivo.
-  - Porta all'evento attivo con la data più vicina da oggi in poi; se nessuno ha una data futura, al più recente.
+  - Porta all'evento attivo con la data più vicina da oggi in poi; se nessuno ha una data futura, al più recente. Salta gli eventi con capienza 0.
   - Mantiene il codice `?pr=`.
 - Alla prima visita della sessione compare per circa 1,5 secondi una schermata con il logo.
 
 ### Eventi (`eventi.html`)
 - **Prossimi eventi**: gli eventi attivi, con locandina, data, stato (ISCRIZIONI APERTE o GUESTLIST CLOSED) e link all'iscrizione. Il link mantiene `?pr=`.
+  - **Capienza 0 = evento solo da vedere:** la card compare con PROSSIMAMENTE, senza link né bottone.
 - **Eventi passati**: gli eventi non attivi con la lista chiusa o con la data passata, segnati come ARCHIVIATO.
 
 ### Iscrizione (`event.html?id=<evento>`)
@@ -43,6 +44,7 @@ Un link con `?pr=<codice>` (per esempio `https://dlbp.art/?pr=mario`) collega l'
   - email;
   - consenso privacy.
 - Se la lista è chiusa compare GUESTLIST CLOSED al posto del modulo.
+- Se la capienza è 0 non c'è né password né modulo, solo il messaggio NIENTE ISCRIZIONI; anche le regole di Firestore rifiutano le iscrizioni a quell'evento.
 - **Una sola iscrizione per email e per evento.** L'ID del documento è `<evento>_<hash dell'email>` e le regole permettono al pubblico solo di creare, mai di sovrascrivere.
 - **Codice PR:** `?pr=<codice>` resta ricordato per tutta la visita e finisce nel campo `invited_by`.
 - **Email del biglietto:** parte subito dopo l'iscrizione e l'iscrizione viene segnata `email_sent: true`. Se l'email non parte, l'iscrizione resta valida e l'admin può reinviarla.
@@ -58,7 +60,7 @@ Un link con `?pr=<codice>` (per esempio `https://dlbp.art/?pr=mario`) collega l'
   - ingressi live, aggiornati ogni 30 secondi e in rosso quando il locale è pieno.
 - **Bottoni dell'evento:**
   - DETTAGLI: sola lettura;
-  - MODIFICA: nome, location, password, data, orari, capienza, locandina (compressa in JPEG) e descrizione;
+  - MODIFICA: nome, location, password, data, orari, capienza (0 = evento solo da vedere, senza iscrizioni), locandina (compressa in JPEG) e descrizione;
   - ELIMINA: cancella l'evento con tutti i suoi iscritti;
   - RENDI ATTIVO / INATTIVO;
   - APRI / CHIUDI LISTA.
