@@ -1,6 +1,6 @@
 // Admin – gestione degli eventi: menu a tendina per scegliere l'evento, "RENDI ATTIVO/INATTIVO"
-// (l'evento attivo è quello mostrato al pubblico e usato da scanner e PR) ed eliminazione
-// di un evento con tutti i suoi iscritti.
+// (l'evento attivo è quello mostrato al pubblico e usato da scanner e PR), "APRI/CHIUDI LISTA"
+// (iscrizioni aperte o chiuse) ed eliminazione di un evento con tutti i suoi iscritti.
 import { db, collection, doc, query, where, getDoc, getDocs, getCountFromServer, setDoc, updateDoc, deleteDoc, writeBatch } from "../../core/firebase.js";
 import { showModal, showConfirm } from "../../core/modal.js";
 import { toMillis } from "../../core/dates.js";

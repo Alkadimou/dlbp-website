@@ -5,6 +5,8 @@ description: Skill per l'emulazione browser ed il collaudo E2E/regressione autom
 
 # Skill: Collaudo Browser Automatizzato & Regressione E2E (dlbp.art)
 
+> ⚠️ **Da aggiornare, non usare così com'è.** Questa guida e i suoi script usano ancora la porta 8080 e il vecchio login con sola password. Oggi lo staff entra con email e password (Firebase Auth, ruoli in `staff/{email}`) e l'anteprima locale gira con `node .claude/serve.js 8000`. Vedi `README.md` e `CLAUDE.md`.
+
 Questa skill automatizza l'emulazione di un browser reale (tramite Playwright in Chromium Headless) per verificare l'integrità funzionale e grafica di tutte le pagine del sito **`dlbp.art`** dopo ogni modifica al codice sorgente.
 
 ---

@@ -1,72 +1,45 @@
 ==============================================================================
-SYSTEM PROMPT & REGOLE GRAFICHE PERMANENTI DI COMPOSIZIONE SITO DLBP.ART
+REGOLE GRAFICHE DI DLBP.ART: IDENTITÀ "CROMO NERO, COLORE VIVO" (dal 27/09/2026)
+Versione completa: .agents/skills/dlbp-design-system/SKILL.md
+I valori veri sono in css/identity.css e js/core/background.js.
 ==============================================================================
 
-[TUTTE LE REGOLE FONDAMENTALI DI DESIGN, COMPOSIZIONE & LAYOUT PER DLBP.ART]
+1. BASE NERA, UN COLORE ALLA VOLTA
+   - Fondo #050508, pannelli rgba(5,5,8,0.8), linee rgba(236,234,244,0.12), testo #eceaf4.
+   - Un solo colore del motto per volta:
+       Drink   #ff2a3c (profondo #4d0712)
+       Love    #8a2c80 (profondo #250a24)
+       Breathe #1fa39a (profondo #062f35)
+       Peace   #cfe6ff (profondo #34506e)
+   - Il sito parte da Breathe e cambia colore da solo ogni 3 glitch (circa ogni 7 s),
+     in ordine Drink, Love, Breathe, Peace. Nel CSS: --mood, --mood-deep, --on-mood, --mood-text.
+   - Mai colori chiari e saturi, mai due colori del motto insieme, mai sfumature tra colori.
 
-1. SFONDO FLUIDO & ATMOSFERA (TASSATIVO)
-   - Mantieni sempre intatto lo sfondo scuro #050508 con i 3 blob animati (.fluid-background: #6366f1, #a855f7, #ec4899) e il filtro grana (.grain-overlay).
+2. CARATTERI
+   - League Gothic maiuscolo per titoli e nomi.
+   - IBM Plex Sans per i testi.
+   - Space Mono maiuscolo e spaziato per date, orari, etichette, bottoni e codici.
+   - Nessun altro carattere.
 
-2. GRIGLIA & ALLINEAMENTO ORIZZONTALE COERENTE
-   - I box contatori/KPI nelle dashboard devono usare la griglia .dashboard-grid (display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem;).
-   - Intestazioni e sezioni devono usare l'allineamento flexbox orizzontale coerente (.flex-row-between per titolo + bottone, .flex-row-center per form).
-   - Mantieni max-width: 1200px centrato con .page-container / .admin-container.
+3. FORME
+   - Angoli vivi ovunque.
+   - Pannelli scuri con bordo sottile, nessuna sfocatura.
+   - Bottone principale pieno nel colore della serata, con un riflesso di cromo ogni 4,5 s.
 
-3. GLASSMORPHISM & SCHEDE VISIBILI
-   - Usa le schede con effetto vetro (.event-card-item, .login-card, .kpi-box).
-   - Le schede statiche nelle pagine HTML devono SEMPRE contenere la classe .visible (es. class="event-card-item visible") altrimenti rimangono con opacità 0.
+4. SFONDO E GLITCH
+   - <div class="site-background"> con l'elica di DNA in cromo 3D e i glitch.
+     data-dim = più scuro, data-lite = versione leggera (scanner),
+     data-tap = cursore a croce e glitch al clic (pagine pubbliche).
+   - Durante il glitch, body.glitching sposta titoli e logo con un'ombra colorata e una bianca.
 
-4. TIPOGRAFIA & GERARCHIA VISIVA
-   - Titoli e contatori KPI usano font monospaziale (var(--font-mono)) e maiuscole con tracciamento ampio (.tracking-wide / .tracking-wider).
-   - Mantieni la gerarchia di colori: testo primario bianco #ffffff, secondario rgba(255,255,255,0.7), muted rgba(255,255,255,0.5).
+5. LOGO
+   - Bianco sul nero, a tinta unita.
+   - Mai colorato, deformato, con ombre o bagliori.
 
-5. HEADER & NAVIGAZIONE GLOBALE
-   - Navigazione fissa in alto (position: fixed; z-index: 1000) con sfocatura vetro (backdrop-filter: blur(15px); background: rgba(5, 5, 8, 0.85)).
-   - Logo .nav-logo a sinistra (90px), nav links e dropdown .nav-right a destra.
-   - Dropdown "AREA RISERVATA" posizionato in modo assoluto con scheda vetro integrata.
-
-6. FOOTER & CHIUSURA PAGINA
-   - Bordo superiore border-top: 1px solid rgba(255, 255, 255, 0.1).
-   - Note copyright .footer-copy a sinistra (font 0.8rem, rgba(255,255,255,0.4)).
-   - Logo .footer-logo-img (70px), link legali e social a destra.
-   - Su schermi <= 768px gli elementi si impilano in colonna centrata (gap: 1.5rem).
-
-7. TABELLE DATI & RESPONSIVE CARD VIEW
-   - Le tabelle DEVONO essere avvolte in <div class="table-responsive">.
-   - Intestazioni th in font monospaziale, maiuscole, letter-spacing 1.5px.
-   - Righe con hover morbido (rgba(255,255,255,0.06)).
-   - Badge di stato neon: .status-approved (verde), .status-pending (ambra), .status-rejected (rosso).
-   - Su mobile (<= 768px), le tabelle si convertono in schede vetro sovrapposte nascondendo thead ed usando data-label con ::before nei td.
-
-8. BOTTONI & AZIONI (.submit-btn)
-   - Altezza 48px, font monospaziale var(--font-mono), font-weight 700, maiuscolo, letter-spacing 2px.
-   - Transizione con micro-scala (translateY(-2px)) e bagliore ombra in hover.
-   - Varianti: .btn-danger (rosso), .btn-success (verde smeraldo), .btn-secondary (grigio).
-   - Utility: .text-xs, .no-margin, .w-100.
-
-9. CASELLE DI TESTO & FORM (.custom-input, .custom-select)
-   - Altezza 48px, padding 0.8rem 1rem, background rgba(255,255,255,0.04), bordo 1px solid rgba(255,255,255,0.15).
-   - Font monospaziale 0.85rem, letter-spacing 2px, testo bianco.
-   - Placeholder maiuscolo rgba(255,255,255,0.3).
-   - Focus (:focus): bordo schiarito rgba(255,255,255,0.4) e bagliore ombra 15px.
-
-10. RIDIMENSIONAMENTO MOBILE & TOUCH TARGETS
-   - Touch target minimi di 44px x 44px per ogni pulsante, input e link.
-   - Riduzione padding superiore dei container a 110px su schermi <= 768px per evitare sovrapposizioni con l'header fisso.
-   - I flex container si convertono in colonne verticali su schermi piccoli.
-
-11. ZERO STILI INLINE & CLASSI ATOMICHE (TASSATIVO)
-   - MAI usare l'attributo style="..." negli elementi HTML.
-   - Usare esclusivamente classi atomiche (.mb-1-5, .text-xs, .font-mono, .w-100, .no-margin, .flex-1).
-   - Mostrare/nascondere elementi ESCLUSIVAMENTE tramite .classList.add("hidden") e .classList.remove("hidden").
-   - La classe .hidden in CSS ha sempre display: none !important;.
-   - Mantenere href="css/styles.css?v=10" per il bypass della cache.
-
-12. COLLAUDO EMPIRICO TASSATIVO TRAMITE EMULATORE BROWSER (PLAYWRIGHT)
-   - Per ogni singola modifica estetica, di layout, di footer, di header o di ridimensionamento mobile, è tassativamente obbligatorio eseguire test con l'emulatore browser (Playwright Headless Chromium) e uno script di misurazione numerica delle coordinate ($X, Y, width, height$).
-   - L'agente DEVE eseguire i test dell'emulatore browser in autonomia, analizzare le discrepanze numeriche o i difetti visivi ed applicare correzioni successive in un ciclo continuo ("loop di correzione autonoma") fino al completo e perfetto raggiungimento del goal senza fermarsi a stime approssimative.
-
-13. AUTO-AGGIORNAMENTO DINAMICO DELLE SKILL & PREVENZIONE ERRORI (TASSATIVO)
-   - Ad ogni nuova modifica, soluzione di bug, decisione architetturale o introduzione di pattern (es. dipendenze CDN come FontAwesome, layout Flexbox unificati, gestione altezze bottoni a 48px, table-responsive, bypass cache ?v=N), l'agente DEVE aggiornare ed espandere automaticamente sia SKILL.md che prompt_regole_grafiche.txt.
-   - Ogni nuova regola o funzione aggiunta deve essere codificata per impedire errori futuri e garantire che TUTTE le 6 pagine del sito (index.html, eventi.html, admin.html, pr.html, scanner.html, event.html) mantengano una totale ed infrangibile coerenza stilistica, logica di sviluppo e zero-regressione.
+6. LAVORO
+   - Usare i token di identity.css.
+   - Nascondere con la classe .hidden.
+   - Aumentare ?v= con lo stesso numero in tutte le pagine.
+   - Provare le 6 pagine su computer e telefono.
+   - Proporre al proprietario i cambiamenti visibili prima di applicarli.
 ==============================================================================
