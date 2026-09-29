@@ -171,7 +171,7 @@ I template si modificano dal pannello di EmailJS. Il piano gratuito ha un limite
 - Admin, scanner e area PR hanno `<meta name="robots" content="noindex">` e non compaiono nelle ricerche.
 - Home, eventi e iscrizione hanno i tag Open Graph: su WhatsApp, Instagram e Telegram il link mostra titolo, descrizione e logo.
 - Home ed eventi hanno anche il `canonical`, così i link `?pr=` non diventano pagine doppie su Google.
-- Per controllare l'indicizzazione si può registrare dlbp.art su [Google Search Console](https://search.google.com/search-console) e inviare `https://dlbp.art/sitemap.xml`.
+- dlbp.art è registrato su [Google Search Console](https://search.google.com/search-console) come proprietà "Prefisso URL" `https://dlbp.art/`, con la sitemap inviata. La verifica è il tag `google-site-verification` in `index.html`: se si toglie, Google perde la verifica.
 
 ## Struttura delle cartelle
 
