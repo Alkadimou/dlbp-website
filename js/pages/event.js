@@ -111,6 +111,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Set form state based on event
                 if (viewOnly) {
                     registrationsClosed = true;
+                    // Senza lista l'ingresso è libero: "numero chiuso" non avrebbe senso
+                    const kickerEl = document.getElementById("public-event-kicker");
+                    if (kickerEl) kickerEl.textContent = "PROSSIMO EVENTO // INGRESSO LIBERO";
                     form.classList.add("hidden");
                     closedMessage.classList.replace("alert-danger", "alert-mood"); // colore della serata: non è un errore
                     closedMessage.querySelector("h3").classList.remove("text-danger");

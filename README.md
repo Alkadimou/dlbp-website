@@ -44,7 +44,7 @@ Un link con `?pr=<codice>` (per esempio `https://dlbp.art/?pr=mario`) collega l'
   - email;
   - consenso privacy.
 - Se la lista è chiusa compare GUESTLIST CLOSED al posto del modulo.
-- Se la capienza è 0 non c'è né password né modulo, solo il messaggio NIENTE ISCRIZIONI; anche le regole di Firestore rifiutano le iscrizioni a quell'evento.
+- Se la capienza è 0 non c'è né password né modulo: sopra il titolo compare PROSSIMO EVENTO // INGRESSO LIBERO (invece di NUMERO CHIUSO) e al posto del modulo il messaggio NIENTE ISCRIZIONI; anche le regole di Firestore rifiutano le iscrizioni a quell'evento.
 - **Una sola iscrizione per email e per evento.** L'ID del documento è `<evento>_<hash dell'email>` e le regole permettono al pubblico solo di creare, mai di sovrascrivere.
 - **Codice PR:** `?pr=<codice>` resta ricordato per tutta la visita e finisce nel campo `invited_by`.
 - **Email del biglietto:** parte subito dopo l'iscrizione e l'iscrizione viene segnata `email_sent: true`. Se l'email non parte, l'iscrizione resta valida e l'admin può reinviarla.
