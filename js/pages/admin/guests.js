@@ -16,6 +16,7 @@ const deleteSelectedBtn = document.getElementById("delete-selected-btn");
 const searchInput = document.getElementById("search-input");
 
 let unsubAdminCounter = null;
+let loadUsersRun = 0; // numero dell'ultimo caricamento: le risposte dei caricamenti precedenti si scartano
 
 // ID degli iscritti selezionati con le checkbox.
 export function getSelectedGuestIds() {
@@ -25,6 +26,7 @@ export function getSelectedGuestIds() {
 // Carica gli iscritti dell'evento selezionato e avvia il contatore degli ingressi (ogni 30 secondi).
 export async function loadUsers() {
     if (!db || !state.currentEventId) return;
+    const run = ++loadUsersRun;
     tbody.innerHTML = "<tr><td colspan='7' style='text-align: center;'>Caricamento dati...</td></tr>";
     
     // Setup live counter (Polling with getCountFromServer instead of onSnapshot to save massive bandwidth)
@@ -34,6 +36,7 @@ export async function loadUsers() {
     async function fetchCount() {
         try {
             const snapshot = await getCountFromServer(qCount);
+            if (run !== loadUsersRun) return;
             const count = snapshot.data().count;
             const max = state.maxCapacity;
             const counterDiv = document.getElementById('present-count-dash');
@@ -56,6 +59,7 @@ export async function loadUsers() {
         // Rimosso orderBy per evitare l'errore di indice composito mancante su Firebase
         const q = query(collection(db, "registrations"), where("eventId", "==", state.currentEventId));
         const querySnapshot = await getDocs(q);
+        if (run !== loadUsersRun) return;
         state.usersData = [];
         
         querySnapshot.forEach((doc) => {
@@ -78,6 +82,7 @@ export async function loadUsers() {
         updatePrFilterDropdown();
         renderTable();
     } catch (error) {
+        if (run !== loadUsersRun) return;
         console.error("Error loading users:", error);
         tbody.innerHTML = "<tr><td colspan='3'>Errore di connessione al database.</td></tr>";
     }
@@ -237,11 +242,14 @@ function renderTable() {
             const id = btn.dataset.id;
             const user = state.usersData.find(u => u.id === id);
             if (user && user.checked_in) return;
+            if (btn.disabled) return; // ingresso già in corso (doppio clic)
+            btn.disabled = true;
             try {
                 await updateDoc(doc(db, "registrations", id), { checked_in: true, check_in_time: new Date() });
                 loadUsers(); // Refresh table
             } catch (error) {
                 console.error("Error checking in user", error);
+                btn.disabled = false;
             }
         }
     };

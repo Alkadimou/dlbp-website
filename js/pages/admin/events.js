@@ -5,6 +5,7 @@ import { db, collection, doc, query, where, getDoc, getDocs, getCountFromServer,
 import { showModal, showConfirm } from "../../core/modal.js";
 import { toMillis } from "../../core/dates.js";
 import { state } from "./state.js";
+import { whileBusy } from "./busy.js";
 import { loadEventSettings, setEditMode } from "./event-form.js";
 import { loadUsers } from "./guests.js";
 
@@ -114,11 +115,13 @@ export function initEvents() {
     }
 
     if (setActiveBtn) {
-        setActiveBtn.addEventListener("click", async () => {
+        setActiveBtn.addEventListener("click", whileBusy(setActiveBtn, async () => {
             if (!state.currentEventId) return;
-            
+            // L'evento resta quello di quando si è cliccato, anche se nel frattempo si cambia menu
+            const eventId = state.currentEventId;
+
             try {
-                const currentDoc = await getDoc(doc(db, "events", state.currentEventId));
+                const currentDoc = await getDoc(doc(db, "events", eventId));
                 if (!currentDoc.exists()) return;
                 
                 const evData = currentDoc.data();
@@ -126,11 +129,11 @@ export function initEvents() {
                 
                 if (nowActive) {
                     if (!await showConfirm("Vuoi impostare questo evento come NON ATTIVO? Non sarà più visibile tra gli eventi attivi.")) return;
-                    await updateDoc(doc(db, "events", state.currentEventId), { isActive: false });
+                    await updateDoc(doc(db, "events", eventId), { isActive: false });
                     showModal("Evento disattivato con successo!");
                 } else {
                     if (!await showConfirm("Vuoi impostare questo evento come ATTIVO ONLINE?")) return;
-                    await updateDoc(doc(db, "events", state.currentEventId), { isActive: true });
+                    await updateDoc(doc(db, "events", eventId), { isActive: true });
                     showModal("Evento impostato come ATTIVO ONLINE!");
                 }
                 
@@ -140,27 +143,28 @@ export function initEvents() {
                 console.error("Error setting active event:", error);
                 showModal("Errore durante l'operazione.");
             }
-        });
+        }));
     }
 
     // Apre o chiude le iscrizioni (lista) dell'evento selezionato
     if (toggleListBtn) {
-        toggleListBtn.addEventListener("click", async () => {
+        toggleListBtn.addEventListener("click", whileBusy(toggleListBtn, async () => {
             if (!state.currentEventId) return;
+            const eventId = state.currentEventId;
 
             try {
-                const currentDoc = await getDoc(doc(db, "events", state.currentEventId));
+                const currentDoc = await getDoc(doc(db, "events", eventId));
                 if (!currentDoc.exists()) return;
 
                 const isOpen = currentDoc.data().isOpen !== false;
 
                 if (isOpen) {
                     if (!await showConfirm("Vuoi CHIUDERE la lista? Nessuno potrà più iscriversi a questo evento.")) return;
-                    await updateDoc(doc(db, "events", state.currentEventId), { isOpen: false });
+                    await updateDoc(doc(db, "events", eventId), { isOpen: false });
                     showModal("Lista chiusa!");
                 } else {
                     if (!await showConfirm("Vuoi RIAPRIRE la lista? Le persone potranno di nuovo iscriversi.")) return;
-                    await updateDoc(doc(db, "events", state.currentEventId), { isOpen: true });
+                    await updateDoc(doc(db, "events", eventId), { isOpen: true });
                     showModal("Lista aperta!");
                 }
 
@@ -169,13 +173,15 @@ export function initEvents() {
                 console.error("Error toggling list:", error);
                 showModal("Errore durante l'operazione.");
             }
-        });
+        }));
     }
 
     if (deleteEventBtn) {
-        deleteEventBtn.addEventListener('click', async () => {
+        deleteEventBtn.addEventListener('click', whileBusy(deleteEventBtn, async () => {
             if (!state.currentEventId || state.isCreatingNew) return;
-            
+            // Si elimina l'evento selezionato al momento del clic, anche se poi si cambia menu
+            const eventId = state.currentEventId;
+
             const confirmDelete = await showConfirm("⚠️ ATTENZIONE: Sei sicuro di voler eliminare definitivamente questo evento e tutti i suoi iscritti? L'azione è irreversibile.");
             if (!confirmDelete) return;
 
@@ -184,7 +190,7 @@ export function initEvents() {
 
             try {
                 // Delete registrations associated with this event
-                const q = query(collection(db, "registrations"), where("eventId", "==", state.currentEventId));
+                const q = query(collection(db, "registrations"), where("eventId", "==", eventId));
                 const snapshot = await getDocs(q);
                 
                 if (!snapshot.empty) {
@@ -208,7 +214,7 @@ export function initEvents() {
                 }
 
                 // Delete the event document
-                await deleteDoc(doc(db, "events", state.currentEventId));
+                await deleteDoc(doc(db, "events", eventId));
                 
                 showModal("Evento e iscritti eliminati con successo!");
                 window.location.reload(); 
@@ -218,6 +224,6 @@ export function initEvents() {
                 deleteEventBtn.textContent = "ELIMINA";
                 deleteEventBtn.disabled = false;
             }
-        });
+        }));
     }
 }

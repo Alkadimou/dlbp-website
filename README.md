@@ -64,6 +64,7 @@ Un link con `?pr=<codice>` (per esempio `https://dlbp.art/?pr=mario`) collega l'
   - ELIMINA: cancella l'evento con tutti i suoi iscritti;
   - RENDI ATTIVO / INATTIVO;
   - APRI / CHIUDI LISTA.
+  - mentre un bottone lavora (lettura o salvataggio) appare attenuato e ignora altri clic (`js/pages/admin/busy.js`); agisce sempre sull'evento scelto al momento del clic.
 - **Tabella iscritti:**
   - ricerca per nome o email;
   - filtri per ticket inviato, presenza e lista PR;

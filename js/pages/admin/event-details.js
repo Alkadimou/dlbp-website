@@ -2,11 +2,14 @@
 import { db, doc, getDoc } from "../../core/firebase.js";
 import { showModal } from "../../core/modal.js";
 import { state } from "./state.js";
+import { whileBusy } from "./busy.js";
 
 async function loadDetails() {
     if (!db || !state.currentEventId) return;
+    const eventId = state.currentEventId;
     try {
-        const eventSnap = await getDoc(doc(db, "events", state.currentEventId));
+        const eventSnap = await getDoc(doc(db, "events", eventId));
+        if (eventId !== state.currentEventId) return;
         if (eventSnap.exists()) {
             const evData = eventSnap.data();
             document.getElementById('details-event-name').textContent = evData.name || "NOME NON DEFINITO";
@@ -46,15 +49,17 @@ export function initEventDetails() {
     const closeDetailsBtn = document.getElementById("close-details-btn");
 
     if (viewEventBtn && detailsModal) {
-        viewEventBtn.addEventListener("click", async () => {
+        viewEventBtn.addEventListener("click", whileBusy(viewEventBtn, async () => {
             if (!state.currentEventId) {
                 showModal("Nessun evento selezionato da visualizzare.");
                 return;
             }
-            await loadDetails();
+            // La finestra si apre subito, i dati arrivano appena letti
+            detailsModal.querySelectorAll('.details-item-value, #details-event-desc').forEach(el => { el.textContent = "..."; });
             detailsModal.classList.remove('hidden');
             document.body.classList.add('no-scroll');
-        });
+            await loadDetails();
+        }));
     }
 
     if (closeDetailsBtn && detailsModal) {

@@ -5,6 +5,7 @@ import { showModal } from "../../core/modal.js";
 import { toDate } from "../../core/dates.js";
 import { state } from "./state.js";
 import { renderAnalyticsCharts } from "./charts.js";
+import { whileBusy } from "./busy.js";
 
 const analyticsLoading = document.getElementById("analytics-loading-placeholder");
 const analyticsBody = document.getElementById("analytics-modal-body");
@@ -14,9 +15,11 @@ async function loadAnalyticsData() {
     analyticsLoading.classList.remove("hidden");
     analyticsBody.classList.add("hidden");
     
+    const eventId = state.currentEventId;
     try {
-        const q = query(collection(db, "registrations"), where("eventId", "==", state.currentEventId));
+        const q = query(collection(db, "registrations"), where("eventId", "==", eventId));
         const querySnapshot = await getDocs(q);
+        if (eventId !== state.currentEventId) return;
         
         let total = 0;
         let approved = 0;
@@ -72,7 +75,7 @@ export function initAnalytics() {
     const closeAnalyticsBtn = document.getElementById("close-analytics-btn");
 
     if (analyticsBtn && analyticsModal) {
-        analyticsBtn.addEventListener("click", async () => {
+        analyticsBtn.addEventListener("click", whileBusy(analyticsBtn, async () => {
             if (!state.currentEventId) {
                 showModal("Nessun evento selezionato di cui visualizzare le statistiche.");
                 return;
@@ -80,7 +83,7 @@ export function initAnalytics() {
             analyticsModal.classList.remove('hidden');
             document.body.classList.add('no-scroll');
             await loadAnalyticsData();
-        });
+        }));
     }
 
     if (closeAnalyticsBtn && analyticsModal) {
