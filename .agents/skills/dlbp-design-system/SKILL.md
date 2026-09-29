@@ -53,7 +53,7 @@ Chi cambia la palette la cambia in entrambi i file e avvisa il proprietario, che
 - **Forme:**
   - angoli vivi ovunque (`border-radius: 0`);
   - pannelli scuri all'80% con un bordo sottile;
-  - **nessuna sfocatura** sui pannelli.
+  - **nessuna sfocatura** sui pannelli. Dietro le finestre (`.modal`, `.custom-modal-overlay`) invece la sfocatura di 5 px resta: il proprietario l'ha vista con e senza il 29/09 e l'ha voluta tenere.
 - **Bottone principale** (`.submit-btn`, `.hero-next-event-btn`):
   - pieno nel colore della serata;
   - testo in `--on-mood`;
