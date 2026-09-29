@@ -4,6 +4,7 @@
 import { db, collection, doc, getDoc, addDoc, updateDoc } from "../../core/firebase.js";
 import { showModal } from "../../core/modal.js";
 import { state } from "./state.js";
+import { whileBusy } from "./busy.js";
 
 const capacityInput = document.getElementById("capacity-input");
 const capacityDisplay = document.getElementById("capacity-display");
@@ -31,8 +32,11 @@ export function setEditMode() {
 
 export async function loadEventSettings() {
     if (!db || !state.currentEventId) return;
+    const eventId = state.currentEventId;
     try {
-        const eventSnap = await getDoc(doc(db, "events", state.currentEventId));
+        const eventSnap = await getDoc(doc(db, "events", eventId));
+        // Nel frattempo è stato scelto un altro evento: questi dati sono vecchi
+        if (eventId !== state.currentEventId) return;
         if (eventSnap.exists()) {
             const evData = eventSnap.data();
 
@@ -134,17 +138,23 @@ export function initEventForm({ onSaved }) {
     const adminEventSelector = document.getElementById("admin-event-selector");
 
     if (editEventBtn && settingsPanel) {
-        editEventBtn.addEventListener("click", async () => {
+        editEventBtn.addEventListener("click", whileBusy(editEventBtn, async () => {
             if (!state.currentEventId) {
                 showModal("Nessun evento selezionato da modificare.");
                 return;
             }
             setEditMode();
-            await loadEventSettings();
-            
+            // La finestra si apre subito; il salvataggio resta bloccato finché i dati non sono caricati
+            const saveBtn = document.getElementById("save-content-btn");
+            saveBtn.disabled = true;
             settingsPanel.classList.remove('hidden');
             document.body.classList.add('no-scroll');
-        });
+            try {
+                await loadEventSettings();
+            } finally {
+                saveBtn.disabled = false;
+            }
+        }));
     }
 
     if (closeSettingsBtn && settingsPanel) {

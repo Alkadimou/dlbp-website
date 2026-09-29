@@ -184,7 +184,6 @@ input::placeholder {
 .submit-btn:hover {
     border-color: rgba(255, 255, 255, 0.5);
     color: #fff;
-    transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
@@ -194,7 +193,13 @@ input::placeholder {
 }
 
 .submit-btn:active {
-    transform: translateY(0);
+    filter: brightness(0.9);
+}
+
+/* Bottone con un'azione in corso (js/pages/admin/busy.js) */
+[aria-busy="true"] {
+    cursor: progress !important;
+    opacity: 0.6;
 }
 
 .submit-btn:disabled {
