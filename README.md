@@ -81,7 +81,7 @@ Un link con `?pr=<codice>` (per esempio `https://dlbp.art/?pr=mario`) collega l'
   - COLLEGA EMAIL serve per i PR creati prima del login con email;
   - ELIMINA toglie anche l'accesso;
   - un'email che è già admin o scanner non può diventare PR.
-- Sui telefoni le tabelle diventano schede.
+- Sui telefoni le tabelle diventano schede e le finestre (MODIFICA, DETTAGLI, ANALYTICS) stanno dentro lo schermo e scorrono solo in verticale.
 
 ### Scanner (`scanner.html`, ruolo `scanner` o `admin`)
 - Legge il QR del biglietto con la fotocamera.
@@ -204,7 +204,8 @@ js/
       events.js            scelta evento, attiva/disattiva, apri/chiudi lista, elimina
       event-form.js        crea / modifica evento, locandina
       event-details.js     finestra DETTAGLI
-      analytics.js         finestra STATISTICHE
+      busy.js              bottoni attenuati mentre lavorano, niente doppio clic
+      analytics.js         finestra ANALYTICS
       charts.js            grafici (Chart.js)
       guests.js            tabella iscritti, filtri, contatore ingressi, CSV
       guest-actions.js     elimina iscritti, invia biglietti via email
@@ -234,8 +235,8 @@ Tutte hanno la versione fissa, così un aggiornamento esterno non può rompere i
 
 | Collezione | Contenuto | Chi può leggere / scrivere |
 |---|---|---|
-| `events` | un documento per evento: `name`, `date` (testo mostrato), `dateIso`, `startTime`, `endTime`, `location`, `password` (d'ingresso, facoltativa), `flyerUrl` (immagine Base64), `description`, `maxCapacity`, `isOpen` (iscrizioni aperte), `isActive` (evento in corso), `createdAt` | tutti leggono, admin scrive |
-| `registrations` | un iscritto per evento. ID = `<eventId>_<hash dell'email>`, così la stessa email non può iscriversi due volte. Campi: `name` (= `first_name` + " " + `last_name`), `first_name`, `last_name`, `email`, `eventId`, `invited_by` (codice PR), `status`, `checked_in`, `check_in_time`, `email_sent`, `privacy_consent`, `timestamp` | il pubblico può solo creare e poi segnare `email_sent` da false a true; admin tutto; scanner legge e segna l'ingresso; il PR legge solo i propri iscritti |
+| `events` | un documento per evento: `name`, `date` (testo mostrato), `dateIso`, `startTime`, `endTime`, `location`, `password` (d'ingresso, facoltativa), `flyerUrl` (immagine Base64), `description`, `maxCapacity` (0 = evento solo da vedere, senza iscrizioni), `isOpen` (iscrizioni aperte), `isActive` (evento in corso), `createdAt` | tutti leggono, admin scrive |
+| `registrations` | un iscritto per evento. ID = `<eventId>_<hash dell'email>`, così la stessa email non può iscriversi due volte. Campi: `name` (= `first_name` + " " + `last_name`), `first_name`, `last_name`, `email`, `eventId`, `invited_by` (codice PR), `status`, `checked_in`, `check_in_time`, `email_sent`, `privacy_consent`, `timestamp` | il pubblico può solo creare (non per gli eventi con capienza 0) e poi segnare `email_sent` da false a true; admin tutto; scanner legge e segna l'ingresso; il PR legge solo i propri iscritti |
 | `prs` | `name`, `code`, `email`, `isActive`, `createdAt` | admin |
 | `staff` | ruoli dello staff, ID = email in minuscolo: `role` (`admin`, `scanner`, `pr`), `prCode` per i PR | admin; ognuno legge il proprio |
 | `settings` | `config`: vecchie impostazioni di prima della gestione multi-evento | tutti leggono, admin scrive |
@@ -280,7 +281,7 @@ poi aprire http://localhost:8000.
 
 ## Da fare
 - **Test:** quelli in `tests/` e la guida `.agents/skills/dlbp-browser-testing` usano il vecchio login con sola password e la porta 8080. Vanno aggiornati al login con email e ruoli prima di poterli usare.
-- **CSS:** `css/styles.css` ha circa 1760 righe. Si può dividere per sezione, confrontando gli screenshot prima e dopo.
+- **CSS:** `css/styles.css` ha circa 1820 righe. Si può dividere per sezione, confrontando gli screenshot prima e dopo.
 - **Idee per il futuro:**
   - Firestore "Lite" nelle pagine pubbliche farebbe risparmiare circa 80 KB. Va provata con un'iscrizione di prova, perché tocca il modulo.
   - Un'immagine dedicata di 1200×630 per le anteprime dei link, seguendo la guida grafica.
