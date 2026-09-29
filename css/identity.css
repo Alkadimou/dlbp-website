@@ -158,6 +158,12 @@ select,
 /* Etichette di stato (ISCRIZIONI APERTE, PROSSIMO EVENTO...): nel colore della serata */
 .status-open { color: var(--mood-text) !important; }
 
+/* Messaggio di conferma sotto i moduli: nel colore della serata, mai verde */
+.form-message.success {
+    border-color: var(--mood);
+    color: var(--mood-text);
+}
+
 /* Riquadri di avviso sotto l'evento: angoli vivi, pannello scuro, titolo in Space Mono */
 .alert { border-radius: 0 !important; }
 .alert h3 {
@@ -211,6 +217,14 @@ select,
    I colori li dà .btn-danger in styles.css; qui si toglie solo la velatura bianca, niente riflesso */
 .submit-btn.btn-danger::before,
 .submit-btn.btn-secondary::before { display: none; }
+/* Pericolo spento (ELIMINA senza iscritti selezionati): come gli altri bottoni spenti, bordo al 5% e testo al 20% */
+.submit-btn.btn-danger:disabled,
+.submit-btn.btn-danger:disabled:hover {
+    background: transparent !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+    color: rgba(255, 255, 255, 0.2) !important;
+    transform: none;
+}
 /* Secondario (FILTRI): vuoto, bordo al 24%, testo al 70%; passando sopra il fondo si accende al 6% */
 .submit-btn.btn-secondary {
     border-color: rgba(236, 234, 244, 0.24) !important;
