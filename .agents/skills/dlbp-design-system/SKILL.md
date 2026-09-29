@@ -53,17 +53,18 @@ Chi cambia la palette la cambia in entrambi i file e avvisa il proprietario, che
 - **Forme:**
   - angoli vivi ovunque (`border-radius: 0`);
   - pannelli scuri all'80% con un bordo sottile;
-  - **nessuna sfocatura** sui pannelli.
+  - **nessuna sfocatura** sui pannelli. Dietro le finestre (`.modal`, `.custom-modal-overlay`) invece la sfocatura di 5 px resta: il proprietario l'ha vista con e senza il 29/09 e l'ha voluta tenere.
 - **Bottone principale** (`.submit-btn`, `.hero-next-event-btn`):
   - pieno nel colore della serata;
   - testo in `--on-mood`;
   - riflesso di cromo che passa ogni 4,5 secondi (`chromeGlint`).
-- **Bottone di pericolo** (`.btn-danger`: ELIMINA, ESCI): vuoto, bordo rosso al 40%, testo rosso chiaro; passando sopra si riempie di rosso al 15%. Niente riflesso.
+- **Bottone di pericolo** (`.btn-danger`: ELIMINA, ESCI): vuoto, bordo rosso al 40%, testo rosso chiaro; passando sopra si riempie di rosso al 15%. Niente riflesso. Quando è disattivato è spento come gli altri (bordo al 5%, testo al 20%).
 - **Bottone secondario** (`.btn-secondary`: FILTRI): vuoto, bordo al 24%, testo al 70%; passando sopra il fondo si accende al 6%. Niente riflesso.
 - **Colori di stato:**
   - link e voci di menu attive in `--mood-text`;
   - etichette di stato (ISCRIZIONI APERTE, PROSSIMAMENTE, PROSSIMO EVENTO) in `--mood-text`, mai in verde;
   - riquadri di avviso (`.alert`): angoli vivi, titolo in Space Mono. Rosso (`.alert-danger`) solo per i "no" come GUESTLIST CLOSED; per gli avvisi normali `.alert-mood`, con bordo e titolo nel colore della serata;
+  - messaggio di conferma sotto i moduli (`.form-message.success`): bordo in `--mood` e testo in `--mood-text`, mai verde;
   - campi in focus con il bordo in `--mood`.
 - **Icone social del footer:** vengono da `assets/social-icons.svg` (Font Awesome Free 6.4.0) e si usano così:
   `<svg class="social-icon" viewBox="0 0 448 512" aria-hidden="true"><use href="assets/social-icons.svg#instagram"></use></svg>`.

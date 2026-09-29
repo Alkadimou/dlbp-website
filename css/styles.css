@@ -1689,8 +1689,10 @@ html::-webkit-scrollbar {
 .registration-card .event-card-status {
     margin-bottom: 0.75rem;
 }
+/* Stessa misura dei titoli nelle schede (2.1rem, anche sul telefono) */
 .registration-card .event-card-title {
-    font-size: 1.5rem;
+    font-size: 2.1rem;
+    overflow-wrap: anywhere;
     text-align: center;
     margin: 0 0 0.5rem;
 }
@@ -1814,9 +1816,6 @@ html::-webkit-scrollbar {
 @media (max-width: 768px) {
     .registration-card {
         padding: 2rem 1.25rem;
-    }
-    .registration-card .event-card-title {
-        font-size: 1.25rem;
     }
     .registration-flyer {
         max-width: 200px;
