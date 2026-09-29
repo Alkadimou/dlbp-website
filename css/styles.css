@@ -1794,10 +1794,10 @@ html::-webkit-scrollbar {
         gap: 1.5rem;
         text-align: left;
     }
-    /* Locandina più grande che nella pagina Eventi, così si legge */
+    /* Stessa misura delle locandine nella pagina Eventi */
     .registration-flyer {
-        flex: 0 0 190px;
-        width: 190px;
+        flex: 0 0 130px;
+        width: 130px;
         margin-bottom: 0;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     }
