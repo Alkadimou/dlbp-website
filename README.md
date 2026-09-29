@@ -169,7 +169,7 @@ I template si modificano dal pannello di EmailJS. Il piano gratuito ha un limite
 
 - `robots.txt` e `sitemap.xml` (home ed eventi) sono per i motori di ricerca.
 - Admin, scanner e area PR hanno `<meta name="robots" content="noindex">` e non compaiono nelle ricerche.
-- Nome del sito su Google: **DLBP Art**, indicato con i dati strutturati `WebSite` (JSON-LD) in `index.html` e con `og:site_name` nelle pagine pubbliche. Google lo aggiorna quando rilegge la home.
+- Nome del sito su Google: **DLBP Art**, indicato con i dati strutturati `WebSite` (JSON-LD) in `index.html`, insieme alla scheda `Organization` con logo e profili ufficiali in `sameAs` (Instagram dlbp.art e dlbp.mvmnt: un nuovo profilo si aggiunge lì) e con `og:site_name` nelle pagine pubbliche. Google lo aggiorna quando rilegge la home.
 - Home, eventi e iscrizione hanno i tag Open Graph: su WhatsApp, Instagram e Telegram il link mostra titolo, descrizione e logo.
 - Home ed eventi hanno anche il `canonical`, così i link `?pr=` non diventano pagine doppie su Google.
 - dlbp.art è registrato su [Google Search Console](https://search.google.com/search-console) come proprietà "Prefisso URL" `https://dlbp.art/`, con la sitemap inviata. La verifica è il tag `google-site-verification` in `index.html`: se si toglie, Google perde la verifica.

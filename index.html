@@ -19,14 +19,33 @@
     <meta property="og:image:height" content="1024">
     <meta property="og:image:alt" content="Logo DLBP">
     <meta name="twitter:card" content="summary">
-    <!-- Nome del sito nei risultati di Google (sopra il link): "DLBP Art" -->
+    <!-- Per Google: nome del sito (sopra il link) "DLBP Art" e scheda dell'organizzazione
+         con logo e profili ufficiali (sameAs), così "DLBP" si distingue da altri nomi simili -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": "DLBP Art",
-        "alternateName": ["DLBP", "Drink Love Breathe Peace"],
-        "url": "https://dlbp.art/"
+        "@graph": [
+            {
+                "@type": "WebSite",
+                "@id": "https://dlbp.art/#website",
+                "name": "DLBP Art",
+                "alternateName": ["DLBP", "Drink Love Breathe Peace"],
+                "url": "https://dlbp.art/",
+                "publisher": { "@id": "https://dlbp.art/#organization" }
+            },
+            {
+                "@type": "Organization",
+                "@id": "https://dlbp.art/#organization",
+                "name": "DLBP Art",
+                "alternateName": ["DLBP", "Drink Love Breathe Peace"],
+                "url": "https://dlbp.art/",
+                "logo": "https://dlbp.art/assets/logo.jpg",
+                "sameAs": [
+                    "https://www.instagram.com/dlbp.art/",
+                    "https://www.instagram.com/dlbp.mvmnt/"
+                ]
+            }
+        ]
     }
     </script>
     <link rel="icon" href="assets/logo.jpg" type="image/jpeg">
