@@ -269,6 +269,8 @@ select:focus,
     animation: chromeGlint 4.5s ease-in-out infinite;
     pointer-events: none;
 }
+/* A finestra chiusa (resta nella pagina, trasparente) il riflesso si ferma: niente lavoro invisibile */
+.custom-modal-overlay:not(.active) .modal-close-btn.is-primary::after { animation: none; }
 /* ANNULLA: vuoto, bordo sottile */
 .custom-modal .modal-close-btn.is-ghost {
     background: transparent;
