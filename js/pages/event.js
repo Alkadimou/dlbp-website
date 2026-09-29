@@ -117,7 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     form.classList.add("hidden");
                     closedMessage.classList.replace("alert-danger", "alert-mood"); // colore della serata: non è un errore
                     closedMessage.querySelector("h3").classList.remove("text-danger");
-                    closedMessage.querySelector("h3").textContent = "NIENTE ISCRIZIONI";
+                    closedMessage.querySelector("h3").textContent = "INGRESSO LIBERO";
                     closedMessage.querySelector("p").textContent = "Per questo evento non serve iscriversi alla guestlist.";
                     closedMessage.classList.remove("hidden");
                 } else if (ev.isOpen === false) {
