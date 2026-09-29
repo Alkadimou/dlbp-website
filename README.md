@@ -109,7 +109,7 @@ Un link con `?pr=<codice>` (per esempio `https://dlbp.art/?pr=mario`) collega l'
 ### In tutte le pagine
 - Menu AREA RISERVATA con i link ad Admin, Scanner e Area PR.
 - Footer con le icone social: per ora è attivo solo Instagram.
-- Su telefono la pagina non si ingrandisce (niente pizzico né doppio tocco) e non rimbalza oltre i bordi: meta viewport, `touch-action`/`overscroll-behavior` in `css/styles.css` e `js/core/no-zoom.js`.
+- Su telefono la pagina non si ingrandisce (niente pizzico né doppio tocco) e non rimbalza oltre i bordi: meta viewport, `touch-action` (su ogni elemento, così vale anche dentro le finestre) e `overscroll-behavior` in `css/styles.css` e `js/core/no-zoom.js`.
 
 ## Aspetto
 
