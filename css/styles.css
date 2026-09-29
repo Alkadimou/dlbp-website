@@ -65,11 +65,16 @@ html, body {
     width: 100%;
     max-width: 100vw;
     overflow-x: hidden;
+    overflow-x: clip; /* Safari su iPhone a volte ignora hidden e lascia spostare la pagina di lato */
 }
 
 /* Niente zoom con le dita, né pizzico né doppio tocco. Va su ogni elemento e non solo su body:
    dentro una finestra che scorre (modali admin, analytics...) il browser non guarda più body. */
 * { touch-action: pan-x pan-y; }
+/* Su telefono si scorre solo dall'alto in basso */
+@media (max-width: 768px) {
+    * { touch-action: pan-y; }
+}
 
 body {
     display: flex;
@@ -1596,7 +1601,12 @@ html::-webkit-scrollbar {
 /* Finestre dell'admin su telefono: margine di 16px ai lati, titolo più piccolo accanto alla X,
    campi a due colonne (data a tutta larghezza, inizio e fine affiancati) */
 @media (max-width: 768px) {
-    .modal { padding: 16px; }
+    .modal { padding: 16px; overflow-x: hidden; }
+    .modal-large, .modal-xl { max-width: 100%; min-width: 0; }
+    /* Su iPhone i campi data e ora hanno una larghezza minima propria e uscivano dallo schermo */
+    .modal input[type="date"],
+    .modal input[type="time"] { -webkit-appearance: none; appearance: none; display: block; min-width: 0; max-width: 100%; }
+    .modal input::-webkit-date-and-time-value { text-align: left; }
     .modal .modal-close-btn { position: sticky; top: 0; z-index: 2; background: rgba(5, 5, 8, 0.85) !important; }
     .modal .event-card-title.text-lg { font-size: 1.6rem !important; margin-top: -2.5rem; padding-right: 56px; text-align: left; line-height: 1.1; }
     .modal .details-row,
@@ -1607,11 +1617,13 @@ html::-webkit-scrollbar {
     .modal .details-row-group > .flex-2 { flex-basis: 100%; }
     .modal .details-row input { width: 100%; min-width: 0; box-sizing: border-box; }
     #settings-modal .details-row:has(#flyer-input) > div { flex-basis: 100%; }
-    .modal .dashboard-grid { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .modal .dashboard-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
     .modal .kpi-box { padding: 1rem 0.5rem; }
     .modal .kpi-value { font-size: 1.6rem; }
     .modal .chart-card { padding: 1rem; }
-    .modal .charts-grid { gap: 1rem; margin-top: 1rem; }
+    .modal .charts-grid { grid-template-columns: minmax(0, 1fr); gap: 1rem; margin-top: 1rem; }
+    .modal .chart-card, .modal .kpi-box { min-width: 0; }
+    .modal .chart-card canvas { max-width: 100%; }
 }
 .custom-input { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.5rem; font-family: 'Space Mono', monospace; border-radius: 4px; outline: none; }
 .custom-select { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.15); color: #ffffff; padding: 0.6rem 2.5rem 0.6rem 1rem; font-family: var(--font-mono); font-size: 0.85rem; border-radius: var(--radius-md); outline: none; cursor: pointer; min-width: 0; max-width: 100%; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; box-sizing: border-box; transition: var(--transition-normal); appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.6)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; }
