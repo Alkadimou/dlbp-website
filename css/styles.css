@@ -1743,7 +1743,7 @@ html::-webkit-scrollbar {
 /* Computer: locandina a sinistra, titolo/data/descrizione a destra */
 @media (min-width: 769px) {
     .registration-card {
-        max-width: 760px;
+        max-width: 680px;
     }
     .registration-header {
         flex-direction: row;
@@ -1751,10 +1751,10 @@ html::-webkit-scrollbar {
         gap: 1.5rem;
         text-align: left;
     }
-    /* Stessa misura delle locandine nella pagina Eventi */
+    /* Locandina più grande che nella pagina Eventi, così si legge */
     .registration-flyer {
-        flex: 0 0 130px;
-        width: 130px;
+        flex: 0 0 190px;
+        width: 190px;
         margin-bottom: 0;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     }
