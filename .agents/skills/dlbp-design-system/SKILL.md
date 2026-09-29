@@ -58,6 +58,8 @@ Chi cambia la palette la cambia in entrambi i file e avvisa il proprietario, che
   - pieno nel colore della serata;
   - testo in `--on-mood`;
   - riflesso di cromo che passa ogni 4,5 secondi (`chromeGlint`).
+- **Bottone di pericolo** (`.btn-danger`: ELIMINA, ESCI): vuoto, bordo rosso al 40%, testo rosso chiaro; passando sopra si riempie di rosso al 15%. Niente riflesso.
+- **Bottone secondario** (`.btn-secondary`: FILTRI): vuoto, bordo al 24%, testo al 70%; passando sopra il fondo si accende al 6%. Niente riflesso.
 - **Colori di stato:**
   - link e voci di menu attive in `--mood-text`;
   - etichette di stato (ISCRIZIONI APERTE, PROSSIMAMENTE, PROSSIMO EVENTO) in `--mood-text`, mai in verde;

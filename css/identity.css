@@ -62,7 +62,8 @@ body,
 .login-card h2,
 #login-section h2,
 #success-section h2,
-.modal-content h2 {
+.modal-content h2,
+.registration-gate h3 {
     font-family: var(--f-display) !important;
     font-weight: 400 !important;
     text-transform: uppercase;
@@ -76,6 +77,8 @@ body,
 .page-title { font-size: 2.6rem; }
 .login-card h2, #login-section h2 { font-size: 2.6rem !important; margin-bottom: 1rem !important; }
 .modal-content h2 { font-size: 2.4rem !important; }
+/* INGRESSO RISERVATO (evento con password) */
+.registration-gate h3 { font-size: 2rem !important; }
 
 /* Etichette delle sezioni (Prossimi eventi, Eventi passati): titoli veri, leggibili sopra l'elica */
 .section-label {
@@ -173,20 +176,21 @@ select,
 }
 .alert-mood h3 { color: var(--mood-text); }
 
-/* ---------- Bottoni: pieni, con un riflesso che passa come sul cromo ---------- */
-.submit-btn:not(.outline-btn):not(:disabled),
+/* ---------- Bottoni: pieni, con un riflesso che passa come sul cromo ----------
+   Pericolo (.btn-danger: ELIMINA, ESCI) e secondario (.btn-secondary: FILTRI) restano vuoti, vedi sotto */
+.submit-btn:not(.outline-btn):not(.btn-danger):not(.btn-secondary):not(:disabled),
 .hero-next-event-btn {
     background: var(--mood) !important;
     color: var(--on-mood, #050508) !important;
     border-color: var(--mood) !important;
     font-weight: 700;
 }
-.submit-btn:not(.outline-btn):not(:disabled):hover,
+.submit-btn:not(.outline-btn):not(.btn-danger):not(.btn-secondary):not(:disabled):hover,
 .hero-next-event-btn:hover {
     color: var(--on-mood, #050508) !important;
     filter: brightness(1.08);
 }
-.submit-btn:not(.outline-btn):not(:disabled)::after,
+.submit-btn:not(.outline-btn):not(.btn-danger):not(.btn-secondary):not(:disabled)::after,
 .hero-next-event-btn::after {
     content: '';
     position: absolute;
@@ -202,6 +206,20 @@ select,
 @keyframes chromeGlint {
     0%, 70% { left: -60%; }
     100% { left: 130%; }
+}
+/* Pericolo (ELIMINA, ESCI): vuoto, bordo rosso al 40%; passando sopra si riempie di rosso al 15%.
+   I colori li dà .btn-danger in styles.css; qui si toglie solo la velatura bianca, niente riflesso */
+.submit-btn.btn-danger::before,
+.submit-btn.btn-secondary::before { display: none; }
+/* Secondario (FILTRI): vuoto, bordo al 24%, testo al 70%; passando sopra il fondo si accende al 6% */
+.submit-btn.btn-secondary {
+    border-color: rgba(236, 234, 244, 0.24) !important;
+    color: rgba(236, 234, 244, 0.7) !important;
+}
+.submit-btn.btn-secondary:hover {
+    background: rgba(236, 234, 244, 0.06) !important;
+    border-color: rgba(236, 234, 244, 0.5) !important;
+    color: var(--ink) !important;
 }
 
 .nav-right a.active,
@@ -298,6 +316,7 @@ body.glitching .hero-tagline-center,
 body.glitching .login-card h2,
 body.glitching #login-section h2,
 body.glitching .modal-content h2,
+body.glitching .registration-gate h3,
 body.glitching .nav-logo {
     transform: translateX(var(--gx, 0));
     text-shadow: -3px 0 var(--mood), 3px 0 rgba(255, 255, 255, 0.75);
@@ -307,7 +326,7 @@ body.glitching .nav-logo {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .submit-btn:not(.outline-btn):not(:disabled)::after,
+    .submit-btn:not(.outline-btn):not(.btn-danger):not(.btn-secondary):not(:disabled)::after,
     .hero-next-event-btn::after,
     .custom-modal .modal-close-btn.is-primary::after { animation: none; display: none; }
 }

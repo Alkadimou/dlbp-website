@@ -143,6 +143,7 @@ Dal 27/09/2026 l'identità è "cromo nero, colore vivo": nero, un'elica di DNA i
 **Altro:**
 - Durante il glitch anche titoli e logo si spostano (`body.glitching`).
 - Finestre (avvisi e conferme di `js/core/modal.js`, "Iscrizione completata"): pannello nero con bordo sottile e angoli vivi, senza sfocatura. Il bottone principale (OK, CONFERMA) è pieno nel colore della serata; ANNULLA è vuoto, con il bordo sottile.
+- Bottoni dell'area staff: ELIMINA ed ESCI sono vuoti con il bordo rosso, FILTRI è vuoto con il bordo sottile; solo i bottoni principali sono pieni nel colore della serata.
 - Sugli schermi a 120 Hz o più l'elica viene disegnata al massimo circa 60 volte al secondo.
 - Con l'opzione "riduci movimento" del telefono l'elica resta ferma.
 - Caratteri:
