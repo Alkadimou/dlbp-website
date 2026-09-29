@@ -65,6 +65,9 @@ html, body {
     width: 100%;
     max-width: 100vw;
     overflow-x: hidden;
+    /* niente rimbalzo oltre i bordi e niente zoom con le dita (vedi anche js/core/no-zoom.js) */
+    overscroll-behavior: none;
+    touch-action: pan-x pan-y;
 }
 
 body {

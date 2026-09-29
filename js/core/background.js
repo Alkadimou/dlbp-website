@@ -8,6 +8,9 @@
 // disegna al massimo circa 60 fotogrammi al secondo, per consumare meno batteria.
 // Con data-tap (pagine pubbliche) il cursore è una croce su tutta la pagina tranne link, bottoni e campi
 // (css/identity.css) e un clic dove c'è la croce fa partire un glitch, come nell'artifact "Cromo e Colore".
+// Carica anche no-zoom.js (niente ingrandimento su telefono), perché questo file c'è in ogni pagina.
+
+import './no-zoom.js';
 
 const THREE_URL = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
 
