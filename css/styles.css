@@ -179,11 +179,6 @@ input::placeholder {
     box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
-/* Righe del modulo evento (admin) con lo stile del bottone: restano ferme e si scrive nel campo */
-.settings-item.submit-btn { cursor: default; }
-.settings-item.submit-btn:hover { transform: none; }
-.settings-item.submit-btn input { position: relative; z-index: 1; cursor: text; }
-
 #login-btn {
     width: 100%;
     display: block;
