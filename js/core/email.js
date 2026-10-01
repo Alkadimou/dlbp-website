@@ -24,9 +24,12 @@ export function sendEmail(templateId, params) {
 // Email del biglietto: location, data e QR code (il QR contiene l'ID dell'iscrizione,
 // che lo scanner legge alla porta). `event` è il documento dell'evento, anche vuoto.
 // Variabili del template: to_name, to_email, event_name, event_date, secret_location,
-// map_url (Google Maps della location), ticket_id (ultimi 8 caratteri dell'ID), qr_code_url.
+// map_url (Google Maps della location), ticket_id (ultimi 8 caratteri dell'ID), qr_code_url,
+// event_fee (quota adesione, può essere vuota) e fee_display ("none" senza quota: nasconde la riga).
+// Il codice HTML del template è in email-templates/ticket_confirm.html.
 export function sendTicketEmail(registration, event) {
     const location = event.location || "Secret Location";
+    const fee = (event.fee || "").trim();
     return sendEmail(EMAIL_TEMPLATES.ticket, {
         to_name: registration.name,
         to_email: registration.email,
@@ -35,6 +38,8 @@ export function sendTicketEmail(registration, event) {
         map_url: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`,
         event_date: event.date || "Data Evento",
         ticket_id: registration.id.slice(-8).toUpperCase(),
-        qr_code_url: `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${registration.id}`
+        qr_code_url: `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${registration.id}`,
+        event_fee: fee,
+        fee_display: fee ? "table-row" : "none"
     });
 }

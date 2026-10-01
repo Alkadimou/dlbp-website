@@ -42,6 +42,7 @@ export async function loadEventSettings() {
 
             document.getElementById('event-name-input').value = evData.name || "";
             document.getElementById('event-location-input').value = evData.location || "";
+            document.getElementById('event-fee-input').value = evData.fee || "";
             document.getElementById('event-password-input').value = evData.password || "";
             document.getElementById('event-date-input').value = evData.dateIso || "";
             document.getElementById('event-start-time-input').value = evData.startTime || "";
@@ -179,6 +180,7 @@ export function initEventForm({ onSaved }) {
             document.body.classList.add('no-scroll');
             document.getElementById('event-name-input').value = "";
             document.getElementById('event-location-input').value = "";
+            document.getElementById('event-fee-input').value = "";
             document.getElementById('event-password-input').value = "";
             document.getElementById('event-date-input').value = "";
             document.getElementById('event-start-time-input').value = "";
@@ -201,6 +203,8 @@ export function initEventForm({ onSaved }) {
 
         const name = document.getElementById('event-name-input').value.trim();
         const location = document.getElementById('event-location-input').value.trim() || "Secret Location";
+        // Quota adesione (testo libero, es. "15 €"): compare nella mail del biglietto solo se c'è
+        const fee = document.getElementById('event-fee-input').value.trim();
         const dateIso = document.getElementById('event-date-input').value;
         const startTime = document.getElementById('event-start-time-input').value;
         const endTime = document.getElementById('event-end-time-input').value;
@@ -250,6 +254,7 @@ export function initEventForm({ onSaved }) {
                     startTime: startTime,
                     endTime: endTime,
                     location: location,
+                    fee: fee,
                     password: document.getElementById('event-password-input').value.trim(),
                     flyerUrl: flyerUrl || "",
                     description: description || "",
@@ -275,6 +280,7 @@ export function initEventForm({ onSaved }) {
                 const updates = {
                     name: name,
                     location: location,
+                    fee: fee,
                     password: document.getElementById('event-password-input').value.trim(),
                     dateIso: dateIso,
                     date: formattedDate,
