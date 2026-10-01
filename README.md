@@ -15,6 +15,7 @@ Il pubblico vede gli eventi e si iscrive in lista. Lo staff gestisce eventi e is
 | `index.html` | pubblico | Home con lo sfondo 3D e il bottone PROSSIMO EVENTO | `js/pages/home.js` |
 | `eventi.html` | pubblico | Elenco degli eventi in programma e passati | `js/pages/home.js` |
 | `event.html?id=<evento>` | pubblico | Password d'ingresso (se c'è) e iscrizione in lista | `js/pages/event.js` |
+| `annulla-iscrizione.html?id=<codice>` | pubblico (link personale nelle mail di invito) | Cancella il contatto dalla rubrica `contacts` dopo il clic su CONFERMA; fuori dai motori di ricerca | `js/pages/unsubscribe.js` |
 | `admin.html` | staff `admin` | Eventi, iscritti, email, statistiche, PR | `js/pages/admin/main.js` |
 | `scanner.html` | staff `scanner` o `admin` | Lettura dei QR code alla porta | `js/pages/scanner.js` |
 | `pr.html` | staff `pr` | Iscritti arrivati con il proprio link d'invito | `js/pages/pr.js` |
@@ -106,6 +107,12 @@ Un link con `?pr=<codice>` (per esempio `https://dlbp.art/?pr=mario`) collega l'
   - si aggiorna in tempo reale;
   - ha colonne ordinabili;
   - mostra i totali di iscritti, approvati ed entrati.
+
+### Annulla iscrizione (`annulla-iscrizione.html?id=<codice>`)
+- Il link arriva in fondo a ogni mail di invito: `<codice>` è l'ID segreto del contatto in `contacts` (20 lettere e cifre casuali).
+- Serve il clic su CONFERMA: i programmi di posta aprono da soli i link per controllarli, e senza conferma cancellerebbero il contatto.
+- Dopo il clic il contatto viene cancellato dal server e la pagina scrive FATTO. Con un link sbagliato mostra un avviso.
+- Per gli invii vale sempre l'elenco sul server: chi si è cancellato resta nei CSV locali ma non deve tornare dentro.
 
 ### In tutte le pagine
 - Menu AREA RISERVATA con i link ad Admin, Scanner e Area PR.
@@ -242,7 +249,7 @@ Tutte hanno la versione fissa, così un aggiornamento esterno non può rompere i
 | `registrations` | un iscritto per evento. ID = `<eventId>_<hash dell'email>`, così la stessa email non può iscriversi due volte. Campi: `name` (= `first_name` + " " + `last_name`), `first_name`, `last_name`, `email`, `eventId`, `invited_by` (codice PR), `status`, `checked_in`, `check_in_time`, `email_sent`, `privacy_consent`, `timestamp` | il pubblico può solo creare (non per gli eventi con capienza 0) e poi segnare `email_sent` da false a true; admin tutto; scanner legge e segna l'ingresso; il PR legge solo i propri iscritti |
 | `prs` | `name`, `code`, `email`, `isActive`, `createdAt` | admin |
 | `staff` | ruoli dello staff, ID = email in minuscolo: `role` (`admin`, `scanner`, `pr`), `prCode` per i PR | admin; ognuno legge il proprio |
-| `contacts` | rubrica per gli inviti (456 contatti caricati l'01/10/2026 dalle iscrizioni passate, dai biglietti e dai tesserati). ID = email in minuscolo. Campi: `firstName`, `lastName`, `email`, `phone` (può essere vuoto), `createdAt` | nessuno dal sito: nelle regole non c'è, quindi è chiusa a tutti; si gestisce solo dalla console di Firebase |
+| `contacts` | rubrica per gli inviti (456 contatti caricati l'01/10/2026 dalle iscrizioni passate, dai biglietti e dai tesserati). ID = codice casuale di 20 lettere e cifre, che va solo nel link personale di annullamento. Campi: `firstName`, `lastName`, `email`, `phone` (può essere vuoto), `createdAt` | nessuno legge o elenca dal sito; chi conosce l'ID può solo cancellare quel contatto (`annulla-iscrizione.html`); il resto dalla console di Firebase |
 | `settings` | `config`: vecchie impostazioni di prima della gestione multi-evento | tutti leggono, admin scrive |
 
 **Note sulle iscrizioni:**
@@ -274,7 +281,7 @@ poi aprire http://localhost:8000.
 - **Numero `?v=`:** quando cambia un file JavaScript o CSS, si aumenta il numero `?v=` nel tag della pagina, così i browser scaricano la versione nuova.
   - `styles.css`, `identity.css` e `background.js` usano lo stesso numero in tutte le pagine e si aumentano ovunque insieme.
   - I moduli importati dagli altri file non hanno `?v=` e possono restare in cache per circa 10 minuti.
-- **Versione di Firebase:** è scritta in `js/core/firebase.js`, in `js/core/firebase-auth.js` e nei `modulepreload` di `index.html`, `eventi.html` ed `event.html`. Si aggiorna in tutti e tre i punti insieme.
+- **Versione di Firebase:** è scritta in `js/core/firebase.js`, in `js/core/firebase-auth.js` e nei `modulepreload` di `index.html`, `eventi.html`, `event.html` e `annulla-iscrizione.html`. Si aggiorna in tutti i punti insieme.
 - **Modulo di iscrizione:** se cambiano i campi del modulo o le regole delle iscrizioni, si aumentano insieme `FORM_VERSION` in `js/pages/event.js` e `registrationForm` in `js/form-version.json`.
 - **Dati riservati:** le chiavi di Firebase ed EmailJS nel codice sono pubbliche per natura; la protezione dei dati sta nelle regole Firestore. Password, backup del database e dati degli iscritti non vanno mai nel repository (`archive/backups/` e `scripts/db_guests/` sono esclusi da `.gitignore`).
 
