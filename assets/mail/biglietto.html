@@ -5,9 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="color-scheme" content="dark">
 <meta name="supported-color-schemes" content="dark">
-<!-- Template EmailJS "ticket_confirm" (mail del biglietto con il QR): si incolla nel Code Editor del template.
-     Variabili da js/core/email.js: to_name, event_name, event_date, secret_location, map_url, ticket_id,
-     qr_code_url, event_fee, fee_display. Sempre con due graffe: EmailJS così "pulisce" i dati scritti dagli iscritti. -->
+<!-- Mail del biglietto con il QR. La riempie js/core/email.js (sendTicketEmail): sostituisce i segnaposto
+     tra doppie graffe (to_name, event_name, event_date, secret_location, map_url, ticket_id, qr_code_url,
+     event_fee, fee_display) con i dati già protetti, e la manda come html_body al template EmailJS
+     "ticket_confirm", che contiene solo html_body tra tre graffe. -->
 <link href="https://fonts.googleapis.com/css2?family=League+Gothic&family=IBM+Plex+Sans:wght@400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   body { margin:0; padding:0; background:#050508; }

@@ -163,7 +163,7 @@ Dal 27/09/2026 l'identità è "cromo nero, colore vivo": nero, un'elica di DNA i
 
 L'email del biglietto usa il template `ticket_confirm`. Parte all'iscrizione e con INVIA ACCESSI.
 
-**Variabili del template:**
+**Segnaposto della mail (inviati anche come variabili a EmailJS):**
 - `to_name`, `to_email`;
 - `event_name`, `event_date`;
 - `secret_location`;
@@ -173,9 +173,10 @@ L'email del biglietto usa il template `ticket_confirm`. Parte all'iscrizione e c
 - `event_fee`: quota adesione dell'evento (campo QUOTA ADESIONE nel pannello admin, può essere vuota);
 - `fee_display`: `none` se la quota è vuota, così la riga sparisce dalla mail.
 
-Il codice HTML del template è in `email-templates/ticket_confirm.html`: si incolla nel Code Editor del template su EmailJS.
+La grafica della mail è in `assets/mail/biglietto.html`: `js/core/email.js` la scarica, riempie i segnaposto tra doppie graffe con i dati protetti e la manda come `html_body`.
+Su EmailJS il template `ticket_confirm` contiene solo `{{{html_body}}}` (contenuto, Code Editor) e `{{{subject}}}` (oggetto): per cambiare la mail si modifica il file nel sito, non il template.
 
-I template si modificano dal pannello di EmailJS. Il piano gratuito ha un limite mensile di invii.
+Il piano gratuito di EmailJS ha un limite mensile di invii.
 
 ## Google e anteprime dei link
 
