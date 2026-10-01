@@ -29,7 +29,7 @@ export function sendEmail(templateId, params) {
 // con i dati protetti (escapeHtml) e la mail parte come html_body. Il template EmailJS "ticket_confirm"
 // contiene solo html_body tra tre graffe, con oggetto subject tra tre graffe.
 // Le variabili singole (to_name, event_name, ...) restano nei parametri per chi legge il template vecchio.
-// event_fee è la quota adesione; senza quota diventa "Free entry" e fee_visibility nasconde l'etichetta. secret_location non compare
+// event_fee è la quota partecipazione; senza quota diventa "Free entry". secret_location non compare
 // più nella mail (c'è solo il bottone della mappa), ma resta nei parametri.
 let ticketHtml;
 function loadTicketHtml() {
@@ -53,8 +53,7 @@ export async function sendTicketEmail(registration, event) {
         event_date: event.date || "Data Evento",
         ticket_id: registration.id.slice(-8).toUpperCase(),
         qr_code_url: `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(registration.id)}`,
-        event_fee: fee || "Free entry",
-        fee_visibility: fee ? "visible" : "hidden"
+        event_fee: fee || "Free entry"
     };
     const html = await loadTicketHtml();
     params.html_body = html.replace(/\{\{(\w+)\}\}/g, (m, key) => key in params ? escapeHtml(params[key]) : m);

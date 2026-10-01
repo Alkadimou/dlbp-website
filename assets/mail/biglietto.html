@@ -7,7 +7,7 @@
 <meta name="supported-color-schemes" content="dark">
 <!-- Mail del biglietto con il QR. La riempie js/core/email.js (sendTicketEmail): sostituisce i segnaposto
      tra doppie graffe (to_name, event_name, event_date, secret_location, map_url, ticket_id, qr_code_url,
-     event_fee, fee_visibility) con i dati già protetti, e la manda come html_body al template EmailJS
+     event_fee) con i dati già protetti, e la manda come html_body al template EmailJS
      "ticket_confirm", che contiene solo html_body tra tre graffe. -->
 <link href="https://fonts.googleapis.com/css2?family=League+Gothic&family=IBM+Plex+Sans:wght@400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -83,12 +83,12 @@
       Mostra questo QR alla porta: è personale e vale per una persona.
     </td></tr>
 
-    <!-- Quota adesione (senza quota: etichetta nascosta e FREE ENTRY) | Dove (solo il bottone della mappa, niente indirizzo scritto) -->
+    <!-- Quota partecipazione (senza quota: FREE ENTRY) | Dove (solo il bottone della mappa, niente indirizzo scritto) -->
     <tr><td class="pad" style="padding:0 24px;">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid #26262c;">
         <tr>
           <td width="56%" valign="top" style="padding:20px 24px 20px 0;">
-            <div class="lbl" style="visibility:{{fee_visibility}};font-family:'Space Mono','Courier New',monospace;font-size:11px;line-height:1.4;letter-spacing:3px;text-transform:uppercase;color:#62bfb8;padding-bottom:10px;">Quota adesione</div>
+            <div class="lbl" style="font-family:'Space Mono','Courier New',monospace;font-size:11px;line-height:1.4;letter-spacing:3px;text-transform:uppercase;color:#62bfb8;padding-bottom:10px;">Quota partecipazione</div>
             <div class="big" style="font-weight:bold;font-family:'League Gothic','Arial Narrow','Helvetica Neue Condensed',Impact,sans-serif;font-size:34px;line-height:1;letter-spacing:1px;text-transform:uppercase;color:#eceaf4;">{{event_fee}}</div>
           </td>
           <td width="44%" valign="top" style="padding:20px 0;">
