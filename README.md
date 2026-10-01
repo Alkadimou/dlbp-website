@@ -166,12 +166,12 @@ L'email del biglietto usa il template `ticket_confirm`. Parte all'iscrizione e c
 **Segnaposto della mail (inviati anche come variabili a EmailJS):**
 - `to_name`, `to_email`;
 - `event_name`, `event_date`;
-- `secret_location`;
+- `secret_location`: indirizzo; nella mail non si scrive, serve per il bottone APRI LA MAPPA;
 - `map_url`: Google Maps della location;
 - `ticket_id`: ultimi 8 caratteri dell'ID del biglietto;
 - `qr_code_url`: immagine del QR con l'ID del biglietto, che lo scanner legge alla porta.
 - `event_fee`: quota adesione dell'evento (campo QUOTA ADESIONE nel pannello admin, può essere vuota);
-- `fee_display`: `none` se la quota è vuota, così la riga sparisce dalla mail.
+- `fee_display`: `none` se la quota è vuota, così la quota (a destra del bottone della mappa) sparisce dalla mail.
 
 La grafica della mail è in `assets/mail/biglietto.html`: `js/core/email.js` la scarica, riempie i segnaposto tra doppie graffe con i dati protetti e la manda come `html_body`.
 Su EmailJS il template `ticket_confirm` contiene solo `{{{html_body}}}` (contenuto, Code Editor) e `{{{subject}}}` (oggetto): per cambiare la mail si modifica il file nel sito, non il template.
