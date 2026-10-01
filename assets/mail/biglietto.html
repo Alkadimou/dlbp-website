@@ -83,33 +83,25 @@
       Mostra questo QR alla porta: è personale e vale per una persona.
     </td></tr>
 
-    <!-- Dove -->
+    <!-- Dove (solo il bottone della mappa, niente indirizzo scritto) | Quota adesione (sparisce se nell'evento è vuota) -->
     <tr><td class="pad" style="padding:0 24px;">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid #26262c;">
         <tr>
           <td width="56%" valign="top" style="padding:20px 24px 20px 0;">
             <div class="lbl" style="font-family:'Space Mono','Courier New',monospace;font-size:11px;line-height:1.4;letter-spacing:3px;text-transform:uppercase;color:#62bfb8;padding-bottom:10px;">Dove</div>
-            <div style="font-family:'IBM Plex Sans','Helvetica Neue',Arial,sans-serif;font-size:15px;line-height:1.5;font-weight:bold;color:#eceaf4;">{{secret_location}}</div>
-          </td>
-          <td width="44%" valign="top" style="padding:20px 0;">
-            <div class="lbl" style="font-family:'Space Mono','Courier New',monospace;font-size:11px;line-height:1.4;letter-spacing:3px;text-transform:uppercase;color:#62bfb8;padding-bottom:10px;">Mappa</div>
             <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
               <td bgcolor="#1fa39a" style="background:#1fa39a;border:1px solid #1fa39a;">
                 <a href="{{map_url}}" class="btn" style="display:inline-block;padding:16px 24px;white-space:nowrap;font-family:'Space Mono','Courier New',monospace;font-size:12px;font-weight:bold;line-height:1;letter-spacing:3px;text-transform:uppercase;text-decoration:none;color:#050508;">Apri la mappa</a>
               </td>
             </tr></table>
           </td>
+          <td width="44%" valign="top" style="padding:20px 0;">
+            <div style="display:{{fee_display}};">
+              <div class="lbl" style="font-family:'Space Mono','Courier New',monospace;font-size:11px;line-height:1.4;letter-spacing:3px;text-transform:uppercase;color:#62bfb8;padding-bottom:10px;">Quota adesione</div>
+              <div class="big" style="font-weight:bold;font-family:'League Gothic','Arial Narrow','Helvetica Neue Condensed',Impact,sans-serif;font-size:34px;line-height:1;letter-spacing:1px;text-transform:uppercase;color:#eceaf4;">{{event_fee}}</div>
+            </div>
+          </td>
         </tr>
-      </table>
-    </td></tr>
-
-    <!-- Quota adesione: la riga sparisce (fee_display = none) se nell'evento la quota è vuota -->
-    <tr style="display:{{fee_display}};"><td class="pad" style="padding:0 24px;">
-      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid #26262c;">
-        <tr><td style="padding:20px 0;">
-          <div class="lbl" style="font-family:'Space Mono','Courier New',monospace;font-size:11px;line-height:1.4;letter-spacing:3px;text-transform:uppercase;color:#62bfb8;padding-bottom:10px;">Quota adesione</div>
-          <div class="big" style="font-weight:bold;font-family:'League Gothic','Arial Narrow','Helvetica Neue Condensed',Impact,sans-serif;font-size:34px;line-height:1;letter-spacing:1px;text-transform:uppercase;color:#eceaf4;">{{event_fee}}</div>
-        </td></tr>
       </table>
     </td></tr>
 
