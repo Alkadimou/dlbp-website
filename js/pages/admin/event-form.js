@@ -203,7 +203,7 @@ export function initEventForm({ onSaved }) {
 
         const name = document.getElementById('event-name-input').value.trim();
         const location = document.getElementById('event-location-input').value.trim() || "Secret Location";
-        // Quota adesione (testo libero, es. "15 €"): compare nella mail del biglietto solo se c'è
+        // Quota partecipazione (testo libero, es. "15 €"): se è vuota la mail del biglietto scrive FREE ENTRY
         const fee = document.getElementById('event-fee-input').value.trim();
         const dateIso = document.getElementById('event-date-input').value;
         const startTime = document.getElementById('event-start-time-input').value;
