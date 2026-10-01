@@ -247,8 +247,7 @@ Tutte hanno la versione fissa, così un aggiornamento esterno non può rompere i
 
 **Note sulle iscrizioni:**
 - Dal 27/09/2026 nome e cognome separati sono obbligatori nelle iscrizioni pubbliche.
-- Le iscrizioni più vecchie hanno solo `name`.
-- Le iscrizioni di Act I importate a mano non hanno l'email.
+- L'01/10/2026 sono state cancellate le iscrizioni degli eventi passati (Act I, Act II e l'evento annullato del 26/07), dopo un backup completo in `archive/backups/`; i contatti sono passati in `contacts`.
 
 Le regole complete sono in `firestore.rules`.
 
