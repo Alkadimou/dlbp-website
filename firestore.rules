@@ -102,6 +102,13 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
 
+    // Contacts for invitations: nobody can read or list them from the site.
+    // The document ID is a random 20-character secret sent only in that person's
+    // unsubscribe link, so whoever has the link can delete that one contact.
+    match /contacts/{contactId} {
+      allow delete: if contactId.size() == 20;
+    }
+
     // Legacy global settings (registration open/closed)
     match /settings/{docId} {
       allow read: if true;

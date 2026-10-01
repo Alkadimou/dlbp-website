@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DLBP | Annulla iscrizione</title>
+    <!-- Pagina raggiunta solo dal link personale nelle mail di invito: fuori dai motori di ricerca -->
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="referrer" content="no-referrer">
+    <link rel="icon" href="assets/logo.jpg" type="image/jpeg">
+    <link rel="stylesheet" href="css/styles.css?v=37">
+    <link rel="stylesheet" href="css/identity.css?v=10">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
+    <!-- Firebase scaricato subito: stessa versione di js/core/firebase.js, da aggiornare insieme -->
+    <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js">
+    <link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js">
+    <link href="https://fonts.googleapis.com/css2?family=League+Gothic&family=IBM+Plex+Sans:wght@300;400;500&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <meta name="theme-color" content="#050508">
+</head>
+<body class="landing-page">
+    <!-- Sfondo: elica di DNA cromata (js/core/background.js) -->
+    <div class="site-background" aria-hidden="true" data-dim="0.6"></div>
+    <div class="grain-overlay"></div>
+
+    <nav class="main-nav">
+        <div class="nav-left">
+            <a href="/">
+                <img src="assets/logo.png" alt="DLBP Logo" class="nav-logo">
+            </a>
+        </div>
+        <div class="nav-right">
+            <a href="/">HOME</a>
+            <a href="eventi.html">EVENTI</a>
+        </div>
+    </nav>
+
+    <main class="eventi-page page-container event-container">
+        <section class="event-section">
+            <div class="event-card-item registration-card visible">
+                <div class="registration-info">
+                    <div class="event-card-status status-open">INVITI DLBP</div>
+                    <h1 class="event-card-title" id="unsub-title">ANNULLA ISCRIZIONE</h1>
+                    <p class="registration-description" id="unsub-text">
+                        Vuoi smettere di ricevere gli inviti DLBP? Premi CONFERMA e il tuo contatto verrà cancellato dal nostro elenco.
+                    </p>
+                </div>
+                <button type="button" class="submit-btn w-100" id="unsub-btn">
+                    <span class="btn-text">CONFERMA</span>
+                </button>
+                <div id="unsub-message" class="form-message hidden"></div>
+            </div>
+        </section>
+    </main>
+
+    <script type="module" src="js/core/background.js?v=16"></script>
+    <script type="module" src="js/pages/unsubscribe.js?v=1"></script>
+</body>
+</html>

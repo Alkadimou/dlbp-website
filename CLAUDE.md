@@ -6,9 +6,9 @@ Dati su Firebase (progetto `dlbp-website`, piano gratuito Spark): Firestore + Au
 ## Struttura
 - Mappa completa di pagine, cartelle, collezioni e **funzionalità** nel `README.md`: quando si aggiunge o cambia una funzione, aggiornare anche la sezione "Funzionalità" (e "Aspetto" o "Email" se serve).
 - JavaScript: moduli ES senza build. `js/core/` contiene il codice condiviso (Firebase, login staff, email, modali...); `js/pages/` ha un file d'ingresso per pagina; il pannello admin è diviso per sezione in `js/pages/admin/`, con lo stato condiviso in `state.js`.
-- Pagine pubbliche: `index.html` ed `eventi.html` (`js/pages/home.js`), `event.html` (registrazione, `js/pages/event.js`).
+- Pagine pubbliche: `index.html` ed `eventi.html` (`js/pages/home.js`), `event.html` (registrazione, `js/pages/event.js`), `annulla-iscrizione.html` (link personale per uscire dalla rubrica degli inviti, `js/pages/unsubscribe.js`).
 - Pagine staff: `admin.html` (`js/pages/admin/main.js`), `scanner.html` (`js/pages/scanner.js`), `pr.html` (`js/pages/pr.js`).
-- Firestore si importa sempre da `js/core/firebase.js`, mai direttamente da gstatic, così la versione dell'SDK resta una sola. La stessa versione compare anche in `js/core/firebase-auth.js` e nei `<link rel="modulepreload">` di `index.html`, `eventi.html` ed `event.html`: si aggiorna in tutti i punti insieme.
+- Firestore si importa sempre da `js/core/firebase.js`, mai direttamente da gstatic, così la versione dell'SDK resta una sola. La stessa versione compare anche in `js/core/firebase-auth.js` e nei `<link rel="modulepreload">` di `index.html`, `eventi.html`, `event.html` e `annulla-iscrizione.html`: si aggiorna in tutti i punti insieme.
 - Aspetto: colori, caratteri e forme in `css/identity.css` (si carica dopo `styles.css`); sfondo 3D, palette (`MOODS`), ordine (`ORDER`) e cambio colore (`CYCLE_EVERY`) in `js/core/background.js`. Regole grafiche in `.agents/skills/dlbp-design-system/SKILL.md`.
 - Icone social del footer: `assets/social-icons.svg` (niente Font Awesome).
 - GitHub Pages pubblica solo `*.html`, `css/`, `js/`, `assets/`, `manifest.json`, `CNAME`, `robots.txt`, `sitemap.xml` (vedi `.github/workflows/static.yml`): un nuovo file o cartella del sito va aggiunto lì.
