@@ -184,6 +184,7 @@ css/
   styles.css             stili di base e componenti
   identity.css           identità "cromo nero, colore vivo": colori, caratteri, forme (si carica dopo styles.css)
 assets/                logo (logo.png, logo.jpg) e icone social (social-icons.svg)
+  mail/                immagini usate nelle mail di invito (si caricano da dlbp.art/assets/mail/)
 js/
   form-version.json      versione del modulo di iscrizione (vedi "ricarica la pagina")
   core/                codice condiviso da più pagine
