@@ -242,6 +242,7 @@ Tutte hanno la versione fissa, così un aggiornamento esterno non può rompere i
 | `registrations` | un iscritto per evento. ID = `<eventId>_<hash dell'email>`, così la stessa email non può iscriversi due volte. Campi: `name` (= `first_name` + " " + `last_name`), `first_name`, `last_name`, `email`, `eventId`, `invited_by` (codice PR), `status`, `checked_in`, `check_in_time`, `email_sent`, `privacy_consent`, `timestamp` | il pubblico può solo creare (non per gli eventi con capienza 0) e poi segnare `email_sent` da false a true; admin tutto; scanner legge e segna l'ingresso; il PR legge solo i propri iscritti |
 | `prs` | `name`, `code`, `email`, `isActive`, `createdAt` | admin |
 | `staff` | ruoli dello staff, ID = email in minuscolo: `role` (`admin`, `scanner`, `pr`), `prCode` per i PR | admin; ognuno legge il proprio |
+| `contacts` | rubrica per gli inviti (456 contatti caricati l'01/10/2026 dalle iscrizioni passate, dai biglietti e dai tesserati). ID = email in minuscolo. Campi: `firstName`, `lastName`, `email`, `phone` (può essere vuoto), `createdAt` | nessuno dal sito: nelle regole non c'è, quindi è chiusa a tutti; si gestisce solo dalla console di Firebase |
 | `settings` | `config`: vecchie impostazioni di prima della gestione multi-evento | tutti leggono, admin scrive |
 
 **Note sulle iscrizioni:**
