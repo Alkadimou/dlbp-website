@@ -170,6 +170,10 @@ L'email del biglietto usa il template `ticket_confirm`. Parte all'iscrizione e c
 - `map_url`: Google Maps della location;
 - `ticket_id`: ultimi 8 caratteri dell'ID del biglietto;
 - `qr_code_url`: immagine del QR con l'ID del biglietto, che lo scanner legge alla porta.
+- `event_fee`: quota adesione dell'evento (campo QUOTA ADESIONE nel pannello admin, può essere vuota);
+- `fee_display`: `none` se la quota è vuota, così la riga sparisce dalla mail.
+
+Il codice HTML del template è in `email-templates/ticket_confirm.html`: si incolla nel Code Editor del template su EmailJS.
 
 I template si modificano dal pannello di EmailJS. Il piano gratuito ha un limite mensile di invii.
 

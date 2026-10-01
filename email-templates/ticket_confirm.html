@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<meta name="supported-color-schemes" content="dark">
+<!-- Template EmailJS "ticket_confirm" (mail del biglietto con il QR): si incolla nel Code Editor del template.
+     Variabili da js/core/email.js: to_name, event_name, event_date, secret_location, map_url, ticket_id,
+     qr_code_url, event_fee, fee_display. Sempre con due graffe: EmailJS così "pulisce" i dati scritti dagli iscritti. -->
+<link href="https://fonts.googleapis.com/css2?family=League+Gothic&family=IBM+Plex+Sans:wght@400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  body { margin:0; padding:0; background:#050508; }
+  table { border-collapse:collapse; }
+  img { border:0; display:block; outline:none; text-decoration:none; -ms-interpolation-mode:bicubic; }
+  @media (max-width:480px) {
+    .pad { padding-left:16px !important; padding-right:16px !important; }
+    .hero { height:220px !important; }
+    .title { font-size:44px !important; letter-spacing:3px !important; padding-top:14px !important; }
+    .logo { width:88px !important; }
+    .big { font-size:30px !important; }
+    .lbl { letter-spacing:1px !important; }
+    .btn { padding:14px 16px !important; letter-spacing:1px !important; }
+    .foot { display:block !important; width:100% !important; text-align:center !important; letter-spacing:1px !important; padding:3px 0 !important; }
+  }
+</style>
+</head>
+<body style="margin:0;padding:0;background:#050508;">
+
+<!-- Testo di anteprima (accanto all'oggetto nella casella di posta) -->
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:#050508;font-size:1px;line-height:1px;">
+  Sei in lista per {{event_name}} · {{event_date}}. Qui dentro il tuo QR personale.
+</div>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#050508" style="background:#050508;">
+<tr><td align="center" style="padding:0;">
+
+  <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" bgcolor="#050508" style="width:100%;max-width:600px;background:#050508;">
+
+    <!-- Testata: stesso sfondo dell'invito (elica Breathe) con logo e titolo -->
+    <tr><td class="hero" background="https://dlbp.art/assets/mail/invito-17-10-sfondo.jpg" bgcolor="#062f35" width="600" height="280" align="center" valign="middle"
+        style="background:#062f35 url('https://dlbp.art/assets/mail/invito-17-10-sfondo.jpg') center center / cover no-repeat;background-image:url('https://dlbp.art/assets/mail/invito-17-10-sfondo.jpg');background-position:center center;background-size:cover;background-repeat:no-repeat;height:280px;text-align:center;">
+      <!--[if gte mso 9]>
+      <v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="width:600px;height:280px;">
+        <v:fill type="frame" src="https://dlbp.art/assets/mail/invito-17-10-sfondo.jpg" color="#062f35" />
+        <v:textbox inset="0,0,0,0">
+      <![endif]-->
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr><td class="hero" align="center" valign="middle" height="280" style="height:280px;padding:0 24px;text-align:center;">
+          <img src="https://dlbp.art/assets/logo.png" width="112" alt="dlbp" class="logo" style="display:block;margin:0 auto;width:112px;height:auto;">
+          <div class="title" style="padding-top:20px;font-weight:bold;font-family:'League Gothic','Arial Narrow','Helvetica Neue Condensed',Impact,sans-serif;font-size:64px;line-height:1;letter-spacing:5px;text-transform:uppercase;color:#eceaf4;text-shadow:0 0 18px rgba(0,0,0,0.8);">Sei in lista</div>
+        </td></tr>
+      </table>
+      <!--[if gte mso 9]>
+        </v:textbox>
+      </v:rect>
+      <![endif]-->
+    </td></tr>
+
+    <tr><td class="pad" align="center" style="padding:20px 24px 4px;font-family:'Space Mono','Courier New',monospace;font-size:11px;line-height:1.4;letter-spacing:3px;text-transform:uppercase;color:#62bfb8;">
+      Biglietto di <span style="color:#eceaf4;font-weight:bold;">{{to_name}}</span>
+    </td></tr>
+
+    <!-- Evento -->
+    <tr><td class="pad" align="center" style="padding:18px 24px 0;text-align:center;">
+      <div class="big" style="font-weight:bold;font-family:'League Gothic','Arial Narrow','Helvetica Neue Condensed',Impact,sans-serif;font-size:40px;line-height:1.05;letter-spacing:1px;text-transform:uppercase;color:#eceaf4;">{{event_name}}</div>
+      <div style="padding-top:8px;font-family:'Space Mono','Courier New',monospace;font-size:12px;line-height:1.5;letter-spacing:2px;text-transform:uppercase;color:#b8b6c2;">{{event_date}}</div>
+    </td></tr>
+
+    <!-- QR: fondo bianco con margine, così si legge bene anche alla porta al buio -->
+    <tr><td align="center" style="padding:28px 24px 0;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+        <td bgcolor="#ffffff" style="background:#ffffff;padding:16px;">
+          <img src="{{qr_code_url}}" width="220" height="220" alt="QR code del biglietto" style="display:block;width:220px;height:220px;">
+        </td>
+      </tr></table>
+    </td></tr>
+    <tr><td class="pad" align="center" style="padding:14px 24px 0;font-family:'Space Mono','Courier New',monospace;font-size:12px;line-height:1.5;letter-spacing:3px;text-transform:uppercase;color:#b8b6c2;">
+      Codice <span style="color:#eceaf4;font-weight:bold;">{{ticket_id}}</span>
+    </td></tr>
+    <tr><td class="pad" align="center" style="padding:10px 24px 28px;font-family:'IBM Plex Sans','Helvetica Neue',Arial,sans-serif;font-size:15px;line-height:1.5;color:#eceaf4;">
+      Mostra questo QR alla porta: è personale e vale per una persona.
+    </td></tr>
+
+    <!-- Dove -->
+    <tr><td class="pad" style="padding:0 24px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid #26262c;">
+        <tr>
+          <td width="56%" valign="top" style="padding:20px 24px 20px 0;">
+            <div class="lbl" style="font-family:'Space Mono','Courier New',monospace;font-size:11px;line-height:1.4;letter-spacing:3px;text-transform:uppercase;color:#62bfb8;padding-bottom:10px;">Dove</div>
+            <div style="font-family:'IBM Plex Sans','Helvetica Neue',Arial,sans-serif;font-size:15px;line-height:1.5;font-weight:bold;color:#eceaf4;">{{secret_location}}</div>
+          </td>
+          <td width="44%" valign="top" style="padding:20px 0;">
+            <div class="lbl" style="font-family:'Space Mono','Courier New',monospace;font-size:11px;line-height:1.4;letter-spacing:3px;text-transform:uppercase;color:#62bfb8;padding-bottom:10px;">Mappa</div>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+              <td bgcolor="#1fa39a" style="background:#1fa39a;border:1px solid #1fa39a;">
+                <a href="{{map_url}}" class="btn" style="display:inline-block;padding:16px 24px;white-space:nowrap;font-family:'Space Mono','Courier New',monospace;font-size:12px;font-weight:bold;line-height:1;letter-spacing:3px;text-transform:uppercase;text-decoration:none;color:#050508;">Apri la mappa</a>
+              </td>
+            </tr></table>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+
+    <!-- Quota adesione: la riga sparisce (fee_display = none) se nell'evento la quota è vuota -->
+    <tr style="display:{{fee_display}};"><td class="pad" style="padding:0 24px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid #26262c;">
+        <tr><td style="padding:20px 0;">
+          <div class="lbl" style="font-family:'Space Mono','Courier New',monospace;font-size:11px;line-height:1.4;letter-spacing:3px;text-transform:uppercase;color:#62bfb8;padding-bottom:10px;">Quota adesione</div>
+          <div class="big" style="font-weight:bold;font-family:'League Gothic','Arial Narrow','Helvetica Neue Condensed',Impact,sans-serif;font-size:34px;line-height:1;letter-spacing:1px;text-transform:uppercase;color:#eceaf4;">{{event_fee}}</div>
+        </td></tr>
+      </table>
+    </td></tr>
+
+    <!-- Chiusura -->
+    <tr><td class="pad" style="padding:0 24px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid #26262c;">
+        <tr>
+          <td class="foot" align="left" style="padding-top:20px;font-family:'Space Mono','Courier New',monospace;font-size:11px;line-height:1.6;letter-spacing:2px;text-transform:uppercase;color:#b8b6c2;">No photo / No video</td>
+          <td class="foot" align="right" style="padding-top:20px;font-family:'Space Mono','Courier New',monospace;font-size:11px;line-height:1.6;letter-spacing:2px;text-transform:uppercase;color:#b8b6c2;">Non condividere il QR</td>
+        </tr>
+      </table>
+    </td></tr>
+
+    <tr><td class="pad" align="center" style="padding:28px 24px 40px;font-family:'IBM Plex Sans','Helvetica Neue',Arial,sans-serif;font-size:12px;line-height:1.6;color:#8c8a96;">
+      Ricevi questa mail perché ti sei iscritto a un evento DLBP su dlbp.art.
+    </td></tr>
+
+  </table>
+
+</td></tr>
+</table>
+
+</body>
+</html>
