@@ -62,7 +62,7 @@ Un link con `?pr=<codice>` (per esempio `https://dlbp.art/?pr=mario`) collega l'
   - ingressi live, aggiornati ogni 30 secondi e in rosso quando il locale è pieno.
 - **Bottoni dell'evento:**
   - DETTAGLI: sola lettura;
-  - MODIFICA: nome, location, password, data, orari, capienza (0 = evento solo da vedere, senza iscrizioni), locandina (compressa in JPEG) e descrizione;
+  - MODIFICA: nome, location, link Google Maps (per il bottone APRI LA MAPPA del biglietto; deve iniziare con https://), quota partecipazione, password, data, orari, capienza (0 = evento solo da vedere, senza iscrizioni), locandina (compressa in JPEG) e descrizione;
   - ELIMINA: cancella l'evento con tutti i suoi iscritti;
   - RENDI ATTIVO / INATTIVO;
   - APRI / CHIUDI LISTA.
@@ -168,7 +168,7 @@ L'email del biglietto usa il template `ticket_confirm`. Parte all'iscrizione e c
 - `to_name`, `to_email`;
 - `event_name`, `event_date`;
 - `secret_location`: indirizzo; nella mail non si scrive, serve per il bottone APRI LA MAPPA;
-- `map_url`: Google Maps della location;
+- `map_url`: link del bottone APRI LA MAPPA: quello scritto in LINK GOOGLE MAPS nel pannello admin (campo `mapUrl` dell'evento); se è vuoto, la ricerca dell'indirizzo su Google Maps;
 - `ticket_id`: ultimi 8 caratteri dell'ID del biglietto;
 - `qr_code_url`: immagine del QR con l'ID del biglietto, che lo scanner legge alla porta.
 - `event_fee`: quota partecipazione dell'evento (campo QUOTA PARTECIPAZIONE nel pannello admin); se è vuota nella mail compare FREE ENTRY sotto l'etichetta "Quota partecipazione".
@@ -250,7 +250,7 @@ Tutte hanno la versione fissa, così un aggiornamento esterno non può rompere i
 
 | Collezione | Contenuto | Chi può leggere / scrivere |
 |---|---|---|
-| `events` | un documento per evento: `name`, `date` (testo mostrato), `dateIso`, `startTime`, `endTime`, `location`, `password` (d'ingresso, facoltativa), `flyerUrl` (immagine Base64), `description`, `maxCapacity` (0 = evento solo da vedere, senza iscrizioni), `isOpen` (iscrizioni aperte), `isActive` (evento in corso), `createdAt` | tutti leggono, admin scrive |
+| `events` | un documento per evento: `name`, `date` (testo mostrato), `dateIso`, `startTime`, `endTime`, `location`, `mapUrl` (link Google Maps del biglietto, facoltativo), `fee` (quota partecipazione, facoltativa), `password` (d'ingresso, facoltativa), `flyerUrl` (immagine Base64), `description`, `maxCapacity` (0 = evento solo da vedere, senza iscrizioni), `isOpen` (iscrizioni aperte), `isActive` (evento in corso), `createdAt` | tutti leggono, admin scrive |
 | `registrations` | un iscritto per evento. ID = `<eventId>_<hash dell'email>`, così la stessa email non può iscriversi due volte. Campi: `name` (= `first_name` + " " + `last_name`), `first_name`, `last_name`, `email`, `eventId`, `invited_by` (codice PR), `status`, `checked_in`, `check_in_time`, `email_sent`, `privacy_consent`, `timestamp` | il pubblico può solo creare (non per gli eventi con capienza 0) e poi segnare `email_sent` da false a true; admin tutto; scanner legge e segna l'ingresso; il PR legge solo i propri iscritti |
 | `prs` | `name`, `code`, `email`, `isActive`, `createdAt` | admin |
 | `staff` | ruoli dello staff, ID = email in minuscolo: `role` (`admin`, `scanner`, `pr`), `prCode` per i PR | admin; ognuno legge il proprio |
