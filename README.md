@@ -14,8 +14,8 @@ Il pubblico vede gli eventi e si iscrive in lista. Lo staff gestisce eventi e is
 |---|---|---|---|
 | `index.html` | pubblico | Home con lo sfondo 3D e il bottone PROSSIMO EVENTO | `js/pages/home.js` |
 | `eventi.html` | pubblico | Elenco degli eventi in programma e passati | `js/pages/home.js` |
-| `event.html?id=<evento>` | pubblico | Password d'ingresso (se c'è) e iscrizione in lista | `js/pages/event.js` |
-| `annulla-iscrizione.html?id=<codice>` | pubblico (link personale nelle mail di invito) | Cancella il contatto dalla rubrica `contacts` dopo il clic su CONFERMA; fuori dai motori di ricerca | `js/pages/unsubscribe.js` |
+| `event.html?id=<evento>` | pubblico | Password d'ingresso (se c'è) e iscrizione in lista; con `&c=<codice>` (link PARTECIPA dell'invito) il modulo è già compilato | `js/pages/event.js` |
+| `annulla-iscrizione.html?id=<codice>` | pubblico (link personale nelle mail di invito) | Cancella il contatto dalla rubrica `contacts` (e il suo invito in `invites`) dopo il clic su CONFERMA; fuori dai motori di ricerca | `js/pages/unsubscribe.js` |
 | `admin.html` | staff `admin` | Eventi, iscritti, email, statistiche, PR | `js/pages/admin/main.js` |
 | `scanner.html` | staff `scanner` o `admin` | Lettura dei QR code alla porta | `js/pages/scanner.js` |
 | `pr.html` | staff `pr` | Iscritti arrivati con il proprio link d'invito | `js/pages/pr.js` |
@@ -48,6 +48,7 @@ Un link con `?pr=<codice>` (per esempio `https://dlbp.art/?pr=mario`) collega l'
 - Se la capienza è 0 non c'è né password né modulo: sopra il titolo compare PROSSIMO EVENTO // INGRESSO LIBERO (invece di NUMERO CHIUSO) e al posto del modulo il riquadro INGRESSO LIBERO; anche le regole di Firestore rifiutano le iscrizioni a quell'evento.
 - **Una sola iscrizione per email e per evento.** L'ID del documento è `<evento>_<hash dell'email>` e le regole permettono al pubblico solo di creare, mai di sovrascrivere.
 - **Codice PR:** `?pr=<codice>` resta ricordato per tutta la visita e finisce nel campo `invited_by`.
+- **Modulo già compilato dall'invito:** il bottone PARTECIPA della mail di invito apre `event.html?id=<evento>&c=<codice del contatto>`. La pagina legge solo quell'invito in `invites` e scrive nome, cognome ed email nei campi ancora vuoti; la persona può cambiarli. Senza codice, o con un codice sbagliato, il modulo resta vuoto.
 - **Email del biglietto:** parte subito dopo l'iscrizione e l'iscrizione viene segnata `email_sent: true`. Se l'email non parte, l'iscrizione resta valida e l'admin può reinviarla.
 - **"Ricarica la pagina":** se una pagina vecchia rimasta in cache prova a iscriversi dopo un cambio del modulo, compare il messaggio con il bottone RICARICA LA PAGINA invece di un errore. `FORM_VERSION` in `js/pages/event.js` e `registrationForm` in `js/form-version.json` devono avere lo stesso numero.
 - Alla prima visita della sessione compare per circa 3 secondi una schermata con il logo.
@@ -111,7 +112,7 @@ Un link con `?pr=<codice>` (per esempio `https://dlbp.art/?pr=mario`) collega l'
 ### Annulla iscrizione (`annulla-iscrizione.html?id=<codice>`)
 - Il link arriva in fondo a ogni mail di invito: `<codice>` è l'ID segreto del contatto in `contacts` (20 lettere e cifre casuali).
 - Serve il clic su CONFERMA: i programmi di posta aprono da soli i link per controllarli, e senza conferma cancellerebbero il contatto.
-- Dopo il clic il contatto viene cancellato dal server e la pagina scrive FATTO. Con un link sbagliato mostra un avviso.
+- Dopo il clic il contatto e il suo invito (`invites`) vengono cancellati insieme dal server e la pagina scrive FATTO. Con un link sbagliato mostra un avviso.
 - Per gli invii vale sempre l'elenco sul server: chi si è cancellato resta nei CSV locali ma non deve tornare dentro.
 
 ### In tutte le pagine
@@ -253,7 +254,8 @@ Tutte hanno la versione fissa, così un aggiornamento esterno non può rompere i
 | `registrations` | un iscritto per evento. ID = `<eventId>_<hash dell'email>`, così la stessa email non può iscriversi due volte. Campi: `name` (= `first_name` + " " + `last_name`), `first_name`, `last_name`, `email`, `eventId`, `invited_by` (codice PR), `status`, `checked_in`, `check_in_time`, `email_sent`, `privacy_consent`, `timestamp` | il pubblico può solo creare (non per gli eventi con capienza 0) e poi segnare `email_sent` da false a true; admin tutto; scanner legge e segna l'ingresso; il PR legge solo i propri iscritti |
 | `prs` | `name`, `code`, `email`, `isActive`, `createdAt` | admin |
 | `staff` | ruoli dello staff, ID = email in minuscolo: `role` (`admin`, `scanner`, `pr`), `prCode` per i PR | admin; ognuno legge il proprio |
-| `contacts` | rubrica per gli inviti (456 contatti caricati l'01/10/2026 dalle iscrizioni passate, dai biglietti e dai tesserati). ID = codice casuale di 20 lettere e cifre, che va solo nel link personale di annullamento. Campi: `firstName`, `lastName`, `email`, `phone` (può essere vuoto), `createdAt` | nessuno legge o elenca dal sito; chi conosce l'ID può solo cancellare quel contatto (`annulla-iscrizione.html`); il resto dalla console di Firebase |
+| `contacts` | rubrica per gli inviti (456 contatti caricati l'01/10/2026 dalle iscrizioni passate, dai biglietti e dai tesserati). ID = codice casuale di 20 lettere e cifre, che va solo nei link personali della mail di invito (PARTECIPA e annullamento). Campi: `firstName`, `lastName`, `email`, `phone` (può essere vuoto), `createdAt` | nessuno legge o elenca dal sito; chi conosce l'ID può solo cancellare quel contatto (`annulla-iscrizione.html`); il resto dalla console di Firebase |
+| `invites` | copia di ogni contatto senza telefono, per precompilare il modulo di iscrizione (456 inviti scritti il 02/10/2026). Stesso ID del contatto. Campi: `firstName`, `lastName`, `email` | chi conosce l'ID legge o cancella solo quell'invito (`event.html?…&c=`, `annulla-iscrizione.html`), nessuno elenca; l'admin può crearlo solo se è identico a un contatto esistente; un contatto nuovo va aggiunto in tutte e due le raccolte |
 | `settings` | `config`: vecchie impostazioni di prima della gestione multi-evento | tutti leggono, admin scrive |
 
 **Note sulle iscrizioni:**

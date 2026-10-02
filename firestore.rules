@@ -109,6 +109,20 @@ service cloud.firestore {
       allow delete: if contactId.size() == 20;
     }
 
+    // Invitations: a copy of each contact with only name, surname and email (no phone),
+    // same secret ID. The PARTECIPA link carries the ID, so the registration form can
+    // read that one invite to prefill itself; it is deleted with the contact on unsubscribe.
+    // The admin can create one only if it matches an existing contact exactly.
+    match /invites/{inviteId} {
+      allow get, delete: if inviteId.size() == 20;
+      allow create: if isAdmin()
+        && exists(/databases/$(database)/documents/contacts/$(inviteId))
+        && request.resource.data.keys().hasOnly(['firstName', 'lastName', 'email'])
+        && request.resource.data.firstName == get(/databases/$(database)/documents/contacts/$(inviteId)).data.firstName
+        && request.resource.data.lastName == get(/databases/$(database)/documents/contacts/$(inviteId)).data.lastName
+        && request.resource.data.email == get(/databases/$(database)/documents/contacts/$(inviteId)).data.email;
+    }
+
     // Legacy global settings (registration open/closed)
     match /settings/{docId} {
       allow read: if true;
