@@ -29,7 +29,8 @@ export function sendEmail(templateId, params) {
 // con i dati protetti (escapeHtml) e la mail parte come html_body. Il template EmailJS "ticket_confirm"
 // contiene solo html_body tra tre graffe, con oggetto subject tra tre graffe.
 // Le variabili singole (to_name, event_name, ...) restano nei parametri per chi legge il template vecchio.
-// event_fee è la quota partecipazione; senza quota diventa "Free entry". secret_location non compare
+// map_url è il link del bottone APRI LA MAPPA: quello scritto nell'admin (mapUrl), altrimenti la ricerca
+// dell'indirizzo su Google Maps. event_fee è la quota partecipazione; senza quota diventa "Free entry". secret_location non compare
 // più nella mail (c'è solo il bottone della mappa), ma resta nei parametri.
 let ticketHtml;
 function loadTicketHtml() {
@@ -44,12 +45,14 @@ function loadTicketHtml() {
 export async function sendTicketEmail(registration, event) {
     const location = event.location || "Secret Location";
     const fee = (event.fee || "").trim();
+    const mapUrl = (event.mapUrl || "").trim();
     const params = {
         to_name: registration.name,
         to_email: registration.email,
         event_name: event.name || "Evento",
         secret_location: location,
-        map_url: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`,
+        map_url: /^https:\/\/\S+$/.test(mapUrl) ? mapUrl
+            : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`,
         event_date: event.date || "Data Evento",
         ticket_id: registration.id.slice(-8).toUpperCase(),
         qr_code_url: `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(registration.id)}`,

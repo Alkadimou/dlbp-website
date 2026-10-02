@@ -43,6 +43,7 @@ export async function loadEventSettings() {
             document.getElementById('event-name-input').value = evData.name || "";
             document.getElementById('event-location-input').value = evData.location || "";
             document.getElementById('event-fee-input').value = evData.fee || "";
+            document.getElementById('event-map-url-input').value = evData.mapUrl || "";
             document.getElementById('event-password-input').value = evData.password || "";
             document.getElementById('event-date-input').value = evData.dateIso || "";
             document.getElementById('event-start-time-input').value = evData.startTime || "";
@@ -181,6 +182,7 @@ export function initEventForm({ onSaved }) {
             document.getElementById('event-name-input').value = "";
             document.getElementById('event-location-input').value = "";
             document.getElementById('event-fee-input').value = "";
+            document.getElementById('event-map-url-input').value = "";
             document.getElementById('event-password-input').value = "";
             document.getElementById('event-date-input').value = "";
             document.getElementById('event-start-time-input').value = "";
@@ -205,9 +207,18 @@ export function initEventForm({ onSaved }) {
         const location = document.getElementById('event-location-input').value.trim() || "Secret Location";
         // Quota partecipazione (testo libero, es. "15 €"): se è vuota la mail del biglietto scrive FREE ENTRY
         const fee = document.getElementById('event-fee-input').value.trim();
+        // Link del bottone APRI LA MAPPA nella mail del biglietto: se è vuoto si cerca l'indirizzo su Google Maps
+        const mapUrl = document.getElementById('event-map-url-input').value.trim();
         const dateIso = document.getElementById('event-date-input').value;
         const startTime = document.getElementById('event-start-time-input').value;
         const endTime = document.getElementById('event-end-time-input').value;
+
+        if (mapUrl && !/^https:\/\/\S+$/.test(mapUrl)) {
+            showModal("Il link di Google Maps deve iniziare con https:// (copialo da Condividi → Copia link in Google Maps).");
+            btn.textContent = originalText;
+            btn.disabled = false;
+            return;
+        }
 
         if (!dateIso || !startTime || !endTime) {
             showModal("Compila correttamente la Data, l'Ora di Inizio e l'Ora di Fine dell'evento prima di salvare.");
@@ -255,6 +266,7 @@ export function initEventForm({ onSaved }) {
                     endTime: endTime,
                     location: location,
                     fee: fee,
+                    mapUrl: mapUrl,
                     password: document.getElementById('event-password-input').value.trim(),
                     flyerUrl: flyerUrl || "",
                     description: description || "",
@@ -281,6 +293,7 @@ export function initEventForm({ onSaved }) {
                     name: name,
                     location: location,
                     fee: fee,
+                    mapUrl: mapUrl,
                     password: document.getElementById('event-password-input').value.trim(),
                     dateIso: dateIso,
                     date: formattedDate,
