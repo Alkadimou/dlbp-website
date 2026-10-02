@@ -1,7 +1,8 @@
 // Pagina annulla-iscrizione.html?id=<codice>: il link personale nelle mail di invito.
-// L'ID è il codice segreto del contatto in "contacts"; le regole permettono solo di cancellarlo.
+// L'ID è il codice segreto del contatto in "contacts" (e della sua copia in "invites", usata per
+// precompilare il modulo di iscrizione): le regole permettono di cancellarli, insieme.
 // Serve il clic su CONFERMA: i programmi di posta aprono da soli i link per controllarli.
-import { db, doc, deleteDoc } from "../core/firebase.js";
+import { db, doc, writeBatch } from "../core/firebase.js";
 
 const id = new URLSearchParams(location.search).get("id") || "";
 const btn = document.getElementById("unsub-btn");
@@ -21,7 +22,10 @@ if (!/^[A-Za-z0-9]{20}$/.test(id)) {
     btn.addEventListener("click", async () => {
         btn.disabled = true;
         try {
-            await deleteDoc(doc(db, "contacts", id));
+            const batch = writeBatch(db);
+            batch.delete(doc(db, "contacts", id));
+            batch.delete(doc(db, "invites", id));
+            await batch.commit();
             btn.classList.add("hidden");
             document.getElementById("unsub-title").textContent = "FATTO";
             text.textContent = "Il tuo contatto è stato cancellato: non riceverai più inviti DLBP.";

@@ -2,6 +2,7 @@
 // e registra l'iscritto in Firestore ("registrations"), poi invia subito l'email del biglietto
 // (location + QR code) e segna email_sent.
 // Un link con ?pr=<codice> associa l'iscrizione a quel PR (campo invited_by).
+// Il link dell'invito ha anche &c=<codice del contatto>: nome, cognome ed email si precompilano.
 // Con capienza 0 l'evento è solo da vedere: niente password né modulo, solo il messaggio.
 import { db, serverTimestamp, doc, getDoc, setDoc, updateDoc } from "../core/firebase.js";
 import { initEmailJs, isEmailJsLoaded, sendTicketEmail } from "../core/email.js";
@@ -136,6 +137,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Load active event immediately
     loadActiveEvent();
+
+    // --- PRECOMPILAZIONE DALL'INVITO ---
+    // Il link PARTECIPA dell'invito ha &c=<codice del contatto>: legge solo quel contatto
+    // in "invites" (copia del contatto senza telefono, leggibile solo per codice) e scrive nome, cognome ed email
+    // nei campi ancora vuoti. Senza codice, o con un codice non valido, il modulo resta vuoto.
+    async function prefillFromContact() {
+        const contactId = urlParams.get('c');
+        if (!db || !contactId || contactId.length !== 20) return;
+        try {
+            const snap = await getDoc(doc(db, "invites", contactId));
+            if (!snap.exists()) return;
+            const c = snap.data();
+            const fill = (id, value) => {
+                const input = document.getElementById(id);
+                if (input && !input.value && typeof value === "string") input.value = value.trim();
+            };
+            fill("first-name", c.firstName);
+            fill("last-name", c.lastName);
+            fill("email", c.email);
+        } catch (error) {
+            console.warn("Precompilazione dall'invito non riuscita:", error);
+        }
+    }
+    prefillFromContact();
 
     // Pagina vecchia (in cache) con il modulo a una sola casella per nome e cognome
     if (!document.getElementById("first-name")) {
