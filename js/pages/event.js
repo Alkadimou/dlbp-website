@@ -37,6 +37,24 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentEvent = {}; // dati dell'evento, servono per l'email del biglietto
     let currentEventPassword = "";
     let hasPassword = false;
+    let gateUnlocked = false;
+
+    // Finché non arrivano i dati dell'evento si vede solo "CARICAMENTO...", poi direttamente la schermata
+    // giusta: la password se l'evento ce l'ha, altrimenti il modulo. Se qualcosa va storto (errore, evento
+    // non trovato, risposta troppo lenta) si mostra la password, come prima.
+    // Nella pagina vecchia in cache "event-loading" non c'è e la password è già visibile.
+    const eventLoading = document.getElementById("event-loading");
+    const EVENT_LOAD_TIMEOUT_MS = 8000;
+    function showEventScreen(needsPassword) {
+        if (eventLoading) eventLoading.classList.add("hidden");
+        const showGate = needsPassword && !gateUnlocked;
+        gateSection.classList.toggle("hidden", !showGate);
+        publicEventHeader.classList.toggle("hidden", showGate);
+        registrationSection.classList.toggle("hidden", showGate);
+    }
+    const loadTimeout = setTimeout(() => {
+        if (eventLoading && !eventLoading.classList.contains("hidden")) showEventScreen(true);
+    }, EVENT_LOAD_TIMEOUT_MS);
     let registrationsClosed = false;
 
     // --- CHECK PR PARAMETER ---
@@ -51,7 +69,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // --- FETCH ACTIVE EVENT ---
     async function loadActiveEvent() {
-        if (!db) return;
+        if (!db) {
+            showEventScreen(true);
+            return;
+        }
         try {
             const urlParams = new URLSearchParams(window.location.search);
             const eventId = urlParams.get('id');
@@ -77,15 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const viewOnly = ev.maxCapacity === 0;
 
-                if (!hasPassword || viewOnly) {
-                    gateSection.classList.add("hidden");
-                    publicEventHeader.classList.remove("hidden");
-                    registrationSection.classList.remove("hidden");
-                } else {
-                    gateSection.classList.remove("hidden");
-                    publicEventHeader.classList.add("hidden");
-                    registrationSection.classList.add("hidden");
-                }
+                showEventScreen(hasPassword && !viewOnly);
                 
                 // Update UI
                 const titleEl = document.getElementById("public-event-title");
@@ -128,10 +141,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             } else {
                 // Fallback to legacy check if events collection doesn't exist yet
+                showEventScreen(true);
                 checkLegacyAvailability();
             }
         } catch (error) {
             console.error("Error loading active event:", error);
+            showEventScreen(true);
+        } finally {
+            clearTimeout(loadTimeout);
         }
     }
 
@@ -230,6 +247,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         
         if (isAuthorized) {
+            gateUnlocked = true;
             gateSection.classList.add("hidden");
             publicEventHeader.classList.remove("hidden");
             registrationSection.classList.remove("hidden");
