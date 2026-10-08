@@ -83,7 +83,13 @@
                     </div>
                 </div>
 
-                <div id="gate-section" class="registration-gate">
+                <!-- Finché non arrivano i dati dell'evento non si mostra né la password né il modulo -->
+                <div id="event-loading" class="loading-events">
+                    <div class="loading-pulse"></div>
+                    <span>CARICAMENTO...</span>
+                </div>
+
+                <div id="gate-section" class="registration-gate hidden">
                     <h3 class="text-lg font-bold tracking-widest mb-0-5 uppercase">INGRESSO RISERVATO</h3>
                     <p class="opacity-50 text-sm tracking-wider mb-2">INSERISCI LA PASSWORD</p>
                     <div class="form-group mb-1-5">
@@ -165,6 +171,6 @@
     <!-- EmailJS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3.12.1/dist/email.min.js" defer></script>
     <script type="module" src="js/core/background.js?v=16"></script>
-    <script type="module" src="js/pages/event.js?v=19"></script>
+    <script type="module" src="js/pages/event.js?v=20"></script>
 </body>
 </html>

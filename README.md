@@ -40,6 +40,7 @@ Un link con `?pr=<codice>` (per esempio `https://dlbp.art/?pr=mario`) collega l'
 ### Iscrizione (`event.html?id=<evento>`)
 - Mostra locandina, nome, data e descrizione dell'evento. Il nome compare anche nella scheda del browser.
 - La **password d'ingresso** è facoltativa e non distingue maiuscole e minuscole.
+- Finché non arrivano i dati dell'evento si vede solo CARICAMENTO..., poi direttamente la password (se c'è) o il modulo. Se il caricamento non riesce (errore, evento non trovato, più di 8 secondi) compare la password.
 - **Modulo:**
   - nome e cognome, salvati in maiuscolo sia separati sia insieme;
   - email;
