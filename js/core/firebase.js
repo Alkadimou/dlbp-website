@@ -2,7 +2,7 @@
 // Tutte le pagine importano Firestore da qui, così la versione dell'SDK è scritta in un solo punto.
 // Questa configurazione è pubblica per natura: la protezione dei dati è in firestore.rules.
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { initializeFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 export {
     collection, doc, query, where,
@@ -25,7 +25,9 @@ let app;
 let db;
 try {
     app = initializeApp(firebaseConfig);
-    db = getFirestore(app);
+    // Se la connessione normale a Firestore viene bloccata o rallentata (alcune reti mobili, proxy,
+    // browser interni di app come Instagram), passa da solo al "long polling" invece di restare in attesa.
+    db = initializeFirestore(app, { experimentalAutoDetectLongPolling: true });
 } catch (e) {
     console.error("Firebase initialization error", e);
 }

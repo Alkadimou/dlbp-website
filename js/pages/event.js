@@ -40,21 +40,49 @@ document.addEventListener("DOMContentLoaded", () => {
     let gateUnlocked = false;
 
     // Finché non arrivano i dati dell'evento si vede solo "CARICAMENTO...", poi direttamente la schermata
-    // giusta: la password se l'evento ce l'ha, altrimenti il modulo. Se qualcosa va storto (errore, evento
-    // non trovato, risposta troppo lenta) si mostra la password, come prima.
+    // giusta: la password se l'evento ce l'ha, altrimenti il modulo.
+    // Se il caricamento è lento o fallisce NON si mostra la password (un evento senza password sembrerebbe
+    // protetto): resta la schermata di caricamento con un messaggio e il pulsante RIPROVA. Se i dati
+    // arrivano comunque, si passa alla schermata giusta da soli.
     // Nella pagina vecchia in cache "event-loading" non c'è e la password è già visibile.
     const eventLoading = document.getElementById("event-loading");
+    const eventLoadingText = document.getElementById("event-loading-text");
+    const eventRetryBtn = document.getElementById("event-retry-btn");
     const EVENT_LOAD_TIMEOUT_MS = 8000;
     function showEventScreen(needsPassword) {
+        clearTimeout(loadTimeout);
         if (eventLoading) eventLoading.classList.add("hidden");
         const showGate = needsPassword && !gateUnlocked;
         gateSection.classList.toggle("hidden", !showGate);
         publicEventHeader.classList.toggle("hidden", showGate);
         registrationSection.classList.toggle("hidden", showGate);
     }
-    const loadTimeout = setTimeout(() => {
-        if (eventLoading && !eventLoading.classList.contains("hidden")) showEventScreen(true);
-    }, EVENT_LOAD_TIMEOUT_MS);
+    function showLoadProblem() {
+        if (!eventLoading) { // pagina vecchia: come prima, password
+            showEventScreen(true);
+            return;
+        }
+        if (eventLoading.classList.contains("hidden")) return; // i dati sono già arrivati
+        eventLoadingText.textContent = "CONNESSIONE LENTA O ASSENTE";
+        eventRetryBtn.classList.remove("hidden");
+    }
+    let loadTimeout;
+    function startLoadTimer() {
+        clearTimeout(loadTimeout);
+        loadTimeout = setTimeout(showLoadProblem, EVENT_LOAD_TIMEOUT_MS);
+    }
+    startLoadTimer();
+    function retryLoadEvent() {
+        if (!eventLoading || eventLoading.classList.contains("hidden")) return;
+        eventLoadingText.textContent = "CARICAMENTO...";
+        eventRetryBtn.classList.add("hidden");
+        startLoadTimer();
+        loadActiveEvent();
+    }
+    if (eventRetryBtn) eventRetryBtn.addEventListener("click", retryLoadEvent);
+    window.addEventListener("online", () => {
+        if (eventRetryBtn && !eventRetryBtn.classList.contains("hidden")) retryLoadEvent();
+    });
     let registrationsClosed = false;
 
     // --- CHECK PR PARAMETER ---
@@ -70,7 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- FETCH ACTIVE EVENT ---
     async function loadActiveEvent() {
         if (!db) {
-            showEventScreen(true);
+            showLoadProblem();
             return;
         }
         try {
@@ -146,9 +174,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         } catch (error) {
             console.error("Error loading active event:", error);
-            showEventScreen(true);
-        } finally {
-            clearTimeout(loadTimeout);
+            showLoadProblem();
         }
     }
 

@@ -86,7 +86,10 @@
                 <!-- Finché non arrivano i dati dell'evento non si mostra né la password né il modulo -->
                 <div id="event-loading" class="loading-events">
                     <div class="loading-pulse"></div>
-                    <span>CARICAMENTO...</span>
+                    <span id="event-loading-text">CARICAMENTO...</span>
+                    <button type="button" id="event-retry-btn" class="submit-btn hidden">
+                        <span class="btn-text">RIPROVA</span>
+                    </button>
                 </div>
 
                 <div id="gate-section" class="registration-gate hidden">
@@ -171,6 +174,6 @@
     <!-- EmailJS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3.12.1/dist/email.min.js" defer></script>
     <script type="module" src="js/core/background.js?v=16"></script>
-    <script type="module" src="js/pages/event.js?v=20"></script>
+    <script type="module" src="js/pages/event.js?v=21"></script>
 </body>
 </html>
