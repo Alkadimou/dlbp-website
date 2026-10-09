@@ -38,19 +38,27 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentEventPassword = "";
     let hasPassword = false;
     let gateUnlocked = false;
+    let prefillFailed = false; // precompilazione dall'invito fallita per la rete: si riprova più avanti
 
     // Finché non arrivano i dati dell'evento si vede solo "CARICAMENTO...", poi direttamente la schermata
     // giusta: la password se l'evento ce l'ha, altrimenti il modulo.
     // Se il caricamento è lento o fallisce NON si mostra la password (un evento senza password sembrerebbe
     // protetto): resta la schermata di caricamento con un messaggio e il pulsante RIPROVA. Se i dati
     // arrivano comunque, si passa alla schermata giusta da soli.
+    // Firestore rinuncia dopo 10 secondi senza risposta ("client is offline") e non riprova da solo:
+    // dopo un errore la pagina riprova ogni 5 secondi (fino a 24 volte, circa 2 minuti).
     // Nella pagina vecchia in cache "event-loading" non c'è e la password è già visibile.
     const eventLoading = document.getElementById("event-loading");
     const eventLoadingText = document.getElementById("event-loading-text");
     const eventRetryBtn = document.getElementById("event-retry-btn");
     const EVENT_LOAD_TIMEOUT_MS = 8000;
+    const AUTO_RETRY_MS = 5000;
+    const AUTO_RETRY_MAX = 24;
+    let autoRetryTimer;
+    let autoRetryCount = 0;
     function showEventScreen(needsPassword) {
         clearTimeout(loadTimeout);
+        clearTimeout(autoRetryTimer);
         if (eventLoading) eventLoading.classList.add("hidden");
         const showGate = needsPassword && !gateUnlocked;
         gateSection.classList.toggle("hidden", !showGate);
@@ -66,6 +74,17 @@ document.addEventListener("DOMContentLoaded", () => {
         eventLoadingText.textContent = "CONNESSIONE LENTA O ASSENTE";
         eventRetryBtn.classList.remove("hidden");
     }
+    // Dopo un errore: nuovo tentativo automatico, lasciando visibili il messaggio e RIPROVA
+    function scheduleAutoRetry() {
+        if (!eventLoading || eventLoading.classList.contains("hidden")) return;
+        if (autoRetryCount >= AUTO_RETRY_MAX) return;
+        clearTimeout(autoRetryTimer);
+        autoRetryTimer = setTimeout(() => {
+            if (eventLoading.classList.contains("hidden")) return;
+            autoRetryCount++;
+            loadActiveEvent();
+        }, AUTO_RETRY_MS);
+    }
     let loadTimeout;
     function startLoadTimer() {
         clearTimeout(loadTimeout);
@@ -74,6 +93,8 @@ document.addEventListener("DOMContentLoaded", () => {
     startLoadTimer();
     function retryLoadEvent() {
         if (!eventLoading || eventLoading.classList.contains("hidden")) return;
+        clearTimeout(autoRetryTimer);
+        autoRetryCount = 0;
         eventLoadingText.textContent = "CARICAMENTO...";
         eventRetryBtn.classList.add("hidden");
         startLoadTimer();
@@ -127,6 +148,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const viewOnly = ev.maxCapacity === 0;
 
                 showEventScreen(hasPassword && !viewOnly);
+                if (prefillFailed) prefillFromContact(); // la precompilazione era fallita per la rete
                 
                 // Update UI
                 const titleEl = document.getElementById("public-event-title");
@@ -175,6 +197,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (error) {
             console.error("Error loading active event:", error);
             showLoadProblem();
+            scheduleAutoRetry();
         }
     }
 
@@ -185,7 +208,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // Il link PARTECIPA dell'invito ha &c=<codice del contatto>: legge solo quel contatto
     // in "invites" (copia del contatto senza telefono, leggibile solo per codice) e scrive nome, cognome ed email
     // nei campi ancora vuoti. Senza codice, o con un codice non valido, il modulo resta vuoto.
+    // Se fallisce per la rete, si riprova quando arrivano i dati dell'evento.
     async function prefillFromContact() {
+        prefillFailed = false;
         const contactId = urlParams.get('c');
         if (!db || !contactId || contactId.length !== 20) return;
         try {
@@ -201,6 +226,7 @@ document.addEventListener("DOMContentLoaded", () => {
             fill("email", c.email);
         } catch (error) {
             console.warn("Precompilazione dall'invito non riuscita:", error);
+            prefillFailed = true;
         }
     }
     prefillFromContact();
