@@ -18,7 +18,7 @@ Il pubblico vede gli eventi e si iscrive in lista. Lo staff gestisce eventi e is
 | `annulla-iscrizione.html?id=<codice>` | pubblico (link personale nelle mail di invito) | Cancella il contatto dalla rubrica `contacts` (e il suo invito in `invites`) dopo il clic su CONFERMA; fuori dai motori di ricerca | `js/pages/unsubscribe.js` |
 | `admin.html` | staff `admin` | Eventi, iscritti, email, statistiche, PR | `js/pages/admin/main.js` |
 | `scanner.html` | staff `scanner` o `admin` | Lettura dei QR code alla porta | `js/pages/scanner.js` |
-| `pr.html` | staff `pr` | Iscritti arrivati con il proprio link d'invito | `js/pages/pr.js` |
+| `pr.html` | staff `pr` | Iscritti arrivati con il proprio link d'invito, link diretti agli eventi | `js/pages/pr.js` |
 
 Un link con `?pr=<codice>` (per esempio `https://dlbp.art/?pr=mario`) collega l'iscrizione a quel PR.
 
@@ -105,6 +105,7 @@ Un link con `?pr=<codice>` (per esempio `https://dlbp.art/?pr=mario`) collega l'
 ### Area PR (`pr.html`, ruolo `pr` con `prCode`)
 - Il PR deve essere attivo nella collezione `prs`.
 - Link d'invito personale (`https://dlbp.art/?pr=<codice>`) con il bottone COPIA.
+- Link diretti agli eventi attivi (`https://dlbp.art/event.html?id=<evento>&pr=<codice>`), uno per evento con nome, data e bottone COPIA, ordinati per data.
 - Lista degli iscritti arrivati con il proprio link per l'evento attivo:
   - si aggiorna in tempo reale;
   - ha colonne ordinabili;

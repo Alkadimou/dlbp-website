@@ -34,6 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const sort = { field: "timestamp", order: "desc" };
     let registrationsList = [];
     let eventsMap = {}; // nome dell'evento mostrato, per la colonna EVENTO
+    let activeEvents = []; // tutti gli eventi attivi, per i link diretti
 
     setupSortableHeaders(document.querySelector(".pr-table thead"), sort, () => renderPrTable());
 
@@ -48,6 +49,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 currentEventId = activeEvent.id;
                 eventsMap[activeEvent.id] = activeEvent.data().name || "Evento Sconosciuto";
             }
+            querySnapshot.forEach((d) => {
+                const { name, date, dateIso } = d.data();
+                activeEvents.push({ id: d.id, name, date, dateIso });
+            });
+            // Prima i più vicini; quelli senza data in fondo
+            activeEvents.sort((a, b) => (a.dateIso || "9999").localeCompare(b.dateIso || "9999"));
         } catch (error) {
             console.error("Error loading active event:", error);
         }
@@ -94,6 +101,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Generate invite link
         const baseUrl = window.location.origin + '/';
         inviteLinkInput.value = `${baseUrl}?pr=${code}`;
+        renderEventLinks(baseUrl, code);
 
         await loadEventName();
         startListening(code);
@@ -105,14 +113,43 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = "pr.html";
     });
 
-    copyBtn.addEventListener("click", () => {
-        inviteLinkInput.select();
+    function copyLink(input, btn) {
+        input.select();
         document.execCommand("copy");
-        copyBtn.textContent = "COPIATO!";
+        btn.textContent = "COPIATO!";
         setTimeout(() => {
-            copyBtn.textContent = "COPIA";
+            btn.textContent = "COPIA";
         }, 2000);
-    });
+    }
+
+    copyBtn.addEventListener("click", () => copyLink(inviteLinkInput, copyBtn));
+
+    // Un link per ogni evento attivo: porta dritto alla pagina d'iscrizione con il codice del PR
+    function renderEventLinks(baseUrl, code) {
+        const box = document.getElementById("event-links");
+        const list = document.getElementById("event-links-list");
+        if (!box || !list || activeEvents.length === 0) return;
+
+        list.innerHTML = "";
+        activeEvents.forEach((ev, i) => {
+            const row = document.createElement("div");
+            if (i < activeEvents.length - 1) row.className = "mb-1-5";
+            row.innerHTML = `
+                <div class="text-xs font-mono opacity-70 mb-1">${escapeHtml(ev.name || "Evento")}${ev.date ? " · " + escapeHtml(ev.date) : ""}</div>
+                <div class="flex-row-center">
+                    <input type="text" readonly class="text-center flex-1">
+                    <button class="submit-btn no-margin">COPIA</button>
+                </div>
+            `;
+            const input = row.querySelector("input");
+            const btn = row.querySelector("button");
+            input.value = `${baseUrl}event.html?id=${encodeURIComponent(ev.id)}&pr=${encodeURIComponent(code)}`;
+            input.setAttribute("aria-label", `Link per ${ev.name || "l'evento"}`);
+            btn.addEventListener("click", () => copyLink(input, btn));
+            list.appendChild(row);
+        });
+        box.classList.remove("hidden");
+    }
 
     // Nome dell'evento mostrato: la tabella ha solo iscritti di currentEventId, quindi basta quello.
     // Di solito arriva già da loadActiveEvent; altrimenti (evento di riserva "act_1") si legge solo quel documento.
