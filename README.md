@@ -40,7 +40,7 @@ Un link con `?pr=<codice>` (per esempio `https://dlbp.art/?pr=mario`) collega l'
 ### Iscrizione (`event.html?id=<evento>`)
 - Mostra locandina, nome, data e descrizione dell'evento. Il nome compare anche nella scheda del browser.
 - La **password d'ingresso** è facoltativa e non distingue maiuscole e minuscole.
-- Finché non arrivano i dati dell'evento si vede solo CARICAMENTO..., poi direttamente la password (se c'è) o il modulo. Se il caricamento è lento (più di 8 secondi) o non riesce, la password NON compare (un evento libero sembrerebbe protetto): si vede "CONNESSIONE LENTA O ASSENTE" con il pulsante RIPROVA, e se i dati arrivano comunque la pagina passa da sola alla schermata giusta. Solo se l'evento non esiste più compare la password. Firestore passa da solo al "long polling" quando la connessione normale è bloccata (`js/core/firebase.js`).
+- Finché non arrivano i dati dell'evento si vede solo CARICAMENTO..., poi direttamente la password (se c'è) o il modulo. Se il caricamento è lento (più di 8 secondi) o non riesce, la password NON compare (un evento libero sembrerebbe protetto): si vede "CONNESSIONE LENTA O ASSENTE" con il pulsante RIPROVA, e se i dati arrivano comunque la pagina passa da sola alla schermata giusta. Firestore rinuncia dopo 10 secondi senza risposta: in quel caso la pagina riprova da sola ogni 5 secondi (fino a circa 2 minuti). Se anche la precompilazione dall'invito era fallita per la rete, si rifà quando arriva l'evento. Solo se l'evento non esiste più compare la password. Firestore passa da solo al "long polling" quando la connessione normale è bloccata (`js/core/firebase.js`).
 - **Modulo:**
   - nome e cognome, salvati in maiuscolo sia separati sia insieme;
   - email;
