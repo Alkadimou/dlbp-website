@@ -30,13 +30,13 @@ export function startHeartSound({ bpm, gap, t0 }) {
 
     // Timbro del colpo: tre prove da ascoltare con ?suono=A|B|C nell'indirizzo (B di partenza).
     // tone: il tono basso che scende (Hz); harm: quanto si sente l'ottava sopra (aiuta gli altoparlanti piccoli);
-    // body: il "tonfo" di rumore filtrato, come il sangue che spinge; lp: il passa-basso finale che rende tutto sordo.
+    // body: il "tonfo" di rumore filtrato, come il sangue che spinge (tenuto morbido: entra più piano del tono, così non suona come un battito di mani); lp: il passa-basso finale che rende tutto sordo.
     const VOICES = {
-        A: { tone: [58, 36], harm: 0, attack: 0.02, decay: 0.2, body: { type: 'lowpass', f: 90, q: 0.7, amp: 0.5, decay: 0.12 }, lp: 140, gain: 1.5 },
-        B: { tone: [72, 44], harm: 0.18, attack: 0.014, decay: 0.16, body: { type: 'bandpass', f: 85, q: 1.2, amp: 0.8, decay: 0.1 }, lp: 230, gain: 1.1 },
-        C: { tone: [50, 40], harm: 0, attack: 0.025, decay: 0.12, body: { type: 'bandpass', f: 60, q: 2.5, amp: 1.8, decay: 0.14 }, lp: 170, gain: 1.3 }
+        A: { tone: [58, 36], harm: 0, attack: 0.02, decay: 0.2, body: { type: 'lowpass', f: 65, q: 0.5, amp: 0.25, decay: 0.14 }, lp: 140, gain: 1.5 },
+        B: { tone: [72, 44], harm: 0.18, attack: 0.014, decay: 0.16, body: { type: 'lowpass', f: 70, q: 0.5, amp: 0.35, decay: 0.13 }, lp: 200, gain: 1.1 },
+        C: { tone: [50, 40], harm: 0, attack: 0.025, decay: 0.12, body: { type: 'bandpass', f: 55, q: 1.4, amp: 1.1, decay: 0.16 }, lp: 150, gain: 1.3 }
     };
-    const voice = VOICES[new URLSearchParams(location.search).get('suono')] || VOICES.B;
+    const voice = VOICES[(new URLSearchParams(location.search).get('suono') || '').toUpperCase()] || VOICES.B;
 
     function setup() {
         if (ctx) return;
@@ -63,7 +63,8 @@ export function startHeartSound({ bpm, gap, t0 }) {
 
     // un colpo; second: il secondo "tum", un po' più alto e più corto, come nel cuore vero
     function thump(at, amp, second = false) {
-        const v = voice, up = second ? 1.15 : 1, short = second ? 0.8 : 1, end = at + v.attack + v.decay * short + 0.05;
+        const v = voice, up = second ? 1.15 : 1, short = second ? 0.8 : 1;
+        const end = at + Math.max(v.attack + v.decay, v.attack * 2.5 + v.body.decay) * short + 0.05;
         [[1, 1], [2, v.harm]].forEach(([mul, a]) => {
             if (!a) return;
             const o = ctx.createOscillator(), g = ctx.createGain();
@@ -77,7 +78,7 @@ export function startHeartSound({ bpm, gap, t0 }) {
         const n = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain();
         n.buffer = noise;
         f.type = v.body.type; f.frequency.value = v.body.f * up; f.Q.value = v.body.q;
-        envelope(g, at, amp * v.body.amp, v.attack, v.body.decay * short);
+        envelope(g, at, amp * v.body.amp, v.attack * 2.5, v.body.decay * short);
         n.connect(f).connect(g).connect(out);
         n.start(at, Math.random() * 0.15); n.stop(end);
     }
