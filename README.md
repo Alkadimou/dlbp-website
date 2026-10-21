@@ -142,8 +142,8 @@ Dal 21/10/2026 lo sfondo è il filamento di DNA "DNA Procedural EEVEE" di Troy (
 
 **Come cambia il colore:**
 - Il sito parte da Breathe.
-- Lo sfondo ha un battito "tum-tum" a 40 BPM (`BPM`): sul battito pulsa tutta la scena (si avvicina di circa il 3,5%, `PULSE_ZOOM`) insieme alla luce.
-- Il colore cambia da solo ogni 3 battiti (`CYCLE_BEATS`, circa ogni 4,5 secondi), nell'ordine di `ORDER`.
+- Lo sfondo ha un battito "tum-tum" a 30 BPM (`BPM`): sul battito pulsa tutta la scena (si avvicina di circa il 3,5%, `PULSE_ZOOM`) insieme alla luce.
+- Il colore cambia da solo ogni 3 battiti (`CYCLE_BEATS`, cioè ogni 6 secondi), nell'ordine di `ORDER`.
 - Il colore raggiunto resta per tutta la visita.
 - `?mood=<colore o parola>` nell'indirizzo sceglie il colore di partenza, per esempio `?mood=love`.
 

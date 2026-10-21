@@ -30,7 +30,7 @@ Chi cambia la palette la cambia in entrambi i file e avvisa il proprietario, che
 
 - **Come cambia il colore:**
   - il sito parte da Breathe;
-  - cambia colore da solo ogni 3 battiti (circa ogni 4,5 secondi), nell'ordine Drink → Love → Breathe → Peace;
+  - cambia colore da solo ogni 3 battiti (ogni 6 secondi, battito a 30 BPM), nell'ordine Drink → Love → Breathe → Peace;
   - il colore raggiunto resta per tutta la visita;
   - `?mood=<colore o parola>` nell'indirizzo sceglie il colore di partenza.
 - **Variabili CSS** (le imposta `background.js` su `<html>`):

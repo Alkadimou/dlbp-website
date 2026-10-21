@@ -26,9 +26,9 @@ export const MOODS = {
 };
 const DEFAULT_MOOD = 'breathe';
 const ORDER = ['brace', 'magenta', 'breathe', 'ghiaccio'];
-const BPM = 40;         // battito tum-tum
+const BPM = 30;         // battito tum-tum
 const PULSE_ZOOM = 0.035; // sul battito tutta la scena si ingrandisce di circa il 3,5%
-const CYCLE_BEATS = 3;  // il colore cambia ogni 3 battiti (circa 4,5 secondi)
+const CYCLE_BEATS = 3;  // il colore cambia ogni 3 battiti (6 secondi)
 const SPIN = 0.12;      // rotazione del filamento su sé stesso, in radianti al secondo (un giro ogni ~52 s)
 
 function saveMood(mood) {
@@ -679,7 +679,7 @@ function createView(THREE, host) {
 }
 
 // Sequenza di DNA che si decifra nella parola del motto (solo dove c'è #dna-seq): a ogni cambio di colore,
-// dopo 0,7 secondi, così con i colori che cambiano ogni ~4,5 secondi nessuna parola viene saltata
+// dopo 0,7 secondi, così con i colori che cambiano ogni 6 secondi nessuna parola viene saltata
 function startSequence(el) {
     const BASES = 'ATCG', NOISE = '#/\\<>▓░_=+*', LEN = 26;
     const seq = Array.from({ length: LEN }, () => BASES[(Math.random() * 4) | 0]);
