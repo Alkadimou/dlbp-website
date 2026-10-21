@@ -28,6 +28,7 @@ const DEFAULT_MOOD = 'breathe';
 const ORDER = ['brace', 'magenta', 'breathe', 'ghiaccio'];
 const BPM = 30;         // battito tum-tum
 const PULSE_ZOOM = 0.035; // sul battito tutta la scena si ingrandisce di circa il 3,5%
+const PULSE_LIGHT = 0.35; // quanto si accende la luce sul battito (1 = come prima del 21/10 sera, dava fastidio agli occhi)
 const CYCLE_BEATS = 3;  // il colore cambia ogni 3 battiti (6 secondi)
 const SPIN = 0.12;      // rotazione del filamento su sé stesso, in radianti al secondo (un giro ogni ~52 s)
 
@@ -653,8 +654,8 @@ function createView(THREE, host) {
             // il filamento compare a macchie fra 0,3 e 1,7 secondi dopo essere arrivato
             revealU.value = readyAt === null ? 0 : Math.min(1, Math.max(0, ((t - readyAt) / 1000 - 0.3) / 1.4));
             dnaModel.visible = dnaLeft.visible = revealU.value > 0;
-            mats.chrome.envMapIntensity = mats.chromeL.envMapIntensity = 1 + b * 0.3;
-            bgMat.uniforms.uPulse.value = b;
+            mats.chrome.envMapIntensity = mats.chromeL.envMapIntensity = 1 + b * 0.3 * PULSE_LIGHT;
+            bgMat.uniforms.uPulse.value = b * PULSE_LIGHT;
             // sul battito pulsa tutta la scena: la camera si avvicina un poco e torna indietro
             camera.zoom = 1 + b * PULSE_ZOOM;
             camera.updateProjectionMatrix();
