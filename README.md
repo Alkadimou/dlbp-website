@@ -153,6 +153,7 @@ Dal 21/10/2026 lo sfondo è il filamento di DNA "DNA Procedural EEVEE" di Troy (
 - `data-tap`: pagine pubbliche. Il cursore è una croce su tutta la pagina (tranne link, bottoni e campi) e un clic dove c'è la croce dà un battito forte.
 
 **Altro:**
+- Attorno al centro fluttuano 12 gocce di metallo liquido, come nella prova (non nello scanner).
 - Il filamento arriva dopo il resto della pagina (circa 1,5 MB, compresso da GitHub Pages) e compare con una dissolvenza; prima si vedono solo la luce di fondo e la polvere.
 - Composizione (posizione, prolungamenti, tratto a sinistra) e camera sono quelle approvate nella prova del 21/10/2026: `POSE`, `EXTENSIONS` e `LEFT` in `background.js`.
 - Finestre (avvisi e conferme di `js/core/modal.js`, "Iscrizione completata"): pannello nero con bordo sottile e angoli vivi, senza sfocatura. Il bottone principale (OK, CONFERMA) è pieno nel colore della serata; ANNULLA è vuoto, con il bordo sottile.
