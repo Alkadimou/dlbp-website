@@ -32,9 +32,9 @@ export function startHeartSound({ bpm, gap, t0 }) {
     // tone: il tono basso che scende (Hz); harm: quanto si sente l'ottava sopra (aiuta gli altoparlanti piccoli);
     // body: il "tonfo" di rumore filtrato, come il sangue che spinge (tenuto morbido: entra più piano del tono, così non suona come un battito di mani); lp: il passa-basso finale che rende tutto sordo.
     const VOICES = {
-        A: { tone: [58, 36], harm: 0, attack: 0.02, decay: 0.2, body: { type: 'lowpass', f: 65, q: 0.5, amp: 0.25, decay: 0.14 }, lp: 140, gain: 1.5 },
-        B: { tone: [72, 44], harm: 0.18, attack: 0.014, decay: 0.16, body: { type: 'lowpass', f: 70, q: 0.5, amp: 0.35, decay: 0.13 }, lp: 200, gain: 1.1 },
-        C: { tone: [50, 40], harm: 0, attack: 0.025, decay: 0.12, body: { type: 'bandpass', f: 55, q: 1.4, amp: 1.1, decay: 0.16 }, lp: 150, gain: 1.3 }
+        A: { tone: [46, 30], harm: 0, attack: 0.022, decay: 0.22, body: { type: 'lowpass', f: 50, q: 0.5, amp: 0.2, decay: 0.15 }, lp: 110, gain: 1.8 },
+        B: { tone: [58, 36], harm: 0.1, attack: 0.016, decay: 0.18, body: { type: 'lowpass', f: 55, q: 0.5, amp: 0.28, decay: 0.14 }, lp: 150, gain: 1.35 },
+        C: { tone: [42, 34], harm: 0, attack: 0.027, decay: 0.14, body: { type: 'bandpass', f: 45, q: 1.2, amp: 0.9, decay: 0.17 }, lp: 115, gain: 1.6 }
     };
     const voice = VOICES[(new URLSearchParams(location.search).get('suono') || '').toUpperCase()] || VOICES.B;
 
