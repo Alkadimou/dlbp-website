@@ -27,6 +27,7 @@ export const MOODS = {
 const DEFAULT_MOOD = 'breathe';
 const ORDER = ['brace', 'magenta', 'breathe', 'ghiaccio'];
 const BPM = 40;         // battito tum-tum
+const PULSE_ZOOM = 0.035; // sul battito tutta la scena si ingrandisce di circa il 3,5%
 const CYCLE_BEATS = 3;  // il colore cambia ogni 3 battiti (circa 4,5 secondi)
 const SPIN = 0.12;      // rotazione del filamento su sé stesso, in radianti al secondo (un giro ogni ~52 s)
 
@@ -588,6 +589,8 @@ function createView(THREE, host) {
     function placeLeft() {
         if (!D || (Math.abs(camera.aspect - leftAspect) < leftAspect * 0.03 && (camera.aspect > 1) === (leftAspect > 1))) return;
         leftAspect = camera.aspect;
+        camera.zoom = 1; // i punti dello schermo sono pensati senza la pulsazione
+        camera.updateProjectionMatrix();
         camera.updateMatrixWorld();
         const curve = new THREE.CubicBezierCurve3(...LEFT[camera.aspect > 1 ? 'landscape' : 'portrait'].map((q) => ndcAt(...q)));
         dnaLeft.children.forEach((m) => m.geometry.dispose());
@@ -652,6 +655,9 @@ function createView(THREE, host) {
             dnaModel.visible = dnaLeft.visible = revealU.value > 0;
             mats.chrome.envMapIntensity = mats.chromeL.envMapIntensity = 1 + b * 0.3;
             bgMat.uniforms.uPulse.value = b;
+            // sul battito pulsa tutta la scena: la camera si avvicina un poco e torna indietro
+            camera.zoom = 1 + b * PULSE_ZOOM;
+            camera.updateProjectionMatrix();
             timeU.value = sec;
             drops.visible = revealU.value > 0.5;
             drops.children.forEach((dr) => {
