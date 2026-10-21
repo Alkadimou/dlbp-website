@@ -1,4 +1,4 @@
-// Suono del battito dello sfondo ("cuore sordo"): due colpi bassi e morbidi, tum-tum, creati con Web Audio (nessun file),
+// Suono del battito dello sfondo ("cuore sordo"): due colpi bassi, morbidi e ovattati, tum-tum, creati con Web Audio (nessun file),
 // a tempo con la pulsazione di background.js. Solo sulle pagine pubbliche (sfondo con data-tap), mai con "riduci movimento".
 // È acceso di partenza, ma i browser fanno partire l'audio solo dopo un gesto della persona: se all'apertura è bloccato,
 // parte al primo tocco, clic o tasto in qualsiasi punto della pagina.
@@ -28,42 +28,58 @@ export function startHeartSound({ bpm, gap, t0 }) {
     let on = readOn();
     let ctx = null, out = null, noise = null, next = 0;
 
+    // Timbro del colpo: tre prove da ascoltare con ?suono=A|B|C nell'indirizzo (B di partenza).
+    // tone: il tono basso che scende (Hz); harm: quanto si sente l'ottava sopra (aiuta gli altoparlanti piccoli);
+    // body: il "tonfo" di rumore filtrato, come il sangue che spinge; lp: il passa-basso finale che rende tutto sordo.
+    const VOICES = {
+        A: { tone: [58, 36], harm: 0, attack: 0.02, decay: 0.2, body: { type: 'lowpass', f: 90, q: 0.7, amp: 0.5, decay: 0.12 }, lp: 140, gain: 1.5 },
+        B: { tone: [72, 44], harm: 0.18, attack: 0.014, decay: 0.16, body: { type: 'bandpass', f: 85, q: 1.2, amp: 0.8, decay: 0.1 }, lp: 230, gain: 1.1 },
+        C: { tone: [50, 40], harm: 0, attack: 0.025, decay: 0.12, body: { type: 'bandpass', f: 60, q: 2.5, amp: 1.8, decay: 0.14 }, lp: 170, gain: 1.3 }
+    };
+    const voice = VOICES[new URLSearchParams(location.search).get('suono')] || VOICES.B;
+
     function setup() {
         if (ctx) return;
         ctx = new AC();
         // suono sordo: tutto passa da un passa-basso, poi un compressore leggero perché i colpi non saturino
         const lp = ctx.createBiquadFilter();
-        lp.type = 'lowpass'; lp.frequency.value = 650; lp.Q.value = 0.4;
+        lp.type = 'lowpass'; lp.frequency.value = voice.lp; lp.Q.value = 0.5;
         const comp = ctx.createDynamicsCompressor();
+        comp.threshold.value = -18; comp.ratio.value = 3;
         out = ctx.createGain();
-        out.gain.value = VOLUME;
+        out.gain.value = VOLUME * voice.gain;
         out.connect(lp).connect(comp).connect(ctx.destination);
-        // rumore per il "tonfo" del colpo
-        noise = ctx.createBuffer(1, Math.round(ctx.sampleRate * 0.2), ctx.sampleRate);
+        noise = ctx.createBuffer(1, Math.round(ctx.sampleRate * 0.4), ctx.sampleRate);
         const d = noise.getChannelData(0);
         for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
     }
 
-    // un colpo: un tono basso che scende (con un'armonica, così si sente anche dagli altoparlanti dei telefoni) e un tonfo
-    function thump(at, amp) {
-        [[1, 1, 'sine'], [2, 0.35, 'triangle']].forEach(([mul, a, type]) => {
+    // inviluppo morbido: sale senza scatti (niente "clic") e si spegne piano
+    function envelope(g, at, peak, attack, decay) {
+        g.gain.setValueAtTime(0, at);
+        g.gain.linearRampToValueAtTime(peak, at + attack);
+        g.gain.exponentialRampToValueAtTime(0.0001, at + attack + decay);
+    }
+
+    // un colpo; second: il secondo "tum", un po' più alto e più corto, come nel cuore vero
+    function thump(at, amp, second = false) {
+        const v = voice, up = second ? 1.15 : 1, short = second ? 0.8 : 1, end = at + v.attack + v.decay * short + 0.05;
+        [[1, 1], [2, v.harm]].forEach(([mul, a]) => {
+            if (!a) return;
             const o = ctx.createOscillator(), g = ctx.createGain();
-            o.type = type;
-            o.frequency.setValueAtTime(92 * mul, at);
-            o.frequency.exponentialRampToValueAtTime(46 * mul, at + 0.13);
-            g.gain.setValueAtTime(0.0001, at);
-            g.gain.exponentialRampToValueAtTime(amp * a, at + 0.008);
-            g.gain.exponentialRampToValueAtTime(0.0001, at + 0.3);
+            o.type = 'sine';
+            o.frequency.setValueAtTime(v.tone[0] * up * mul, at);
+            o.frequency.exponentialRampToValueAtTime(v.tone[1] * up * mul, at + v.attack + v.decay * 0.6);
+            envelope(g, at, amp * a, v.attack, v.decay * short);
             o.connect(g).connect(out);
-            o.start(at); o.stop(at + 0.32);
+            o.start(at); o.stop(end);
         });
         const n = ctx.createBufferSource(), f = ctx.createBiquadFilter(), g = ctx.createGain();
         n.buffer = noise;
-        f.type = 'lowpass'; f.frequency.value = 220;
-        g.gain.setValueAtTime(amp * 0.6, at);
-        g.gain.exponentialRampToValueAtTime(0.0001, at + 0.09);
+        f.type = v.body.type; f.frequency.value = v.body.f * up; f.Q.value = v.body.q;
+        envelope(g, at, amp * v.body.amp, v.attack, v.body.decay * short);
         n.connect(f).connect(g).connect(out);
-        n.start(at); n.stop(at + 0.1);
+        n.start(at, Math.random() * 0.15); n.stop(end);
     }
 
     // da un istante di performance.now() al tempo dell'audio (con il ritardo dell'uscita, così si sente a tempo con l'immagine)
@@ -117,7 +133,7 @@ export function startHeartSound({ bpm, gap, t0 }) {
             while (next * period < bsec + LOOKAHEAD) {
                 const at = t0 + next * period * 1000;
                 thump(Math.max(ctx.currentTime, toAudio(at)), 1);
-                thump(Math.max(ctx.currentTime, toAudio(at + gap * 1000)), 0.6);
+                thump(Math.max(ctx.currentTime, toAudio(at + gap * 1000)), 0.6, true);
                 next++;
             }
         },
