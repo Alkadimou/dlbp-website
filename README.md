@@ -27,6 +27,7 @@ Un link con `?pr=<codice>` (per esempio `https://dlbp.art/?pr=mario`) collega l'
 ### Home (`index.html`)
 - Sfondo con il filamento di DNA in cromo e il motto DRINK · LOVE · BREATHE · PEACE (vedi [Aspetto](#aspetto)).
 - Sotto il motto c'è una sequenza di DNA che si decifra nella parola del colore attuale a ogni cambio di colore.
+- Sulle pagine pubbliche (home, eventi, iscrizione) si sente il battito "tum-tum" a tempo con lo sfondo, un suono basso creato dal codice (`js/core/heart-sound.js`, nessun file audio). È acceso di partenza, ma i browser lo fanno partire solo dopo il primo tocco, clic o tasto sulla pagina. Il bottone con l'altoparlante in basso a destra lo spegne e lo riaccende, e la scelta resta anche nelle visite successive. Non c'è con "riduci movimento" né nelle pagine dello staff.
 - Nessun bottone sopra lo sfondo: agli eventi si arriva dal menu EVENTI (il bottone PROSSIMO EVENTO è stato tolto il 21/10/2026).
 - Un link d'invito `?pr=<codice>` aperto sulla home ricorda il codice per tutta la visita, così l'iscrizione resta collegata al PR anche passando dal menu.
 - Alla prima visita della sessione compare per circa 1,5 secondi una schermata con il logo.
@@ -211,6 +212,7 @@ js/
     staff-login.js       form di login dello staff e controllo del ruolo
     email.js             invio email con EmailJS e nomi dei template
     background.js        sfondo 3D (filamento di DNA), colori del motto, battito, cursore a croce
+    heart-sound.js       suono del battito e bottone per spegnerlo (caricato da background.js)
     dates.js             conversione delle date lette da Firestore
     modal.js             finestre di avviso e conferma
     html.js              escapeHtml, per mostrare in sicurezza i testi degli utenti

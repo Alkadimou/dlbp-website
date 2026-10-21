@@ -73,6 +73,7 @@ Chi cambia la palette la cambia in entrambi i file e avvisa il proprietario, che
 
 ## Sfondo e cursore
 - **Sfondo:** ogni pagina ha `<div class="site-background">` con il filamento di DNA in cromo (modello di Troy, CC BY 4.0, `assets/dna.glb`) che gira piano su sé stesso (Three.js), un battito "tum-tum" della luce e il colore della serata. **Niente glitch** dal 21/10/2026.
+- **Suono:** sulle pagine pubbliche il battito si sente (`js/core/heart-sound.js`); il bottone `.sound-toggle` (quadrato nero in basso a destra, icona nel colore della serata quando è acceso) lo spegne.
 - **Credito:** "DNA 3D: Troy · CC BY 4.0" sotto il copyright nel footer (`.credit-3d`): lo chiede la licenza, non va tolto.
 - **Attributi dello sfondo:**
   - `data-dim="0.5"`: sfondo più scuro, per le pagine con molti contenuti;

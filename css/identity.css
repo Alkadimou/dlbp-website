@@ -318,6 +318,29 @@ select:focus,
     .custom-modal-actions .is-primary { order: -1; }
 }
 
+/* ---------- Bottone del suono del battito (js/core/heart-sound.js), pagine pubbliche ---------- */
+.sound-toggle {
+    position: fixed;
+    right: calc(16px + env(safe-area-inset-right, 0px));
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    z-index: 200;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    display: grid;
+    place-items: center;
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: 0;
+    color: var(--ink);
+    cursor: pointer;
+}
+.sound-toggle:hover { border-color: var(--mood-text); }
+.sound-toggle svg { width: 20px; height: 20px; }
+.sound-toggle[aria-pressed="true"] { color: var(--mood-text); }
+.sound-toggle[aria-pressed="true"] .sound-off,
+.sound-toggle[aria-pressed="false"] .sound-on { display: none; }
+
 /* ---------- Credito del modello 3D del DNA (licenza CC BY), sotto il copyright ---------- */
 .site-footer .credit-3d {
     display: block;
