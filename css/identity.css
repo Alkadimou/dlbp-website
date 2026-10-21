@@ -341,15 +341,28 @@ select:focus,
 .sound-toggle[aria-pressed="true"] .sound-off,
 .sound-toggle[aria-pressed="false"] .sound-on { display: none; }
 
-/* ---------- Credito del modello 3D del DNA (licenza CC BY), sotto il copyright ---------- */
+/* ---------- Credito del modello 3D del DNA (licenza CC BY) ----------
+   su computer nella colonna destra del footer (a sinistra il copyright, al centro le icone);
+   su tablet e telefoni sotto il copyright, centrato */
 .site-footer .credit-3d {
-    display: block;
-    margin-top: 0.35em;
-    color: inherit;
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end;
+    white-space: nowrap;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: rgba(255, 255, 255, 0.4);
     text-decoration: none;
-    pointer-events: auto;
 }
 .site-footer .credit-3d:hover { color: var(--mood-text); }
+@media (max-width: 1024px) {
+    .site-footer .credit-3d {
+        margin-top: -0.85rem;
+        font-size: 0.55rem;
+        text-align: center;
+    }
+}
 
 @media (prefers-reduced-motion: reduce) {
     .submit-btn:not(.outline-btn):not(.btn-danger):not(.btn-secondary):not(:disabled)::after,
