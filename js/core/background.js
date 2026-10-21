@@ -529,6 +529,28 @@ function createView(THREE, host) {
     scene.add(dnaModel, dnaLeft);
     let D = null, readyAt = null;
 
+    // gocce di metallo liquido che fluttuano attorno al centro, come nella prova (superficie che ondeggia come metallo fuso)
+    const timeU = { value: 0 };
+    const dropMat = new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 1, roughness: 0.08 });
+    dropMat.onBeforeCompile = (sh) => {
+        sh.uniforms.uTime = timeU;
+        sh.vertexShader = 'uniform float uTime;\n' + sh.vertexShader.replace('#include <begin_vertex>',
+            '#include <begin_vertex>\n' +
+            'vec3 wp = (modelMatrix * vec4(position, 1.0)).xyz;\n' +
+            'float w = sin(wp.y * 2.1 + uTime * 1.5) * 0.5 + sin(wp.x * 3.7 - wp.z * 2.9 + uTime * 1.1) * 0.35 + sin(wp.y * 6.5 - uTime * 2.4) * 0.18;\n' +
+            'transformed += normal * w * 0.05;');
+    };
+    dropMat.customProgramCacheKey = () => 'drop';
+    const drops = new THREE.Group();
+    for (let d = 0; d < (lite ? 0 : 12); d++) {
+        const size = 0.05 + Math.random() * 0.17;
+        const drop = new THREE.Mesh(new THREE.SphereGeometry(size, 24, 16), dropMat);
+        drop.userData = { r: 3.4 + Math.random() * 1.8, y: (Math.random() - 0.5) * 6, a: Math.random() * Math.PI * 2, v: 0.12 + Math.random() * 0.25 };
+        drops.add(drop);
+    }
+    drops.visible = false;
+    scene.add(drops);
+
     // polvere di dati
     const count = lite ? 250 : 700;
     const pos = new Float32Array(count * 3);
@@ -586,7 +608,8 @@ function createView(THREE, host) {
         post.uniforms.uRes.value.set(w * dpr, h * dpr);
         camera.aspect = w / h;
         const landscape = w > h;
-        dnaModel.position.set(0, landscape ? 0 : 0.4, 0).add(new THREE.Vector3(...POSE[landscape ? 'landscape' : 'portrait']));
+        drops.position.set(0, landscape ? 0 : 0.4, 0);
+        dnaModel.position.copy(drops.position).add(new THREE.Vector3(...POSE[landscape ? 'landscape' : 'portrait']));
         camera.position.set(0, 0, landscape ? 19 : Math.max(18, 10.5 / (0.611 * camera.aspect)));
         camera.updateProjectionMatrix();
         clearTimeout(leftTimer);
@@ -629,6 +652,12 @@ function createView(THREE, host) {
             dnaModel.visible = dnaLeft.visible = revealU.value > 0;
             mats.chrome.envMapIntensity = mats.chromeL.envMapIntensity = 1 + b * 0.3;
             bgMat.uniforms.uPulse.value = b;
+            timeU.value = sec;
+            drops.visible = revealU.value > 0.5;
+            drops.children.forEach((dr) => {
+                const q = dr.userData, ang = q.a + sec * q.v;
+                dr.position.set(Math.cos(ang) * q.r, q.y + Math.sin(sec * 0.6 + q.a) * 0.3, Math.sin(ang) * q.r);
+            });
             dust.rotation.y = sec * 0.03;
             dust2.rotation.y = 1.7 - sec * 0.02;
             dust.position.y = (sec * 0.15) % 2;
