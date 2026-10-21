@@ -9,10 +9,11 @@
 // Con data-lite sull'elemento (scanner) gira in versione leggera. Sugli schermi a 120 Hz o più
 // disegna al massimo circa 60 fotogrammi al secondo, per consumare meno batteria.
 // Con data-tap (pagine pubbliche) il cursore è una croce su tutta la pagina tranne link, bottoni e campi
-// (css/identity.css) e un clic dove c'è la croce dà un battito forte.
+// (css/identity.css) e un clic dove c'è la croce dà un battito forte; lì si sente anche il battito (js/core/heart-sound.js).
 // Carica anche no-zoom.js (niente ingrandimento su telefono), perché questo file c'è in ogni pagina.
 
 import './no-zoom.js';
+import { startHeartSound } from './heart-sound.js';
 
 const THREE_URL = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
 const DNA_URL = new URL('../../assets/dna.glb', import.meta.url).href;
@@ -26,9 +27,10 @@ export const MOODS = {
 };
 const DEFAULT_MOOD = 'breathe';
 const ORDER = ['brace', 'magenta', 'breathe', 'ghiaccio'];
-const BPM = 40;         // battito tum-tum
+const BPM = 30;         // battito tum-tum
 const PULSE_ZOOM = 0.035; // sul battito tutta la scena si ingrandisce di circa il 3,5%
-const CYCLE_BEATS = 3;  // il colore cambia ogni 3 battiti (circa 4,5 secondi)
+const PULSE_LIGHT = 0.35; // quanto si accende la luce sul battito (1 = come prima del 21/10 sera, dava fastidio agli occhi)
+const CYCLE_BEATS = 3;  // il colore cambia ogni 3 battiti (6 secondi)
 const SPIN = 0.12;      // rotazione del filamento su sé stesso, in radianti al secondo (un giro ogni ~52 s)
 
 function saveMood(mood) {
@@ -75,9 +77,10 @@ const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // battito: un colpo che sale subito e si spegne; il "tum-tum" ne fa due, il secondo più debole
 const pulse = (t, decay) => (t < 0 ? 0 : (1 - Math.exp(-t / 0.014)) * Math.exp(-t / decay));
+const BEAT_GAP = Math.min(60 / BPM * 0.34, 0.24); // secondi fra il "tum" e il secondo "tum"
 function beatAt(sec) {
-    const period = 60 / BPM, ph = sec % period, gap = Math.min(period * 0.34, 0.24);
-    return Math.min(1, pulse(ph, 0.075) + 0.6 * pulse(ph - gap, 0.07));
+    const ph = sec % (60 / BPM);
+    return Math.min(1, pulse(ph, 0.075) + 0.6 * pulse(ph - BEAT_GAP, 0.07));
 }
 
 function loadThree() {
@@ -653,8 +656,8 @@ function createView(THREE, host) {
             // il filamento compare a macchie fra 0,3 e 1,7 secondi dopo essere arrivato
             revealU.value = readyAt === null ? 0 : Math.min(1, Math.max(0, ((t - readyAt) / 1000 - 0.3) / 1.4));
             dnaModel.visible = dnaLeft.visible = revealU.value > 0;
-            mats.chrome.envMapIntensity = mats.chromeL.envMapIntensity = 1 + b * 0.3;
-            bgMat.uniforms.uPulse.value = b;
+            mats.chrome.envMapIntensity = mats.chromeL.envMapIntensity = 1 + b * 0.3 * PULSE_LIGHT;
+            bgMat.uniforms.uPulse.value = b * PULSE_LIGHT;
             // sul battito pulsa tutta la scena: la camera si avvicina un poco e torna indietro
             camera.zoom = 1 + b * PULSE_ZOOM;
             camera.updateProjectionMatrix();
@@ -679,7 +682,7 @@ function createView(THREE, host) {
 }
 
 // Sequenza di DNA che si decifra nella parola del motto (solo dove c'è #dna-seq): a ogni cambio di colore,
-// dopo 0,7 secondi, così con i colori che cambiano ogni ~4,5 secondi nessuna parola viene saltata
+// dopo 0,7 secondi, così con i colori che cambiano ogni 6 secondi nessuna parola viene saltata
 function startSequence(el) {
     const BASES = 'ATCG', NOISE = '#/\\<>▓░_=+*', LEN = 26;
     const seq = Array.from({ length: LEN }, () => BASES[(Math.random() * 4) | 0]);
@@ -742,6 +745,9 @@ async function init() {
     }
 
     const t0 = performance.now();
+    const tap = [...hosts].some((h) => h.hasAttribute('data-tap'));
+    // il suono del battito, solo sulle pagine pubbliche
+    const sound = tap ? startHeartSound({ bpm: BPM, gap: BEAT_GAP, t0 }) : null;
     let lastGroup = 0;
     let running = false;
     let lastDraw = 0;
@@ -760,6 +766,7 @@ async function init() {
         }
         state.beat = Math.min(1, Math.max(beatAt(bsec), pulse((t - state.kickAt) / 1000, 0.13) * 1.2));
         views.forEach((v) => v.render(t));
+        if (sound) sound.tick(t);
         requestAnimationFrame(frame);
     }
     function start() {
@@ -770,13 +777,14 @@ async function init() {
     document.addEventListener('visibilitychange', start);
     start();
 
-    if ([...hosts].some((h) => h.hasAttribute('data-tap'))) {
+    if (tap) {
         // clic dove il cursore è una croce: un battito forte in più (non conta per il cambio colore)
         document.addEventListener('click', (e) => {
             if (!(e.target instanceof Element) || getComputedStyle(e.target).cursor !== 'crosshair') return;
             const sel = window.getSelection();
             if (sel && !sel.isCollapsed) return;
             state.kickAt = performance.now();
+            if (sound) sound.kick();
         });
     }
 }
