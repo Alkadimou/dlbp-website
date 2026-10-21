@@ -184,20 +184,17 @@ select,
 
 /* ---------- Bottoni: pieni, con un riflesso che passa come sul cromo ----------
    Pericolo (.btn-danger: ELIMINA, ESCI) e secondario (.btn-secondary: FILTRI) restano vuoti, vedi sotto */
-.submit-btn:not(.outline-btn):not(.btn-danger):not(.btn-secondary):not(:disabled),
-.hero-next-event-btn {
+.submit-btn:not(.outline-btn):not(.btn-danger):not(.btn-secondary):not(:disabled) {
     background: var(--mood) !important;
     color: var(--on-mood, #050508) !important;
     border-color: var(--mood) !important;
     font-weight: 700;
 }
-.submit-btn:not(.outline-btn):not(.btn-danger):not(.btn-secondary):not(:disabled):hover,
-.hero-next-event-btn:hover {
+.submit-btn:not(.outline-btn):not(.btn-danger):not(.btn-secondary):not(:disabled):hover {
     color: var(--on-mood, #050508) !important;
     filter: brightness(1.08);
 }
-.submit-btn:not(.outline-btn):not(.btn-danger):not(.btn-secondary):not(:disabled)::after,
-.hero-next-event-btn::after {
+.submit-btn:not(.outline-btn):not(.btn-danger):not(.btn-secondary):not(:disabled)::after {
     content: '';
     position: absolute;
     top: 0;
@@ -341,6 +338,5 @@ body.glitching .nav-logo {
 
 @media (prefers-reduced-motion: reduce) {
     .submit-btn:not(.outline-btn):not(.btn-danger):not(.btn-secondary):not(:disabled)::after,
-    .hero-next-event-btn::after,
     .custom-modal .modal-close-btn.is-primary::after { animation: none; display: none; }
 }

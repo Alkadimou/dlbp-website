@@ -12,7 +12,7 @@ Il pubblico vede gli eventi e si iscrive in lista. Lo staff gestisce eventi e is
 
 | Pagina | Per chi | Cosa fa | JavaScript |
 |---|---|---|---|
-| `index.html` | pubblico | Home con lo sfondo 3D e il bottone PROSSIMO EVENTO | `js/pages/home.js` |
+| `index.html` | pubblico | Home con lo sfondo 3D e il motto | `js/pages/home.js` |
 | `eventi.html` | pubblico | Elenco degli eventi in programma e passati | `js/pages/home.js` |
 | `event.html?id=<evento>` | pubblico | Password d'ingresso (se c'è) e iscrizione in lista; con `&c=<codice>` (link PARTECIPA dell'invito) il modulo è già compilato | `js/pages/event.js` |
 | `annulla-iscrizione.html?id=<codice>` | pubblico (link personale nelle mail di invito) | Cancella il contatto dalla rubrica `contacts` (e il suo invito in `invites`) dopo il clic su CONFERMA; fuori dai motori di ricerca | `js/pages/unsubscribe.js` |
@@ -27,9 +27,8 @@ Un link con `?pr=<codice>` (per esempio `https://dlbp.art/?pr=mario`) collega l'
 ### Home (`index.html`)
 - Sfondo con l'elica di DNA in cromo e il motto DRINK · LOVE · BREATHE · PEACE (vedi [Aspetto](#aspetto)).
 - Sotto il motto c'è una sequenza di DNA che ogni tanto si decifra nella parola del colore attuale.
-- Il bottone **PROSSIMO EVENTO** compare solo se c'è almeno un evento attivo.
-  - Porta all'evento attivo con la data più vicina da oggi in poi; se nessuno ha una data futura, al più recente. Vale anche per gli eventi con capienza 0, che aprono la pagina dell'evento senza modulo.
-  - Mantiene il codice `?pr=`.
+- Nessun bottone sopra lo sfondo: agli eventi si arriva dal menu EVENTI (il bottone PROSSIMO EVENTO è stato tolto il 21/10/2026).
+- Un link d'invito `?pr=<codice>` aperto sulla home ricorda il codice per tutta la visita, così l'iscrizione resta collegata al PR anche passando dal menu.
 - Alla prima visita della sessione compare per circa 1,5 secondi una schermata con il logo.
 
 ### Eventi (`eventi.html`)
