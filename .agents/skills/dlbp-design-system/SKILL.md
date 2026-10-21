@@ -1,6 +1,6 @@
 ---
 name: dlbp-design-system
-description: Regole grafiche del sito dlbp.art (identità "cromo nero, colore vivo"). Coprono colori del motto, caratteri, pannelli, bottoni, sfondo 3D con glitch e cursore a croce. Da leggere prima di ogni modifica grafica al sito.
+description: Regole grafiche del sito dlbp.art (identità "cromo nero, colore vivo"). Coprono colori del motto, caratteri, pannelli, bottoni, sfondo 3D con il DNA e cursore a croce. Da leggere prima di ogni modifica grafica al sito.
 ---
 
 # Identità grafica di dlbp.art: "cromo nero, colore vivo"
@@ -9,7 +9,7 @@ In vigore dal 27/09/2026. Sostituisce il vecchio stile, che **non va più usato*
 
 I valori veri sono nel codice, che conta sempre più di questa guida:
 - `css/identity.css`: colori, caratteri e forme. Si carica dopo `css/styles.css` e ne sovrascrive l'aspetto.
-- `js/core/background.js`: palette (`MOODS`), ordine dei colori (`ORDER`), cambio colore (`CYCLE_EVERY`), sfondo 3D e glitch.
+- `js/core/background.js`: palette (`MOODS`), ordine dei colori (`ORDER`), battito e cambio colore (`BPM`, `CYCLE_BEATS`), sfondo 3D.
 
 Chi cambia la palette la cambia in entrambi i file e avvisa il proprietario, che la tiene aggiornata anche nella sua guida grafica privata.
 
@@ -23,14 +23,14 @@ Chi cambia la palette la cambia in entrambi i file e avvisa il proprietario, che
 
 | Parola | Nome nel codice | Colore | Profondo | Testo sui bottoni |
 |---|---|---|---|---|
-| Drink | `strobo` | `#ff2a3c` rosso strobo | `#4d0712` | scuro |
+| Drink | `brace` | `#ff4a1c` brace | `#3a0802` | scuro |
 | Love | `magenta` | `#8a2c80` bordeaux violaceo | `#250a24` | chiaro |
 | Breathe | `breathe` | `#1fa39a` petrolio | `#062f35` | scuro |
 | Peace | `ghiaccio` | `#cfe6ff` ghiaccio | `#34506e` | scuro |
 
 - **Come cambia il colore:**
   - il sito parte da Breathe;
-  - cambia colore da solo ogni 3 glitch (circa ogni 7 secondi), nell'ordine Drink → Love → Breathe → Peace;
+  - cambia colore da solo ogni 3 battiti (circa ogni 4,5 secondi), nell'ordine Drink → Love → Breathe → Peace;
   - il colore raggiunto resta per tutta la visita;
   - `?mood=<colore o parola>` nell'indirizzo sceglie il colore di partenza.
 - **Variabili CSS** (le imposta `background.js` su `<html>`):
@@ -71,19 +71,19 @@ Chi cambia la palette la cambia in entrambi i file e avvisa il proprietario, che
   Il `viewBox` cambia per ogni icona ed è scritto nel file.
 - **Tabelle:** nell'admin e nell'area PR stanno dentro `.table-responsive` e sui telefoni diventano schede. Ogni cella ha `data-label` con il nome della colonna.
 
-## Sfondo, glitch e cursore
-- **Sfondo:** ogni pagina ha `<div class="site-background">` con l'elica di DNA in cromo liquido (Three.js), glitch a scatti e il colore della serata.
+## Sfondo e cursore
+- **Sfondo:** ogni pagina ha `<div class="site-background">` con il filamento di DNA in cromo (modello di Troy, CC BY 4.0, `assets/dna.glb`) che gira piano su sé stesso (Three.js), un battito "tum-tum" della luce e il colore della serata. **Niente glitch** dal 21/10/2026.
+- **Credito:** "DNA 3D: Troy · CC BY 4.0" sotto il copyright nel footer (`.credit-3d`): lo chiede la licenza, non va tolto.
 - **Attributi dello sfondo:**
   - `data-dim="0.5"`: sfondo più scuro, per le pagine con molti contenuti;
   - `data-lite`: versione leggera, usata dallo scanner;
-  - `data-tap`: pagine pubbliche. Il cursore è una croce su tutta la pagina tranne link, bottoni e campi, e un clic dove c'è la croce fa partire un glitch.
-- **Glitch:** mentre è in corso, `body` ha la classe `glitching` e titoli e logo si spostano, con un'ombra del colore della serata a sinistra e una bianca a destra.
-- **Home:** `#dna-seq` è la sequenza di DNA che ogni tanto si decifra nella parola del motto del colore attuale.
-- **"Riduci movimento" attivo:** l'elica resta su un fotogramma fermo e spariscono la croce e il riflesso dei bottoni.
+  - `data-tap`: pagine pubbliche. Il cursore è una croce su tutta la pagina tranne link, bottoni e campi, e un clic dove c'è la croce dà un battito forte.
+- **Home:** `#dna-seq` è la sequenza di DNA che a ogni cambio di colore si decifra nella parola del motto.
+- **"Riduci movimento" attivo:** il DNA resta su un fotogramma fermo e spariscono la croce e il riflesso dei bottoni.
 
 ## Logo
 - Sempre a tinta unita: bianco sul nero.
-- Mai colorato, deformato, con ombre o bagliori. L'unica eccezione è lo spostamento durante il glitch del sito.
+- Mai colorato, deformato, con ombre o bagliori.
 
 ## Regole pratiche per chi modifica
 - **Stili nuovi:** usare i token di `identity.css` (`--mood`, `--panel`, `--panel-line`, `--ink`, `--f-display`, `--f-body`), non colori scritti a mano.

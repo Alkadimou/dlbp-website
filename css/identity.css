@@ -30,7 +30,7 @@
     z-index: 0;
     overflow: hidden;
     pointer-events: none;
-    /* si vede finché l'elica non è pronta, o se il telefono non supporta il 3D */
+    /* si vede finché lo sfondo 3D non è pronto, o se il telefono non supporta il 3D */
     background: radial-gradient(80% 70% at 62% 60%, color-mix(in srgb, var(--mood-deep) 45%, #000) 0%, #000 75%);
 }
 .site-background canvas {
@@ -41,7 +41,7 @@
     transition: opacity 1.2s ease;
 }
 .site-background.ready canvas { opacity: 1; }
-/* pagine pubbliche (sfondo con data-tap): croce ovunque, un clic fa partire un glitch (background.js);
+/* pagine pubbliche (sfondo con data-tap): croce ovunque, un clic dà un battito forte (background.js);
    link, bottoni e campi tengono il loro cursore */
 @media (prefers-reduced-motion: no-preference) {
     html:has(.site-background[data-tap]) body { cursor: crosshair; }
@@ -318,23 +318,15 @@ select:focus,
     .custom-modal-actions .is-primary { order: -1; }
 }
 
-/* ---------- Glitch sui titoli, insieme all'elica ---------- */
-body.glitching .event-card-title,
-body.glitching .section-title,
-body.glitching .page-title,
-body.glitching .section-label,
-body.glitching .hero-tagline-center,
-body.glitching .login-card h2,
-body.glitching #login-section h2,
-body.glitching .modal-content h2,
-body.glitching .registration-gate h3,
-body.glitching .nav-logo {
-    transform: translateX(var(--gx, 0));
-    text-shadow: -3px 0 var(--mood), 3px 0 rgba(255, 255, 255, 0.75);
+/* ---------- Credito del modello 3D del DNA (licenza CC BY), sotto il copyright ---------- */
+.site-footer .credit-3d {
+    display: block;
+    margin-top: 0.35em;
+    color: inherit;
+    text-decoration: none;
+    pointer-events: auto;
 }
-body.glitching .nav-logo {
-    filter: drop-shadow(-3px 0 var(--mood)) drop-shadow(3px 0 rgba(255, 255, 255, 0.6));
-}
+.site-footer .credit-3d:hover { color: var(--mood-text); }
 
 @media (prefers-reduced-motion: reduce) {
     .submit-btn:not(.outline-btn):not(.btn-danger):not(.btn-secondary):not(:disabled)::after,
