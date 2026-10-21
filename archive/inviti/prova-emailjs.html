@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prova EmailJS</title>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3.12.1/dist/email.min.js"></script>
+<style>
+  body { margin: 0; padding: 24px 16px; background: #062f35; color: #e8f6f5; font: 15px/1.5 system-ui, sans-serif; }
+  main { max-width: 520px; margin: 0 auto; }
+  label { display: block; margin: 16px 0 4px; font-size: 13px; color: #62bfb8; }
+  input, select { width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid #1fa39a; background: #031b1f; color: #e8f6f5; font: inherit; }
+  button { margin-top: 20px; padding: 14px 22px; border: 0; background: #1fa39a; color: #050508; font: bold 13px monospace; letter-spacing: 2px; cursor: pointer; }
+  .solo-invito, .solo-biglietto { display: none; }
+  body[data-tipo="invito"] .solo-invito, body[data-tipo="biglietto"] .solo-biglietto { display: block; }
+  #esito { margin-top: 20px; white-space: pre-wrap; }
+</style>
+</head>
+<body data-tipo="invito">
+<main>
+  <h1>Prova mail con EmailJS</h1>
+  <label for="tipo">Cosa mandare</label>
+  <select id="tipo">
+    <option value="invito">Invito (invito-17-10-mail.html, modello invito_html)</option>
+    <option value="biglietto">Biglietto con QR (come dopo l'iscrizione, modello ticket_confirm)</option>
+  </select>
+
+  <label for="to">Destinatario</label>
+  <input id="to" value="alaeddine.khadimou@gmail.com">
+  <label for="nome">Nome</label>
+  <input id="nome" value="Mario">
+  <label for="cognome">Cognome</label>
+  <input id="cognome" value="Rossi">
+
+  <div class="solo-invito">
+    <label for="codice">Codice del contatto (per PARTECIPA già compilato e "Annulla l'iscrizione"; vuoto = link finto)</label>
+    <input id="codice" value="">
+    <label for="subj">Oggetto</label>
+    <input id="subj" value="[PROVA · EmailJS] DLBP · Private event · Sab 17/10">
+  </div>
+
+  <div class="solo-biglietto">
+    <label for="evento">Nome evento</label>
+    <input id="evento" value="Private event">
+    <label for="data">Data e orario</label>
+    <input id="data" value="SABATO 17/10 | 23:00 - 07:00">
+    <label for="luogo">Luogo</label>
+    <input id="luogo" value="Via Esempio 1, Arezzo">
+    <label for="quota">Quota adesione (vuoto = riga nascosta)</label>
+    <input id="quota" value="15 €">
+  </div>
+
+  <button id="invia" type="button">INVIA PROVA</button>
+  <div id="esito"></div>
+</main>
+<script type="module">
+  // Stesse chiavi pubbliche di js/core/email.js; il biglietto usa proprio sendTicketEmail del sito.
+  import { initEmailJs, sendTicketEmail } from "/js/core/email.js";
+  initEmailJs();
+  const esito = document.getElementById("esito");
+  const val = (id) => document.getElementById(id).value.trim();
+  const tipo = document.getElementById("tipo");
+  tipo.addEventListener("change", () => { document.body.dataset.tipo = tipo.value; });
+
+  async function inviaInvito() {
+    const html = (await (await fetch("invito-17-10-mail.html", { cache: "no-store" })).text())
+      .replace(/\{\{NOME\}\}/g, val("nome")).replace(/\{\{COGNOME\}\}/g, val("cognome"))
+      .replace(/&amp;c=\{\{CODICE\}\}/g, val("codice") ? "&amp;c=" + encodeURIComponent(val("codice")) : "")
+      .replace(/\{\{UNSUBSCRIBE_URL\}\}/g, val("codice") ? "https://dlbp.art/annulla-iscrizione.html?id=" + encodeURIComponent(val("codice")) : "#");
+    return emailjs.send("service_ndbmwte", "invito_html", { to_email: val("to"), subject: val("subj"), html_body: html });
+  }
+
+  function inviaBiglietto() {
+    // ID finto di 20 caratteri: il QR non corrisponde a nessuna iscrizione vera
+    const id = "PROVA" + Math.random().toString(36).slice(2, 12).toUpperCase().padEnd(15, "X");
+    return sendTicketEmail(
+      { id, name: (val("nome") + " " + val("cognome")).toUpperCase(), email: val("to") },
+      { name: val("evento"), date: val("data"), location: val("luogo"), fee: val("quota") }
+    );
+  }
+
+  document.getElementById("invia").addEventListener("click", async () => {
+    esito.textContent = "Invio in corso…";
+    try {
+      const r = tipo.value === "biglietto" ? await inviaBiglietto() : await inviaInvito();
+      esito.textContent = "Inviata: " + r.status + " " + r.text;
+    } catch (e) {
+      esito.textContent = "Errore: " + (e && (e.text || e.message) || e);
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Invio inviti 17/10</title>
+<!-- Pagina solo locale (anteprima .claude/serve.js): manda l'invito del 17/10 ai contatti, uno alla volta.
+     Lista: /archive/backups/invio-lista.json (scaglioni 1-3, fuori da git). Registro degli invii nel browser
+     (localStorage) + bottone ESPORTA REGISTRO. Prima di ogni invio controlla che l'invito esista ancora
+     nel database (chi ha annullato l'iscrizione viene saltato). -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3.12.1/dist/email.min.js"></script>
+<style>
+  :root { color-scheme: dark; }
+  body { margin: 0; padding: 24px 16px; background: #062f35; color: #e8f6f5; font: 15px/1.5 system-ui, sans-serif; }
+  main { max-width: 980px; margin: 0 auto; }
+  h1 { margin: 0 0 4px; font-size: 24px; }
+  .muted { color: #8fc9c4; font-size: 13px; }
+  label { display: block; margin: 14px 0 4px; font-size: 13px; color: #62bfb8; }
+  input, select { width: 100%; box-sizing: border-box; padding: 10px; border: 1px solid #1fa39a; background: #031b1f; color: #e8f6f5; font: inherit; }
+  .row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .row > div { flex: 1; min-width: 200px; }
+  button { margin: 16px 8px 0 0; padding: 12px 18px; border: 0; background: #1fa39a; color: #050508; font: bold 13px monospace; letter-spacing: 2px; cursor: pointer; }
+  button.secondary { background: transparent; color: #e8f6f5; border: 1px solid #1fa39a; }
+  button.danger { background: #e5484d; color: #fff; }
+  button:disabled { opacity: .4; cursor: not-allowed; }
+  .stats { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+  .stat { flex: 1; min-width: 120px; border: 1px solid #1fa39a; padding: 10px 12px; }
+  .stat b { display: block; font-size: 26px; }
+  #stato { margin-top: 16px; padding: 12px; border-left: 4px solid #1fa39a; background: #031b1f; white-space: pre-wrap; }
+  #stato.err { border-color: #e5484d; }
+  .bar { height: 8px; background: #031b1f; margin-top: 12px; }
+  .bar > div { height: 100%; width: 0; background: #1fa39a; transition: width .3s; }
+  .tablewrap { overflow-x: auto; margin-top: 16px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #0d4a52; white-space: nowrap; }
+  td.inviata { color: #5fe0a0; } td.errore { color: #ff8a8d; } td.saltata { color: #f5c26b; }
+  iframe { width: 100%; height: 620px; border: 1px solid #1fa39a; background: #fff; margin-top: 12px; }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Invio inviti · Sab 17/10</h1>
+  <p class="muted">Mittente: il servizio EmailJS del sito (admin.dlbp.art@gmail.com), modello <code>invito_html</code>. Una mail alla volta, con una pausa tra un invio e l'altro.</p>
+
+  <div class="row">
+    <div>
+      <label for="scaglione">Scaglione</label>
+      <select id="scaglione">
+        <option value="1">1 — i più affezionati</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+      </select>
+    </div>
+    <div>
+      <label for="subj">Oggetto</label>
+      <input id="subj" value="DLBP · Private event · Sab 17/10">
+    </div>
+    <div>
+      <label for="pausa">Pausa tra due invii (secondi, minimo 5)</label>
+      <input id="pausa" type="number" min="5" value="10">
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><span class="muted">Nello scaglione</span><b id="s-tot">–</b></div>
+    <div class="stat"><span class="muted">Già inviate</span><b id="s-ok">–</b></div>
+    <div class="stat"><span class="muted">Saltate / errori</span><b id="s-ko">–</b></div>
+    <div class="stat"><span class="muted">Da inviare</span><b id="s-todo">–</b></div>
+    <div class="stat"><span class="muted">Inviate oggi (tutte)</span><b id="s-oggi">–</b></div>
+  </div>
+  <div class="bar"><div id="progress"></div></div>
+
+  <button id="anteprima" class="secondary" type="button">ANTEPRIMA</button>
+  <button id="invia" type="button">INVIA SCAGLIONE</button>
+  <button id="ferma" class="danger hidden" type="button">FERMA</button>
+  <button id="riprova" class="secondary" type="button">RIPROVA ERRORI</button>
+  <button id="esporta" class="secondary" type="button">ESPORTA REGISTRO</button>
+
+  <div id="stato">Caricamento…</div>
+  <iframe id="preview" class="hidden" title="Anteprima dell'invito"></iframe>
+
+  <div class="tablewrap">
+    <table>
+      <thead><tr><th>#</th><th>Nome</th><th>Email</th><th>Motivo</th><th>Stato</th><th>Ora</th></tr></thead>
+      <tbody id="righe"></tbody>
+    </table>
+  </div>
+</main>
+
+<script type="module">
+  import { initEmailJs } from "/js/core/email.js";
+  initEmailJs();
+
+  const SERVICE = "service_ndbmwte";
+  const TEMPLATE = "invito_html";
+  const LOG_KEY = "dlbp_invio_inviti_17_10";
+  const DAILY_WARN = 160; // oltre questo numero in un giorno Gmail può bloccare gli invii
+  const FIRESTORE = "https://firestore.googleapis.com/v1/projects/dlbp-website/databases/(default)/documents/invites/";
+
+  const $ = (id) => document.getElementById(id);
+  const stato = $("stato");
+  let lista = [], templateHtml = "", log = {}, running = false, stopRequested = false;
+
+  // --- Registro degli invii: { id: { stato, ora, nota } } nel browser ---
+  function loadLog() {
+    try { log = JSON.parse(localStorage.getItem(LOG_KEY) || "{}") || {}; } catch { log = {}; }
+  }
+  function saveLog() {
+    try { localStorage.setItem(LOG_KEY, JSON.stringify(log)); } catch (e) { say("Attenzione: il registro non si salva nel browser. Esporta il registro alla fine.", true); }
+  }
+  function mark(id, s, nota = "") { log[id] = { stato: s, ora: new Date().toISOString(), nota }; saveLog(); }
+
+  function say(msg, err = false) { stato.textContent = msg; stato.classList.toggle("err", err); }
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+  const oggi = () => new Date().toDateString();
+
+  function personalizza(c) {
+    return templateHtml
+      .replace(/\{\{NOME\}\}/g, esc(c.nome))
+      .replace(/\{\{COGNOME\}\}/g, esc(c.cognome))
+      .replace(/&amp;c=\{\{CODICE\}\}/g, "&amp;c=" + encodeURIComponent(c.id))
+      .replace(/\{\{UNSUBSCRIBE_URL\}\}/g, "https://dlbp.art/annulla-iscrizione.html?id=" + encodeURIComponent(c.id));
+  }
+
+  const gruppo = () => lista.filter((c) => c.scaglione === Number($("scaglione").value));
+
+  function render() {
+    const g = gruppo();
+    const ok = g.filter((c) => log[c.id]?.stato === "inviata").length;
+    const ko = g.filter((c) => ["saltata", "errore"].includes(log[c.id]?.stato)).length;
+    const todo = g.filter((c) => !log[c.id]).length;
+    const sentToday = Object.values(log).filter((l) => l.stato === "inviata" && new Date(l.ora).toDateString() === oggi()).length;
+    $("s-tot").textContent = g.length; $("s-ok").textContent = ok; $("s-ko").textContent = ko; $("s-todo").textContent = todo; $("s-oggi").textContent = sentToday;
+    $("progress").style.width = g.length ? ((ok + ko) / g.length * 100) + "%" : "0";
+    $("righe").innerHTML = g.map((c, i) => {
+      const l = log[c.id];
+      const s = l ? l.stato + (l.nota ? " · " + l.nota : "") : "da inviare";
+      const ora = l ? new Date(l.ora).toLocaleString("it-IT", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "";
+      return `<tr><td>${i + 1}</td><td>${esc(c.nome)} ${esc(c.cognome)}</td><td>${esc(c.email)}</td><td>${esc(c.motivo)}</td><td class="${l ? l.stato : ""}">${esc(s)}</td><td>${ora}</td></tr>`;
+    }).join("");
+    $("invia").disabled = running || todo === 0;
+    $("riprova").disabled = running || !g.some((c) => log[c.id]?.stato === "errore");
+  }
+
+  // L'invito esiste ancora nel database? (404 = la persona ha annullato l'iscrizione)
+  async function invitoEsiste(id) {
+    const r = await fetch(FIRESTORE + encodeURIComponent(id), { cache: "no-store" });
+    if (r.status === 404) return false;
+    if (!r.ok) throw new Error("database " + r.status);
+    return true;
+  }
+
+  async function inviaUno(c) {
+    const html = personalizza(c);
+    if (/\{\{/.test(html)) throw new Error("nella mail è rimasto un segnaposto non riempito: controlla invito-17-10-mail.html");
+    if (!(await invitoEsiste(c.id))) { mark(c.id, "saltata", "contatto cancellato"); return "saltata"; }
+    try {
+      await emailjs.send(SERVICE, TEMPLATE, { to_email: c.email, subject: $("subj").value.trim(), html_body: html });
+      mark(c.id, "inviata");
+      return "inviata";
+    } catch (e) {
+      const testo = (e && (e.text || e.message)) || String(e);
+      mark(c.id, "errore", `${e?.status || ""} ${testo}`.trim().slice(0, 120));
+      // limite di EmailJS o di Gmail: inutile continuare
+      if (e?.status === 429 || e?.status === 426 || /limit|quota|exceed/i.test(testo)) throw new Error("LIMITE: " + testo);
+      return "errore";
+    }
+  }
+
+  async function esegui(contatti, titolo) {
+    if (!contatti.length) return;
+    const subj = $("subj").value.trim();
+    if (!subj) { say("Scrivi l'oggetto.", true); return; }
+    const sentToday = Number($("s-oggi").textContent) || 0;
+    let avviso = sentToday + contatti.length > DAILY_WARN ? `\n\nATTENZIONE: oggi ne sono già partite ${sentToday}. Con queste si supera ${DAILY_WARN} in un giorno e Gmail potrebbe bloccare gli invii (anche quelli dei biglietti).` : "";
+    const risposta = prompt(`${titolo}: ${contatti.length} mail con oggetto "${subj}".${avviso}\n\nPer confermare scrivi INVIA`);
+    if ((risposta || "").trim().toUpperCase() !== "INVIA") { say("Invio annullato."); return; }
+
+    running = true; stopRequested = false;
+    $("ferma").classList.remove("hidden"); $("scaglione").disabled = true; render();
+    const pausa = Math.max(5, Number($("pausa").value) || 10) * 1000;
+    let errSeguiti = 0, fatti = 0;
+    try {
+      for (const c of contatti) {
+        if (stopRequested) { say(`Fermato. Inviate in questa sessione: ${fatti}. Puoi riprendere quando vuoi.`); break; }
+        say(`Invio ${fatti + 1} di ${contatti.length}: ${c.nome} ${c.cognome} <${c.email}>…`);
+        const esito = await inviaUno(c);
+        fatti++;
+        errSeguiti = esito === "errore" ? errSeguiti + 1 : 0;
+        render();
+        if (errSeguiti >= 3) { say("Fermato: 3 errori di fila. Controlla la tabella e il pannello di EmailJS prima di riprendere.", true); break; }
+        if (fatti < contatti.length && !stopRequested) await sleep(pausa + Math.random() * 4000);
+      }
+      if (!stopRequested && errSeguiti < 3) say(`Finito: ${titolo}. Controlla la tabella e poi premi ESPORTA REGISTRO.`);
+    } catch (e) {
+      say("Fermato: " + e.message + "\nControlla il pannello di EmailJS (invii rimasti) prima di riprendere.", true);
+    } finally {
+      running = false; $("ferma").classList.add("hidden"); $("scaglione").disabled = false; render();
+    }
+  }
+
+  $("invia").addEventListener("click", () => esegui(gruppo().filter((c) => !log[c.id]), `Scaglione ${$("scaglione").value}`));
+  $("riprova").addEventListener("click", () => {
+    const errori = gruppo().filter((c) => log[c.id]?.stato === "errore");
+    errori.forEach((c) => delete log[c.id]); saveLog();
+    esegui(errori, `Riprova errori dello scaglione ${$("scaglione").value}`);
+  });
+  $("ferma").addEventListener("click", () => { stopRequested = true; say("Mi fermo dopo la mail in corso…"); });
+  $("scaglione").addEventListener("change", render);
+
+  $("anteprima").addEventListener("click", () => {
+    const c = gruppo().find((x) => !log[x.id]) || gruppo()[0];
+    if (!c) return;
+    const f = $("preview"); f.classList.remove("hidden"); f.srcdoc = personalizza(c);
+    say(`Anteprima per ${c.nome} ${c.cognome} <${c.email}> (non inviata).`);
+  });
+
+  $("esporta").addEventListener("click", () => {
+    const righe = [["scaglione", "nome", "cognome", "email", "stato", "ora", "nota"]];
+    for (const c of lista) { const l = log[c.id] || {}; righe.push([c.scaglione, c.nome, c.cognome, c.email, l.stato || "da inviare", l.ora || "", l.nota || ""]); }
+    const csv = righe.map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob(["﻿" + csv], { type: "text/csv" }));
+    a.download = `registro-invio-inviti-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+  });
+
+  window.addEventListener("beforeunload", (e) => { if (running) { e.preventDefault(); e.returnValue = ""; } });
+
+  (async () => {
+    try {
+      loadLog();
+      [lista, templateHtml] = await Promise.all([
+        fetch("/archive/backups/invio-lista.json", { cache: "no-store" }).then((r) => { if (!r.ok) throw new Error("lista " + r.status); return r.json(); }),
+        fetch("invito-17-10-mail.html", { cache: "no-store" }).then((r) => { if (!r.ok) throw new Error("invito " + r.status); return r.text(); })
+      ]);
+      if (!/&amp;c=\{\{CODICE\}\}/.test(templateHtml) || !/\{\{UNSUBSCRIBE_URL\}\}/.test(templateHtml)) throw new Error("nell'invito mancano i segnaposto CODICE o UNSUBSCRIBE_URL");
+      if (typeof emailjs === "undefined") throw new Error("EmailJS non caricato");
+      say(`Pronto: ${lista.length} contatti in 3 scaglioni. Scegli lo scaglione, guarda l'ANTEPRIMA e poi INVIA SCAGLIONE.`);
+    } catch (e) {
+      say("Errore nel caricamento: " + e.message, true);
+    }
+    render();
+  })();
+</script>
+</body>
+</html>

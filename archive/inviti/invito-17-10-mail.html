@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="it" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="color-scheme" content="dark">
+<meta name="supported-color-schemes" content="dark">
+<title>DLBP · Private event · SAB 17/10</title>
+<!-- I caratteri arrivano solo dove il programma di posta li carica (Apple Mail); altrove si usano quelli di riserva. -->
+<link href="https://fonts.googleapis.com/css2?family=League+Gothic&family=IBM+Plex+Sans:wght@400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  body { margin:0; padding:0; background:#050508; }
+  table { border-collapse:collapse; }
+  img { border:0; display:block; outline:none; text-decoration:none; -ms-interpolation-mode:bicubic; }
+  a { color:#eceaf4; }
+  /* Telefoni molto stretti: il nome d'arte secondario (Radio Flare, Guest, b2b CRSH) va sotto il nome */
+  @media (max-width:360px) {
+    .sub { display:block !important; padding-top:4px !important; }
+  }
+  @media (max-width:400px) {
+    .sub2 { display:block !important; padding-top:4px !important; }
+  }
+  @media (max-width:480px) {
+    .pad { padding-left:16px !important; padding-right:16px !important; }
+    .dj  { font-size:30px !important; }
+    .hero { height:300px !important; }
+    .title { font-size:44px !important; letter-spacing:3px !important; padding-top:16px !important; }
+    .logo { width:88px !important; }
+    .lbl { letter-spacing:1px !important; }
+    .btn { padding:14px 16px !important; letter-spacing:1px !important; }
+    .foot { display:block !important; width:100% !important; text-align:center !important; letter-spacing:1px !important; padding:3px 0 !important; }
+  }
+</style>
+</head>
+<body style="margin:0;padding:0;background:#050508;">
+
+<!-- Segnaposto tra doppie graffe (NOME, COGNOME, CODICE, UNSUBSCRIBE_URL): si riempiono all'invio per ogni contatto della collezione contacts -->
+<!-- Testo di anteprima (appare accanto all'oggetto nella casella di posta) -->
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:#050508;font-size:1px;line-height:1px;">
+  Sabato 17/10 · 23:00 – 07:00 · Invito riservato. Iscriviti dal sito e ricevi il QR via mail.
+</div>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#050508" style="background:#050508;">
+<tr><td align="center" style="padding:0;">
+
+  <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" bgcolor="#050508" style="width:100%;max-width:600px;background:#050508;">
+
+    <!-- Testata: sfondo fisso (elica Breathe, 1200x800, ~90 KB) con sopra il logo PNG del sito e "PRIVATE EVENT" come testo.
+         Lo sfondo usa l'attributo background + CSS (Gmail, Apple Mail) e VML (Outlook per Windows); senza immagini resta il petrolio scuro. -->
+    <tr><td class="hero" background="https://dlbp.art/assets/mail/invito-17-10-sfondo.jpg" bgcolor="#062f35" width="600" height="400" align="center" valign="middle"
+        style="background:#062f35 url('https://dlbp.art/assets/mail/invito-17-10-sfondo.jpg') center center / cover no-repeat;background-image:url('https://dlbp.art/assets/mail/invito-17-10-sfondo.jpg');background-position:center center;background-size:cover;background-repeat:no-repeat;height:400px;text-align:center;">
+      <!--[if gte mso 9]>
+      <v:rect xmlns:v="urn:schemas-microsoft-com:vml" fill="true" stroke="false" style="width:600px;height:400px;">
+        <v:fill type="frame" src="https://dlbp.art/assets/mail/invito-17-10-sfondo.jpg" color="#062f35" />
+        <v:textbox inset="0,0,0,0">
+      <![endif]-->
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr><td class="hero" align="center" valign="middle" height="400" style="height:400px;padding:0 24px;text-align:center;">
+          <img src="https://dlbp.art/assets/logo.png" width="112" alt="dlbp" class="logo" style="display:block;margin:0 auto;width:112px;height:auto;">
+          <div class="title" style="padding-top:22px;font-weight:bold;font-family:'League Gothic','Arial Narrow','Helvetica Neue Condensed',Impact,sans-serif;font-size:64px;line-height:1;letter-spacing:5px;text-transform:uppercase;color:#eceaf4;text-shadow:0 0 18px rgba(0,0,0,0.8);">Private event</div>
+        </td></tr>
+      </table>
+      <!--[if gte mso 9]>
+        </v:textbox>
+      </v:rect>
+      <![endif]-->
+    </td></tr>
+
+    <tr><td class="pad" align="center" style="padding:20px 24px 4px;font-family:'Space Mono','Courier New',monospace;font-size:11px;line-height:1.4;letter-spacing:3px;text-transform:uppercase;color:#62bfb8;">
+      Invito riservato a <span style="color:#eceaf4;font-weight:bold;">{{NOME}} {{COGNOME}}</span>
+    </td></tr>
+
+
+    <!-- Ringraziamento -->
+    <tr><td class="pad" style="padding:24px 24px 8px;font-family:'IBM Plex Sans','Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:1.6;color:#eceaf4;">
+      <p style="margin:0 0 12px;">Ci sei stato fin dall'inizio, e DLBP è cresciuto grazie a chi, come te, è venuto, ha ballato e ha portato i suoi amici.</p>
+      <p style="margin:0;"><b style="color:#ffffff;">Questa serata è per te.</b> Un modo per ringraziarti, insieme a chi ha reso possibile tutto questo.</p>
+    </td></tr>
+
+    <!-- Riga 1: come partecipare | iscrizione -->
+    <tr><td class="pad" style="padding:20px 24px 0;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid #26262c;">
+        <tr>
+          <td width="56%" valign="top" style="padding:20px 24px 20px 0;">
+            <div class="lbl" style="font-family:'Space Mono','Courier New',monospace;font-size:11px;line-height:1.4;letter-spacing:3px;text-transform:uppercase;color:#62bfb8;padding-bottom:10px;">Come partecipare</div>
+            <div style="font-family:'IBM Plex Sans','Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:1.5;color:#eceaf4;">
+              Iscriviti dal sito con PARTECIPA e ricevi il QR via mail. <b style="color:#ffffff;">Puoi venire con i tuoi amici: basta che si iscrivano anche loro sul sito.</b>
+            </div>
+          </td>
+          <td width="44%" valign="top" style="padding:20px 0;">
+            <div class="lbl" style="font-family:'Space Mono','Courier New',monospace;font-size:11px;line-height:1.4;letter-spacing:3px;text-transform:uppercase;color:#62bfb8;padding-bottom:10px;">Iscrizione</div>
+            <!-- edQrGOviq2fnc4W5CXNr = ID dell'evento del 17/10 (DLBP.MVMNT); CODICE (tra doppie graffe) = ID del contatto: la pagina dell'evento precompila nome, cognome ed email. -->
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+              <td bgcolor="#1fa39a" style="background:#1fa39a;border:1px solid #1fa39a;">
+                <a href="https://dlbp.art/event.html?id=edQrGOviq2fnc4W5CXNr&amp;c={{CODICE}}" class="btn" style="display:inline-block;padding:16px 24px;white-space:nowrap;font-family:'Space Mono','Courier New',monospace;font-size:12px;font-weight:bold;line-height:1;letter-spacing:3px;text-transform:uppercase;text-decoration:none;color:#050508;">Partecipa</a>
+              </td>
+            </tr></table>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+
+    <!-- Riga 3: quando | dove -->
+    <tr><td class="pad" style="padding:0 24px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid #26262c;">
+        <tr>
+          <td width="56%" valign="top" style="padding:20px 24px 20px 0;">
+            <div class="lbl" style="font-family:'Space Mono','Courier New',monospace;font-size:11px;line-height:1.4;letter-spacing:3px;text-transform:uppercase;color:#62bfb8;padding-bottom:10px;">Quando</div>
+            <div class="dj" style="font-weight:bold;font-family:'League Gothic','Arial Narrow','Helvetica Neue Condensed',Impact,sans-serif;font-size:34px;line-height:1;letter-spacing:1px;text-transform:uppercase;color:#eceaf4;">Sab 17/10</div>
+            <div style="padding-top:6px;font-family:'Space Mono','Courier New',monospace;font-size:12px;line-height:1.5;letter-spacing:2px;color:#b8b6c2;">23:00 – 07:00</div>
+          </td>
+          <td width="44%" valign="top" style="padding:20px 0;">
+            <div class="lbl" style="font-family:'Space Mono','Courier New',monospace;font-size:11px;line-height:1.4;letter-spacing:3px;text-transform:uppercase;color:#62bfb8;padding-bottom:10px;">Dove</div>
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr>
+              <td bgcolor="#1fa39a" style="background:#1fa39a;border:1px solid #1fa39a;">
+                <a href="https://maps.app.goo.gl/gzYQZ6wSHUbq9zLp9" class="btn" style="display:inline-block;padding:16px 24px;white-space:nowrap;font-family:'Space Mono','Courier New',monospace;font-size:12px;font-weight:bold;line-height:1;letter-spacing:3px;text-transform:uppercase;text-decoration:none;color:#050508;">Apri la mappa</a>
+              </td>
+            </tr></table>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+
+    <!-- Riga 2: DJ -->
+    <tr><td class="pad" style="padding:0 24px;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid #26262c;border-bottom:1px solid #26262c;">
+        <tr><td colspan="2" class="lbl" style="padding:20px 0 10px;font-family:'Space Mono','Courier New',monospace;font-size:11px;line-height:1.4;letter-spacing:3px;text-transform:uppercase;color:#62bfb8;">Dj · 2 ore a testa</td></tr>
+        <tr>
+          <td width="56%" valign="top" style="padding:0 24px 18px 0;">
+            <div class="dj" style="font-weight:bold;font-family:'League Gothic','Arial Narrow','Helvetica Neue Condensed',Impact,sans-serif;font-size:34px;line-height:1;letter-spacing:1px;text-transform:uppercase;color:#eceaf4;">Woland <span class="sub" style="font-size:18px;letter-spacing:1px;color:#b8b6c2;">Radio Flare</span></div>
+            <div style="padding-top:6px;font-family:'Space Mono','Courier New',monospace;font-size:12px;line-height:1.5;letter-spacing:2px;color:#b8b6c2;">23:00 – 01:00</div>
+          </td>
+          <td width="44%" valign="top" style="padding:0 0 18px;">
+            <div class="dj" style="font-weight:bold;font-family:'League Gothic','Arial Narrow','Helvetica Neue Condensed',Impact,sans-serif;font-size:34px;line-height:1;letter-spacing:1px;text-transform:uppercase;color:#eceaf4;">Mmell <span class="sub" style="font-size:18px;letter-spacing:1px;color:#b8b6c2;">Guest</span></div>
+            <div style="padding-top:6px;font-family:'Space Mono','Courier New',monospace;font-size:12px;line-height:1.5;letter-spacing:2px;color:#b8b6c2;">03:00 – 05:00</div>
+          </td>
+        </tr>
+        <tr>
+          <td width="56%" valign="top" style="padding:0 24px 20px 0;">
+            <div class="dj" style="font-weight:bold;font-family:'League Gothic','Arial Narrow','Helvetica Neue Condensed',Impact,sans-serif;font-size:34px;line-height:1;letter-spacing:1px;text-transform:uppercase;color:#eceaf4;">Rōnin</div>
+            <div style="padding-top:6px;font-family:'Space Mono','Courier New',monospace;font-size:12px;line-height:1.5;letter-spacing:2px;color:#b8b6c2;">01:00 – 03:00</div>
+          </td>
+          <td width="44%" valign="top" style="padding:0 0 20px;">
+            <div class="dj" style="font-weight:bold;font-family:'League Gothic','Arial Narrow','Helvetica Neue Condensed',Impact,sans-serif;font-size:34px;line-height:1;letter-spacing:1px;text-transform:uppercase;color:#eceaf4;">TXK.NØX <span class="sub2"><span style="font-size:18px;letter-spacing:1px;color:#b8b6c2;">b2b</span> CRSH</span></div>
+            <div style="padding-top:6px;font-family:'Space Mono','Courier New',monospace;font-size:12px;line-height:1.5;letter-spacing:2px;color:#b8b6c2;">05:00 – 07:00</div>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+
+    <!-- Chiusura -->
+    <tr><td class="pad" style="padding:20px 24px 0;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="foot" align="left" style="font-family:'Space Mono','Courier New',monospace;font-size:11px;line-height:1.6;letter-spacing:2px;text-transform:uppercase;color:#b8b6c2;">No photo / No video</td>
+          <td class="foot" align="right" style="font-family:'Space Mono','Courier New',monospace;font-size:11px;line-height:1.6;letter-spacing:2px;text-transform:uppercase;color:#b8b6c2;">Non inoltrare questo invito</td>
+        </tr>
+      </table>
+    </td></tr>
+
+    <!-- Disiscrizione: obbligatoria nelle mail di massa. Il servizio di invio sostituisce il segnaposto con il suo link. -->
+    <tr><td class="pad" align="center" style="padding:28px 24px 40px;font-family:'IBM Plex Sans','Helvetica Neue',Arial,sans-serif;font-size:12px;line-height:1.6;color:#8c8a96;">
+      Ricevi questa mail perché hai partecipato a un evento DLBP.<br>
+      Non vuoi più ricevere inviti? <a href="{{UNSUBSCRIBE_URL}}" style="color:#b8b6c2;">Annulla l'iscrizione</a>
+    </td></tr>
+
+  </table>
+
+</td></tr>
+</table>
+
+</body>
+</html>

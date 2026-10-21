@@ -1,0 +1,1171 @@
+Subject: [PROVA 5 =?utf-8?q?=C2=B7_versione_animata_web=5D_DLBP_=C2=B7?=
+ Private event =?utf-8?q?=C2=B7?= Sab 17/10
+To: alaeddine.khadimou@gmail.com
+X-Unsent: 1
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+ boundary="===============0955717884630203982=="
+
+--===============0955717884630203982==
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+
+DLBP · Private event · Sabato 17/10 · 23:00 - 07:00 · Invito riservato.
+
+--===============0955717884630203982==
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+
+<!doctype html>
+<html lang=3D"it">
+<head>
+<meta charset=3D"utf-8">
+<meta name=3D"viewport" content=3D"width=3Ddevice-width,initial-scale=3D1">
+<title>DLBP =C2=B7 Serata privata =C2=B7 SAB 17/10</title>
+<link rel=3D"preconnect" href=3D"https://fonts.googleapis.com">
+<link rel=3D"preconnect" href=3D"https://fonts.gstatic.com" crossorigin>
+<link rel=3D"stylesheet" href=3D"https://fonts.googleapis.com/css2?family=3DL=
+eague+Gothic&family=3DIBM+Plex+Sans:wght@300;400;500&family=3DSpace+Mono:wght=
+@400;700&display=3Dswap">
+<style>
+/* Il colore lo gestisce lo sfondo (come sul sito): parte da Love e cambia og=
+ni 3 glitch.
+   ?mood=3Ddrink | love | breathe | peace nell'indirizzo sceglie il colore di=
+ partenza. */
+:root {
+  --bg: #050508; --ink: #eceaf4; --ink-2: rgba(236,234,244,.9); --ink-3: rgba=
+(236,234,244,.78); --line: rgba(236,234,244,.12);
+  --mood: #8a2c80; --mood-deep: #250a24; --on-mood: #eceaf4;
+  --mood-text: color-mix(in srgb, var(--mood) 70%, #fff);
+  --f-display: 'League Gothic','Oswald','Arial Narrow',Impact,sans-serif;
+  --f-body: 'IBM Plex Sans','Helvetica Neue',Arial,sans-serif;
+  --f-mono: 'Space Mono',ui-monospace,Menlo,monospace;
+}
+* { box-sizing: border-box; }
+html { background: #000; overflow-x: clip; }
+body { margin: 0; background: #000; color: var(--ink); font: 300 16px/1.6 var=
+(--f-body); -webkit-font-smoothing: antialiased; }
+.mail { max-width: 600px; margin: 0 auto; background: var(--bg); padding-bott=
+om: 32px; }
+
+/* testata con lo sfondo animato */
+.stage { position: relative; overflow: hidden; width: 100vw; margin-left: cal=
+c(50% - 50vw);  /* a tutta larghezza: esce dai bordi della colonna */ backgro=
+und: radial-gradient(80% 70% at 62% 40%, color-mix(in srgb, var(--mood-deep) =
+45%, #000) 0%, #000 75%); }
+.stage::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0=
+; height: 56px; z-index: 1; background: linear-gradient(to bottom, transparen=
+t, var(--bg)); pointer-events: none; }
+.foot { margin: 20px 24px 0; padding: 18px 0 8px; border-top: 1px solid var(-=
+-line); display: flex; flex-wrap: wrap; justify-content: space-between; gap: =
+6px 16px; font: 400 11px/1.6 var(--f-mono); letter-spacing: .16em; text-trans=
+form: uppercase; color: var(--ink-3); }
+.hero { position: relative; z-index: 2; min-height: 260px; display: grid; pla=
+ce-items: center; text-align: center; padding: 32px 24px; }
+.site-background { position: absolute; inset: 0; z-index: 0; overflow: hidden=
+; pointer-events: none; }
+.site-background canvas { display: block; width: 100%; height: 100%; opacity:=
+ 0; transition: opacity 1.2s ease; }
+.site-background.ready canvas { opacity: 1; }
+.hero-in { position: relative; z-index: 1; display: grid; gap: 18px; justify-=
+items: center; }
+.hero-in::before { content: ''; position: absolute; inset: -30% -20%; z-index=
+: -1; background: radial-gradient(closest-side, rgba(0,0,0,.7), rgba(0,0,0,0)=
+); }
+.logo { width: 96px; }
+.eyebrow { margin: 0; font: 400 11px/1.3 var(--f-mono); letter-spacing: .3em;=
+ text-transform: uppercase; white-space: nowrap; color: color-mix(in srgb, va=
+r(--mood) 70%, #fff); text-shadow: 0 0 8px #000, 0 0 18px #000; }
+h1 { margin: 0; padding-left: .08em; font: 400 clamp(40px, 11.5vw, 64px)/.95 =
+var(--f-display); text-transform: uppercase; letter-spacing: .08em; color: va=
+r(--ink); text-shadow: 0 0 .4em rgba(0,0,0,.7); }  /* piatto: l'effetto doppi=
+o si vede solo durante il glitch */
+/* glitch: titolo e logo scattano insieme all'elica, come sul sito */
+body.glitching h1 { transform: translateX(var(--gx, 0)); text-shadow: -.07em =
+0 var(--mood), .07em 0 rgba(255,255,255,.75), 0 0 .3em rgba(0,0,0,.6); }
+body.glitching .logo { transform: translateX(var(--gx, 0)); }
+
+.body { position: relative; z-index: 2; max-width: 600px; margin: 0 auto; pad=
+ding: 20px 24px 40px; display: grid; gap: 12px; text-shadow: 0 0 6px #000, 0 =
+0 14px #000, 0 0 28px #000; }
+.body::before { content: ''; position: absolute; top: 0; bottom: 24px; left: =
+calc(50% - 50vw); right: calc(50% - 50vw); z-index: -1; background: linear-gr=
+adient(to bottom, rgba(5,5,8,0) 0%, rgba(5,5,8,.72) 30%, rgba(5,5,8,.72) 85%,=
+ rgba(5,5,8,0) 100%); }
+.body p { margin: 0; color: var(--ink); font-weight: 400; font-size: 16px; }
+.body p b { color: #fff; font-weight: 600; }
+
+/* dettagli: due colonne, i DJ in griglia 2x2 */
+.rows { margin: 8px 24px 0; border-top: 1px solid var(--line); display: grid;=
+ grid-template-columns: 1fr 1fr; column-gap: 24px; }
+.cell { display: grid; gap: 10px; align-content: start; padding: 20px 0; bord=
+er-bottom: 1px solid var(--line); }
+.cell.wide { grid-column: 1 / -1; }
+.label { font: 400 11px/1.4 var(--f-mono); letter-spacing: .2em; text-transfo=
+rm: uppercase; color: var(--mood-text); }
+.val { font: 400 34px/1 var(--f-display); text-transform: uppercase; letter-s=
+pacing: .03em; color: var(--ink); }
+.val small { display: block; margin-top: 6px; font: 400 12px/1.5 var(--f-mono=
+); letter-spacing: .14em; color: var(--ink-3); }
+.pay { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+.note { margin: 0; font: 400 14px/1.5 var(--f-body); color: var(--ink); }
+.djs { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 16px; }
+.btn {
+  position: relative; overflow: hidden; display: inline-flex; align-items: ce=
+nter; justify-content: center;
+  height: 48px; padding: 0 24px; border: 1px solid var(--mood); background: v=
+ar(--mood); color: var(--on-mood);
+  font: 700 12px/1 var(--f-mono); letter-spacing: .2em; text-transform: upper=
+case; text-decoration: none; border-radius: 0;
+}
+.btn::after { content: ''; position: absolute; top: 0; bottom: 0; width: 40%;=
+ left: -60%; background: linear-gradient(90deg, transparent, rgba(255,255,255=
+,.85), transparent); transform: skewX(-20deg); animation: glint 4.5s ease-in-=
+out infinite; }
+@keyframes glint { 0%, 70% { left: -60%; } 100% { left: 130%; } }
+
+.confirm { padding: 20px 24px 4px; display: grid; gap: 14px; justify-items: s=
+tart; }
+.confirm p { margin: 0; color: var(--ink-2); font-size: 15px; }
+@media (max-width: 380px) { .val { font-size: 30px; } .btn { padding: 0 16px;=
+ letter-spacing: .14em; } }
+@media (prefers-reduced-motion: reduce) { .btn::after { animation: none; disp=
+lay: none; } }
+</style>
+</head>
+<body>
+<main class=3D"mail">
+
+  <div class=3D"stage">
+  <!-- Sfondo animato: elica di DNA cromata, come dlbp.art (serve internet pe=
+r caricare Three.js).
+       Copre testata e ringraziamento, fino all'inizio delle informazioni. -->
+  <div class=3D"site-background" aria-hidden=3D"true" data-dim=3D"0.7"></div>
+  <header class=3D"hero">
+    <div class=3D"hero-in">
+      <img class=3D"logo" src=3D"data:image/png;base64,iVBORw0KGgoAAAANSUhEUg=
+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
+CC" alt=3D"dlbp">
+      <h1>Private event</h1>
+      <p class=3D"eyebrow">Solo su invito =C2=B7 17/10</p>
+    </div>
+  </header>
+
+  <section class=3D"body">
+    <p>Ci sei stato fin dall'inizio, e DLBP =C3=A8 cresciuto grazie a chi, co=
+me te, =C3=A8 venuto, ha ballato e ha portato i suoi amici.</p>
+    <p><b>Questa serata =C3=A8 per te.</b> Un modo per ringraziarti, insieme =
+a chi ha reso possibile tutto questo.</p>
+  </section>
+  </div>
+
+  <section class=3D"rows">
+    <div class=3D"cell">
+      <span class=3D"label">Come partecipare</span>
+      <span class=3D"note">Iscriviti dal sito con PARTECIPA e ricevi il QR vi=
+a mail. <b style=3D"color:#fff;font-weight:600">Puoi venire con i tuoi amici:=
+ basta che si iscrivano anche loro sul sito.</b></span>
+    </div>
+    <div class=3D"cell">
+      <span class=3D"label">Iscrizione</span>
+      <!-- DA SISTEMARE: sostituisci ID_EVENTO con l'ID dell'evento del 17/10=
+ (si vede nell'indirizzo di event.html?id=3D...) -->
+      <span><a class=3D"btn" href=3D"https://dlbp.art/event.html?id=3DID_EVEN=
+TO">Partecipa</a></span>
+    </div>
+    <div class=3D"cell wide">
+      <span class=3D"label">Dj =C2=B7 2 ore a testa</span>
+      <span class=3D"val djs">
+        <span>Radio Flare<small>23:00 =E2=80=93 01:00</small></span>
+        <span>R=C5=8Dnin<small>01:00 =E2=80=93 03:00</small></span>
+        <span>Mmell<small>03:00 =E2=80=93 05:00</small></span>
+        <span>TXK.N=C3=98X<small>05:00 =E2=80=93 07:00</small></span>
+      </span>
+    </div>
+    <div class=3D"cell">
+      <span class=3D"label">Quando</span>
+      <span class=3D"val">Sab 17/10<small>23:00 =E2=80=93 07:00</small></span>
+    </div>
+    <div class=3D"cell">
+      <span class=3D"label">Dove</span>
+      <span><a class=3D"btn" href=3D"https://maps.app.goo.gl/gzYQZ6wSHUbq9zLp=
+9">Apri la mappa</a></span>
+    </div>
+  </section>
+
+
+  <footer class=3D"foot">
+    <span>No photo / No video</span>
+    <span>Non inoltrare questo invito</span>
+  </footer>
+</main>
+<script type=3D"module">
+// Sfondo del sito: elica di DNA in metallo liquido (Three.js) con glitch a s=
+catti.
+// Si attiva su ogni elemento .site-background della pagina. Ogni parola del =
+motto ha il suo colore
+// da luci di club; il colore cambia da solo ogni 5 secondi, seguendo ORDER (=
+l'arco della serata).
+// ?mood=3D<colore> o ?mood=3D<parola> nell'indirizzo sceglie il colore di pa=
+rtenza; il colore
+// raggiunto resta per tutta la visita, anche cambiando pagina.
+// Il colore arriva al CSS come --mood e --mood-deep su <html>.
+// Con data-lite sull'elemento (scanner) gira in versione leggera. Sugli sche=
+rmi a 120 Hz o pi=C3=B9
+// disegna al massimo circa 60 fotogrammi al secondo, per consumare meno batt=
+eria.
+// Con data-tap (pagine pubbliche) il cursore =C3=A8 una croce su tutta la pa=
+gina tranne link, bottoni e campi
+// (css/identity.css) e un clic dove c'=C3=A8 la croce fa partire un glitch, =
+come nell'artifact "Cromo e Colore".
+// Carica anche no-zoom.js (niente ingrandimento su telefono), perch=C3=A9 qu=
+esto file c'=C3=A8 in ogni pagina.
+
+
+const THREE_URL =3D 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/thr=
+ee.min.js';
+
+export const MOODS =3D {
+    strobo:   { word: 'drink',   hex: 0xff2a3c, deep: 0x4d0712 }, // rosso st=
+robo
+    magenta:  { word: 'love',    hex: 0x8a2c80, deep: 0x250a24 }, // bordeaux=
+ violaceo
+    breathe:  { word: 'breathe', hex: 0x1fa39a, deep: 0x062f35 }, // petrolio
+    ghiaccio: { word: 'peace',   hex: 0xcfe6ff, deep: 0x34506e }  // ghiaccio=
+, luce del mattino
+};
+const DEFAULT_MOOD =3D 'magenta';
+const ORDER =3D ['strobo', 'magenta', 'breathe', 'ghiaccio'];
+const COLOR_EVERY_MS =3D 5000; // cambio colore ogni 5 secondi (sul sito: ogn=
+i 3 glitch)
+
+function saveMood(mood) {
+    try { sessionStorage.setItem('dlbp-mood', mood); } catch (e) { /* session=
+Storage non disponibile */ }
+}
+
+function readMood() {
+    const param =3D new URLSearchParams(location.search).get('mood');
+    // accetta sia un colore (?mood=3Dmagenta) sia una parola del motto (?moo=
+d=3Ddrink =E2=86=92 il suo primo colore)
+    const fromUrl =3D MOODS[param] ? param : ORDER.find((id) =3D> MOODS[id].w=
+ord =3D=3D=3D param);
+    if (fromUrl) {
+        saveMood(fromUrl);
+        return fromUrl;
+    }
+    try {
+        const saved =3D sessionStorage.getItem('dlbp-mood');
+        if (MOODS[saved]) return saved;
+    } catch (e) { /* sessionStorage non disponibile */ }
+    return DEFAULT_MOOD;
+}
+
+const cssHex =3D (n) =3D> '#' + n.toString(16).padStart(6, '0');
+
+// luminanza relativa (WCAG) di un colore 0xRRGGBB
+function luminance(n) {
+    const lin =3D (c) =3D> { c /=3D 255; return c <=3D 0.03928 ? c / 12.92 : =
+Math.pow((c + 0.055) / 1.055, 2.4); };
+    return 0.2126 * lin((n >> 16) & 255) + 0.7152 * lin((n >> 8) & 255) + 0.0=
+722 * lin(n & 255);
+}
+
+function setCssMood(m) {
+    const root =3D document.documentElement;
+    root.dataset.mood =3D m;
+    root.style.setProperty('--mood', cssHex(MOODS[m].hex));
+    root.style.setProperty('--mood-deep', cssHex(MOODS[m].deep));
+    // testo dei bottoni pieni: chiaro sui colori scuri, scuro su quelli chia=
+ri
+    root.style.setProperty('--on-mood', luminance(MOODS[m].hex) < 0.18 ? '#f3=
+f2ee' : '#050508');
+}
+
+const state =3D { mood: readMood(), glitch: 0, power: 0, seed: 0, lastSeed: 0=
+, burstEnd: 0, nextBurst: 2500, bursts: 0, pending: null, swapAt: 0 };
+setCssMood(state.mood);
+
+const reduce =3D window.matchMedia('(prefers-reduced-motion: reduce)').matche=
+s;
+
+function loadThree() {
+    return new Promise((resolve, reject) =3D> {
+        if (window.THREE) return resolve(window.THREE);
+        const s =3D document.createElement('script');
+        s.src =3D THREE_URL;
+        s.async =3D true;
+        s.onload =3D () =3D> resolve(window.THREE);
+        s.onerror =3D reject;
+        document.head.appendChild(s);
+    });
+}
+
+const ENV_VERT =3D 'varying vec3 vDir; void main(){ vDir =3D normalize(positi=
+on); gl_Position =3D projectionMatrix * modelViewMatrix * vec4(position, 1.0)=
+; }';
+// "Studio" nero con strisce di luce bianca e la luce del motto dal basso: =
+=C3=A8 quello che il cromo riflette
+const ENV_FRAG =3D `
+uniform vec3 uMood; varying vec3 vDir;
+float band(float x, float c, float w){ return 1.0 - smoothstep(0.0, w, abs(x =
+- c)); }
+void main(){
+  vec3 d =3D normalize(vDir);
+  vec3 c =3D vec3(0.003);
+  c +=3D vec3(7.0) * smoothstep(0.88, 0.97, d.y);
+  c +=3D vec3(3.0) * band(d.y, 0.38, 0.045);
+  c +=3D vec3(3.5) * band(d.x, 0.78, 0.05) * step(-0.25, d.y);
+  c +=3D vec3(1.6) * band(d.x, -0.72, 0.035) * step(0.05, d.y);
+  c +=3D uMood * 5.0 * smoothstep(-0.05, -0.85, d.y);
+  c +=3D uMood * 2.5 * band(d.y, -0.04, 0.12);
+  c +=3D uMood * 1.8 * smoothstep(0.1, 1.0, -d.z) * smoothstep(-0.4, 0.4, d.x=
+);
+  gl_FragColor =3D linearToOutputTexel(vec4(c, 1.0));
+}`;
+
+const BG_VERT =3D 'varying vec2 vUv; void main(){ vUv =3D uv; gl_Position =3D=
+ projectionMatrix * modelViewMatrix * vec4(position, 1.0); }';
+// Sfumatura come nei flyer: il colore della serata sale verso il nero
+const BG_FRAG =3D `
+uniform vec3 uMood; uniform vec3 uDeep; uniform vec2 uGlow; uniform float uAs=
+pect; uniform float uRadius; varying vec2 vUv;
+void main(){
+  // distanza misurata in altezze di schermo, cos=C3=AC il bagliore resta rot=
+ondo su ogni formato
+  float d =3D smoothstep(uRadius, 0.0, length((vUv - uGlow) * vec2(uAspect, 0=
+.8)));
+  vec3 c =3D mix(vec3(0.0), uDeep * 0.55, smoothstep(0.0, 0.8, d));
+  c +=3D uMood * 0.22 * pow(d, 3.0);
+  gl_FragColor =3D linearToOutputTexel(vec4(c, 1.0));
+}`;
+
+const POST_VERT =3D 'varying vec2 vUv; void main(){ vUv =3D uv; gl_Position =
+=3D vec4(position.xy, 0.0, 1.0); }';
+// Passaggio finale: separazione RGB, righe strappate, blocchi, righe del mon=
+itor, grana
+const POST_FRAG =3D `
+uniform sampler2D tDiffuse; uniform float uTime; uniform float uGlitch; unifo=
+rm float uSeed;
+uniform vec2 uRes; uniform vec3 uMood; uniform float uDim;
+varying vec2 vUv;
+float rnd(vec2 p){ return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.54=
+53); }
+void main(){
+  vec2 uv =3D vUv; float g =3D uGlitch;
+  float rows =3D 10.0 + floor(rnd(vec2(uSeed, 3.1)) * 50.0);
+  float sl =3D floor(uv.y * rows); float r =3D rnd(vec2(sl, uSeed));
+  uv.x +=3D step(1.0 - 0.5 * g, r) * (rnd(vec2(sl, uSeed + 7.0)) - 0.5) * 0.2=
+8 * g;
+  vec2 bl =3D floor(vUv * vec2(9.0, 20.0) + uSeed);
+  float b =3D rnd(bl);
+  uv +=3D step(1.0 - 0.14 * g, b) * (vec2(rnd(bl + 1.3), rnd(bl + 2.7)) - 0.5=
+) * 0.14;
+  float cr =3D rnd(vec2(floor(vUv.x * 36.0), uSeed + 11.0));
+  if (cr > 1.0 - 0.12 * g) uv.y =3D floor(uv.y * 5.0) / 5.0 + 0.1;
+  vec2 fc =3D vUv - 0.5;
+  vec2 ca =3D fc * (0.006 + 0.03 * g) + vec2(0.02 * g * (r - 0.5), 0.0);
+  vec3 col =3D vec3(texture2D(tDiffuse, uv + ca).r, texture2D(tDiffuse, uv).g=
+, texture2D(tDiffuse, uv - ca).b);
+  col =3D mix(col, uMood * (0.55 + 0.7 * col.g), step(1.0 - 0.06 * g, rnd(bl =
++ 9.1)) * 0.9);
+  col =3D mix(col, 1.0 - col, step(1.0 - 0.03 * g, rnd(bl + 4.4)));
+  col *=3D 0.92 + 0.08 * sin(vUv.y * uRes.y * 1.5708);
+  col +=3D (rnd(vUv * uRes + fract(uTime * 0.37)) - 0.5) * (0.04 + 0.1 * g);
+  float roll =3D fract(uTime * 0.06);
+  col +=3D uMood * 0.18 * (1.0 - smoothstep(0.0, 0.003, abs(vUv.y - roll)));
+  col *=3D smoothstep(1.05, 0.3, length(fc * vec2(1.0, 1.15)) * 1.25);
+  col *=3D uDim;
+  gl_FragColor =3D vec4(col, 1.0);
+}`;
+
+function createView(THREE, host) {
+    const lite =3D host.hasAttribute('data-lite');
+    const dim =3D parseFloat(host.dataset.dim || '1');
+    const canvas =3D document.createElement('canvas');
+    host.appendChild(canvas);
+
+    let renderer;
+    try {
+        renderer =3D new THREE.WebGLRenderer({ canvas, antialias: false, powe=
+rPreference: lite ? 'low-power' : 'high-performance' });
+    } catch (e) {
+        canvas.remove();
+        return null;
+    }
+    const dpr =3D lite ? 1 : Math.min(window.devicePixelRatio || 1, 2);
+    renderer.setPixelRatio(dpr);
+    renderer.toneMapping =3D THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure =3D 1.05;
+
+    const linear =3D (hex) =3D> new THREE.Color(hex).convertSRGBToLinear();
+    const mood =3D MOODS[state.mood];
+    const timeU =3D { value: 0 };
+    const scene =3D new THREE.Scene();
+    const camera =3D new THREE.PerspectiveCamera(34, 1, 0.1, 100);
+
+    // un riflesso gi=C3=A0 pronto per ogni colore, cos=C3=AC il cambio =C3=
+=A8 istantaneo
+    const pmrem =3D new THREE.PMREMGenerator(renderer);
+    const envUniforms =3D { uMood: { value: new THREE.Color() } };
+    const envScene =3D new THREE.Scene();
+    envScene.add(new THREE.Mesh(new THREE.SphereGeometry(10, 64, 32), new THR=
+EE.ShaderMaterial({
+        side: THREE.BackSide, vertexShader: ENV_VERT, fragmentShader: ENV_FRA=
+G, uniforms: envUniforms
+    })));
+    const envs =3D {};
+    ORDER.forEach((m) =3D> {
+        envUniforms.uMood.value.copy(linear(MOODS[m].hex));
+        envs[m] =3D pmrem.fromScene(envScene, 0.02).texture;
+    });
+    scene.environment =3D envs[state.mood];
+
+    const bgMat =3D new THREE.ShaderMaterial({
+        depthWrite: false, toneMapped: false, vertexShader: BG_VERT, fragment=
+Shader: BG_FRAG,
+        uniforms: { uMood: { value: linear(mood.hex) }, uDeep: { value: linea=
+r(mood.deep) }, uGlow: { value: new THREE.Vector2(0.58, 0.4) }, uAspect: { va=
+lue: 1 }, uRadius: { value: 0.62 } }
+    });
+    // il pannello viene ridimensionato in resize() per coprire sempre tutto =
+lo schermo
+    const bg =3D new THREE.Mesh(new THREE.PlaneGeometry(1, 1), bgMat);
+    bg.position.z =3D -9;
+    scene.add(bg);
+
+    // superficie che ondeggia come metallo fuso
+    function liquid(mat, amount) {
+        mat.onBeforeCompile =3D (sh) =3D> {
+            sh.uniforms.uTime =3D timeU;
+            sh.vertexShader =3D 'uniform float uTime;\n' + sh.vertexShader.re=
+place('#include <begin_vertex>',
+                '#include <begin_vertex>\n' +
+                'vec3 wp =3D (modelMatrix * vec4(position, 1.0)).xyz;\n' +
+                'float w =3D sin(wp.y * 2.1 + uTime * 1.5) * 0.5 + sin(wp.x *=
+ 3.7 - wp.z * 2.9 + uTime * 1.1) * 0.35 + sin(wp.y * 6.5 - uTime * 2.4) * 0.1=
+8;\n' +
+                'transformed +=3D normal * w * ' + amount.toFixed(3) + ';');
+        };
+        return mat;
+    }
+
+    class HelixCurve extends THREE.Curve {
+        constructor(radius, height, turns, phase) { super(); this.r =3D radiu=
+s; this.h =3D height; this.t =3D turns; this.p =3D phase; }
+        getPoint(u, target =3D new THREE.Vector3()) {
+            const a =3D u * Math.PI * 2 * this.t + this.p;
+            return target.set(Math.cos(a) * this.r, (u - 0.5) * this.h, Math.=
+sin(a) * this.r);
+        }
+    }
+
+    const chrome =3D liquid(new THREE.MeshStandardMaterial({ color: 0xffffff,=
+ metalness: 1, roughness: 0.1 }), 0.08);
+    const chromeSolid =3D new THREE.MeshStandardMaterial({ color: 0xdedee6, m=
+etalness: 1, roughness: 0.16 });
+    const moodMat =3D new THREE.MeshStandardMaterial({ color: linear(mood.hex=
+), metalness: 0.55, roughness: 0.18, emissive: linear(mood.hex), emissiveInte=
+nsity: 0.45 });
+
+    const H =3D 18, R =3D 1.3, T =3D 2.8;
+    const dna =3D new THREE.Group();
+    [0, Math.PI].forEach((ph) =3D> {
+        dna.add(new THREE.Mesh(new THREE.TubeGeometry(new HelixCurve(R, H, T,=
+ ph), lite ? 240 : 520, 0.25, lite ? 14 : 28, false), chrome));
+    });
+    // coppie di basi: met=C3=A0 cromo, met=C3=A0 nel colore del motto
+    const up =3D new THREE.Vector3(0, 1, 0);
+    const N =3D Math.round(T * 11);
+    const cA =3D new HelixCurve(R, H, T, 0), cB =3D new HelixCurve(R, H, T, M=
+ath.PI);
+    const rungGeo =3D new THREE.CylinderGeometry(0.068, 0.068, 1, lite ? 8 : =
+16);
+    const knotGeo =3D new THREE.SphereGeometry(0.13, lite ? 10 : 20, lite ? 8=
+ : 14);
+    for (let i =3D 0; i < N; i++) {
+        const u =3D (i + 0.5) / N;
+        const a =3D cA.getPoint(u), b =3D cB.getPoint(u), mid =3D a.clone().l=
+erp(b, 0.5);
+        const flip =3D i % 2 =3D=3D=3D 0;
+        [[a, mid, flip ? chromeSolid : moodMat], [mid, b, flip ? moodMat : ch=
+romeSolid]].forEach(([from, to, mat]) =3D> {
+            const dir =3D to.clone().sub(from);
+            const cyl =3D new THREE.Mesh(rungGeo, mat);
+            cyl.scale.y =3D dir.length();
+            cyl.position.copy(from).addScaledVector(dir, 0.5);
+            cyl.quaternion.setFromUnitVectors(up, dir.normalize());
+            dna.add(cyl);
+        });
+        const knot =3D new THREE.Mesh(knotGeo, chromeSolid);
+        knot.position.copy(mid);
+        dna.add(knot);
+    }
+    // gocce di metallo liquido attorno
+    const drops =3D [];
+    for (let d =3D 0; d < (lite ? 0 : 12); d++) {
+        const size =3D 0.05 + Math.random() * 0.17;
+        const drop =3D new THREE.Mesh(new THREE.SphereGeometry(size, 24, 16),=
+ liquid(new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 1, rough=
+ness: 0.08 }), size * 0.5));
+        drop.userData =3D { r: R + 0.6 + Math.random() * 1.8, y: (Math.random=
+() - 0.5) * H * 0.6, a: Math.random() * Math.PI * 2, v: 0.12 + Math.random() =
+* 0.25 };
+        drops.push(drop);
+        dna.add(drop);
+    }
+    const holder =3D new THREE.Group();
+    holder.add(dna);
+    scene.add(holder);
+
+    // polvere di dati
+    const count =3D lite ? 250 : 700;
+    const pos =3D new Float32Array(count * 3);
+    for (let p =3D 0; p < count; p++) {
+        const rr =3D 1.5 + Math.random() * 7, aa =3D Math.random() * Math.PI =
+* 2;
+        pos[p * 3] =3D Math.cos(aa) * rr; pos[p * 3 + 1] =3D (Math.random() -=
+ 0.5) * 16; pos[p * 3 + 2] =3D Math.sin(aa) * rr - 1.5;
+    }
+    const dustGeo =3D new THREE.BufferGeometry();
+    dustGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    const dustMat =3D new THREE.PointsMaterial({ color: linear(mood.hex), siz=
+e: 0.035, transparent: true, opacity: 0.75, depthWrite: false });
+    const dust =3D new THREE.Points(dustGeo, dustMat);
+    const dust2 =3D new THREE.Points(dustGeo, new THREE.PointsMaterial({ colo=
+r: 0xffffff, size: 0.022, transparent: true, opacity: 0.5, depthWrite: false =
+}));
+    dust2.rotation.y =3D 1.7;
+    scene.add(dust, dust2);
+
+    const RT =3D renderer.capabilities.isWebGL2 && THREE.WebGLMultisampleRend=
+erTarget && !lite ? THREE.WebGLMultisampleRenderTarget : THREE.WebGLRenderTar=
+get;
+    const rt =3D new RT(4, 4);
+    rt.texture.encoding =3D THREE.sRGBEncoding;
+    const post =3D new THREE.ShaderMaterial({
+        vertexShader: POST_VERT, fragmentShader: POST_FRAG, depthTest: false,=
+ depthWrite: false,
+        uniforms: {
+            tDiffuse: { value: rt.texture }, uTime: { value: 0 }, uGlitch: { =
+value: 0 }, uSeed: { value: 0 },
+            uRes: { value: new THREE.Vector2(4, 4) }, uMood: { value: new THR=
+EE.Color(mood.hex) }, uDim: { value: dim }
+        }
+    });
+    const postScene =3D new THREE.Scene();
+    postScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), post));
+    const postCam =3D new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+
+    // schermo orizzontale: elica in diagonale come nei flyer; schermo vertic=
+ale: quasi in piedi
+    function resize() {
+        const w =3D host.clientWidth, h =3D host.clientHeight;
+        if (!w || !h) return;
+        renderer.setSize(w, h, false);
+        rt.setSize(Math.round(w * dpr), Math.round(h * dpr));
+        post.uniforms.uRes.value.set(w * dpr, h * dpr);
+        camera.aspect =3D w / h;
+        const landscape =3D w > h;
+        holder.rotation.z =3D landscape ? -1.0 : -0.4;
+        holder.position.x =3D landscape ? 1.2 : 0.3;
+        camera.position.set(0, 0, landscape ? 12 : 16.5);
+        camera.updateProjectionMatrix();
+        const dist =3D camera.position.z - bg.position.z;
+        const viewH =3D 2 * dist * Math.tan(THREE.MathUtils.degToRad(camera.f=
+ov / 2));
+        bg.scale.set(viewH * camera.aspect * 1.05, viewH * 1.05, 1);
+        bgMat.uniforms.uAspect.value =3D camera.aspect;
+        bgMat.uniforms.uRadius.value =3D landscape ? 0.9 : 0.62;
+        bgMat.uniforms.uGlow.value.set(landscape ? 0.64 : 0.55, landscape ? 0=
+.4 : 0.42);
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    return {
+        setMood(m) {
+            const c =3D linear(MOODS[m].hex);
+            scene.environment =3D envs[m];
+            moodMat.color.copy(c);
+            moodMat.emissive.copy(c);
+            dustMat.color.copy(c);
+            bgMat.uniforms.uMood.value.copy(c);
+            bgMat.uniforms.uDeep.value.copy(linear(MOODS[m].deep));
+            post.uniforms.uMood.value.setHex(MOODS[m].hex);
+        },
+        render(t) {
+            const sec =3D t / 1000;
+            timeU.value =3D sec;
+            dna.rotation.y =3D sec * 0.3;
+            dna.scale.setScalar(1 + Math.sin(sec * 0.9) * 0.012);
+            drops.forEach((dr) =3D> {
+                const q =3D dr.userData, ang =3D q.a + sec * q.v;
+                dr.position.set(Math.cos(ang) * q.r, q.y + Math.sin(sec * 0.6=
+ + q.a) * 0.3, Math.sin(ang) * q.r);
+            });
+            dust.rotation.y =3D sec * 0.03;
+            dust2.rotation.y =3D 1.7 - sec * 0.02;
+            dust.position.y =3D (sec * 0.15) % 2;
+            const g =3D state.glitch;
+            dna.position.x =3D g > 0 ? (Math.random() - 0.5) * 0.25 * g : 0;
+            dna.position.y =3D g > 0 ? (Math.random() - 0.5) * 0.12 * g : 0;
+            post.uniforms.uTime.value =3D sec;
+            post.uniforms.uGlitch.value =3D g;
+            post.uniforms.uSeed.value =3D state.seed;
+            renderer.setRenderTarget(rt);
+            renderer.render(scene, camera);
+            renderer.setRenderTarget(null);
+            renderer.render(postScene, postCam);
+        }
+    };
+}
+
+// Glitch anche sui titoli: il CSS usa body.glitching e --gx
+function domGlitch(on) {
+    document.body.classList.toggle('glitching', on);
+    if (on) document.body.style.setProperty('--gx', ((Math.random() - 0.5) * =
+10).toFixed(1) + 'px');
+}
+
+// Sequenza di DNA che ogni tanto si decifra nella parola del motto (solo dov=
+e c'=C3=A8 #dna-seq)
+function startSequence(el) {
+    const BASES =3D 'ATCG', NOISE =3D '#/\\<>=E2=96=93=E2=96=91_=3D+*', LEN =
+=3D 26;
+    const seq =3D Array.from({ length: LEN }, () =3D> BASES[(Math.random() * =
+4) | 0]);
+    const t0 =3D performance.now();
+    function tick() {
+        seq.shift();
+        seq.push(BASES[(Math.random() * 4) | 0]);
+        const out =3D seq.slice();
+        const word =3D MOODS[state.mood].word.toUpperCase();
+        const cycle =3D (performance.now() - t0) % 7000;
+        if (cycle > 3800) {
+            const start =3D ((LEN - word.length) / 2) | 0;
+            const shown =3D Math.min(word.length, Math.floor((cycle - 3800) /=
+ 90));
+            for (let k =3D 0; k < word.length; k++) out[start + k] =3D k < sh=
+own ? word[k] : NOISE[(Math.random() * NOISE.length) | 0];
+            out[start - 1] =3D '=C2=B7';
+            out[start + word.length] =3D '=C2=B7';
+        }
+        if (state.glitch > 0.05) {
+            for (let n =3D 0; n < 6; n++) out[(Math.random() * LEN) | 0] =3D =
+NOISE[(Math.random() * NOISE.length) | 0];
+        }
+        el.textContent =3D out.join(' ');
+    }
+    tick();
+    if (!reduce) setInterval(() =3D> { if (!document.hidden) tick(); }, 110);
+}
+
+async function init() {
+    const hosts =3D document.querySelectorAll('.site-background');
+    const seqEl =3D document.getElementById('dna-seq');
+    if (seqEl) startSequence(seqEl);
+    if (!hosts.length) return;
+
+    let THREE;
+    try {
+        THREE =3D await loadThree();
+    } catch (e) {
+        return; // resta la sfumatura CSS
+    }
+    const views =3D [];
+    hosts.forEach((host) =3D> {
+        const view =3D createView(THREE, host);
+        if (view) {
+            views.push(view);
+            host.classList.add('ready');
+        }
+    });
+    if (!views.length) return;
+
+    if (reduce) {
+        views.forEach((v) =3D> v.render(2600));
+        return;
+    }
+
+    function applyMood(m) {
+        state.mood =3D m;
+        setCssMood(m);
+        saveMood(m);
+        views.forEach((v) =3D> v.setMood(m));
+    }
+
+    let running =3D false;
+    let lastDraw =3D 0;
+    function frame(t) {
+        if (document.hidden) { running =3D false; return; }
+        // Schermi a 120 Hz o pi=C3=B9: disegna un fotogramma s=C3=AC e uno n=
+o, cos=C3=AC restano almeno 60 al secondo
+        // (a 60 e 90 Hz non cambia nulla). Il movimento dipende da t: veloci=
+t=C3=A0, glitch e colori restano uguali.
+        if (t - lastDraw < 10) { requestAnimationFrame(frame); return; }
+        lastDraw =3D t;
+        // invito: il colore cambia ogni 5 secondi, con un colpo forte di gli=
+tch a met=C3=A0
+        if (!state.colorAt) state.colorAt =3D t + COLOR_EVERY_MS;
+        if (t >=3D state.colorAt) {
+            state.power =3D 1;
+            state.burstEnd =3D t + 460;
+            state.pending =3D ORDER[(ORDER.indexOf(state.mood) + 1) % ORDER.l=
+ength];
+            state.swapAt =3D t + 170;
+            state.colorAt =3D t + COLOR_EVERY_MS;
+            state.nextBurst =3D Math.max(state.nextBurst, t + 1500);
+        } else if (t > state.nextBurst) {
+            state.power =3D 0.3 + Math.random() * 0.7;
+            state.burstEnd =3D t + 90 + Math.random() * 340;
+            // a volte un secondo colpo subito dopo, come un segnale che salta
+            state.nextBurst =3D Math.random() < 0.3 ? t + 420 : t + 1800 + Ma=
+th.random() * 2000;
+        }
+        if (state.pending && t >=3D state.swapAt) {
+            applyMood(state.pending);
+            state.pending =3D null;
+        }
+        let g =3D 0;
+        if (t < state.burstEnd) {
+            g =3D state.power * (0.55 + 0.45 * Math.random());
+            if (t - state.lastSeed > 45) { state.seed =3D Math.random() * 100=
+; state.lastSeed =3D t; }
+        }
+        state.glitch =3D g;
+        domGlitch(g > 0.08);
+        views.forEach((v) =3D> v.render(t));
+        requestAnimationFrame(frame);
+    }
+    function start() {
+        if (running || document.hidden) return;
+        running =3D true;
+        requestAnimationFrame(frame);
+    }
+    document.addEventListener('visibilitychange', start);
+    start();
+
+    if ([...hosts].some((h) =3D> h.hasAttribute('data-tap'))) {
+        // clic dove il cursore =C3=A8 una croce: glitch breve, non conta per=
+ il cambio colore
+        document.addEventListener('click', (e) =3D> {
+            if (!(e.target instanceof Element) || getComputedStyle(e.target).=
+cursor !=3D=3D 'crosshair') return;
+            const sel =3D window.getSelection();
+            if (sel && !sel.isCollapsed) return;
+            state.power =3D 0.9;
+            state.burstEnd =3D performance.now() + 380;
+        });
+    }
+}
+
+// parte dopo il caricamento della pagina, cos=C3=AC non rallenta il resto
+if (document.readyState =3D=3D=3D 'complete') init();
+else window.addEventListener('load', init, { once: true });
+
+</script>
+</body>
+</html>
+
+--===============0955717884630203982==--
