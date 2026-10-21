@@ -28,15 +28,11 @@ export function startHeartSound({ bpm, gap, t0 }) {
     let on = readOn();
     let ctx = null, out = null, noise = null, next = 0;
 
-    // Timbro del colpo: tre prove da ascoltare con ?suono=A|B|C nell'indirizzo (B di partenza).
+    // Timbro del colpo (versione "B" scelta dal proprietario il 21/10/2026 fra tre prove).
     // tone: il tono basso che scende (Hz); harm: quanto si sente l'ottava sopra (aiuta gli altoparlanti piccoli);
-    // body: il "tonfo" di rumore filtrato, come il sangue che spinge (tenuto morbido: entra più piano del tono, così non suona come un battito di mani); lp: il passa-basso finale che rende tutto sordo.
-    const VOICES = {
-        A: { tone: [46, 30], harm: 0, attack: 0.022, decay: 0.22, body: { type: 'lowpass', f: 50, q: 0.5, amp: 0.2, decay: 0.15 }, lp: 110, gain: 1.8 },
-        B: { tone: [58, 36], harm: 0.1, attack: 0.016, decay: 0.18, body: { type: 'lowpass', f: 55, q: 0.5, amp: 0.28, decay: 0.14 }, lp: 150, gain: 1.35 },
-        C: { tone: [42, 34], harm: 0, attack: 0.027, decay: 0.14, body: { type: 'bandpass', f: 45, q: 1.2, amp: 0.9, decay: 0.17 }, lp: 115, gain: 1.6 }
-    };
-    const voice = VOICES[(new URLSearchParams(location.search).get('suono') || '').toUpperCase()] || VOICES.B;
+    // body: il "tonfo" di rumore filtrato, come il sangue che spinge (tenuto morbido: entra più piano del tono, così non suona
+    // come un battito di mani); lp: il passa-basso finale che rende tutto sordo; gain: volume rispetto a VOLUME.
+    const voice = { tone: [58, 36], harm: 0.1, attack: 0.016, decay: 0.18, body: { type: 'lowpass', f: 55, q: 0.5, amp: 0.28, decay: 0.14 }, lp: 150, gain: 1.35 };
 
     function setup() {
         if (ctx) return;
