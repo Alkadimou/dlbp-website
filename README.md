@@ -120,13 +120,13 @@ Un link con `?pr=<codice>` (per esempio `https://dlbp.art/?pr=mario`) collega l'
 ### In tutte le pagine
 - Menu AREA RISERVATA con i link ad Admin, Scanner e Area PR.
 - Footer con le icone social: per ora è attivo solo Instagram.
-- Sotto il copyright c'è il credito del modello 3D del DNA ("DNA 3D: Troy · CC BY 4.0"), che apre la pagina del modello su Sketchfab.
+- Nel footer c'è il credito del modello 3D del DNA, a destra su computer e sotto il copyright su tablet e telefono ("DNA 3D: Troy · CC BY 4.0"), che apre la pagina del modello su Sketchfab.
 - Su telefono la pagina non si ingrandisce (niente pizzico né doppio tocco) e scorre solo dall'alto in basso (il rimbalzo ai bordi resta): meta viewport, `touch-action` (su ogni elemento, così vale anche dentro le finestre) in `css/styles.css` e `js/core/no-zoom.js`.
 
 ## Aspetto
 
 Dal 27/09/2026 l'identità è "cromo nero, colore vivo": nero, DNA in cromo e un solo colore del motto alla volta.
-Dal 21/10/2026 lo sfondo è il filamento di DNA "DNA Procedural EEVEE" di Troy (Sketchfab, licenza CC BY 4.0, file `assets/dna.glb`) che gira piano su sé stesso, senza glitch, al posto dell'elica disegnata dal codice. La licenza chiede di citare l'autore: il credito "DNA 3D: Troy · CC BY 4.0" è sotto il copyright nel footer di ogni pagina e non va tolto.
+Dal 21/10/2026 lo sfondo è il filamento di DNA "DNA Procedural EEVEE" di Troy (Sketchfab, licenza CC BY 4.0, file `assets/dna.glb`) che gira piano su sé stesso, senza glitch, al posto dell'elica disegnata dal codice. La licenza chiede di citare l'autore: il credito "DNA 3D: Troy · CC BY 4.0" è nel footer di ogni pagina e non va tolto.
 
 **I 4 colori**, uno per parola del motto:
 
