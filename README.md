@@ -25,8 +25,8 @@ Un link con `?pr=<codice>` (per esempio `https://dlbp.art/?pr=mario`) collega l'
 ## Funzionalità
 
 ### Home (`index.html`)
-- Sfondo con l'elica di DNA in cromo e il motto DRINK · LOVE · BREATHE · PEACE (vedi [Aspetto](#aspetto)).
-- Sotto il motto c'è una sequenza di DNA che ogni tanto si decifra nella parola del colore attuale.
+- Sfondo con il filamento di DNA in cromo e il motto DRINK · LOVE · BREATHE · PEACE (vedi [Aspetto](#aspetto)).
+- Sotto il motto c'è una sequenza di DNA che si decifra nella parola del colore attuale a ogni cambio di colore.
 - Nessun bottone sopra lo sfondo: agli eventi si arriva dal menu EVENTI (il bottone PROSSIMO EVENTO è stato tolto il 21/10/2026).
 - Un link d'invito `?pr=<codice>` aperto sulla home ricorda il codice per tutta la visita, così l'iscrizione resta collegata al PR anche passando dal menu.
 - Alla prima visita della sessione compare per circa 1,5 secondi una schermata con il logo.
@@ -119,17 +119,19 @@ Un link con `?pr=<codice>` (per esempio `https://dlbp.art/?pr=mario`) collega l'
 ### In tutte le pagine
 - Menu AREA RISERVATA con i link ad Admin, Scanner e Area PR.
 - Footer con le icone social: per ora è attivo solo Instagram.
+- Sotto il copyright c'è il credito del modello 3D del DNA ("DNA 3D: Troy · CC BY 4.0"), che apre la pagina del modello su Sketchfab.
 - Su telefono la pagina non si ingrandisce (niente pizzico né doppio tocco) e scorre solo dall'alto in basso (il rimbalzo ai bordi resta): meta viewport, `touch-action` (su ogni elemento, così vale anche dentro le finestre) in `css/styles.css` e `js/core/no-zoom.js`.
 
 ## Aspetto
 
-Dal 27/09/2026 l'identità è "cromo nero, colore vivo": nero, un'elica di DNA in cromo liquido con glitch a scatti e un solo colore del motto alla volta.
+Dal 27/09/2026 l'identità è "cromo nero, colore vivo": nero, DNA in cromo e un solo colore del motto alla volta.
+Dal 21/10/2026 lo sfondo è il filamento di DNA "DNA Procedural EEVEE" di Troy (Sketchfab, licenza CC BY 4.0, file `assets/dna.glb`) che gira piano su sé stesso, senza glitch, al posto dell'elica disegnata dal codice. La licenza chiede di citare l'autore: il credito "DNA 3D: Troy · CC BY 4.0" è sotto il copyright nel footer di ogni pagina e non va tolto.
 
 **I 4 colori**, uno per parola del motto:
 
 | Parola | Nome nel codice | Colore |
 |---|---|---|
-| Drink | `strobo` | `#ff2a3c` |
+| Drink | `brace` | `#ff4a1c` |
 | Love | `magenta` | `#8a2c80` |
 | Breathe | `breathe` | `#1fa39a` |
 | Peace | `ghiaccio` | `#cfe6ff` |
@@ -140,21 +142,23 @@ Dal 27/09/2026 l'identità è "cromo nero, colore vivo": nero, un'elica di DNA i
 
 **Come cambia il colore:**
 - Il sito parte da Breathe.
-- Il colore cambia da solo ogni 3 glitch (`CYCLE_EVERY`, circa ogni 7 secondi), nell'ordine di `ORDER`.
+- Lo sfondo ha un battito "tum-tum" a 40 BPM (`BPM`) che fa pulsare la luce.
+- Il colore cambia da solo ogni 3 battiti (`CYCLE_BEATS`, circa ogni 4,5 secondi), nell'ordine di `ORDER`.
 - Il colore raggiunto resta per tutta la visita.
 - `?mood=<colore o parola>` nell'indirizzo sceglie il colore di partenza, per esempio `?mood=love`.
 
 **Attributi dello sfondo** (`<div class="site-background">`):
 - `data-dim`: sfondo più scuro;
 - `data-lite`: versione leggera, usata dallo scanner;
-- `data-tap`: pagine pubbliche. Il cursore è una croce su tutta la pagina (tranne link, bottoni e campi) e un clic dove c'è la croce fa partire un glitch.
+- `data-tap`: pagine pubbliche. Il cursore è una croce su tutta la pagina (tranne link, bottoni e campi) e un clic dove c'è la croce dà un battito forte.
 
 **Altro:**
-- Durante il glitch anche titoli e logo si spostano (`body.glitching`).
+- Il filamento arriva dopo il resto della pagina (circa 1,5 MB, compresso da GitHub Pages) e compare con una dissolvenza; prima si vedono solo la luce di fondo e la polvere.
+- Composizione (posizione, prolungamenti, tratto a sinistra) e camera sono quelle approvate nella prova del 21/10/2026: `POSE`, `EXTENSIONS` e `LEFT` in `background.js`.
 - Finestre (avvisi e conferme di `js/core/modal.js`, "Iscrizione completata"): pannello nero con bordo sottile e angoli vivi, senza sfocatura. Il bottone principale (OK, CONFERMA) è pieno nel colore della serata; ANNULLA è vuoto, con il bordo sottile.
 - Bottoni dell'area staff: ELIMINA ed ESCI sono vuoti con il bordo rosso, FILTRI è vuoto con il bordo sottile; solo i bottoni principali sono pieni nel colore della serata.
-- Sugli schermi a 120 Hz o più l'elica viene disegnata al massimo circa 60 volte al secondo.
-- Con l'opzione "riduci movimento" del telefono l'elica resta ferma.
+- Sugli schermi a 120 Hz o più lo sfondo viene disegnato al massimo circa 60 volte al secondo.
+- Con l'opzione "riduci movimento" del telefono il DNA resta fermo e il colore non cambia.
 - Caratteri:
   - League Gothic per titoli e nomi;
   - IBM Plex Sans per i testi;
@@ -196,7 +200,7 @@ robots.txt, sitemap.xml  indicazioni per Google
 css/
   styles.css             stili di base e componenti
   identity.css           identità "cromo nero, colore vivo": colori, caratteri, forme (si carica dopo styles.css)
-assets/                logo (logo.png, logo.jpg) e icone social (social-icons.svg)
+assets/                logo (logo.png, logo.jpg), icone social (social-icons.svg) e modello 3D del DNA (dna.glb)
   mail/                immagini usate nelle mail di invito (si caricano da dlbp.art/assets/mail/)
 js/
   form-version.json      versione del modulo di iscrizione (vedi "ricarica la pagina")
@@ -205,7 +209,7 @@ js/
     firebase-auth.js     login Firebase (solo pagine staff)
     staff-login.js       form di login dello staff e controllo del ruolo
     email.js             invio email con EmailJS e nomi dei template
-    background.js        sfondo 3D, colori del motto, glitch, cursore a croce
+    background.js        sfondo 3D (filamento di DNA), colori del motto, battito, cursore a croce
     dates.js             conversione delle date lette da Firestore
     modal.js             finestre di avviso e conferma
     html.js              escapeHtml, per mostrare in sicurezza i testi degli utenti
