@@ -105,11 +105,20 @@ service cloud.firestore {
     // Contacts for invitations: nobody can read or list them from the site.
     // The document ID is a random 20-character secret sent only in that person's
     // unsubscribe link, so whoever has the link can delete that one contact.
-    // The admin can only correct the name (firstName, lastName), together with the invite.
+    // The admin can only correct the name (firstName, lastName), together with the invite,
+    // and add a new contact (random 20-character ID, text fields only) together with its invite.
     match /contacts/{contactId} {
       allow delete: if contactId.size() == 20;
       allow update: if isAdmin()
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['firstName', 'lastName']);
+      allow create: if isAdmin()
+        && contactId.size() == 20
+        && request.resource.data.keys().hasAll(['firstName', 'lastName', 'email'])
+        && request.resource.data.keys().hasOnly(['firstName', 'lastName', 'email', 'phone', 'createdAt'])
+        && request.resource.data.firstName is string
+        && request.resource.data.lastName is string
+        && request.resource.data.email is string
+        && request.resource.data.email.matches('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$');
     }
 
     // Invitations: a copy of each contact with only name, surname and email (no phone),
