@@ -3,7 +3,7 @@
 // attorno alla scena: si vedono solo i loro riflessi colorati che scorrono su cromo, cuore e cellule. Il colore del
 // sito (--mood su <html>) e la parola sotto il motto seguono la luce che si riflette di più.
 // Modelli (CC BY 4.0, crediti nel footer): DNA "DNA Procedural EEVEE" di Troy (assets/dna.glb),
-// cuore "Anatomical Heart" di Mox3DModels (assets/heart-80k.glb, heart-30k.glb sui telefoni),
+// cuore "Anatomical Heart" di Mox3DModels (assets/heart-30k.glb),
 // cellula "Neutrophil" di Physio CG (assets/cellula-3k.glb, semplificata da cellula-8k.glb).
 // Il filamento si prepara in js/core/dna-worker.js, così il caricamento non blocca la pagina.
 // Si attiva su ogni elemento .site-background della pagina:
@@ -39,17 +39,19 @@ const FOLLOW_HOLD = 2000; // la luce che dà il colore al sito cambia solo se un
 const FOLLOW_FADE = 0.8;  // secondi della dissolvenza del colore del sito verso la nuova luce
 
 // Livelli di qualità, dal più bello al più leggero: ratio = pixel disegnati per ogni punto dello schermo (al massimo),
-// msaa = bordi lisciati, fps = fotogrammi al secondo. Si parte dal primo (telefoni dal secondo, scanner dal terzo);
-// se per 2 secondi i fotogrammi arrivano in ritardo si scende di un livello e non si risale più (vedi frame in init).
+// msaa = bordi lisciati, fps = fotogrammi al secondo. I computer partono dal primo (il più nitido), i telefoni dal terzo,
+// lo scanner dal quarto; se per 2 secondi i fotogrammi arrivano in ritardo si scende di un livello e non si risale più
+// (vedi frame in init).
 const QUALITY = [
-    { ratio: 1.5, msaa: true, fps: 60 },
+    { ratio: 2, msaa: true, fps: 60 },
+    { ratio: 1.5, msaa: false, fps: 60 },
     { ratio: 1.25, msaa: false, fps: 60 },
     { ratio: 1, msaa: false, fps: 60 },
     { ratio: 1, msaa: false, fps: 30 }
 ];
 const PHONE = Math.min(screen.width, screen.height) < 700;
 const SLOW = 1.3; // i fotogrammi sono "in ritardo" se arrivano in media il 30% più tardi del previsto
-const firstLevel = (host) => (host.hasAttribute('data-lite') ? 2 : PHONE ? 1 : 0);
+const firstLevel = (host) => (host.hasAttribute('data-lite') ? 3 : PHONE ? 2 : 0);
 
 const cssHex = (n) => '#' + n.toString(16).padStart(6, '0');
 
@@ -221,9 +223,9 @@ const FAR = {
     portrait: [[-0.6, -0.48, 70, 0.74], [0.68, 0.58, 95, 0.81], [-0.45, 0.8, 125, 0.88], [0.5, -0.7, 62, 0.61], [0.1, -0.88, 150, 0.94], [-0.82, 0.12, 160, 0.94], [0.86, -0.08, 130, 0.81]],
     landscape: [[-0.6, -0.55, 70, 0.74], [0.6, 0.6, 95, 0.81], [-0.38, 0.8, 125, 0.88], [0.68, -0.68, 62, 0.61], [0.15, -0.86, 150, 0.94], [-0.86, 0.2, 160, 0.94], [0.9, 0.05, 130, 0.81]]
 };
-// cuore: sui computer quello dettagliato (80 mila triangoli, più nitido), sui telefoni e sui dispositivi poco potenti
-// quello leggero (30 mila); cellula leggera (meno di 3 mila triangoli) su tutti i dispositivi
-const HEART_URL = asset(PHONE || (navigator.hardwareConcurrency || 8) <= 4 ? 'heart-30k.glb' : 'heart-80k.glb');
+// dal 22/10/2026 il cuore leggero (30 mila triangoli) e la cellula leggera (meno di 3 mila) su tutti i dispositivi;
+// sui computer la nitidezza arriva dai pixel (QUALITY)
+const HEART_URL = asset('heart-30k.glb');
 const CELL_URL = asset('cellula-3k.glb');
 
 // Scarica cuore e cellula (una volta sola per pagina), con il GLTFLoader di three r128
