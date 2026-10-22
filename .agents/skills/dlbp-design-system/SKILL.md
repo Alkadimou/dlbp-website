@@ -68,12 +68,12 @@ Chi cambia la palette la cambia in entrambi i file e avvisa il proprietario, che
 - **Tabelle:** nell'admin e nell'area PR stanno dentro `.table-responsive` e sui telefoni diventano schede. Ogni cella ha `data-label` con il nome della colonna.
 
 ## Sfondo e cursore
-- **Sfondo:** ogni pagina ha `<div class="site-background">` con il filamento di DNA in cromo (modello di Troy, CC BY 4.0, `assets/dna.glb`) che gira piano su sé stesso (Three.js), su fondo nero, con le quattro luci del motto che girano. In home al centro c'è il cuore in cromo che batte (Mox3DModels, CC BY 4.0) con sette cellule lontane (Physio CG, CC BY 4.0). **Niente glitch** dal 21/10/2026; niente zoom né bagliore sul battito dal 22/10/2026.
+- **Sfondo:** ogni pagina ha `<div class="site-background">` con il filamento di DNA in cromo (modello di Troy, CC BY 4.0, `assets/dna.glb`) che gira piano su sé stesso (Three.js), su fondo nero, con le quattro luci del motto che girano. In home ed eventi al centro c'è il cuore in cromo che batte (Mox3DModels, CC BY 4.0) con sette cellule lontane (Physio CG, CC BY 4.0). **Niente glitch** dal 21/10/2026; niente zoom né bagliore sul battito dal 22/10/2026.
 - **Suono:** sulle pagine pubbliche il battito si sente (`js/core/heart-sound.js`); il bottone `.sound-toggle` (quadrato nero in basso a destra, icona nel colore del sito quando è acceso) lo spegne.
-- **Crediti:** "DNA 3D: Troy · CC BY 4.0" nel footer di ogni pagina (`.credit-3d`), a destra su computer e sotto il copyright su telefono; in home, uno sotto l'altro, anche "Cellula 3D: Physio CG · CC BY 4.0" e "Cuore 3D: Mox3DModels · CC BY 4.0". Li chiedono le licenze, non vanno tolti.
+- **Crediti:** "DNA 3D: Troy · CC BY 4.0" nel footer di ogni pagina (`.credit-3d`), a destra su computer e sotto il copyright su telefono; in home ed eventi, uno sotto l'altro, anche "Cellula 3D: Physio CG · CC BY 4.0" e "Cuore 3D: Mox3DModels · CC BY 4.0". Li chiedono le licenze, non vanno tolti.
 - **Attributi dello sfondo:**
   - `data-dim="0.5"`: sfondo più scuro, per le pagine con molti contenuti;
-  - `data-heart`: cuore e cellule lontane, solo in home;
+  - `data-heart`: cuore e cellule lontane, in home ed eventi;
   - `data-lite`: versione leggera, usata dallo scanner (senza cuore);
   - `data-tap`: pagine pubbliche. Il cursore è una croce su tutta la pagina tranne link, bottoni e campi, e un clic dove c'è la croce dà un battito forte.
 - **Home:** `#dna-seq` è la sequenza di DNA che si decifra nella parola della luce che dà il colore al sito. Motto e sequenza hanno un'ombra nera forte a strati, perché stanno sopra il cuore.
