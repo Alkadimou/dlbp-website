@@ -1,14 +1,14 @@
 /* ==================================================
    IDENTITÀ "CROMO NERO, COLORE VIVO"
    Si carica dopo styles.css e ne sovrascrive colori, caratteri e forme.
-   Il colore della serata (--mood, --mood-deep, --on-mood) lo imposta js/core/background.js su <html>,
-   dove sono definiti i 4 colori del motto; qui sotto c'è solo quello di partenza (Breathe).
+   Il colore del sito (--mood, --mood-deep, --on-mood) lo imposta js/core/background.js su <html>,
+   seguendo la luce del motto che si riflette di più; qui sotto c'è solo quello di partenza (Breathe).
    ================================================== */
 :root {
     --mood: #1fa39a;
     --mood-deep: #062f35;
     --on-mood: #050508;
-    /* per i testi colorati su fondo nero: il colore della serata un po' schiarito */
+    /* per i testi colorati su fondo nero: il colore del sito un po' schiarito */
     --mood-text: color-mix(in srgb, var(--mood) 70%, #ffffff);
 
     --ink: #eceaf4;
@@ -30,8 +30,8 @@
     z-index: 0;
     overflow: hidden;
     pointer-events: none;
-    /* si vede finché lo sfondo 3D non è pronto, o se il telefono non supporta il 3D */
-    background: radial-gradient(80% 70% at 62% 60%, color-mix(in srgb, var(--mood-deep) 45%, #000) 0%, #000 75%);
+    /* fondo nero, come la scena 3D (dal 22/10/2026 niente bagliore): si vede finché lo sfondo non è pronto */
+    background: #000;
 }
 .site-background canvas {
     display: block;
@@ -97,9 +97,10 @@ body,
 
 .hero-tagline-center {
     font-family: 'Space Mono', monospace;
-    color: var(--ink);
+    color: #fff;
     letter-spacing: 0.4em;
-    text-shadow: 0 0 6px #000, 0 0 18px #000;
+    /* il motto sta al centro sopra il cuore: ombra nera a strati, così si legge su qualsiasi riflesso */
+    text-shadow: 0 0 2px #000, 0 0 4px #000, 0 0 8px #000, 0 0 14px #000, 0 0 24px rgba(0,0,0,.9), 0 0 40px rgba(0,0,0,.8);
 }
 .dna-seq {
     position: relative;
@@ -109,6 +110,7 @@ body,
     font-size: 0.6rem;
     letter-spacing: 0.22em;
     color: var(--mood-text);
+    text-shadow: 0 0 2px #000, 0 0 4px #000, 0 0 8px #000, 0 0 14px #000, 0 0 24px rgba(0,0,0,.9), 0 0 40px rgba(0,0,0,.8);
     white-space: nowrap;
     max-width: 92vw;
     overflow: hidden;
@@ -155,10 +157,10 @@ select,
 .event-card-item img { border-radius: 0 !important; }
 
 /* ---------- Stati ed avvisi ---------- */
-/* Etichette di stato (ISCRIZIONI APERTE, PROSSIMO EVENTO...): nel colore della serata */
+/* Etichette di stato (ISCRIZIONI APERTE, PROSSIMO EVENTO...): nel colore del sito */
 .status-open { color: var(--mood-text) !important; }
 
-/* Messaggio di conferma sotto i moduli: nel colore della serata, mai verde */
+/* Messaggio di conferma sotto i moduli: nel colore del sito, mai verde */
 .form-message.success {
     border-color: var(--mood);
     color: var(--mood-text);
@@ -174,7 +176,7 @@ select,
     text-transform: uppercase;
 }
 .alert p { color: rgba(236, 234, 244, 0.7); }
-/* Avviso non negativo (es. evento senza iscrizioni): bordo e titolo nel colore della serata */
+/* Avviso non negativo (es. evento senza iscrizioni): bordo e titolo nel colore del sito */
 .alert-mood {
     padding: 2rem;
     background: var(--panel);
@@ -276,7 +278,7 @@ select:focus,
     text-transform: uppercase;
     transition: filter 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
-/* bottone principale (OK, CONFERMA): pieno nel colore della serata, come .submit-btn */
+/* bottone principale (OK, CONFERMA): pieno nel colore del sito, come .submit-btn */
 .custom-modal .modal-close-btn.is-primary {
     background: var(--mood);
     border: 1px solid var(--mood);
@@ -341,13 +343,18 @@ select:focus,
 .sound-toggle[aria-pressed="true"] .sound-off,
 .sound-toggle[aria-pressed="false"] .sound-on { display: none; }
 
-/* ---------- Credito del modello 3D del DNA (licenza CC BY) ----------
+/* ---------- Crediti dei modelli 3D (licenze CC BY) ----------
    su computer nella colonna destra del footer (a sinistra il copyright, al centro le icone);
-   su tablet e telefoni sotto il copyright, centrato */
+   su tablet e telefoni sotto il copyright, centrati. In home sono tre (DNA, cellula, cuore), uno sotto l'altro,
+   così la colonna resta stretta e le icone restano al centro */
 .site-footer .credit-3d {
     grid-column: 3;
     grid-row: 1;
     justify-self: end;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.25em;
     white-space: nowrap;
     font-family: 'Space Mono', monospace;
     font-size: 0.65rem;
@@ -355,13 +362,23 @@ select:focus,
     color: rgba(255, 255, 255, 0.4);
     text-decoration: none;
 }
-.site-footer .credit-3d:hover { color: var(--mood-text); }
+.site-footer .credit-3d a { color: inherit; text-decoration: none; }
+.site-footer .credit-3d:hover, .site-footer .credit-3d a:hover { color: var(--mood-text); }
+.site-footer span.credit-3d:hover { color: rgba(255, 255, 255, 0.4); }
 @media (max-width: 1024px) {
     .site-footer .credit-3d {
         margin-top: -0.85rem;
         font-size: 0.55rem;
         text-align: center;
+        align-items: center;
     }
+}
+/* su computer la riga più in basso dei crediti e le icone social stanno allo stesso livello di "© 2026 DLBP" */
+@media (min-width: 1025px) {
+    .site-footer .copyright-bottom-left, .site-footer .credit-3d { align-self: end; align-self: last baseline; }
+    .site-footer .social-bottom { align-self: end; }
+    /* ogni icona è centrata in un box alto quanto una riga del copyright (0.65rem × interlinea 1.6) */
+    .site-footer .social-icons > * { display: flex; align-items: center; height: calc(0.65rem * 1.6); }
 }
 
 @media (prefers-reduced-motion: reduce) {
