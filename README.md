@@ -25,8 +25,8 @@ Un link con `?pr=<codice>` (per esempio `https://dlbp.art/?pr=mario`) collega l'
 ## Funzionalità
 
 ### Home (`index.html`)
-- Sfondo con il filamento di DNA in cromo e il motto DRINK · LOVE · BREATHE · PEACE (vedi [Aspetto](#aspetto)).
-- Sotto il motto c'è una sequenza di DNA che si decifra nella parola del colore attuale a ogni cambio di colore.
+- Sfondo con il cuore in cromo che batte al centro, il filamento di DNA attorno, le cellule lontane e il motto DRINK · LOVE · BREATHE · PEACE (vedi [Aspetto](#aspetto)).
+- Sotto il motto c'è una sequenza di DNA che si decifra nella parola della luce che in quel momento dà il colore al sito.
 - Sulle pagine pubbliche (home, eventi, iscrizione) si sente il battito "tum-tum" a tempo con lo sfondo, un suono basso creato dal codice (`js/core/heart-sound.js`, nessun file audio). È acceso di partenza, ma i browser lo fanno partire solo dopo il primo tocco, clic o tasto sulla pagina. Il bottone con l'altoparlante in basso a destra lo spegne e lo riaccende, e la scelta resta anche nelle visite successive. Non c'è con "riduci movimento" né nelle pagine dello staff.
 - Nessun bottone sopra lo sfondo: agli eventi si arriva dal menu EVENTI (il bottone PROSSIMO EVENTO è stato tolto il 21/10/2026).
 - Un link d'invito `?pr=<codice>` aperto sulla home ricorda il codice per tutta la visita, così l'iscrizione resta collegata al PR anche passando dal menu.
@@ -120,15 +120,20 @@ Un link con `?pr=<codice>` (per esempio `https://dlbp.art/?pr=mario`) collega l'
 ### In tutte le pagine
 - Menu AREA RISERVATA con i link ad Admin, Scanner e Area PR.
 - Footer con le icone social: per ora è attivo solo Instagram.
-- Nel footer c'è il credito del modello 3D del DNA, a destra su computer e sotto il copyright su tablet e telefono ("DNA 3D: Troy · CC BY 4.0"), che apre la pagina del modello su Sketchfab.
+- Nel footer ci sono i crediti dei modelli 3D, a destra su computer e sotto il copyright su tablet e telefono, ognuno con il link alla pagina del modello su Sketchfab: "DNA 3D: Troy · CC BY 4.0" in tutte le pagine; in home, uno sotto l'altro, anche "Cellula 3D: Physio CG · CC BY 4.0" e "Cuore 3D: Mox3DModels · CC BY 4.0".
 - Su telefono la pagina non si ingrandisce (niente pizzico né doppio tocco) e scorre solo dall'alto in basso (il rimbalzo ai bordi resta): meta viewport, `touch-action` (su ogni elemento, così vale anche dentro le finestre) in `css/styles.css` e `js/core/no-zoom.js`.
 
 ## Aspetto
 
-Dal 27/09/2026 l'identità è "cromo nero, colore vivo": nero, DNA in cromo e un solo colore del motto alla volta.
-Dal 21/10/2026 lo sfondo è il filamento di DNA "DNA Procedural EEVEE" di Troy (Sketchfab, licenza CC BY 4.0, file `assets/dna.glb`) che gira piano su sé stesso, senza glitch, al posto dell'elica disegnata dal codice. La licenza chiede di citare l'autore: il credito "DNA 3D: Troy · CC BY 4.0" è nel footer di ogni pagina e non va tolto.
+Dal 27/09/2026 l'identità è "cromo nero, colore vivo": nero, cromo e i colori del motto.
+Dal 21/10/2026 lo sfondo è il filamento di DNA "DNA Procedural EEVEE" di Troy (Sketchfab, licenza CC BY 4.0, file `assets/dna.glb`) che gira piano su sé stesso, senza glitch, al posto dell'elica disegnata dal codice.
+Dal 22/10/2026:
+- in home al centro c'è il cuore "Anatomical Heart" di Mox3DModels (CC BY 4.0, `assets/heart-80k.glb`, `heart-30k.glb` sui telefoni) che batte, con sette cellule lontane "Neutrophil" di Physio CG (CC BY 4.0, `assets/cellula-8k.glb`);
+- il fondo è nero: niente bagliore di fondo, niente zoom della scena sul battito, niente cambio colore sul battito;
+- quattro luci invisibili, una per colore del motto, girano attorno alla scena: si vedono solo i loro riflessi colorati che scorrono su cromo, cuore, cellule e gocce.
+Le licenze chiedono di citare gli autori: i crediti sono nel footer e non vanno tolti.
 
-**I 4 colori**, uno per parola del motto:
+**I 4 colori**, uno per parola del motto, sono sempre tutti in scena come luci:
 
 | Parola | Nome nel codice | Colore |
 |---|---|---|
@@ -141,26 +146,26 @@ Dal 21/10/2026 lo sfondo è il filamento di DNA "DNA Procedural EEVEE" di Troy (
 - Il CSS li usa tramite `--mood`, `--mood-deep`, `--on-mood` (testo sopra il colore) e `--mood-text`.
 - Chi cambia la palette la cambia in `background.js` e in `css/identity.css`.
 
-**Come cambia il colore:**
-- Il sito parte da Breathe.
-- Lo sfondo ha un battito "tum-tum" a 30 BPM (`BPM`): sul battito pulsa tutta la scena (si avvicina di circa il 3,5%, `PULSE_ZOOM`) insieme a una leggera luce di fondo (`PULSE_LIGHT`, tenuta bassa perché un lampo forte dà fastidio agli occhi).
-- Il colore cambia da solo ogni 3 battiti (`CYCLE_BEATS`, cioè ogni 6 secondi), nell'ordine di `ORDER`.
-- Il colore raggiunto resta per tutta la visita.
-- `?mood=<colore o parola>` nell'indirizzo sceglie il colore di partenza, per esempio `?mood=love`.
+**Il colore del sito segue la luce più forte:**
+- Le luci girano attorno alla scena (un giro ogni ~29 s, `ORBIT`). In ogni momento conta quanto ogni luce è accesa e quanto è girata verso chi guarda, cioè quale si vede riflessa di più.
+- Il colore del sito (menu, bottoni, sequenza di DNA) passa piano verso quella luce, in dissolvenza (`FOLLOW_FADE`, 0,8 s). Lo stesso colore va ai pioli del DNA, ai nuclei delle cellule e alla polvere.
+- La luce che dà il colore cambia solo se un'altra resta più forte di almeno il 15% per 2 secondi (`FOLLOW_HOLD`): così la parola sotto il motto non sfarfalla.
+- Il battito "tum-tum" a 30 BPM (`BPM`) fa battere il cuore e le cellule (il nucleo un attimo dopo la membrana) e si sente sulle pagine pubbliche.
 
 **Attributi dello sfondo** (`<div class="site-background">`):
+- `data-heart`: home. Cuore e cellule lontane al centro della composizione (non con `data-lite`);
 - `data-dim`: sfondo più scuro;
 - `data-lite`: versione leggera, usata dallo scanner;
-- `data-tap`: pagine pubbliche. Il cursore è una croce su tutta la pagina (tranne link, bottoni e campi) e un clic dove c'è la croce dà un battito forte.
+- `data-tap`: pagine pubbliche. Il cursore è una croce su tutta la pagina (tranne link, bottoni e campi) e un clic dove c'è la croce dà un battito forte, anche al cuore.
 
 **Altro:**
 - Attorno al centro fluttuano 12 gocce di metallo liquido, come nella prova (non nello scanner).
-- Il filamento arriva dopo il resto della pagina (circa 1,5 MB, compresso da GitHub Pages) e compare con una dissolvenza; prima si vedono solo la luce di fondo e la polvere.
-- Composizione (posizione, prolungamenti, tratto a sinistra) e camera sono quelle approvate nella prova del 21/10/2026: `POSE`, `EXTENSIONS` e `LEFT` in `background.js`.
-- Finestre (avvisi e conferme di `js/core/modal.js`, "Iscrizione completata"): pannello nero con bordo sottile e angoli vivi, senza sfocatura. Il bottone principale (OK, CONFERMA) è pieno nel colore della serata; ANNULLA è vuoto, con il bordo sottile.
-- Bottoni dell'area staff: ELIMINA ed ESCI sono vuoti con il bordo rosso, FILTRI è vuoto con il bordo sottile; solo i bottoni principali sono pieni nel colore della serata.
+- Il filamento (circa 1,5 MB, compresso da GitHub Pages) e in home il cuore e la cellula (circa 1,6 MB, 0,75 MB sui telefoni) arrivano dopo il resto della pagina e compaiono insieme con una dissolvenza; prima si vedono solo la polvere e le gocce. Il cuore e la cellula si leggono con il GLTFLoader di three r128 (jsDelivr), caricato solo in home.
+- Composizione (posizione, prolungamenti, tratto a sinistra, cuore e cellule lontane) e camera sono quelle approvate nella prova del 21/10/2026: `POSE`, `EXTENSIONS`, `LEFT`, `HEART_SCALE` e `FAR` in `background.js`. Eventi, iscrizione e pagine staff hanno solo il DNA (il cuore al centro coprirebbe schede e moduli).
+- Finestre (avvisi e conferme di `js/core/modal.js`, "Iscrizione completata"): pannello nero con bordo sottile e angoli vivi, senza sfocatura. Il bottone principale (OK, CONFERMA) è pieno nel colore del sito; ANNULLA è vuoto, con il bordo sottile.
+- Bottoni dell'area staff: ELIMINA ed ESCI sono vuoti con il bordo rosso, FILTRI è vuoto con il bordo sottile; solo i bottoni principali sono pieni nel colore del sito.
 - Sugli schermi a 120 Hz o più lo sfondo viene disegnato al massimo circa 60 volte al secondo.
-- Con l'opzione "riduci movimento" del telefono il DNA resta fermo e il colore non cambia.
+- Con l'opzione "riduci movimento" del telefono la scena resta ferma su un fotogramma e il colore non cambia.
 - Caratteri:
   - League Gothic per titoli e nomi;
   - IBM Plex Sans per i testi;
@@ -202,7 +207,7 @@ robots.txt, sitemap.xml  indicazioni per Google
 css/
   styles.css             stili di base e componenti
   identity.css           identità "cromo nero, colore vivo": colori, caratteri, forme (si carica dopo styles.css)
-assets/                logo (logo.png, logo.jpg), icone social (social-icons.svg) e modello 3D del DNA (dna.glb)
+assets/                logo (logo.png, logo.jpg), icone social (social-icons.svg) e modelli 3D: DNA (dna.glb), cuore (heart-80k.glb, heart-30k.glb), cellula (cellula-8k.glb)
   mail/                immagini usate nelle mail di invito (si caricano da dlbp.art/assets/mail/)
 js/
   form-version.json      versione del modulo di iscrizione (vedi "ricarica la pagina")
@@ -211,7 +216,7 @@ js/
     firebase-auth.js     login Firebase (solo pagine staff)
     staff-login.js       form di login dello staff e controllo del ruolo
     email.js             invio email con EmailJS e nomi dei template
-    background.js        sfondo 3D (filamento di DNA), colori del motto, battito, cursore a croce
+    background.js        sfondo 3D (DNA, cuore, cellule, luci del motto), colore del sito che segue la luce, battito, cursore a croce
     heart-sound.js       suono del battito e bottone per spegnerlo (caricato da background.js)
     dates.js             conversione delle date lette da Firestore
     modal.js             finestre di avviso e conferma
