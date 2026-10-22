@@ -3,16 +3,18 @@
 // attorno alla scena: si vedono solo i loro riflessi colorati che scorrono su cromo, cuore e cellule. Il colore del
 // sito (--mood su <html>) e la parola sotto il motto seguono la luce che si riflette di più.
 // Modelli (CC BY 4.0, crediti nel footer): DNA "DNA Procedural EEVEE" di Troy (assets/dna.glb),
-// cuore "Anatomical Heart" di Mox3DModels (assets/heart-80k.glb, heart-30k.glb sui telefoni),
-// cellula "Neutrophil" di Physio CG (assets/cellula-8k.glb).
+// cuore "Anatomical Heart" di Mox3DModels (assets/heart-30k.glb),
+// cellula "Neutrophil" di Physio CG (assets/cellula-3k.glb, semplificata da cellula-8k.glb).
+// Il filamento si prepara in js/core/dna-worker.js, così il caricamento non blocca la pagina.
 // Si attiva su ogni elemento .site-background della pagina:
 // - data-heart (home): cuore e cellule lontane al centro della composizione;
 // - data-lite (scanner): versione leggera, senza cuore;
 // - data-dim: sfondo più scuro;
-// - data-tap (pagine pubbliche): cursore a croce su tutta la pagina tranne link, bottoni e campi (css/identity.css),
-//   un clic dove c'è la croce dà un battito forte; lì si sente anche il battito (js/core/heart-sound.js).
+// - data-tap (pagine pubbliche): cursore a croce su tutta la pagina tranne link, bottoni e campi (css/identity.css);
+//   lì si sente anche il battito (js/core/heart-sound.js). Dal 22/10/2026 il clic non dà più un battito in più.
 // Battito "tum-tum" a BPM: fa battere il cuore e le cellule (non c'è più lo zoom della scena).
 // Sugli schermi a 120 Hz o più disegna al massimo circa 60 fotogrammi al secondo, per consumare meno batteria.
+// Qualità (QUALITY): parte leggera e, se il dispositivo non tiene il ritmo, si abbassa da sola.
 // Carica anche no-zoom.js (niente ingrandimento su telefono), perché questo file c'è in ogni pagina.
 
 import './no-zoom.js';
@@ -36,6 +38,21 @@ const ORBIT = 0.22;     // giro delle luci attorno alla scena, in radianti al se
 const FOLLOW_HOLD = 2000; // la luce che dà il colore al sito cambia solo se un'altra resta più forte per 2 secondi
 const FOLLOW_FADE = 0.8;  // secondi della dissolvenza del colore del sito verso la nuova luce
 
+// Livelli di qualità, dal più bello al più leggero: ratio = pixel disegnati per ogni punto dello schermo (al massimo),
+// msaa = bordi lisciati, fps = fotogrammi al secondo. I computer partono dal primo (il più nitido), i telefoni dal terzo,
+// lo scanner dal quarto; se per 2 secondi i fotogrammi arrivano in ritardo si scende di un livello e non si risale più
+// (vedi frame in init).
+const QUALITY = [
+    { ratio: 2, msaa: true, fps: 60 },
+    { ratio: 1.5, msaa: false, fps: 60 },
+    { ratio: 1.25, msaa: false, fps: 60 },
+    { ratio: 1, msaa: false, fps: 60 },
+    { ratio: 1, msaa: false, fps: 30 }
+];
+const PHONE = Math.min(screen.width, screen.height) < 700;
+const SLOW = 1.3; // i fotogrammi sono "in ritardo" se arrivano in media il 30% più tardi del previsto
+const firstLevel = (host) => (host.hasAttribute('data-lite') ? 3 : PHONE ? 2 : 0);
+
 const cssHex = (n) => '#' + n.toString(16).padStart(6, '0');
 
 // luminanza relativa (WCAG) di un colore 0xRRGGBB
@@ -54,7 +71,7 @@ function setCssColor(hex, deep) {
 
 // mood: la luce che in questo momento dà il colore al sito; moodAt: quando è cambiata (per la sequenza sotto il motto);
 // beat/ph: forza (0-1) e fase (secondi) del battito; lights: quanto si vede ogni luce, lo scrive la scena a ogni fotogramma
-const state = { mood: 'breathe', moodAt: performance.now(), beat: 0, ph: 0, nucBeat: 0, kickAt: -1e9, lights: null };
+const state = { mood: 'breathe', moodAt: performance.now(), beat: 0, ph: 0, nucBeat: 0, lights: null };
 document.documentElement.dataset.mood = state.mood;
 setCssColor(MOODS[state.mood].hex, MOODS[state.mood].deep);
 
@@ -131,288 +148,60 @@ float vn(vec3 p){ vec3 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);
   return mix(mix(mix(h3(i), h3(i + vec3(1,0,0)), f.x), mix(h3(i + vec3(0,1,0)), h3(i + vec3(1,1,0)), f.x), f.y),
              mix(mix(h3(i + vec3(0,0,1)), h3(i + vec3(1,0,1)), f.x), mix(h3(i + vec3(0,1,1)), h3(i + vec3(1,1,1)), f.x), f.y), f.z); }`;
 
+// Dissolvenza a macchie con cui compaiono filamento, cuore e cellule (bordo acceso nel colore del motto, edgeAmt).
+// Il rumore si calcola solo durante l'entrata: dopo (uReveal = 1) ogni punto dello schermo salta questo conto.
+const REVEAL_GLSL = `
+  float edgeAmt = 0.0;
+  if (uReveal < 0.999) {
+    float dz = 0.65 * vn(vWp * 1.5) + 0.35 * vn(vWp * 4.2);
+    float thr = uReveal * 1.15 - 0.075;
+    if (dz > thr) discard;
+    edgeAmt = (1.0 - smoothstep(0.0, 0.07, thr - dz)) * step(0.001, uReveal);
+  }
+`;
+
 // ---------- modello del DNA ----------
+// Il filamento si prepara in js/core/dna-worker.js, fuori dalla pagina: sono calcoli lunghi (~140 mila vertici) che qui
+// bloccherebbero tocchi e scorrimento per qualche istante, soprattutto sui telefoni. Il worker manda solo numeri.
 
-// Legge assets/dna.glb: 3 mesh senza trasformazioni, "Pairs" (pioli, nel colore del motto) e "Struts" (filamenti, in cromo).
-// Posizioni e normali sono intercalate nello stesso blocco di dati.
-function parseGlb(buf) {
-    const jsonLen = new DataView(buf).getUint32(12, true);
-    const json = JSON.parse(new TextDecoder().decode(new Uint8Array(buf, 20, jsonLen)));
-    const bin = 20 + jsonLen + 8;
-    const read = (i, n) => {
-        const a = json.accessors[i], bv = json.bufferViews[a.bufferView], off = bin + (bv.byteOffset || 0);
-        if (a.componentType !== 5126) return new (a.componentType === 5125 ? Uint32Array : Uint16Array)(buf, off + (a.byteOffset || 0), a.count).slice();
-        const stride = (bv.byteStride || n * 4) / 4, src = new Float32Array(buf, off, bv.byteLength / 4), out = new Float32Array(a.count * n);
-        for (let k = 0, o = (a.byteOffset || 0) / 4; k < a.count; k++, o += stride) for (let c = 0; c < n; c++) out[k * n + c] = src[o + c];
-        return out;
-    };
-    return json.nodes.filter((nd) => nd.mesh !== undefined).map((nd) => {
-        const p = json.meshes[nd.mesh].primitives[0];
-        return { pos: read(p.attributes.POSITION, 3), nor: read(p.attributes.NORMAL, 3), idx: read(p.indices, 1), pairs: json.materials[p.material].name === 'Pairs' };
-    });
-}
+const CUT = 14; // sotto questo piolo il ricciolo finale del modello non si vede (cut dei materiali)
 
-// Asse del filamento. I pioli interi (lunghi ~15, da un filamento all'altro) hanno un pomello da un lato solo e si alternano,
-// quindi i loro punti medi stanno su due binari ai lati dell'asse: si ordinano lungo il filamento (Dijkstra sul grafo dei vicini)
-// e si fa la media dei pioli vicini. Ogni vertice prende poi il punto (aAxis), la direzione (aTan) e la posizione lungo l'asse
-// (aParam, in pioli) più vicini: lì ruota per girare su sé stesso.
-function computeAxis(THREE, parts) {
-    const pr = parts.find((q) => q.pairs), P = pr.pos, idx = pr.idx, count = P.length / 3;
-    const ids = new Map(), vid = new Int32Array(count);
-    for (let i = 0; i < count; i++) {
-        const k = Math.round(P[i * 3] * 1000) + ',' + Math.round(P[i * 3 + 1] * 1000) + ',' + Math.round(P[i * 3 + 2] * 1000);
-        if (!ids.has(k)) ids.set(k, ids.size);
-        vid[i] = ids.get(k);
-    }
-    const par = Int32Array.from({ length: ids.size }, (_, i) => i);
-    const f = (x) => { while (par[x] !== x) { par[x] = par[par[x]]; x = par[x]; } return x; };
-    for (let t = 0; t < idx.length; t += 3) { const a = f(vid[idx[t]]); par[f(vid[idx[t + 1]])] = a; par[f(vid[idx[t + 2]])] = a; }
-    const pieces = new Map();
-    for (let i = 0; i < count; i++) {
-        const r = f(vid[i]);
-        if (!pieces.has(r)) pieces.set(r, []);
-        pieces.get(r).push(new THREE.Vector3(P[i * 3], P[i * 3 + 1], P[i * 3 + 2]));
-    }
-    const rungs = [...pieces.values()].map((pts) => {
-        const far = (from) => pts.reduce((best, q) => (q.distanceToSquared(from) > best.distanceToSquared(from) ? q : best), pts[0]);
-        const e1 = far(pts[0]), e2 = far(e1);
-        return { mid: e1.clone().add(e2).multiplyScalar(0.5), len: e1.distanceTo(e2) };
-    });
-    const maxLen = Math.max(...rungs.map((r) => r.len));
-    const pts = rungs.filter((r) => r.len > maxLen * 0.66).map((r) => r.mid);
-    const nn = pts.map((p, i) => Math.min(...pts.map((q, j) => (i === j ? Infinity : p.distanceTo(q)))));
-    const step = nn.slice().sort((x, y) => x - y)[nn.length >> 1];
-    const nb = pts.map((p, i) => pts.map((q, j) => (i !== j && p.distanceTo(q) < step * 1.8 ? j : -1)).filter((j) => j >= 0));
-    const geo = (src, allowed) => {
-        const d = new Array(pts.length).fill(Infinity), done = new Uint8Array(pts.length);
-        d[src] = 0;
-        for (;;) {
-            let x = -1;
-            allowed.forEach((i) => { if (!done[i] && d[i] < Infinity && (x < 0 || d[i] < d[x])) x = i; });
-            if (x < 0) return d;
-            done[x] = 1;
-            nb[x].forEach((y) => { const nd = d[x] + pts[x].distanceTo(pts[y]); if (nd < d[y]) d[y] = nd; });
-        }
-    };
-    // il gruppo di pioli collegati più grande è il filamento
-    const seen = new Uint8Array(pts.length);
-    let comp = [];
-    for (let s0 = 0; s0 < pts.length; s0++) {
-        if (seen[s0]) continue;
-        const c = [], stack = [s0];
-        seen[s0] = 1;
-        while (stack.length) { const x = stack.pop(); c.push(x); nb[x].forEach((y) => { if (!seen[y]) { seen[y] = 1; stack.push(y); } }); }
-        if (c.length > comp.length) comp = c;
-    }
-    const d0 = geo(comp[0], comp);
-    const end = comp.reduce((b, i) => (d0[i] > d0[b] ? i : b), comp[0]);
-    const g = geo(end, comp);
-    const order = comp.slice().sort((x, y) => g[x] - g[y]);
-    const L = order.map((i) => {
-        const acc = new THREE.Vector3(); let n = 0;
-        order.forEach((j) => { if (Math.abs(g[j] - g[i]) <= step * 1.6) { acc.add(pts[j]); n++; } });
-        return acc.multiplyScalar(1 / n);
-    });
-    const T = L.map((q, i) => L[Math.min(i + 2, L.length - 1)].clone().sub(L[Math.max(i - 2, 0)]).normalize());
-
-    // per ogni vertice il segmento dell'asse più vicino (cicli su numeri semplici: sono ~140 mila vertici)
-    const m = L.length - 1, ax = new Float32Array(m * 3), sg = new Float32Array(m * 3), sl = new Float32Array(m);
-    for (let j = 0; j < m; j++) {
-        ax[j * 3] = L[j].x; ax[j * 3 + 1] = L[j].y; ax[j * 3 + 2] = L[j].z;
-        sg[j * 3] = L[j + 1].x - L[j].x; sg[j * 3 + 1] = L[j + 1].y - L[j].y; sg[j * 3 + 2] = L[j + 1].z - L[j].z;
-        sl[j] = sg[j * 3] ** 2 + sg[j * 3 + 1] ** 2 + sg[j * 3 + 2] ** 2;
-    }
-    // griglia a celle di lato R: ogni cella conosce i segmenti a meno di R da lei, così per ogni vertice se ne provano pochi.
-    // Se nessuno è a meno di R (non succede: il filamento ha raggio ~7) si provano tutti, quindi il risultato è sempre esatto.
-    const R = 12, cellKey = (x, y, z) => ((x + 512) * 1024 + (y + 512)) * 1024 + (z + 512), grid = new Map();
-    for (let j = 0; j < m; j++) {
-        const k = j * 3, lo = [0, 1, 2].map((c) => Math.floor((Math.min(ax[k + c], ax[k + c] + sg[k + c]) - R) / R));
-        const hi = [0, 1, 2].map((c) => Math.floor((Math.max(ax[k + c], ax[k + c] + sg[k + c]) + R) / R));
-        for (let x = lo[0]; x <= hi[0]; x++) for (let y = lo[1]; y <= hi[1]; y++) for (let z = lo[2]; z <= hi[2]; z++) {
-            const key = cellKey(x, y, z);
-            if (!grid.has(key)) grid.set(key, []);
-            grid.get(key).push(j);
-        }
-    }
-    const all = Array.from({ length: m }, (_, j) => j);
-    parts.forEach((q) => {
-        const pos = q.pos, n = pos.length / 3;
-        q.axis = new Float32Array(n * 3); q.tan = new Float32Array(n * 3); q.prm = new Float32Array(n);
-        for (let i = 0; i < n; i++) {
-            const vx = pos[i * 3], vy = pos[i * 3 + 1], vz = pos[i * 3 + 2];
-            let best = Infinity, bj = 0, bt = 0;
-            const near = (list) => {
-                for (let s = 0; s < list.length; s++) {
-                    const j = list[s], k = j * 3, wx = vx - ax[k], wy = vy - ax[k + 1], wz = vz - ax[k + 2];
-                    const t = Math.min(1, Math.max(0, (wx * sg[k] + wy * sg[k + 1] + wz * sg[k + 2]) / sl[j]));
-                    const dx = wx - sg[k] * t, dy = wy - sg[k + 1] * t, dz = wz - sg[k + 2] * t, d = dx * dx + dy * dy + dz * dz;
-                    if (d < best) { best = d; bj = j; bt = t; }
-                }
-            };
-            near(grid.get(cellKey(Math.floor(vx / R), Math.floor(vy / R), Math.floor(vz / R))) || []);
-            if (best > R * R) near(all);
-            const k = bj * 3, a = T[bj], b = T[bj + 1];
-            q.axis[i * 3] = ax[k] + sg[k] * bt; q.axis[i * 3 + 1] = ax[k + 1] + sg[k + 1] * bt; q.axis[i * 3 + 2] = ax[k + 2] + sg[k + 2] * bt;
-            q.tan[i * 3] = a.x + (b.x - a.x) * bt; q.tan[i * 3 + 1] = a.y + (b.y - a.y) * bt; q.tan[i * 3 + 2] = a.z + (b.z - a.z) * bt;
-            q.prm[i] = bj + bt;
-        }
-    });
-    return { L, T };
-}
-
-// cornici senza torsione (doppia riflessione) lungo una linea di punti
-function rmfFrames(pts, tans, N0) {
-    const Ns = [N0.clone()], Bs = [tans[0].clone().cross(N0)];
-    for (let i = 1; i < pts.length; i++) {
-        const v1 = pts[i].clone().sub(pts[i - 1]), c1 = v1.dot(v1) || 1e-9;
-        const rL = Ns[i - 1].clone().sub(v1.clone().multiplyScalar(2 / c1 * v1.dot(Ns[i - 1])));
-        const tL = tans[i - 1].clone().sub(v1.clone().multiplyScalar(2 / c1 * v1.dot(tans[i - 1])));
-        const v2 = tans[i].clone().sub(tL), c2 = v2.dot(v2);
-        const r = c2 < 1e-9 ? rL : rL.sub(v2.clone().multiplyScalar(2 / c2 * v2.dot(rL)));
-        Ns.push(r.normalize()); Bs.push(tans[i].clone().cross(Ns[i]));
-    }
-    return { Ns, Bs };
-}
-
-// normale qualsiasi perpendicolare alla direzione t
-function anyNormal(THREE, t) {
-    const n = new THREE.Vector3(0, 1, 0);
-    if (Math.abs(n.dot(t)) > 0.9) n.set(1, 0, 0);
-    return n.sub(t.clone().multiplyScalar(n.dot(t))).normalize();
-}
-
-function makeGeometry(THREE, pos, nor, axis, tan, prm, index) {
+function makeGeometry(THREE, q) {
     const geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    geo.setAttribute('normal', new THREE.BufferAttribute(nor, 3));
-    geo.setAttribute('aAxis', new THREE.BufferAttribute(axis, 3));
-    geo.setAttribute('aTan', new THREE.BufferAttribute(tan, 3));
-    geo.setAttribute('aParam', new THREE.BufferAttribute(prm, 1));
-    geo.setIndex(Array.isArray(index) ? index : new THREE.BufferAttribute(index, 1));
+    geo.setAttribute('position', new THREE.BufferAttribute(q.pos, 3));
+    geo.setAttribute('normal', new THREE.BufferAttribute(q.nor, 3));
+    geo.setAttribute('aAxis', new THREE.BufferAttribute(q.axis, 3));
+    geo.setAttribute('aTan', new THREE.BufferAttribute(q.tan, 3));
+    geo.setAttribute('aParam', new THREE.BufferAttribute(q.prm, 1));
+    geo.setIndex(new THREE.BufferAttribute(q.idx, 1));
     return geo;
 }
 
-// L'elica del modello è regolarissima (un giro ogni 18 pioli): per allungare il filamento o farne un altro pezzo si copia
-// un giro intero (i pezzi con la posizione lungo l'asse fra from e to) uno dopo l'altro lungo curve, con scala K e cornici
-// senza torsione, così le copie si attaccano senza salti e girano su sé stesse come il resto.
-// back: il nuovo percorso va all'indietro rispetto al modello (prolungamento dell'inizio); N0: normale di partenza;
-// param(d): valore di aParam a distanza d lungo la curva.
-function turnAlong(THREE, D, part, curve, { from, to, K = 1, back = false, N0, param }) {
-    const { step, PERIOD, frameAt, sMax } = D;
-    const P = part.pos, NO = part.nor, PR = part.prm, idx = part.idx, n = P.length / 3;
-    const keep = new Uint8Array(n);
-    for (let i = 0; i < n; i++) { const sv = PR[i] * step; keep[i] = sv >= from && sv < to ? 1 : 0; }
-    const tri = [];
-    for (let t = 0; t < idx.length; t += 3) if (keep[idx[t]] && keep[idx[t + 1]] && keep[idx[t + 2]]) tri.push(idx[t], idx[t + 1], idx[t + 2]);
-    if (!tri.length) return null;
-    const used = [...new Set(tri)], remap = new Map(used.map((v, i) => [v, i]));
-    const v = new THREE.Vector3(), nr = new THREE.Vector3();
-    // coordinate di ogni vertice rispetto alla cornice dell'asse
-    const loc = used.map((vi) => {
-        const sv = Math.min(sMax, Math.max(0, PR[vi] * step)), f = frameAt(sv);
-        v.set(P[vi * 3], P[vi * 3 + 1], P[vi * 3 + 2]).sub(f.p);
-        nr.set(NO[vi * 3], NO[vi * 3 + 1], NO[vi * 3 + 2]);
-        return { s: sv - from, c: v.dot(f.T), a: v.dot(f.N), b: v.dot(f.B), nc: nr.dot(f.T), na: nr.dot(f.N), nb: nr.dot(f.B) };
-    });
-    const M = 800, pts = curve.getSpacedPoints(M), len = curve.getLength();
-    const tans = pts.map((q, i) => pts[Math.min(i + 1, M)].clone().sub(pts[Math.max(i - 1, 0)]).normalize());
-    const NB = rmfFrames(pts, tans, N0 || anyNormal(THREE, tans[0]));
-    // la curva in numeri semplici: punto, tangente (nel verso del modello) e normale a ogni campione
-    const sign = back ? -1 : 1, tab = new Float32Array((M + 1) * 9);
-    pts.forEach((p, i) => tab.set([p.x, p.y, p.z, tans[i].x * sign, tans[i].y * sign, tans[i].z * sign, NB.Ns[i].x, NB.Ns[i].y, NB.Ns[i].z], i * 9));
-    const nl = loc.length, tri2 = tri.map((v) => remap.get(v));
-    const copies = Math.ceil(len / (PERIOD * K)) + 1;
-    const pos = new Float32Array(copies * nl * 3), nor = new Float32Array(copies * nl * 3), axis = new Float32Array(copies * nl * 3);
-    const tan = new Float32Array(copies * nl * 3), prm = new Float32Array(copies * nl), index = [], dist = new Float32Array(nl);
-    const f = new Float32Array(12); // punto, tangente, normale, binormale della curva alla distanza d
-    const at = (d) => {
-        const u = Math.min(M, Math.max(0, d / len * M)), i = Math.min(M - 1, Math.floor(u)), w = u - i, o = i * 9;
-        for (let c = 0; c < 9; c++) f[c] = tab[o + c] + (tab[o + 9 + c] - tab[o + c]) * w;
-        const tl = Math.hypot(f[3], f[4], f[5]) || 1, nlen = Math.hypot(f[6], f[7], f[8]) || 1;
-        f[3] /= tl; f[4] /= tl; f[5] /= tl; f[6] /= nlen; f[7] /= nlen; f[8] /= nlen;
-        f[9] = f[4] * f[8] - f[5] * f[7]; f[10] = f[5] * f[6] - f[3] * f[8]; f[11] = f[3] * f[7] - f[4] * f[6];
-    };
-    for (let k = 0; k < copies; k++) {
-        const base = k * nl;
-        for (let i = 0; i < nl; i++) {
-            const q = loc[i];
-            dist[i] = (back ? (k + 1) * PERIOD - q.s : q.s + k * PERIOD) * K;
-            const d = Math.min(len, Math.max(0, dist[i])), o = (base + i) * 3;
-            at(d);
-            for (let c = 0; c < 3; c++) {
-                pos[o + c] = f[c] + (f[3 + c] * q.c + f[6 + c] * q.a + f[9 + c] * q.b) * K;
-                nor[o + c] = f[3 + c] * q.nc + f[6 + c] * q.na + f[9 + c] * q.nb;
-                axis[o + c] = f[c];
-                tan[o + c] = f[3 + c];
-            }
-            const nn = Math.hypot(nor[o], nor[o + 1], nor[o + 2]) || 1;
-            nor[o] /= nn; nor[o + 1] /= nn; nor[o + 2] /= nn;
-            prm[base + i] = param(d);
-        }
-        const ok = (i) => dist[i] >= 0 && dist[i] <= len;
-        for (let t = 0; t < tri2.length; t += 3) {
-            const a = tri2[t], b = tri2[t + 1], c = tri2[t + 2];
-            if (ok(a) && ok(b) && ok(c)) index.push(base + a, base + b, base + c);
-        }
-    }
-    if (!index.length) return null;
-    return makeGeometry(THREE, pos, nor, axis, tan, prm, index);
-}
-
-// Prolungamenti del filamento (coordinate del modello). In basso il ricciolo finale (pioli 0-13) è tagliato e dal piolo 14
-// il filamento curva piano verso il bordo destro ed esce; in alto la punta continua fino a uscire dallo schermo.
-const EXTENSIONS = [
-    { side: 'start', from: 14, target: [-233.7, -98.2, -23.5], ctrl: [-80.3, 13.5, -30.4], bend: 15 },
-    { side: 'end', target: [-6.2, -221.2, -208.1], bend: 60 }
-];
-const CUT = 14;
-
-// Scarica il modello e prepara tutto quello che non dipende dallo schermo (una volta sola per pagina)
-let dnaPromise = null;
-function loadDna(THREE) {
+// Avvia il worker e scarica il modello (una volta sola per pagina): restituisce i pezzi del filamento
+// (modello e prolungamenti); buildLeft chiede poi al worker il tratto a sinistra per la forma dello schermo.
+let dnaPromise = null, worker = null, leftId = 0;
+const leftWait = new Map();
+function loadDna() {
     if (dnaPromise) return dnaPromise;
-    dnaPromise = fetch(DNA_URL).then((r) => {
-        if (!r.ok) throw new Error('dna.glb ' + r.status);
-        return r.arrayBuffer();
-    }).then((buf) => {
-        const parts = parseGlb(buf);
-        // centro del modello in 0
-        const lo = [Infinity, Infinity, Infinity], hi = [-Infinity, -Infinity, -Infinity];
-        parts.forEach((q) => { for (let i = 0; i < q.pos.length; i++) { lo[i % 3] = Math.min(lo[i % 3], q.pos[i]); hi[i % 3] = Math.max(hi[i % 3], q.pos[i]); } });
-        const c = lo.map((l, k) => (l + hi[k]) / 2);
-        parts.forEach((q) => { for (let i = 0; i < q.pos.length; i++) q.pos[i] -= c[i % 3]; });
-
-        const { L, T } = computeAxis(THREE, parts);
-        const n = L.length, S = [0];
-        for (let i = 1; i < n; i++) S.push(S[i - 1] + L[i].distanceTo(L[i - 1]));
-        const F = rmfFrames(L, T, anyNormal(THREE, T[0]));
-        const frameAt = (s) => { // posizione, tangente e cornice sull'asse del modello
-            let j = 0, hi = n - 2; // ultimo segmento che inizia prima di s
-            while (j < hi) { const mid = (j + hi + 1) >> 1; if (S[mid] < s) j = mid; else hi = mid - 1; }
-            const t = Math.min(1, Math.max(0, (s - S[j]) / (S[j + 1] - S[j])));
-            return { p: L[j].clone().lerp(L[j + 1], t), T: T[j].clone().lerp(T[j + 1], t).normalize(), N: F.Ns[j].clone().lerp(F.Ns[j + 1], t).normalize(), B: F.Bs[j].clone().lerp(F.Bs[j + 1], t).normalize() };
+    dnaPromise = new Promise((resolve, reject) => {
+        worker = new Worker(new URL('./dna-worker.js?v=1', import.meta.url));
+        worker.onmessage = (e) => {
+            const m = e.data;
+            if (m.type === 'dna') resolve(m.pieces);
+            else if (m.type === 'left' || m.id) { const done = leftWait.get(m.id); leftWait.delete(m.id); if (done) done(m.pieces || []); }
+            else reject(new Error(m.message));
         };
-        const step = S[n - 1] / (n - 1);
-        const D = { parts, n, S, step, PERIOD: 18 * step, sMax: S[n - 1], frameAt };
-
-        // geometrie del filamento: il modello e i due prolungamenti
-        D.main = parts.map((q) => ({ pairs: q.pairs, geo: makeGeometry(THREE, q.pos, q.nor, q.axis, q.tan, q.prm, q.idx) }));
-        EXTENSIONS.forEach((E) => {
-            const atEnd = E.side === 'end', sEnd = atEnd ? D.sMax : S[E.from], f0 = frameAt(sEnd);
-            const P0 = f0.p, P1 = P0.clone().addScaledVector(f0.T, atEnd ? E.bend : -E.bend), G = new THREE.Vector3(...E.target);
-            const P2 = E.ctrl ? new THREE.Vector3(...E.ctrl) : G.clone().addScaledVector(P1.clone().sub(G).normalize(), G.distanceTo(P1) * 0.45);
-            const curve = new THREE.CubicBezierCurve3(P0, P1, P2, G);
-            parts.forEach((q) => {
-                // aParam dei prolungamenti: dopo l'ultimo piolo in cima; 5000+ per quello iniziale, così il taglio del ricciolo non lo nasconde
-                const geo = turnAlong(THREE, D, q, curve, atEnd
-                    ? { from: sEnd - D.PERIOD, to: Infinity, N0: f0.N, param: (d) => (n - 1) + d / step }
-                    : { from: sEnd, to: sEnd + D.PERIOD, back: true, N0: f0.N, param: (d) => 5000 + d / step });
-                if (geo) D.main.push({ pairs: q.pairs, geo });
-            });
-        });
-        return D;
+        worker.onerror = (e) => { reject(e); leftWait.forEach((done) => done([])); leftWait.clear(); };
+        worker.postMessage({ type: 'dna', three: THREE_URL, url: DNA_URL });
     });
     return dnaPromise;
+}
+function buildLeft(pts, K) {
+    return new Promise((resolve) => {
+        const id = ++leftId;
+        leftWait.set(id, resolve);
+        worker.postMessage({ type: 'left', id, pts, K });
+    });
 }
 
 // ---------- composizione ----------
@@ -434,8 +223,10 @@ const FAR = {
     portrait: [[-0.6, -0.48, 70, 0.74], [0.68, 0.58, 95, 0.81], [-0.45, 0.8, 125, 0.88], [0.5, -0.7, 62, 0.61], [0.1, -0.88, 150, 0.94], [-0.82, 0.12, 160, 0.94], [0.86, -0.08, 130, 0.81]],
     landscape: [[-0.6, -0.55, 70, 0.74], [0.6, 0.6, 95, 0.81], [-0.38, 0.8, 125, 0.88], [0.68, -0.68, 62, 0.61], [0.15, -0.86, 150, 0.94], [-0.86, 0.2, 160, 0.94], [0.9, 0.05, 130, 0.81]]
 };
-// sui telefoni e sui dispositivi poco potenti il cuore più leggero (30 mila triangoli invece di 80 mila)
-const HEART_URL = asset(Math.min(screen.width, screen.height) < 700 || (navigator.hardwareConcurrency || 8) <= 4 ? 'heart-30k.glb' : 'heart-80k.glb');
+// dal 22/10/2026 il cuore leggero (30 mila triangoli) e la cellula leggera (meno di 3 mila) su tutti i dispositivi;
+// sui computer la nitidezza arriva dai pixel (QUALITY)
+const HEART_URL = asset('heart-30k.glb');
+const CELL_URL = asset('cellula-3k.glb');
 
 // Scarica cuore e cellula (una volta sola per pagina), con il GLTFLoader di three r128
 let organsPromise = null;
@@ -444,7 +235,7 @@ function loadOrgans(THREE) {
     organsPromise = (THREE.GLTFLoader ? Promise.resolve() : loadScript(GLTF_URL)).then(() => {
         const loader = new THREE.GLTFLoader();
         const get = (url) => new Promise((resolve, reject) => loader.load(url, resolve, undefined, reject));
-        return Promise.all([get(HEART_URL), get(asset('cellula-8k.glb'))]);
+        return Promise.all([get(HEART_URL), get(CELL_URL)]);
     }).then(([h, c]) => {
         let heart = null;
         h.scene.updateMatrixWorld(true);
@@ -477,7 +268,8 @@ function createView(THREE, host) {
         canvas.remove();
         return null;
     }
-    const dpr = lite ? 1 : Math.min(window.devicePixelRatio || 1, 2);
+    let quality = QUALITY[firstLevel(host)];
+    let dpr = Math.min(window.devicePixelRatio || 1, quality.ratio);
     renderer.setPixelRatio(dpr);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.05;
@@ -517,11 +309,7 @@ function createView(THREE, host) {
                         'vParam = aParam;\nvWp = (modelMatrix * vec4(transformed, 1.0)).xyz;');
             sh.fragmentShader = 'uniform float uReveal; uniform vec3 uEdge; varying float vParam; varying vec3 vWp;\n' + NOISE + LIGHTS_GLSL + sh.fragmentShader
                 .replace('void main() {', 'void main() {\n' +
-                    '  float dz = 0.65 * vn(vWp * 1.5) + 0.35 * vn(vWp * 4.2);\n' +
-                    '  float thr = uReveal * 1.15 - 0.075;\n' +
-                    '  if (dz > thr) discard;\n' +
-                    (cut ? '  if (vParam < ' + cut.toFixed(1) + ') discard;\n' : '') +
-                    '  float edgeAmt = (1.0 - smoothstep(0.0, 0.07, thr - dz)) * step(0.001, uReveal) * (1.0 - step(0.999, uReveal));')
+                    (cut ? '  if (vParam < ' + cut.toFixed(1) + ') discard;\n' : '') + REVEAL_GLSL)
                 .replace('#include <tonemapping_fragment>', 'gl_FragColor.rgb += uEdge * edgeAmt * 6.0;\n' + LIGHTS_ADD);
         };
         // three r128 riusa lo stesso programma per i materiali con lo stesso onBeforeCompile: serve una chiave diversa
@@ -559,7 +347,7 @@ function createView(THREE, host) {
     const drops = new THREE.Group();
     for (let d = 0; d < (lite ? 0 : 12); d++) {
         const size = 0.05 + Math.random() * 0.17;
-        const drop = new THREE.Mesh(new THREE.SphereGeometry(size, 24, 16), dropMat);
+        const drop = new THREE.Mesh(new THREE.SphereGeometry(size, 16, 12), dropMat);
         drop.userData = { r: 3.4 + Math.random() * 1.8, y: (Math.random() - 0.5) * 6, a: Math.random() * Math.PI * 2, v: 0.12 + Math.random() * 0.25 };
         drops.add(drop);
     }
@@ -585,11 +373,7 @@ function createView(THREE, host) {
                     'transformed += normal * ring * 0.012 * step(0.001, uWave) * (1.0 - uWave);\n' : '') +
                 'vWp = (modelMatrix * vec4(transformed, 1.0)).xyz;');
             sh.fragmentShader = 'uniform float uReveal; uniform vec3 uEdge; varying vec3 vWp;\n' + NOISE + LIGHTS_GLSL + sh.fragmentShader
-                .replace('void main() {', 'void main() {\n' +
-                    '  float dz = 0.65 * vn(vWp * 1.5) + 0.35 * vn(vWp * 4.2);\n' +
-                    '  float thr = uReveal * 1.15 - 0.075;\n' +
-                    '  if (dz > thr) discard;\n' +
-                    '  float edgeAmt = (1.0 - smoothstep(0.0, 0.07, thr - dz)) * step(0.001, uReveal) * (1.0 - step(0.999, uReveal));')
+                .replace('void main() {', 'void main() {\n' + REVEAL_GLSL)
                 .replace('#include <tonemapping_fragment>', 'gl_FragColor.rgb += uEdge * edgeAmt * 6.0;\n' + LIGHTS_ADD);
             if (veil) sh.fragmentShader = sh.fragmentShader.replace('#include <tonemapping_fragment>',
                 'float fr = pow(1.0 - abs(dot(normal, normalize(vViewPosition))), 2.2);\n' +
@@ -641,9 +425,14 @@ function createView(THREE, host) {
     dust2.rotation.y = 1.7;
     scene.add(dust, dust2);
 
-    const RT = renderer.capabilities.isWebGL2 && THREE.WebGLMultisampleRenderTarget && !lite ? THREE.WebGLMultisampleRenderTarget : THREE.WebGLRenderTarget;
-    const rt = new RT(4, 4);
-    rt.texture.encoding = THREE.sRGBEncoding;
+    // la scena si disegna qui, poi il passaggio finale la copia sullo schermo; con msaa i bordi sono lisciati
+    const makeTarget = () => {
+        const RT = quality.msaa && renderer.capabilities.isWebGL2 && THREE.WebGLMultisampleRenderTarget ? THREE.WebGLMultisampleRenderTarget : THREE.WebGLRenderTarget;
+        const target = new RT(4, 4);
+        target.texture.encoding = THREE.sRGBEncoding;
+        return target;
+    };
+    let rt = makeTarget();
     const post = new THREE.ShaderMaterial({
         vertexShader: POST_VERT, fragmentShader: POST_FRAG, depthTest: false, depthWrite: false,
         uniforms: { tDiffuse: { value: rt.texture }, uTime: { value: 0 }, uRes: { value: new THREE.Vector2(4, 4) }, uDim: { value: dim } }
@@ -659,20 +448,21 @@ function createView(THREE, host) {
     };
     // il tratto a sinistra dipende dalla forma dello schermo: si rifà solo se cambia abbastanza
     // (su telefono la barra dell'indirizzo che compare e sparisce cambia di poco l'altezza)
-    let leftAspect = 0, leftTimer = 0;
+    let leftAspect = 0, leftTimer = 0, leftReq = 0;
     function placeLeft() {
-        if (!D || (Math.abs(camera.aspect - leftAspect) < leftAspect * 0.03 && (camera.aspect > 1) === (leftAspect > 1))) return;
+        if (!D || (Math.abs(camera.aspect - leftAspect) < leftAspect * 0.03 && (camera.aspect > 1) === (leftAspect > 1))) return Promise.resolve();
         leftAspect = camera.aspect;
         camera.zoom = 1; // i punti dello schermo sono pensati senza la pulsazione
         camera.updateProjectionMatrix();
         camera.updateMatrixWorld();
-        const curve = new THREE.CubicBezierCurve3(...LEFT[camera.aspect > 1 ? 'landscape' : 'portrait'].map((q) => ndcAt(...q)));
-        dnaLeft.children.forEach((m) => m.geometry.dispose());
-        dnaLeft.clear();
-        const s0 = D.S[60], K = POSE.k;
-        D.parts.forEach((q) => {
-            const geo = turnAlong(THREE, D, q, curve, { from: s0, to: s0 + D.PERIOD, K, param: (d) => d / (D.step * K) });
-            if (geo) dnaLeft.add(new THREE.Mesh(geo, q.pairs ? mats.moodL : mats.chromeL));
+        const pts = LEFT[camera.aspect > 1 ? 'landscape' : 'portrait'].map((q) => ndcAt(...q).toArray());
+        const req = ++leftReq;
+        // il tratto vecchio resta finché non arriva quello nuovo
+        return buildLeft(pts, POSE.k).then((pieces) => {
+            if (req !== leftReq) return; // nel frattempo lo schermo è cambiato di nuovo
+            dnaLeft.children.forEach((m) => m.geometry.dispose());
+            dnaLeft.clear();
+            pieces.forEach((q) => dnaLeft.add(new THREE.Mesh(makeGeometry(THREE, q), q.pairs ? mats.moodL : mats.chromeL)));
         });
     }
 
@@ -720,12 +510,24 @@ function createView(THREE, host) {
 
     const lampDir = new THREE.Vector3();
     const view = {
-        setDna(data) {
-            D = data;
-            D.main.forEach((q) => dnaModel.add(new THREE.Mesh(q.geo, q.pairs ? mats.mood : mats.chrome)));
-            placeLeft();
-            ready.dna = true;
-            maybeReveal();
+        // livello di qualità più leggero (QUALITY): meno pixel e, se serve, niente bordi lisciati
+        setQuality(q) {
+            const msaaChanged = q.msaa !== quality.msaa;
+            quality = q;
+            dpr = Math.min(window.devicePixelRatio || 1, q.ratio);
+            renderer.setPixelRatio(dpr);
+            if (msaaChanged) {
+                rt.dispose();
+                rt = makeTarget();
+                post.uniforms.tDiffuse.value = rt.texture;
+            }
+            resize();
+        },
+        setDna(pieces) {
+            D = pieces;
+            pieces.forEach((q) => dnaModel.add(new THREE.Mesh(makeGeometry(THREE, q), q.pairs ? mats.mood : mats.chrome)));
+            // il filamento compare quando c'è anche il tratto a sinistra
+            placeLeft().then(() => { ready.dna = true; maybeReveal(); });
         },
         // colore del sito in questo momento (dissolvenza verso la luce più forte): pioli, nuclei, polvere, bordo della dissolvenza
         setColor(c) {
@@ -825,7 +627,7 @@ async function init() {
     if (!views.length) return;
 
     // il filamento arriva dopo: fino ad allora si vedono la polvere e le gocce
-    const dna = loadDna(THREE).then((D) => views.forEach((v) => v.setDna(D))).catch(() => { /* resta lo sfondo senza filamento */ });
+    const dna = loadDna().then((D) => views.forEach((v) => v.setDna(D))).catch(() => { /* resta lo sfondo senza filamento */ });
 
     // Il colore del sito segue la luce che si riflette di più: passa piano verso quella luce (FOLLOW_FADE) e la parola
     // sotto il motto cambia solo se un'altra luce resta più forte di almeno il 15% per FOLLOW_HOLD millisecondi
@@ -874,17 +676,37 @@ async function init() {
     const sound = tap ? startHeartSound({ bpm: BPM, gap: BEAT_GAP, t0 }) : null;
     let running = false;
     let lastDraw = 0;
+    // Freno automatico: si misura quanto passa fra un fotogramma disegnato e l'altro, a gruppi di 2 secondi, a partire da
+    // 3 secondi dopo l'arrivo del filamento (l'entrata e la preparazione degli shader non contano). Se la media è
+    // troppo alta si passa al livello di qualità successivo e si aspetta un secondo prima di misurare di nuovo.
+    let level = Math.max(...[...hosts].map(firstLevel));
+    const brake = { from: Infinity, sum: 0, n: 0 };
+    dna.then(() => { brake.from = performance.now() + 3000; });
+    function measure(t, dt) {
+        if (t < brake.from || dt > 250) return; // prima del via, o dopo una pausa (scheda nascosta)
+        brake.sum += Math.min(dt, 100);
+        brake.n++;
+        if (t - brake.from < 2000) return;
+        const slow = brake.sum / brake.n > 1000 / QUALITY[level].fps * SLOW;
+        Object.assign(brake, { from: t + (slow ? 1000 : 0), sum: 0, n: 0 });
+        if (slow && level < QUALITY.length - 1) {
+            level++;
+            views.forEach((v) => v.setQuality(QUALITY[level]));
+        }
+    }
     function frame(t) {
         if (document.hidden) { running = false; return; }
         // Schermi a 120 Hz o più: disegna un fotogramma sì e uno no, così restano almeno 60 al secondo
-        // (a 60 e 90 Hz non cambia nulla). Il movimento dipende da t: velocità, battito e luci restano uguali.
-        if (t - lastDraw < 10) { requestAnimationFrame(frame); return; }
+        // (a 60 e 90 Hz non cambia nulla). All'ultimo livello di qualità uno ogni ~33 ms (30 al secondo).
+        // Il movimento dipende da t: velocità, battito e luci restano uguali.
+        if (t - lastDraw < (QUALITY[level].fps < 60 ? 30 : 10)) { requestAnimationFrame(frame); return; }
+        measure(t, t - lastDraw);
         lastDraw = t;
-        const bsec = Math.max(0, (t - t0) / 1000), kick = (t - state.kickAt) / 1000;
+        const bsec = Math.max(0, (t - t0) / 1000);
         state.ph = bsec % (60 / BPM);
-        state.beat = Math.min(1, Math.max(beatAt(bsec), pulse(kick, 0.13) * 1.2));
+        state.beat = beatAt(bsec);
         // il nucleo delle cellule risponde un attimo dopo la membrana
-        state.nucBeat = Math.min(1, Math.max(beatAt(Math.max(0, bsec - 0.07)), pulse(kick - 0.07, 0.13) * 1.2));
+        state.nucBeat = beatAt(Math.max(0, bsec - 0.07));
         views.forEach((v) => v.render(t));
         followLight(t, false);
         if (sound) sound.tick(t);
@@ -897,17 +719,6 @@ async function init() {
     }
     document.addEventListener('visibilitychange', start);
     start();
-
-    if (tap) {
-        // clic dove il cursore è una croce: un battito forte in più, anche del cuore
-        document.addEventListener('click', (e) => {
-            if (!(e.target instanceof Element) || getComputedStyle(e.target).cursor !== 'crosshair') return;
-            const sel = window.getSelection();
-            if (sel && !sel.isCollapsed) return;
-            state.kickAt = performance.now();
-            if (sound) sound.kick();
-        });
-    }
 }
 
 // parte dopo il caricamento della pagina, così non rallenta il resto

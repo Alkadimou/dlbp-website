@@ -41,7 +41,7 @@
     transition: opacity 1.2s ease;
 }
 .site-background.ready canvas { opacity: 1; }
-/* pagine pubbliche (sfondo con data-tap): croce ovunque, un clic dà un battito forte (background.js);
+/* pagine pubbliche (sfondo con data-tap): croce ovunque (dal 22/10/2026 il clic non dà più un battito);
    link, bottoni e campi tengono il loro cursore */
 @media (prefers-reduced-motion: no-preference) {
     html:has(.site-background[data-tap]) body { cursor: crosshair; }
