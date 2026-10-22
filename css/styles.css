@@ -42,7 +42,6 @@ input[type="reset"],
 .btn-danger,
 .btn-success,
 .event-card-btn,
-.custom-modal-btn,
 .nav-right button {
     height: var(--btn-height, 48px) !important;
     min-height: var(--btn-height, 48px) !important;
@@ -384,9 +383,6 @@ html:has(.modal:not(.hidden)) {
 }
 
 .stagger-1 { animation-delay: 0.1s; opacity: 0; }
-.stagger-2 { animation-delay: 0.2s; opacity: 0; }
-.stagger-3 { animation-delay: 0.3s; opacity: 0; }
-.stagger-4 { animation-delay: 0.4s; opacity: 0; }
 
 /* Custom Modal */
 .custom-modal-overlay {
@@ -1508,8 +1504,6 @@ html::-webkit-scrollbar {
 .flex-row-between { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
 .flex-row-center { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 1rem; }
 .flex-row-end { display: flex; justify-content: flex-end; align-items: center; flex-wrap: wrap; gap: 1rem; }
-.flex-row-left { display: flex; align-items: flex-start; gap: 1rem; text-align: left; }
-.flex-col-center { display: flex; flex-direction: column; align-items: center; }
 .flex-col-left { display: flex; flex-direction: column; gap: 1rem; width: 100%; text-align: left; }
 .flex-1 { flex: 1; }
 .flex-2 { flex: 2; }
@@ -1550,7 +1544,6 @@ html::-webkit-scrollbar {
 .cursor-pointer { cursor: pointer; }
 .uppercase { text-transform: uppercase; }
 .text-danger { color: rgba(255, 100, 100, 0.8) !important; }
-.text-success { color: rgba(100, 255, 100, 0.9) !important; }
 .text-warning { color: rgba(255, 200, 100, 0.8) !important; }
 .modal .modal-close-btn {
     display: flex !important;

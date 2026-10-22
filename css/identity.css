@@ -46,7 +46,7 @@
 @media (prefers-reduced-motion: no-preference) {
     html:has(.site-background[data-tap]) body { cursor: crosshair; }
     /* icone social non ancora attive: non sono comandi, prendono la croce anche loro */
-    html:has(.site-background[data-tap]) :is(.social-bottom, .footer-links) span { cursor: inherit; }
+    html:has(.site-background[data-tap]) .social-bottom span { cursor: inherit; }
     :where(html:has(.site-background[data-tap])) :where(a[href], button, select, label, summary, [role="button"]) { cursor: pointer; }
     :where(html:has(.site-background[data-tap])) :where(input:not([type="checkbox"], [type="radio"]), textarea) { cursor: text; }
 }
@@ -57,11 +57,8 @@ body,
 .landing-page { font-family: var(--f-body); }
 
 .event-card-title,
-.section-title,
-.page-title,
 .login-card h2,
 #login-section h2,
-#success-section h2,
 .modal-content h2,
 .registration-gate h3 {
     font-family: var(--f-display) !important;
@@ -73,8 +70,6 @@ body,
 }
 .event-card-title { font-size: 2.1rem; }
 .event-card-title.text-lg { font-size: 2.4rem !important; }
-.section-title { font-size: 3rem; }
-.page-title { font-size: 2.6rem; }
 .login-card h2, #login-section h2 { font-size: 2.6rem !important; margin-bottom: 1rem !important; }
 .modal-content h2 { font-size: 2.4rem !important; }
 /* INGRESSO RISERVATO (evento con password) */

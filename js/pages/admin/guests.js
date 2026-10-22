@@ -168,8 +168,6 @@ function renderTable() {
             statusHtml = `<span class="status-entrato" style="color: #4CAF50; font-weight: bold;">ENTRATO</span>`;
         }
 
-        const checkinTimeHtml = user.checked_in && user.check_in_time ? user.check_in_time.toLocaleTimeString('it-IT', {hour: '2-digit', minute:'2-digit'}) : '-';
-        
         let actionsHtml = `
             <div style="display: flex; gap: 0.5rem; justify-content: flex-end; flex-wrap: wrap;">
                 <button class="checkin-btn action-btn-icon check" data-id="${user.id}" title="Segna Presente" style="${user.checked_in ? 'opacity:0.3; cursor:default;' : ''}">🚪</button>
