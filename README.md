@@ -120,7 +120,7 @@ Un link con `?pr=<codice>` (per esempio `https://dlbp.art/?pr=mario`) collega l'
 ### In tutte le pagine
 - Menu AREA RISERVATA con i link ad Admin, Scanner e Area PR.
 - Footer con le icone social: per ora è attivo solo Instagram.
-- Nel footer ci sono i crediti dei modelli 3D, a destra su computer e sotto il copyright su tablet e telefono, ognuno con il link alla pagina del modello su Sketchfab: "DNA 3D: Troy · CC BY 4.0" in tutte le pagine; in home, uno sotto l'altro, anche "Cellula 3D: Physio CG · CC BY 4.0" e "Cuore 3D: Mox3DModels · CC BY 4.0".
+- Nel footer ci sono i crediti dei modelli 3D, a destra su computer e sotto il copyright su tablet e telefono, ognuno con il link alla pagina del modello su Sketchfab: "DNA 3D: Troy · CC BY 4.0" in tutte le pagine; in home e in eventi, uno sotto l'altro, anche "Cellula 3D: Physio CG · CC BY 4.0" e "Cuore 3D: Mox3DModels · CC BY 4.0".
 - Su telefono la pagina non si ingrandisce (niente pizzico né doppio tocco) e scorre solo dall'alto in basso (il rimbalzo ai bordi resta): meta viewport, `touch-action` (su ogni elemento, così vale anche dentro le finestre) in `css/styles.css` e `js/core/no-zoom.js`.
 
 ## Aspetto
@@ -128,7 +128,7 @@ Un link con `?pr=<codice>` (per esempio `https://dlbp.art/?pr=mario`) collega l'
 Dal 27/09/2026 l'identità è "cromo nero, colore vivo": nero, cromo e i colori del motto.
 Dal 21/10/2026 lo sfondo è il filamento di DNA "DNA Procedural EEVEE" di Troy (Sketchfab, licenza CC BY 4.0, file `assets/dna.glb`) che gira piano su sé stesso, senza glitch, al posto dell'elica disegnata dal codice.
 Dal 22/10/2026:
-- in home al centro c'è il cuore "Anatomical Heart" di Mox3DModels (CC BY 4.0, `assets/heart-80k.glb`, `heart-30k.glb` sui telefoni) che batte, con sette cellule lontane "Neutrophil" di Physio CG (CC BY 4.0, `assets/cellula-8k.glb`);
+- in home (e dal 22/10 anche in Eventi) al centro c'è il cuore "Anatomical Heart" di Mox3DModels (CC BY 4.0, `assets/heart-80k.glb`, `heart-30k.glb` sui telefoni) che batte, con sette cellule lontane "Neutrophil" di Physio CG (CC BY 4.0, `assets/cellula-8k.glb`);
 - il fondo è nero: niente bagliore di fondo, niente zoom della scena sul battito, niente cambio colore sul battito;
 - quattro luci invisibili, una per colore del motto, girano attorno alla scena: si vedono solo i loro riflessi colorati che scorrono su cromo, cuore, cellule e gocce.
 Le licenze chiedono di citare gli autori: i crediti sono nel footer e non vanno tolti.
@@ -153,7 +153,7 @@ Le licenze chiedono di citare gli autori: i crediti sono nel footer e non vanno 
 - Il battito "tum-tum" a 30 BPM (`BPM`) fa battere il cuore e le cellule (il nucleo un attimo dopo la membrana) e si sente sulle pagine pubbliche.
 
 **Attributi dello sfondo** (`<div class="site-background">`):
-- `data-heart`: home. Cuore e cellule lontane al centro della composizione (non con `data-lite`);
+- `data-heart`: home ed eventi. Cuore e cellule lontane al centro della composizione (non con `data-lite`);
 - `data-dim`: sfondo più scuro;
 - `data-lite`: versione leggera, usata dallo scanner;
 - `data-tap`: pagine pubbliche. Il cursore è una croce su tutta la pagina (tranne link, bottoni e campi) e un clic dove c'è la croce dà un battito forte, anche al cuore.
@@ -161,7 +161,7 @@ Le licenze chiedono di citare gli autori: i crediti sono nel footer e non vanno 
 **Altro:**
 - Attorno al centro fluttuano 12 gocce di metallo liquido, come nella prova (non nello scanner).
 - Il filamento (circa 1,5 MB, compresso da GitHub Pages) e in home il cuore e la cellula (circa 1,6 MB, 0,75 MB sui telefoni) arrivano dopo il resto della pagina e compaiono insieme con una dissolvenza; prima si vedono solo la polvere e le gocce. Il cuore e la cellula si leggono con il GLTFLoader di three r128 (jsDelivr), caricato solo in home.
-- Composizione (posizione, prolungamenti, tratto a sinistra, cuore e cellule lontane) e camera sono quelle approvate nella prova del 21/10/2026: `POSE`, `EXTENSIONS`, `LEFT`, `HEART_SCALE` e `FAR` in `background.js`. Eventi, iscrizione e pagine staff hanno solo il DNA (il cuore al centro coprirebbe schede e moduli).
+- Composizione (posizione, prolungamenti, tratto a sinistra, cuore e cellule lontane) e camera sono quelle approvate nella prova del 21/10/2026: `POSE`, `EXTENSIONS`, `LEFT`, `HEART_SCALE` e `FAR` in `background.js`. Dal 22/10 il cuore c'è anche nella pagina Eventi, dietro le schede (sfondo scurito al 60%); iscrizione e pagine staff hanno solo il DNA (il cuore al centro coprirebbe i moduli).
 - Finestre (avvisi e conferme di `js/core/modal.js`, "Iscrizione completata"): pannello nero con bordo sottile e angoli vivi, senza sfocatura. Il bottone principale (OK, CONFERMA) è pieno nel colore del sito; ANNULLA è vuoto, con il bordo sottile.
 - Bottoni dell'area staff: ELIMINA ed ESCI sono vuoti con il bordo rosso, FILTRI è vuoto con il bordo sottile; solo i bottoni principali sono pieni nel colore del sito.
 - Sugli schermi a 120 Hz o più lo sfondo viene disegnato al massimo circa 60 volte al secondo.
