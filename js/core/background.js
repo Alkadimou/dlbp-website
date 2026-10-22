@@ -10,8 +10,8 @@
 // - data-heart (home): cuore e cellule lontane al centro della composizione;
 // - data-lite (scanner): versione leggera, senza cuore;
 // - data-dim: sfondo più scuro;
-// - data-tap (pagine pubbliche): cursore a croce su tutta la pagina tranne link, bottoni e campi (css/identity.css),
-//   un clic dove c'è la croce dà un battito forte; lì si sente anche il battito (js/core/heart-sound.js).
+// - data-tap (pagine pubbliche): cursore a croce su tutta la pagina tranne link, bottoni e campi (css/identity.css);
+//   lì si sente anche il battito (js/core/heart-sound.js). Dal 22/10/2026 il clic non dà più un battito in più.
 // Battito "tum-tum" a BPM: fa battere il cuore e le cellule (non c'è più lo zoom della scena).
 // Sugli schermi a 120 Hz o più disegna al massimo circa 60 fotogrammi al secondo, per consumare meno batteria.
 // Qualità (QUALITY): parte leggera e, se il dispositivo non tiene il ritmo, si abbassa da sola.
@@ -71,7 +71,7 @@ function setCssColor(hex, deep) {
 
 // mood: la luce che in questo momento dà il colore al sito; moodAt: quando è cambiata (per la sequenza sotto il motto);
 // beat/ph: forza (0-1) e fase (secondi) del battito; lights: quanto si vede ogni luce, lo scrive la scena a ogni fotogramma
-const state = { mood: 'breathe', moodAt: performance.now(), beat: 0, ph: 0, nucBeat: 0, kickAt: -1e9, lights: null };
+const state = { mood: 'breathe', moodAt: performance.now(), beat: 0, ph: 0, nucBeat: 0, lights: null };
 document.documentElement.dataset.mood = state.mood;
 setCssColor(MOODS[state.mood].hex, MOODS[state.mood].deep);
 
@@ -702,11 +702,11 @@ async function init() {
         if (t - lastDraw < (QUALITY[level].fps < 60 ? 30 : 10)) { requestAnimationFrame(frame); return; }
         measure(t, t - lastDraw);
         lastDraw = t;
-        const bsec = Math.max(0, (t - t0) / 1000), kick = (t - state.kickAt) / 1000;
+        const bsec = Math.max(0, (t - t0) / 1000);
         state.ph = bsec % (60 / BPM);
-        state.beat = Math.min(1, Math.max(beatAt(bsec), pulse(kick, 0.13) * 1.2));
+        state.beat = beatAt(bsec);
         // il nucleo delle cellule risponde un attimo dopo la membrana
-        state.nucBeat = Math.min(1, Math.max(beatAt(Math.max(0, bsec - 0.07)), pulse(kick - 0.07, 0.13) * 1.2));
+        state.nucBeat = beatAt(Math.max(0, bsec - 0.07));
         views.forEach((v) => v.render(t));
         followLight(t, false);
         if (sound) sound.tick(t);
@@ -719,17 +719,6 @@ async function init() {
     }
     document.addEventListener('visibilitychange', start);
     start();
-
-    if (tap) {
-        // clic dove il cursore è una croce: un battito forte in più, anche del cuore
-        document.addEventListener('click', (e) => {
-            if (!(e.target instanceof Element) || getComputedStyle(e.target).cursor !== 'crosshair') return;
-            const sel = window.getSelection();
-            if (sel && !sel.isCollapsed) return;
-            state.kickAt = performance.now();
-            if (sound) sound.kick();
-        });
-    }
 }
 
 // parte dopo il caricamento della pagina, così non rallenta il resto

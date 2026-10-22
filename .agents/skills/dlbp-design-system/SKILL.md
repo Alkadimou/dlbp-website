@@ -75,7 +75,7 @@ Chi cambia la palette la cambia in entrambi i file e avvisa il proprietario, che
   - `data-dim="0.5"`: sfondo più scuro, per le pagine con molti contenuti;
   - `data-heart`: cuore e cellule lontane, in home ed eventi;
   - `data-lite`: versione leggera, usata dallo scanner (senza cuore);
-  - `data-tap`: pagine pubbliche. Il cursore è una croce su tutta la pagina tranne link, bottoni e campi, e un clic dove c'è la croce dà un battito forte.
+  - `data-tap`: pagine pubbliche. Il cursore è una croce su tutta la pagina tranne link, bottoni e campi, (dal 22/10/2026 il clic non dà più un battito in più).
 - **Home:** `#dna-seq` è la sequenza di DNA che si decifra nella parola della luce che dà il colore al sito. Motto e sequenza hanno un'ombra nera forte a strati, perché stanno sopra il cuore.
 - **"Riduci movimento" attivo:** la scena resta su un fotogramma fermo e spariscono la croce e il riflesso dei bottoni.
 

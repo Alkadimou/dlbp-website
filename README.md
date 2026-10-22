@@ -156,7 +156,7 @@ Le licenze chiedono di citare gli autori: i crediti sono nel footer e non vanno 
 - `data-heart`: home ed eventi. Cuore e cellule lontane al centro della composizione (non con `data-lite`);
 - `data-dim`: sfondo più scuro;
 - `data-lite`: versione leggera, usata dallo scanner;
-- `data-tap`: pagine pubbliche. Il cursore è una croce su tutta la pagina (tranne link, bottoni e campi) e un clic dove c'è la croce dà un battito forte, anche al cuore.
+- `data-tap`: pagine pubbliche. Il cursore è una croce su tutta la pagina (tranne link, bottoni e campi) e si sente il battito. Dal 22/10/2026 il clic non dà più un battito in più.
 
 **Altro:**
 - Attorno al centro fluttuano 12 gocce di metallo liquido, come nella prova (non nello scanner).
