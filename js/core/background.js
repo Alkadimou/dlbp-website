@@ -3,7 +3,7 @@
 // attorno alla scena: si vedono solo i loro riflessi colorati che scorrono su cromo, cuore e cellule. Il colore del
 // sito (--mood su <html>) e la parola sotto il motto seguono la luce che si riflette di più.
 // Modelli (CC BY 4.0, crediti nel footer): DNA "DNA Procedural EEVEE" di Troy (assets/dna.glb),
-// cuore "Anatomical Heart" di Mox3DModels (assets/heart-30k.glb),
+// cuore "Anatomical Heart" di Mox3DModels (assets/heart-80k.glb, heart-30k.glb sui telefoni),
 // cellula "Neutrophil" di Physio CG (assets/cellula-3k.glb, semplificata da cellula-8k.glb).
 // Il filamento si prepara in js/core/dna-worker.js, così il caricamento non blocca la pagina.
 // Si attiva su ogni elemento .site-background della pagina:
@@ -221,8 +221,9 @@ const FAR = {
     portrait: [[-0.6, -0.48, 70, 0.74], [0.68, 0.58, 95, 0.81], [-0.45, 0.8, 125, 0.88], [0.5, -0.7, 62, 0.61], [0.1, -0.88, 150, 0.94], [-0.82, 0.12, 160, 0.94], [0.86, -0.08, 130, 0.81]],
     landscape: [[-0.6, -0.55, 70, 0.74], [0.6, 0.6, 95, 0.81], [-0.38, 0.8, 125, 0.88], [0.68, -0.68, 62, 0.61], [0.15, -0.86, 150, 0.94], [-0.86, 0.2, 160, 0.94], [0.9, 0.05, 130, 0.81]]
 };
-// dal 22/10/2026 il cuore leggero (30 mila triangoli) e la cellula leggera (meno di 3 mila) su tutti i dispositivi
-const HEART_URL = asset('heart-30k.glb');
+// cuore: sui computer quello dettagliato (80 mila triangoli, più nitido), sui telefoni e sui dispositivi poco potenti
+// quello leggero (30 mila); cellula leggera (meno di 3 mila triangoli) su tutti i dispositivi
+const HEART_URL = asset(PHONE || (navigator.hardwareConcurrency || 8) <= 4 ? 'heart-30k.glb' : 'heart-80k.glb');
 const CELL_URL = asset('cellula-3k.glb');
 
 // Scarica cuore e cellula (una volta sola per pagina), con il GLTFLoader di three r128
