@@ -137,8 +137,8 @@ Le licenze chiedono di citare gli autori: i crediti sono nel footer e non vanno 
 
 | Parola | Nome nel codice | Colore |
 |---|---|---|
-| Drink | `brace` | `#ff4a1c` |
-| Love | `magenta` | `#8a2c80` |
+| Drink | `magenta` | `#8a2c80` |
+| Love | `brace` | `#e0281c` |
 | Breathe | `breathe` | `#1fa39a` |
 | Peace | `ghiaccio` | `#cfe6ff` |
 

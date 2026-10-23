@@ -26,12 +26,12 @@ const asset = (name) => new URL('../../assets/' + name, import.meta.url).href;
 const DNA_URL = asset('dna.glb');
 
 export const MOODS = {
-    brace:    { word: 'drink',   hex: 0xff4a1c, deep: 0x3a0802 }, // brace (dal 21/10/2026 al posto del rosso strobo)
-    magenta:  { word: 'love',    hex: 0x8a2c80, deep: 0x250a24 }, // bordeaux violaceo
+    brace:    { word: 'love',    hex: 0xe0281c, deep: 0x3a0604 }, // brace "tizzone", più rossa (dal 23/10/2026 è il colore di Love)
+    magenta:  { word: 'drink',   hex: 0x8a2c80, deep: 0x250a24 }, // bordeaux violaceo (dal 23/10/2026 è il colore di Drink)
     breathe:  { word: 'breathe', hex: 0x1fa39a, deep: 0x062f35 }, // petrolio
     ghiaccio: { word: 'peace',   hex: 0xcfe6ff, deep: 0x34506e }  // ghiaccio, luce del mattino
 };
-const ORDER = ['brace', 'magenta', 'breathe', 'ghiaccio']; // le quattro luci, nell'ordine del motto
+const ORDER = ['magenta', 'brace', 'breathe', 'ghiaccio']; // le quattro luci, nell'ordine del motto (Drink, Love, Breathe, Peace)
 const BPM = 30;         // battito tum-tum
 const SPIN = 0.12;      // rotazione del filamento su sé stesso, in radianti al secondo (un giro ogni ~52 s)
 const ORBIT = 0.22;     // giro delle luci attorno alla scena, in radianti al secondo (un giro ogni ~29 s)
