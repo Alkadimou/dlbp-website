@@ -23,8 +23,8 @@ Chi cambia la palette la cambia in entrambi i file e avvisa il proprietario, che
 
 | Parola | Nome nel codice | Colore | Profondo | Testo sui bottoni |
 |---|---|---|---|---|
-| Drink | `brace` | `#ff4a1c` brace | `#3a0802` | scuro |
-| Love | `magenta` | `#8a2c80` bordeaux violaceo | `#250a24` | chiaro |
+| Drink | `magenta` | `#8a2c80` bordeaux violaceo | `#250a24` | chiaro |
+| Love | `brace` | `#e0281c` brace "tizzone" | `#3a0604` | chiaro |
 | Breathe | `breathe` | `#1fa39a` petrolio | `#062f35` | scuro |
 | Peace | `ghiaccio` | `#cfe6ff` ghiaccio | `#34506e` | scuro |
 

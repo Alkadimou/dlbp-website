@@ -7,8 +7,8 @@ I valori veri sono in css/identity.css e js/core/background.js.
 1. BASE NERA, UN COLORE ALLA VOLTA
    - Fondo #050508, pannelli rgba(5,5,8,0.8), linee rgba(236,234,244,0.12), testo #eceaf4.
    - Un solo colore del motto per volta:
-       Drink   #ff2a3c (profondo #4d0712)
-       Love    #8a2c80 (profondo #250a24)
+       Drink   #8a2c80 (profondo #250a24)
+       Love    #e0281c (profondo #3a0604)
        Breathe #1fa39a (profondo #062f35)
        Peace   #cfe6ff (profondo #34506e)
    - Il sito parte da Breathe e cambia colore da solo ogni 3 glitch (circa ogni 7 s),
