@@ -110,7 +110,7 @@ void main(){
 const POST_VERT = 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }';
 // Passaggio finale: leggera separazione dei colori ai bordi, righe del monitor, grana, vignetta, effetto liquido
 const POST_FRAG = `
-uniform sampler2D tDiffuse; uniform float uTime; uniform vec2 uRes; uniform float uDim;
+uniform sampler2D tDiffuse; uniform float uTime; uniform vec2 uRes; uniform float uDim; uniform float uPx;
 varying vec2 vUv;
 float rnd(vec2 p){ return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
 void main(){
@@ -122,8 +122,11 @@ void main(){
   vec2 fc = vUv - 0.5;
   vec2 ca = fc * 0.006;
   vec3 col = vec3(texture2D(tDiffuse, uv + ca).r, texture2D(tDiffuse, uv).g, texture2D(tDiffuse, uv - ca).b);
-  col *= 0.94 + 0.06 * sin(vUv.y * uRes.y * 1.5708);
-  col += (rnd(vUv * uRes + fract(uTime * 0.37)) - 0.5) * 0.04;
+  // righe di monitor (una ogni 3 punti dello schermo, qualunque sia la densità di pixel, scuriscono fino al 16%) e grana
+  // a grani di un punto; dal 30/10/2026 più visibili (prima 6% e grana 0,04)
+  vec2 px = vUv * uRes / uPx;
+  col *= 0.84 + 0.16 * (0.5 + 0.5 * sin(px.y * 2.0944));
+  col += (rnd(floor(px) + fract(uTime * 0.37) * 91.0) - 0.5) * 0.09;
   col *= smoothstep(1.05, 0.3, length(fc * vec2(1.0, 1.15)) * 1.25);
   col *= uDim * 0.75; // tutta la scena un po' più buia
   gl_FragColor = vec4(col, 1.0);
@@ -457,7 +460,7 @@ function createView(THREE, host) {
     let rt = makeTarget();
     const post = new THREE.ShaderMaterial({
         vertexShader: POST_VERT, fragmentShader: POST_FRAG, depthTest: false, depthWrite: false,
-        uniforms: { tDiffuse: { value: rt.texture }, uTime: { value: 0 }, uRes: { value: new THREE.Vector2(4, 4) }, uDim: { value: dim } }
+        uniforms: { tDiffuse: { value: rt.texture }, uTime: { value: 0 }, uRes: { value: new THREE.Vector2(4, 4) }, uDim: { value: dim }, uPx: { value: dpr } }
     });
     const postScene = new THREE.Scene();
     postScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), post));
@@ -495,6 +498,7 @@ function createView(THREE, host) {
         renderer.setSize(w, h, false);
         rt.setSize(Math.round(w * dpr), Math.round(h * dpr));
         post.uniforms.uRes.value.set(w * dpr, h * dpr);
+        post.uniforms.uPx.value = dpr;
         camera.aspect = w / h;
         const landscape = w > h;
         drops.position.set(0, landscape ? 0 : 0.4, 0);
