@@ -24,9 +24,9 @@ Chi cambia la palette la cambia in entrambi i file e avvisa il proprietario, che
 | Parola | Nome nel codice | Colore |
 |---|---|---|
 | Drink | `magenta` | `#8a2c80` bordeaux violaceo |
-| Love | `brace` | `#ff0000` rosso puro (dal 30/10/2026; prima `#e0281c` Tizzone) |
+| Love | `brace` | `#ff4500` rosso arancio (dal 30/10/2026; prima `#e0281c` Tizzone) |
 | Breathe | `breathe` | `#1fa39a` petrolio |
-| Peace | `ghiaccio` | `#ffffff` bianco puro (dal 30/10/2026; prima `#cfe6ff` ghiaccio) |
+| Peace | `ghiaccio` | `#cfe6ff` ghiaccio |
 
 - **Colore del sito:** dal 30/10/2026 è fisso bianco, non segue più le luci: i colori del motto restano solo nello sfondo.
 - **Variabili CSS** (in `css/identity.css`, fisse sul bianco):

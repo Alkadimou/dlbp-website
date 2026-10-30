@@ -145,9 +145,9 @@ Le licenze chiedono di citare gli autori: i crediti sono nel footer e non vanno 
 | Parola | Nome nel codice | Colore |
 |---|---|---|
 | Drink | `magenta` | `#8a2c80` |
-| Love | `brace` | `#ff0000` (dal 30/10/2026; prima `#e0281c`) |
+| Love | `brace` | `#ff4500` (dal 30/10/2026; prima `#e0281c`) |
 | Breathe | `breathe` | `#1fa39a` |
-| Peace | `ghiaccio` | `#ffffff` (dal 30/10/2026; prima `#cfe6ff`) |
+| Peace | `ghiaccio` | `#cfe6ff` |
 
 - I colori sono definiti in `js/core/background.js` (`MOODS`, e `LAMPS` per l'angolo da cui parte ogni luce).
 - Il colore del sito (menu, bottoni, link) è fisso bianco: `--mood`, `--mood-deep`, `--on-mood` (testo sopra il colore) e `--mood-text` in `css/identity.css`.
