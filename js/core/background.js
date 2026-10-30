@@ -1,7 +1,7 @@
 // Sfondo del sito: filamento di DNA in cromo che gira piano su sé stesso (Three.js) e, in home, il cuore che batte
-// con le cellule lontane. Dal 22/10/2026 il fondo è nero e quattro luci invisibili, una per colore del motto, girano
-// attorno alla scena: si vedono solo i loro riflessi colorati che scorrono su cromo, cuore e cellule. Il colore del
-// sito (--mood su <html>) e la parola sotto il motto seguono la luce che si riflette di più.
+// con le cellule lontane e le gocce. Dal 30/10/2026 tutti i modelli sono cromo in una stanza buia e quattro luci, una
+// per colore del motto, girano attorno alla scena (un giro ogni 15 secondi): si vedono solo i loro riflessi colorati.
+// Il tema del sito è fisso bianco (css/identity.css), non segue più le luci.
 // Modelli (CC BY 4.0, crediti nel footer): DNA "DNA Procedural EEVEE" di Troy (assets/dna.glb),
 // cuore "Anatomical Heart" di Mox3DModels (assets/heart-30k.glb),
 // cellula "Neutrophil" di Physio CG (assets/cellula-3k.glb, semplificata da cellula-8k.glb).
@@ -25,18 +25,26 @@ const GLTF_URL = 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders
 const asset = (name) => new URL('../../assets/' + name, import.meta.url).href;
 const DNA_URL = asset('dna.glb');
 
-export const MOODS = {
-    brace:    { word: 'love',    hex: 0xe0281c, deep: 0x3a0604 }, // brace "tizzone", più rossa (dal 23/10/2026 è il colore di Love)
-    magenta:  { word: 'drink',   hex: 0x8a2c80, deep: 0x250a24 }, // bordeaux violaceo (dal 23/10/2026 è il colore di Drink)
-    breathe:  { word: 'breathe', hex: 0x1fa39a, deep: 0x062f35 }, // petrolio
-    ghiaccio: { word: 'peace',   hex: 0xcfe6ff, deep: 0x34506e }  // ghiaccio, luce del mattino
+// colori del motto (le quattro luci, le particelle). Dal 30/10/2026 Love è il rosso puro #FF0000 e Peace il bianco puro
+// #FFFFFF (prima Tizzone #E0281C e ghiaccio #CFE6FF)
+const MOODS = {
+    magenta:  { hex: 0x8a2c80 }, // Drink, bordeaux violaceo (dal 23/10/2026)
+    brace:    { hex: 0xff0000 }, // Love, rosso puro
+    breathe:  { hex: 0x1fa39a }, // Breathe, petrolio
+    ghiaccio: { hex: 0xffffff }  // Peace, bianco puro
 };
-const ORDER = ['magenta', 'brace', 'breathe', 'ghiaccio']; // le quattro luci, nell'ordine del motto (Drink, Love, Breathe, Peace)
+// Le quattro luci partono dai quattro angoli e girano nell'ordine del motto: Love in basso a destra, Peace in alto a
+// sinistra, Drink in basso a sinistra, Breathe in alto a destra. LAMP_POWER: intensità di ognuna.
+const LAMPS = [
+    { mood: 'brace', at: [11, -6.5] }, { mood: 'ghiaccio', at: [-11, 7.5] },
+    { mood: 'magenta', at: [-11, -6.5] }, { mood: 'breathe', at: [11, 7.5] }
+];
+const LAMP_POWER = 0.6;
+// giro su un'ellisse 11 x 8 attorno al cuore, passando davanti e dietro: ogni luce parte dal punto vicino al suo angolo
+const LAMP_START = LAMPS.map(({ at }) => Math.atan2(at[1] / 8, at[0] / 11));
 const BPM = 30;         // battito tum-tum
-const SPIN = 0.12;      // rotazione del filamento su sé stesso, in radianti al secondo (un giro ogni ~52 s)
-const ORBIT = 0.22;     // giro delle luci attorno alla scena, in radianti al secondo (un giro ogni ~29 s)
-const FOLLOW_HOLD = 2000; // la luce che dà il colore al sito cambia solo se un'altra resta più forte per 2 secondi
-const FOLLOW_FADE = 0.8;  // secondi della dissolvenza del colore del sito verso la nuova luce
+const SPIN = Math.PI * 2 / 60; // rotazione del filamento su sé stesso, un giro ogni 60 s come le cellule
+const ORBIT = Math.PI * 2 / 15; // giro delle luci attorno alla scena, un giro ogni 15 secondi
 
 // Livelli di qualità, dal più bello al più leggero: ratio = pixel disegnati per ogni punto dello schermo (al massimo),
 // msaa = bordi lisciati, fps = fotogrammi al secondo. I computer partono dal primo (il più nitido), i telefoni dal terzo,
@@ -53,36 +61,21 @@ const PHONE = Math.min(screen.width, screen.height) < 700;
 const SLOW = 1.3; // i fotogrammi sono "in ritardo" se arrivano in media il 30% più tardi del previsto
 const firstLevel = (host) => (host.hasAttribute('data-lite') ? 3 : PHONE ? 2 : 0);
 
-const cssHex = (n) => '#' + n.toString(16).padStart(6, '0');
-
-// luminanza relativa (WCAG) di un colore 0xRRGGBB
-function luminance(n) {
-    const lin = (c) => { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
-    return 0.2126 * lin((n >> 16) & 255) + 0.7152 * lin((n >> 8) & 255) + 0.0722 * lin(n & 255);
-}
-
-// colore del sito (0xRRGGBB): lo usa il CSS come --mood, --mood-deep e --on-mood (testo dei bottoni pieni)
-function setCssColor(hex, deep) {
-    const root = document.documentElement.style;
-    root.setProperty('--mood', cssHex(hex));
-    root.setProperty('--mood-deep', cssHex(deep));
-    root.setProperty('--on-mood', luminance(hex) < 0.18 ? '#f3f2ee' : '#050508');
-}
-
-// mood: la luce che in questo momento dà il colore al sito; moodAt: quando è cambiata (per la sequenza sotto il motto);
-// beat/ph: forza (0-1) e fase (secondi) del battito; lights: quanto si vede ogni luce, lo scrive la scena a ogni fotogramma
-const state = { mood: 'breathe', moodAt: performance.now(), beat: 0, ph: 0, nucBeat: 0, lights: null };
-document.documentElement.dataset.mood = state.mood;
-setCssColor(MOODS[state.mood].hex, MOODS[state.mood].deep);
+// beat/ph: forza (0-1) e fase (secondi) del battito, li scrive frame in init
+const state = { beat: 0, ph: 0 };
 
 const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // battito: un colpo che sale subito e si spegne; il "tum-tum" ne fa due, il secondo più debole
-const pulse = (t, decay) => (t < 0 ? 0 : (1 - Math.exp(-t / 0.014)) * Math.exp(-t / decay));
+// il colpo sale e scende piano, come se il cuore spingesse contro un liquido (dal 29/10/2026; prima salita 0,014 s)
+const RISE = 0.06;
+const pulseRaw = (t, decay) => (t < 0 ? 0 : (1 - Math.exp(-t / RISE)) * Math.exp(-t / decay));
+// diviso per il suo massimo, così il colpo resta forte come prima
+const pulse = (t, decay) => { const tp = RISE * Math.log(1 + decay / RISE); return pulseRaw(t, decay) / pulseRaw(tp, decay); };
 const BEAT_GAP = Math.min(60 / BPM * 0.34, 0.24); // secondi fra il "tum" e il secondo "tum"
 function beatAt(sec) {
     const ph = sec % (60 / BPM);
-    return Math.min(1, pulse(ph, 0.075) + 0.6 * pulse(ph - BEAT_GAP, 0.07));
+    return Math.min(1, pulse(ph, 0.16) + 0.6 * pulse(ph - BEAT_GAP, 0.15));
 }
 
 function loadScript(src) {
@@ -98,34 +91,41 @@ function loadScript(src) {
 const loadThree = () => (window.THREE ? Promise.resolve(window.THREE) : loadScript(THREE_URL).then(() => window.THREE));
 
 const ENV_VERT = 'varying vec3 vDir; void main(){ vDir = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }';
-// "Studio" nero con strisce di luce bianca: è quello che il cromo riflette (i colori arrivano dalle luci che girano)
+// La stanza buia che il cromo riflette: due rettangoli di luce neutra (in basso a destra e in alto a sinistra) con il
+// centro più chiaro e un filo freddo in alto. I colori arrivano dalle quattro luci che girano.
 const ENV_FRAG = `
 varying vec3 vDir;
-float band(float x, float c, float w){ return 1.0 - smoothstep(0.0, w, abs(x - c)); }
 void main(){
   vec3 d = normalize(vDir);
-  vec3 c = vec3(0.003);
-  c += vec3(7.0) * smoothstep(0.88, 0.97, d.y);
-  c += vec3(3.0) * band(d.y, 0.38, 0.045);
-  c += vec3(3.5) * band(d.x, 0.78, 0.05) * step(-0.25, d.y);
-  c += vec3(1.6) * band(d.x, -0.72, 0.035) * step(0.05, d.y);
+  vec3 c = vec3(0.0016, 0.0019, 0.0023);
+  float win = smoothstep(0.62, 0.72, d.x) * (1.0 - smoothstep(0.26, 0.38, abs(d.y + 0.48))) * (1.0 - smoothstep(0.30, 0.45, abs(d.z)))
+            + smoothstep(-0.62, -0.72, d.x) * (1.0 - smoothstep(0.26, 0.38, abs(d.y - 0.55))) * (1.0 - smoothstep(0.30, 0.45, abs(d.z)));
+  float core = smoothstep(0.74, 0.84, d.x) * (1.0 - smoothstep(0.10, 0.26, abs(d.y + 0.48)))
+             + smoothstep(-0.74, -0.84, d.x) * (1.0 - smoothstep(0.10, 0.26, abs(d.y - 0.55)));
+  c += vec3(0.4, 0.4, 0.42) * 0.6 * win + vec3(0.8, 0.8, 0.82) * 0.5 * core;
+  c += vec3(0.55, 0.62, 0.75) * 1.2 * smoothstep(0.92, 0.99, d.y);
   gl_FragColor = linearToOutputTexel(vec4(c, 1.0));
 }`;
 
 const POST_VERT = 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }';
-// Passaggio finale: leggera separazione dei colori ai bordi, righe del monitor, grana, vignetta
+// Passaggio finale: leggera separazione dei colori ai bordi, righe del monitor, grana, vignetta, effetto liquido
 const POST_FRAG = `
 uniform sampler2D tDiffuse; uniform float uTime; uniform vec2 uRes; uniform float uDim;
 varying vec2 vUv;
 float rnd(vec2 p){ return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
 void main(){
+  // l'immagine ondeggia piano e in modo irregolare, come vista attraverso un liquido denso
+  float t = uTime;
+  vec2 w = vec2(sin(vUv.y * 7.0 + t * 0.55) + 0.6 * sin(vUv.y * 15.0 - t * 0.8 + vUv.x * 4.0),
+                cos(vUv.x * 6.0 - t * 0.45) + 0.6 * cos(vUv.x * 13.0 + t * 0.7 + vUv.y * 5.0));
+  vec2 uv = vUv + w * 0.003;
   vec2 fc = vUv - 0.5;
   vec2 ca = fc * 0.006;
-  vec3 col = vec3(texture2D(tDiffuse, vUv + ca).r, texture2D(tDiffuse, vUv).g, texture2D(tDiffuse, vUv - ca).b);
+  vec3 col = vec3(texture2D(tDiffuse, uv + ca).r, texture2D(tDiffuse, uv).g, texture2D(tDiffuse, uv - ca).b);
   col *= 0.94 + 0.06 * sin(vUv.y * uRes.y * 1.5708);
   col += (rnd(vUv * uRes + fract(uTime * 0.37)) - 0.5) * 0.04;
   col *= smoothstep(1.05, 0.3, length(fc * vec2(1.0, 1.15)) * 1.25);
-  col *= uDim;
+  col *= uDim * 0.75; // tutta la scena un po' più buia
   gl_FragColor = vec4(col, 1.0);
 }`;
 
@@ -134,7 +134,8 @@ void main(){
 const LIGHTS_GLSL = `
 uniform vec3 uLD[4]; uniform vec3 uLC[4];
 vec3 lightsRefl(vec3 n, vec3 vpos){
-  vec3 r = reflect(normalize(-vpos), normalize(n)); vec3 c = vec3(0.0);
+  // raggio riflesso dalla camera al punto e poi rimbalzato: il riflesso cade dalla parte della luce
+  vec3 r = reflect(normalize(vpos), normalize(n)); vec3 c = vec3(0.0);
   for (int i = 0; i < 4; i++) { float d = max(dot(r, uLD[i]), 0.0); c += uLC[i] * (pow(d, 6.0) * 1.1 + pow(d, 60.0) * 3.5); }
   return c;
 }
@@ -148,7 +149,7 @@ float vn(vec3 p){ vec3 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f);
   return mix(mix(mix(h3(i), h3(i + vec3(1,0,0)), f.x), mix(h3(i + vec3(0,1,0)), h3(i + vec3(1,1,0)), f.x), f.y),
              mix(mix(h3(i + vec3(0,0,1)), h3(i + vec3(1,0,1)), f.x), mix(h3(i + vec3(0,1,1)), h3(i + vec3(1,1,1)), f.x), f.y), f.z); }`;
 
-// Dissolvenza a macchie con cui compaiono filamento, cuore e cellule (bordo acceso nel colore del motto, edgeAmt).
+// Dissolvenza a macchie con cui compaiono filamento, cuore e cellule (bordo acceso bianco, edgeAmt).
 // Il rumore si calcola solo durante l'entrata: dopo (uReveal = 1) ogni punto dello schermo salta questo conto.
 const REVEAL_GLSL = `
   float edgeAmt = 0.0;
@@ -220,8 +221,10 @@ const HEART_SCALE = 7.5;
 const FAR_SCALE = 2.6;
 // cellule lontane: punti dello schermo [x, y da -1 a 1, distanza dalla camera, grandezza]
 const FAR = {
-    portrait: [[-0.6, -0.48, 70, 0.74], [0.68, 0.58, 95, 0.81], [-0.45, 0.8, 125, 0.88], [0.5, -0.7, 62, 0.61], [0.1, -0.88, 150, 0.94], [-0.82, 0.12, 160, 0.94], [0.86, -0.08, 130, 0.81]],
-    landscape: [[-0.6, -0.55, 70, 0.74], [0.6, 0.6, 95, 0.81], [-0.38, 0.8, 125, 0.88], [0.68, -0.68, 62, 0.61], [0.15, -0.86, 150, 0.94], [-0.86, 0.2, 160, 0.94], [0.9, 0.05, 130, 0.81]]
+    // il quinto numero è il numero della cellula (da 0), che decide asse e verso del giro (CELL_AXIS); dal 29/10/2026
+    // quattro cellule, una aggiunta a sinistra e la settima spostata verso il centro per vederla meglio
+    portrait: [[-0.6, -0.48, 70, 0.74, 0], [0.68, 0.58, 95, 0.81, 1], [0.62, -0.25, 84, 0.8, 6], [-0.62, 0.28, 74, 0.85, 7]],
+    landscape: [[-0.6, -0.55, 70, 0.74, 0], [0.6, 0.6, 95, 0.81, 1], [0.62, -0.22, 70, 0.85, 6], [-0.55, 0.1, 56, 0.95, 7]]
 };
 // dal 22/10/2026 il cuore leggero (30 mila triangoli) e la cellula leggera (meno di 3 mila) su tutti i dispositivi;
 // sui computer la nitidezza arriva dai pixel (QUALITY)
@@ -275,29 +278,32 @@ function createView(THREE, host) {
     renderer.toneMappingExposure = 1.05;
 
     const linear = (hex) => new THREE.Color(hex).convertSRGBToLinear();
-    const mood = MOODS[state.mood];
     const scene = new THREE.Scene();
     // nebbia nera: il filamento che si allontana sfuma nel buio
     scene.fog = new THREE.Fog(0, 34, 190);
     const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 400);
 
-    // il riflesso dello studio (fatto una volta sola); i colori arrivano dalle luci che girano
+    // la stanza riflessa (fatta una volta sola)
     const pmrem = new THREE.PMREMGenerator(renderer);
     const envScene = new THREE.Scene();
-    envScene.add(new THREE.Mesh(new THREE.SphereGeometry(10, 64, 32), new THREE.ShaderMaterial({ side: THREE.BackSide, vertexShader: ENV_VERT, fragmentShader: ENV_FRAG })));
+    const envMat = new THREE.ShaderMaterial({ side: THREE.BackSide, vertexShader: ENV_VERT, fragmentShader: ENV_FRAG });
+    envScene.add(new THREE.Mesh(new THREE.SphereGeometry(10, 64, 32), envMat));
     scene.environment = pmrem.fromScene(envScene, 0.02).texture;
     envScene.children[0].geometry.dispose();
-    envScene.children[0].material.dispose();
+    envMat.dispose();
     pmrem.dispose();
 
-    // le quattro luci del motto: luci vere (accendono i pioli e i nuclei) e, per il cromo, direzione e colore del riflesso
-    const lamps = ORDER.map((m) => { const l = new THREE.PointLight(MOODS[m].hex, 0, 40, 1.5); scene.add(l); return l; });
-    const lightU = { uLD: { value: ORDER.map(() => new THREE.Vector3(0, 0, 1)) }, uLC: { value: ORDER.map(() => new THREE.Color(0)) } };
-    const lampColor = ORDER.map((m) => linear(MOODS[m].hex));
+    // le quattro luci del motto: luci vere (fanno brillare il cromo) e, per lightsRefl, direzione e colore del riflesso
+    const lamps = LAMPS.map(({ mood }) => { const l = new THREE.PointLight(MOODS[mood].hex, LAMP_POWER, 40, 1.5); scene.add(l); return l; });
+    const lightU = { uLD: { value: lamps.map(() => new THREE.Vector3(0, 0, 1)) },
+        uLC: { value: LAMPS.map(({ mood }) => linear(MOODS[mood].hex).multiplyScalar(LAMP_POWER * 0.8)) } };
+
+    // lo stesso cromo per tutti i modelli (cuore, DNA, cellule, gocce), dal 29/10/2026; extra: side, transparent...
+    const makeMat = (extra = {}) => new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 1, roughness: 0.1, ...extra });
 
     // Cromo del filamento: ogni punto gira attorno all'asse (aAxis/aTan) e il filamento ruota su sé stesso restando fermo;
-    // compare con una dissolvenza a macchie dal bordo acceso nel colore del motto. cut: sotto questo aParam non si vede.
-    const spinU = { value: 0 }, revealU = { value: 0 }, edgeU = { value: linear(mood.hex) };
+    // compare con una dissolvenza a macchie dal bordo acceso. cut: sotto questo aParam non si vede.
+    const spinU = { value: 0 }, revealU = { value: 0 }, edgeU = { value: new THREE.Color(1, 1, 1) };
     function strand(mat, key, cut) {
         mat.onBeforeCompile = (sh) => {
             Object.assign(sh.uniforms, { uSpin: spinU, uReveal: revealU, uEdge: edgeU }, lightU);
@@ -316,12 +322,10 @@ function createView(THREE, host) {
         mat.customProgramCacheKey = () => key;
         return mat;
     }
-    const chromeMat = () => new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 1, roughness: 0.1, side: THREE.DoubleSide });
-    // pioli nel colore del motto
-    const moodMat = () => new THREE.MeshStandardMaterial({ color: linear(mood.hex), emissive: linear(mood.hex), emissiveIntensity: 0.45, metalness: 0.55, roughness: 0.18, side: THREE.DoubleSide });
+    // filamenti e pioli nello stesso cromo: un materiale per il modello (senza il ricciolo finale) e uno per il tratto a sinistra
     const mats = {
-        chrome: strand(chromeMat(), 'dna-chrome', CUT), mood: strand(moodMat(), 'dna-mood', CUT),
-        chromeL: strand(chromeMat(), 'dna-chrome-l', 0), moodL: strand(moodMat(), 'dna-mood-l', 0)
+        chrome: strand(makeMat({ side: THREE.DoubleSide }), 'dna-chrome', CUT),
+        chromeL: strand(makeMat({ side: THREE.DoubleSide }), 'dna-chrome-l', 0)
     };
     const dnaModel = new THREE.Group(), dnaLeft = new THREE.Group();
     dnaModel.visible = dnaLeft.visible = false;
@@ -330,9 +334,9 @@ function createView(THREE, host) {
     scene.add(dnaModel, dnaLeft);
     let D = null, readyAt = null;
 
-    // gocce di metallo liquido che fluttuano attorno al centro, come nella prova (superficie che ondeggia come metallo fuso)
+    // gocce di metallo liquido attorno al centro (superficie che ondeggia come metallo fuso)
     const timeU = { value: 0 };
-    const dropMat = new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 1, roughness: 0.08 });
+    const dropMat = makeMat();
     dropMat.onBeforeCompile = (sh) => {
         sh.uniforms.uTime = timeU;
         Object.assign(sh.uniforms, lightU);
@@ -345,10 +349,14 @@ function createView(THREE, host) {
     };
     dropMat.customProgramCacheKey = () => 'drop';
     const drops = new THREE.Group();
-    for (let d = 0; d < (lite ? 0 : 12); d++) {
-        const size = 0.05 + Math.random() * 0.17;
+    // 6 gocce sparse attorno al cuore: non girano in tondo, galleggiano ognuna al suo posto
+    const DROPS = lite ? 0 : 6;
+    for (let d = 0; d < DROPS; d++) {
+        const size = 0.06 + Math.random() * 0.16;
         const drop = new THREE.Mesh(new THREE.SphereGeometry(size, 16, 12), dropMat);
-        drop.userData = { r: 3.4 + Math.random() * 1.8, y: (Math.random() - 0.5) * 6, a: Math.random() * Math.PI * 2, v: 0.12 + Math.random() * 0.25 };
+        const a = (d / DROPS) * Math.PI * 2 + (Math.random() - 0.5) * 0.6, r = 3.4 + Math.random() * 1.8;
+        drop.userData = { x: Math.cos(a) * r, y: (Math.random() - 0.5) * 6, z: Math.sin(a) * r,
+            f: 0.7 + Math.random() * 0.6, p: [0, 1, 2].map(() => Math.random() * Math.PI * 2) };
         drops.add(drop);
     }
     drops.visible = false;
@@ -356,17 +364,16 @@ function createView(THREE, host) {
 
     // Cuore di metallo fuso (home): ondeggia come metallo liquido, si contrae sul battito (di più in basso, dove ci sono
     // i ventricoli) e un'onda corre dalla punta verso l'alto; compare con la stessa dissolvenza del filamento.
-    // Cellule lontane: membrana di vetro-cromo (si vede soprattutto il bordo) e nucleo nel colore del sito, un attimo dopo.
-    const beatU = { value: 0 }, waveU = { value: 0 }, nucBeatU = { value: 0 };
-    function organ(mat, key, { amount, heart = false, swell = 0, beat = beatU, veil = false }) {
+    // Cellule lontane: membrana di vetro-cromo (si vede soprattutto il bordo) e nucleo; non battono col cuore.
+    const beatU = { value: 0 }, waveU = { value: 0 };
+    function organ(mat, key, { amount, heart = false, veil = false }) {
         mat.onBeforeCompile = (sh) => {
-            Object.assign(sh.uniforms, { uTime: timeU, uBeat: beat, uWave: waveU, uReveal: revealU, uEdge: edgeU }, lightU);
+            Object.assign(sh.uniforms, { uTime: timeU, uBeat: beatU, uWave: waveU, uReveal: revealU, uEdge: edgeU }, lightU);
             sh.vertexShader = 'uniform float uTime; uniform float uBeat; uniform float uWave; varying vec3 vWp;\n' + sh.vertexShader.replace('#include <begin_vertex>',
                 '#include <begin_vertex>\n' +
                 'vec3 wp0 = (modelMatrix * vec4(position, 1.0)).xyz;\n' +
                 'float w = sin(wp0.y * 2.1 + uTime * 1.5) * 0.5 + sin(wp0.x * 3.7 - wp0.z * 2.9 + uTime * 1.1) * 0.35 + sin(wp0.y * 6.5 - uTime * 2.4) * 0.18;\n' +
                 'transformed += normal * w * ' + amount.toFixed(4) + ';\n' +
-                (swell ? 'transformed *= 1.0 + uBeat * ' + swell.toFixed(3) + ';\n' : '') +
                 (heart ? 'float low = smoothstep(0.35, -0.45, position.y);\n' +
                     'transformed *= 1.0 - uBeat * (0.035 + 0.075 * low);\n' +
                     'float ring = exp(-pow((position.y + 0.5) - uWave * 1.4, 2.0) * 60.0);\n' +
@@ -386,10 +393,13 @@ function createView(THREE, host) {
     const holder = new THREE.Group(), heartPivot = new THREE.Group(), farCells = new THREE.Group();
     holder.add(heartPivot);
     scene.add(holder, farCells);
-    const heartMat = organ(new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 1, roughness: 0.1 }), 'heart', { amount: 0.0035, heart: true });
-    const farMem = organ(new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 1, roughness: 0.12, transparent: true, depthWrite: false }), 'far-mem', { amount: 0.006, swell: 0.04, veil: true });
-    const farCore = organ(new THREE.MeshStandardMaterial({ color: linear(mood.hex), emissive: linear(mood.hex), metalness: 0.55, roughness: 0.18, emissiveIntensity: 0.45 }), 'far-core', { amount: 0.004, swell: 0.025, beat: nucBeatU });
+    const heartMat = organ(makeMat(), 'heart', { amount: 0.006, heart: true });
+    const farMem = organ(makeMat({ transparent: true, depthWrite: false }), 'far-mem', { amount: 0.009, veil: true });
+    const farCore = organ(makeMat(), 'far-core', { amount: 0.006 });
     let organs = null, farAspect = 0;
+    // asse di rotazione di ogni cellula (numero della cellula: asse): da sinistra a destra, in avanti, come una ruota, in diagonale
+    const CELL_AXIS = { 0: [0, 1, 0], 1: [1, 0, 0], 6: [0, 0, -1], 7: [-1, -1, 0.6] };
+    const cellQ = new THREE.Quaternion();
     function placeFar() {
         if (!organs || Math.abs(camera.aspect - farAspect) < 0.001) return;
         farAspect = camera.aspect;
@@ -397,12 +407,13 @@ function createView(THREE, host) {
         camera.updateProjectionMatrix();
         camera.updateMatrixWorld();
         farCells.clear();
-        FAR[camera.aspect > 1 ? 'landscape' : 'portrait'].forEach(([x, y, d, k], i) => {
+        FAR[camera.aspect > 1 ? 'landscape' : 'portrait'].forEach(([x, y, d, k, i]) => {
             const g = new THREE.Group();
             g.position.copy(ndcAt(x, y, d));
             g.scale.setScalar(FAR_SCALE * k);
             g.rotation.set(i * 1.7, i * 2.3, i * 0.9);
-            g.userData = { y0: i * 2.3, spin: (i % 2 ? 1 : -1) * (0.08 + 0.03 * i) };
+            // tutte fanno un giro ogni 60 secondi, ognuna attorno a un asse diverso (quindi in una direzione diversa)
+            g.userData = { q0: g.quaternion.clone(), axis: new THREE.Vector3(...(CELL_AXIS[i] || [0, 1, 0])).normalize(), spin: Math.PI * 2 / 60 };
             const front = new THREE.Mesh(organs.cell.membrana, farMem);
             front.renderOrder = 3;
             g.add(new THREE.Mesh(organs.cell.nucleo, farCore), front);
@@ -411,18 +422,29 @@ function createView(THREE, host) {
     }
 
     // polvere di dati
-    const count = lite ? 250 : 700;
+    // sempre dietro il cuore: tutte in una fascia di profondità alle sue spalle
+    const count = lite ? 120 : 320;
     const pos = new Float32Array(count * 3);
     for (let p = 0; p < count; p++) {
-        const rr = 1.5 + Math.random() * 7, aa = Math.random() * Math.PI * 2;
-        pos[p * 3] = Math.cos(aa) * rr; pos[p * 3 + 1] = (Math.random() - 0.5) * 16; pos[p * 3 + 2] = Math.sin(aa) * rr - 1.5;
+        pos[p * 3] = (Math.random() - 0.5) * 22; pos[p * 3 + 1] = (Math.random() - 0.5) * 16; pos[p * 3 + 2] = -3.5 - Math.random() * 9;
     }
+    // ogni particella fluttua per conto suo attorno al suo punto, con ritmi diversi, come in un liquido
+    const dustBase = pos.slice(), dustPh = new Float32Array(count * 3).map(() => Math.random() * Math.PI * 2);
     const dustGeo = new THREE.BufferGeometry();
     dustGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    const dustMat = new THREE.PointsMaterial({ color: linear(mood.hex), size: 0.035, transparent: true, opacity: 0.75, depthWrite: false });
+    // ogni particella ha uno dei 4 colori del motto (mescolati), un po' più luminoso (× 1.8) perché si veda sul nero
+    const dustCol = new Float32Array(count * 3);
+    const mix = LAMPS.map(({ mood }) => linear(MOODS[mood].hex));
+    for (let p = 0; p < count; p++) mix[p % mix.length].toArray(dustCol, p * 3);
+    dustGeo.setAttribute('color', new THREE.BufferAttribute(dustCol, 3));
+    const dustMat = new THREE.PointsMaterial({ vertexColors: true, size: 0.045, transparent: true, opacity: 0.7, depthWrite: false });
+    dustMat.color.setScalar(1.8);
     const dust = new THREE.Points(dustGeo, dustMat);
-    const dust2 = new THREE.Points(dustGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.022, transparent: true, opacity: 0.5, depthWrite: false }));
-    dust2.rotation.y = 1.7;
+    // il secondo strato, punti più piccoli
+    const dust2Mat = new THREE.PointsMaterial({ vertexColors: true, size: 0.03, transparent: true, opacity: 0.5, depthWrite: false });
+    dust2Mat.color.setScalar(1.8);
+    const dust2 = new THREE.Points(dustGeo, dust2Mat);
+    dust2.position.set(0.6, -0.4, -0.5); // il secondo strato appena spostato, sempre dietro il cuore
     scene.add(dust, dust2);
 
     // la scena si disegna qui, poi il passaggio finale la copia sullo schermo; con msaa i bordi sono lisciati
@@ -462,7 +484,7 @@ function createView(THREE, host) {
             if (req !== leftReq) return; // nel frattempo lo schermo è cambiato di nuovo
             dnaLeft.children.forEach((m) => m.geometry.dispose());
             dnaLeft.clear();
-            pieces.forEach((q) => dnaLeft.add(new THREE.Mesh(makeGeometry(THREE, q), q.pairs ? mats.moodL : mats.chromeL)));
+            pieces.forEach((q) => dnaLeft.add(new THREE.Mesh(makeGeometry(THREE, q), mats.chromeL)));
         });
     }
 
@@ -525,15 +547,9 @@ function createView(THREE, host) {
         },
         setDna(pieces) {
             D = pieces;
-            pieces.forEach((q) => dnaModel.add(new THREE.Mesh(makeGeometry(THREE, q), q.pairs ? mats.mood : mats.chrome)));
+            pieces.forEach((q) => dnaModel.add(new THREE.Mesh(makeGeometry(THREE, q), mats.chrome)));
             // il filamento compare quando c'è anche il tratto a sinistra
             placeLeft().then(() => { ready.dna = true; maybeReveal(); });
-        },
-        // colore del sito in questo momento (dissolvenza verso la luce più forte): pioli, nuclei, polvere, bordo della dissolvenza
-        setColor(c) {
-            [mats.mood, mats.moodL, farCore].forEach((mt) => { mt.color.copy(c); mt.emissive.copy(c); });
-            edgeU.value.copy(c);
-            dustMat.color.copy(c);
         },
         render(t) {
             const sec = t / 1000, b = state.beat;
@@ -544,32 +560,34 @@ function createView(THREE, host) {
             dnaModel.visible = dnaLeft.visible = holder.visible = farCells.visible = shown;
             // cuore e cellule battono; un'onda corre sul cuore a ogni colpo
             beatU.value = b;
-            nucBeatU.value = state.nucBeat;
             waveU.value = Math.min(1, state.ph / Math.min(60 / BPM, 0.6));
-            heartPivot.rotation.set(Math.sin(sec * 0.17) * 0.08, Math.sin(sec * 0.22) * 0.55, 0);
-            farCells.children.forEach((g) => { g.rotation.y = g.userData.y0 + g.userData.spin * sec; });
+            heartPivot.rotation.set(Math.sin(sec * 0.11) * 0.08, Math.sin(sec * 0.14) * 0.5, 0); // dondolio lento, come in un liquido
+            farCells.children.forEach((g) => { g.quaternion.copy(g.userData.q0).multiply(cellQ.setFromAxisAngle(g.userData.axis, g.userData.spin * sec)); });
             timeU.value = sec;
             drops.visible = revealU.value > 0.5;
+            // galleggiano: salgono e scendono piano e si spostano appena di lato, ognuna con il suo ritmo
             drops.children.forEach((dr) => {
-                const q = dr.userData, ang = q.a + sec * q.v;
-                dr.position.set(Math.cos(ang) * q.r, q.y + Math.sin(sec * 0.6 + q.a) * 0.3, Math.sin(ang) * q.r);
+                const q = dr.userData;
+                dr.position.set(q.x + Math.sin(sec * 0.13 * q.f + q.p[0]) * 0.22,
+                    q.y + Math.sin(sec * 0.21 * q.f + q.p[1]) * 0.4 + Math.sin(sec * 0.07 * q.f + q.p[2]) * 0.2,
+                    q.z + Math.sin(sec * 0.11 * q.f + q.p[2]) * 0.22);
             });
-            dust.rotation.y = sec * 0.03;
-            dust2.rotation.y = 1.7 - sec * 0.02;
-            dust.position.y = (sec * 0.15) % 2;
-            // le quattro luci girano attorno alla scena; per il cromo conta da dove arriva ogni luce vista dalla camera,
-            // per il colore del sito quanto ogni riflesso si vede (luce accesa e dalla parte della camera)
+            for (let p = 0; p < count; p++) {
+                const k = p * 3, f = 0.6 + (p % 7) * 0.08;
+                pos[k] = dustBase[k] + Math.sin(sec * 0.17 * f + dustPh[k]) * 0.35;
+                pos[k + 1] = dustBase[k + 1] + Math.sin(sec * 0.11 * f + dustPh[k + 1]) * 0.6;
+                pos[k + 2] = dustBase[k + 2] + Math.sin(sec * 0.13 * f + dustPh[k + 2]) * 0.35;
+            }
+            dustGeo.attributes.position.needsUpdate = true;
+
+            // le quattro luci girano attorno alla scena; per il cromo conta da dove arriva ogni luce vista dalla camera
             camera.updateMatrixWorld();
-            const weights = lamps.map((l, i) => {
-                const ang = sec * ORBIT + i * Math.PI / 2;
-                l.position.set(holder.position.x + Math.cos(ang) * 11, holder.position.y + Math.sin(ang) * 8, 3 - Math.sin(ang) * 4);
-                l.intensity = 2.4 + 0.6 * Math.sin(sec * 0.7 + i * 1.3);
+            lamps.forEach((l, i) => {
+                const a = sec * ORBIT + LAMP_START[i];
+                l.position.set(holder.position.x + Math.cos(a) * 11, holder.position.y + Math.sin(a) * 8, 3 - Math.sin(a) * 4);
                 lampDir.copy(l.position).sub(holder.position).normalize().transformDirection(camera.matrixWorldInverse);
                 lightU.uLD.value[i].copy(lampDir);
-                lightU.uLC.value[i].copy(lampColor[i]).multiplyScalar(l.intensity * 0.8);
-                return l.intensity * Math.pow(Math.max(0, lampDir.z) + 0.15, 2);
             });
-            state.lights = weights;
             post.uniforms.uTime.value = sec;
             renderer.setRenderTarget(rt);
             renderer.render(scene, camera);
@@ -580,34 +598,8 @@ function createView(THREE, host) {
     return view;
 }
 
-// Sequenza di DNA che si decifra nella parola del motto (solo dove c'è #dna-seq): la parola della luce che dà il
-// colore al sito, 0,7 secondi dopo che è cambiata
-function startSequence(el) {
-    const BASES = 'ATCG', NOISE = '#/\\<>▓░_=+*', LEN = 26;
-    const seq = Array.from({ length: LEN }, () => BASES[(Math.random() * 4) | 0]);
-    function tick() {
-        seq.shift();
-        seq.push(BASES[(Math.random() * 4) | 0]);
-        const out = seq.slice();
-        const word = MOODS[state.mood].word.toUpperCase();
-        const since = performance.now() - state.moodAt;
-        if (since > 700) {
-            const start = ((LEN - word.length) / 2) | 0;
-            const shown = Math.min(word.length, Math.floor((since - 700) / 90));
-            for (let k = 0; k < word.length; k++) out[start + k] = k < shown ? word[k] : NOISE[(Math.random() * NOISE.length) | 0];
-            out[start - 1] = '·';
-            out[start + word.length] = '·';
-        }
-        el.textContent = out.join(' ');
-    }
-    tick();
-    if (!reduce) setInterval(() => { if (!document.hidden) tick(); }, 110);
-}
-
 async function init() {
     const hosts = document.querySelectorAll('.site-background');
-    const seqEl = document.getElementById('dna-seq');
-    if (seqEl) startSequence(seqEl);
     if (!hosts.length) return;
 
     let THREE;
@@ -629,42 +621,9 @@ async function init() {
     // il filamento arriva dopo: fino ad allora si vedono la polvere e le gocce
     const dna = loadDna().then((D) => views.forEach((v) => v.setDna(D))).catch(() => { /* resta lo sfondo senza filamento */ });
 
-    // Il colore del sito segue la luce che si riflette di più: passa piano verso quella luce (FOLLOW_FADE) e la parola
-    // sotto il motto cambia solo se un'altra luce resta più forte di almeno il 15% per FOLLOW_HOLD millisecondi
-    const rgb = (n) => [(n >> 16) & 255, (n >> 8) & 255, n & 255];
-    const toHex = (c) => (Math.round(c[0]) << 16) | (Math.round(c[1]) << 8) | Math.round(c[2]);
-    const tint = { col: rgb(MOODS[state.mood].hex), deep: rgb(MOODS[state.mood].deep), last: 0, css: 0, hex: MOODS[state.mood].hex };
-    const sceneColor = new THREE.Color();
-    function followLight(t, instant) {
-        const w = state.lights;
-        if (!w) return;
-        let best = 0;
-        w.forEach((x, i) => { if (x > w[best]) best = i; });
-        const cur = ORDER.indexOf(state.mood);
-        if (best !== cur && (instant || (w[best] > w[cur] * 1.15 && t - state.moodAt > FOLLOW_HOLD))) {
-            state.mood = ORDER[best];
-            state.moodAt = t;
-            document.documentElement.dataset.mood = state.mood;
-        }
-        const M = MOODS[state.mood], a = instant ? 1 : 1 - Math.exp(-Math.min(0.1, (t - tint.last) / 1000) / FOLLOW_FADE);
-        tint.last = t;
-        const to = rgb(M.hex), toDeep = rgb(M.deep);
-        tint.col = tint.col.map((v, i) => v + (to[i] - v) * a);
-        tint.deep = tint.deep.map((v, i) => v + (toDeep[i] - v) * a);
-        sceneColor.setHex(toHex(tint.col)).convertSRGBToLinear();
-        views.forEach((v) => v.setColor(sceneColor));
-        // il CSS si aggiorna al massimo ogni 80 ms e solo se il colore è cambiato: la dissolvenza resta morbida
-        // e la pagina non ricalcola gli stili a ogni fotogramma
-        const hex = toHex(tint.col);
-        if (hex === tint.hex || (!instant && t - tint.css < 80)) return;
-        tint.css = t;
-        tint.hex = hex;
-        setCssColor(hex, toHex(tint.deep));
-    }
-
     if (reduce) {
-        // "riduci movimento": un fotogramma fermo, con il colore della luce che si vede di più
-        const still = () => requestAnimationFrame(() => { views.forEach((v) => v.render(2600)); followLight(performance.now(), true); views.forEach((v) => v.render(2600)); });
+        // "riduci movimento": un fotogramma fermo
+        const still = () => requestAnimationFrame(() => views.forEach((v) => v.render(2600)));
         still();
         dna.then(still);
         return;
@@ -705,10 +664,7 @@ async function init() {
         const bsec = Math.max(0, (t - t0) / 1000);
         state.ph = bsec % (60 / BPM);
         state.beat = beatAt(bsec);
-        // il nucleo delle cellule risponde un attimo dopo la membrana
-        state.nucBeat = beatAt(Math.max(0, bsec - 0.07));
         views.forEach((v) => v.render(t));
-        followLight(t, false);
         if (sound) sound.tick(t);
         requestAnimationFrame(frame);
     }

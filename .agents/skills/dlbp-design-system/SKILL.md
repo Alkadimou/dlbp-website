@@ -9,7 +9,7 @@ In vigore dal 27/09/2026. Sostituisce il vecchio stile, che **non va più usato*
 
 I valori veri sono nel codice, che conta sempre più di questa guida:
 - `css/identity.css`: colori, caratteri e forme. Si carica dopo `css/styles.css` e ne sovrascrive l'aspetto.
-- `js/core/background.js`: palette (`MOODS`), le quattro luci (`ORDER`, `ORBIT`), colore del sito che segue la luce (`FOLLOW_HOLD`, `FOLLOW_FADE`), battito (`BPM`), sfondo 3D.
+- `js/core/background.js`: palette (`MOODS`), le quattro luci (`LAMPS`, `LAMP_POWER`, `ORBIT`), battito (`BPM`), sfondo 3D.
 
 Chi cambia la palette la cambia in entrambi i file e avvisa il proprietario, che la tiene aggiornata anche nella sua guida grafica privata.
 
@@ -19,17 +19,17 @@ Chi cambia la palette la cambia in entrambi i file e avvisa il proprietario, che
   - pannelli `rgba(5, 5, 8, 0.8)`;
   - linee `rgba(236, 234, 244, 0.12)`;
   - testo `#eceaf4`.
-- **I quattro colori del motto sono sempre tutti in scena**, come luci da club viste nel fumo. Dal 22/10/2026 sono quattro luci invisibili che girano attorno alla scena: si vedono solo i loro riflessi sul cromo, il fondo resta nero.
+- **I quattro colori del motto sono sempre tutti in scena**, come luci da club viste nel fumo. Dal 22/10/2026 sono quattro luci invisibili che girano attorno alla scena: si vedono solo i loro riflessi sul cromo, il fondo resta nero. Dal 30/10/2026 tutti i modelli sono cromo, le luci fanno un giro ogni 15 secondi con la stessa intensità e le particelle sono dei 4 colori mescolati.
 
-| Parola | Nome nel codice | Colore | Profondo | Testo sui bottoni |
-|---|---|---|---|---|
-| Drink | `magenta` | `#8a2c80` bordeaux violaceo | `#250a24` | chiaro |
-| Love | `brace` | `#e0281c` brace "tizzone" | `#3a0604` | chiaro |
-| Breathe | `breathe` | `#1fa39a` petrolio | `#062f35` | scuro |
-| Peace | `ghiaccio` | `#cfe6ff` ghiaccio | `#34506e` | scuro |
+| Parola | Nome nel codice | Colore |
+|---|---|---|
+| Drink | `magenta` | `#8a2c80` bordeaux violaceo |
+| Love | `brace` | `#ff0000` rosso puro (dal 30/10/2026; prima `#e0281c` Tizzone) |
+| Breathe | `breathe` | `#1fa39a` petrolio |
+| Peace | `ghiaccio` | `#ffffff` bianco puro (dal 30/10/2026; prima `#cfe6ff` ghiaccio) |
 
-- **Colore del sito:** segue la luce che si riflette di più. Passa piano verso quella luce (dissolvenza di 0,8 s) e cambia solo se un'altra luce resta più forte per 2 secondi. Lo stesso colore va ai pioli del DNA, ai nuclei delle cellule e alla polvere. Non c'è più `?mood=` né un colore di partenza da scegliere.
-- **Variabili CSS** (le imposta `background.js` su `<html>`):
+- **Colore del sito:** dal 30/10/2026 è fisso bianco, non segue più le luci: i colori del motto restano solo nello sfondo.
+- **Variabili CSS** (in `css/identity.css`, fisse sul bianco):
   - `--mood`: il colore;
   - `--mood-deep`: la sua versione profonda;
   - `--on-mood`: il testo sopra il colore;

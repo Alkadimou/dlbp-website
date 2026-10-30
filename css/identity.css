@@ -1,12 +1,12 @@
 /* ==================================================
    IDENTITÀ "CROMO NERO, COLORE VIVO"
    Si carica dopo styles.css e ne sovrascrive colori, caratteri e forme.
-   Il colore del sito (--mood, --mood-deep, --on-mood) lo imposta js/core/background.js su <html>,
-   seguendo la luce del motto che si riflette di più; qui sotto c'è solo quello di partenza (Breathe).
+   Il colore del sito (--mood, --mood-deep, --on-mood) dal 30/10/2026 è fisso bianco: i colori del motto restano
+   solo nelle luci dello sfondo (js/core/background.js).
    ================================================== */
 :root {
-    --mood: #1fa39a;
-    --mood-deep: #062f35;
+    --mood: #ffffff;
+    --mood-deep: #1a1a1a;
     --on-mood: #050508;
     /* per i testi colorati su fondo nero: il colore del sito un po' schiarito */
     --mood-text: color-mix(in srgb, var(--mood) 70%, #ffffff);
@@ -97,22 +97,15 @@ body,
     /* il motto sta al centro sopra il cuore: ombra nera a strati, così si legge su qualsiasi riflesso */
     text-shadow: 0 0 2px #000, 0 0 4px #000, 0 0 8px #000, 0 0 14px #000, 0 0 24px rgba(0,0,0,.9), 0 0 40px rgba(0,0,0,.8);
 }
-.dna-seq {
-    position: relative;
-    z-index: 10;
-    margin-top: 1rem;
-    font-family: 'Space Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 0.22em;
-    color: var(--mood-text);
-    text-shadow: 0 0 2px #000, 0 0 4px #000, 0 0 8px #000, 0 0 14px #000, 0 0 24px rgba(0,0,0,.9), 0 0 40px rgba(0,0,0,.8);
-    white-space: nowrap;
-    max-width: 92vw;
-    overflow: hidden;
-    text-align: center;
-    opacity: 0.85;
-    user-select: none;
-    -webkit-user-select: none;
+/* in home il motto resta fermo al centro esatto dello schermo, sopra il cuore */
+.hero-fullscreen > .hero-tagline-center {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    width: max-content;
+    max-width: 90vw;
+    margin: 0;
 }
 
 /* ---------- Forme: angoli vivi, pannelli scuri senza sfocatura ---------- */
