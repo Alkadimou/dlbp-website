@@ -19,7 +19,7 @@ Chi cambia la palette la cambia in entrambi i file e avvisa il proprietario, che
   - pannelli `rgba(5, 5, 8, 0.8)`;
   - linee `rgba(236, 234, 244, 0.12)`;
   - testo `#eceaf4`.
-- **I quattro colori del motto sono sempre tutti in scena**, come luci da club viste nel fumo. Dal 22/10/2026 sono quattro luci invisibili che girano attorno alla scena: si vedono solo i loro riflessi sul cromo, il fondo resta nero. Dal 30/10/2026 tutti i modelli sono cromo, le luci fanno un giro ogni 15 secondi con la stessa intensità e le particelle sono dei 4 colori mescolati.
+- **I quattro colori del motto sono sempre tutti in scena**, come luci da club viste nel fumo. Dal 22/10/2026 sono quattro luci invisibili che girano attorno alla scena: si vedono solo i loro riflessi sul cromo, il fondo resta nero. Dal 30/10/2026 tutti i modelli sono cromo, le luci fanno un giro ogni 30 secondi con la stessa intensità e le particelle sono dei 4 colori mescolati.
 
 | Parola | Nome nel codice | Colore |
 |---|---|---|
@@ -72,7 +72,7 @@ Chi cambia la palette la cambia in entrambi i file e avvisa il proprietario, che
 - **Suono:** sulle pagine pubbliche il battito si sente (`js/core/heart-sound.js`); il bottone `.sound-toggle` (quadrato nero in basso a destra, icona nel colore del sito quando è acceso) lo spegne.
 - **Crediti:** "DNA 3D: Troy · CC BY 4.0" nel footer di ogni pagina (`.credit-3d`), a destra su computer e sotto il copyright su telefono; in home ed eventi, uno sotto l'altro, anche "Cellula 3D: Physio CG · CC BY 4.0" e "Cuore 3D: Mox3DModels · CC BY 4.0". Li chiedono le licenze, non vanno tolti.
 - **Attributi dello sfondo:**
-  - `data-dim="0.5"`: sfondo più scuro, per le pagine con molti contenuti;
+  - `data-dim="0.6"`: sfondo più scuro del 40%, su tutte le pagine tranne la home;
   - `data-heart`: cuore e cellule lontane, in home ed eventi;
   - `data-lite`: versione leggera, usata dallo scanner (senza cuore);
   - `data-tap`: pagine pubbliche. Il cursore è una croce su tutta la pagina tranne link, bottoni e campi, (dal 22/10/2026 il clic non dà più un battito in più).

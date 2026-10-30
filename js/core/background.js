@@ -1,6 +1,6 @@
 // Sfondo del sito: filamento di DNA in cromo che gira piano su sé stesso (Three.js) e, in home, il cuore che batte
 // con le cellule lontane e le gocce. Dal 30/10/2026 tutti i modelli sono cromo in una stanza buia e quattro luci, una
-// per colore del motto, girano attorno alla scena (un giro ogni 15 secondi): si vedono solo i loro riflessi colorati.
+// per colore del motto, girano attorno alla scena (un giro ogni 30 secondi): si vedono solo i loro riflessi colorati.
 // Il tema del sito è fisso bianco (css/identity.css), non segue più le luci.
 // Modelli (CC BY 4.0, crediti nel footer): DNA "DNA Procedural EEVEE" di Troy (assets/dna.glb),
 // cuore "Anatomical Heart" di Mox3DModels (assets/heart-30k.glb),
@@ -9,7 +9,7 @@
 // Si attiva su ogni elemento .site-background della pagina:
 // - data-heart (home): cuore e cellule lontane al centro della composizione;
 // - data-lite (scanner): versione leggera, senza cuore;
-// - data-dim: sfondo più scuro;
+// - data-dim: sfondo più scuro (0.6 = 40% più scuro, su tutte le pagine tranne la home);
 // - data-tap (pagine pubbliche): cursore a croce su tutta la pagina tranne link, bottoni e campi (css/identity.css);
 //   lì si sente anche il battito (js/core/heart-sound.js). Dal 22/10/2026 il clic non dà più un battito in più.
 // Battito "tum-tum" a BPM: fa battere il cuore e le cellule (non c'è più lo zoom della scena).
@@ -44,7 +44,7 @@ const LAMP_POWER = 0.6;
 const LAMP_START = LAMPS.map(({ at }) => Math.atan2(at[1] / 8, at[0] / 11));
 const BPM = 30;         // battito tum-tum
 const SPIN = Math.PI * 2 / 60; // rotazione del filamento su sé stesso, un giro ogni 60 s come le cellule
-const ORBIT = Math.PI * 2 / 15; // giro delle luci attorno alla scena, un giro ogni 15 secondi
+const ORBIT = Math.PI * 2 / 30; // giro delle luci attorno alla scena, un giro ogni 30 secondi
 
 // Livelli di qualità, dal più bello al più leggero: ratio = pixel disegnati per ogni punto dello schermo (al massimo),
 // msaa = bordi lisciati, fps = fotogrammi al secondo. I computer partono dal primo (il più nitido), i telefoni dal terzo,
@@ -128,7 +128,7 @@ void main(){
   col *= 0.84 + 0.16 * (0.5 + 0.5 * sin(px.y * 2.0944));
   col += (rnd(floor(px) + fract(uTime * 0.37) * 91.0) - 0.5) * 0.09;
   col *= smoothstep(1.05, 0.3, length(fc * vec2(1.0, 1.15)) * 1.25);
-  col *= uDim * 0.75; // tutta la scena un po' più buia
+  col *= uDim;
   gl_FragColor = vec4(col, 1.0);
 }`;
 
