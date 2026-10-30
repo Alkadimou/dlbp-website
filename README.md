@@ -138,6 +138,7 @@ Dal 30/10/2026 (scelto nella prova "cromo" del 29-30/10):
 - effetto "liquido": l'immagine ondeggia piano, il cuore batte e dondola più lento, le particelle fluttuano ognuna per conto suo, sempre dietro il cuore, e sono dei 4 colori mescolati;
 - 4 cellule lontane e il filamento fanno un giro ogni 60 secondi, ognuna attorno a un asse diverso; 6 gocce galleggiano ferme attorno al cuore;
 - la scena è un po' più buia.
+- righe di monitor e grana più visibili: una riga sottile ogni 3 punti dello schermo che scurisce fino al 16%, grana dello sfondo 3D a grani di un punto e velo di grana sopra la pagina al 7% (`.grain-overlay` in `css/styles.css`).
 Le licenze chiedono di citare gli autori: i crediti sono nel footer e non vanno tolti.
 
 **I 4 colori**, uno per parola del motto, sono sempre tutti in scena come luci:
