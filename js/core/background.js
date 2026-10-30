@@ -25,13 +25,13 @@ const GLTF_URL = 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders
 const asset = (name) => new URL('../../assets/' + name, import.meta.url).href;
 const DNA_URL = asset('dna.glb');
 
-// colori del motto (le quattro luci, le particelle). Dal 30/10/2026 Love è il rosso puro #FF0000 e Peace il bianco puro
-// #FFFFFF (prima Tizzone #E0281C e ghiaccio #CFE6FF)
+// colori del motto (le quattro luci, le particelle). Dal 30/10/2026 Love è il rosso arancio #FF4500 (prima Tizzone
+// #E0281C, poi per poche ore rosso puro #FF0000) e Peace il ghiaccio #CFE6FF
 const MOODS = {
     magenta:  { hex: 0x8a2c80 }, // Drink, bordeaux violaceo (dal 23/10/2026)
-    brace:    { hex: 0xff0000 }, // Love, rosso puro
+    brace:    { hex: 0xff4500 }, // Love, rosso arancio
     breathe:  { hex: 0x1fa39a }, // Breathe, petrolio
-    ghiaccio: { hex: 0xffffff }  // Peace, bianco puro
+    ghiaccio: { hex: 0xcfe6ff }  // Peace, ghiaccio
 };
 // Le quattro luci partono dai quattro angoli e girano nell'ordine del motto: Love in basso a destra, Peace in alto a
 // sinistra, Drink in basso a sinistra, Breathe in alto a destra. LAMP_POWER: intensità di ognuna.
