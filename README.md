@@ -133,11 +133,11 @@ Dal 22/10/2026:
 
 Dal 30/10/2026 (scelto nella prova "cromo" del 29-30/10):
 - tutti i modelli (cuore, DNA con i pioli, cellule, gocce) sono dello stesso cromo e riflettono una stanza buia con due rettangoli di luce neutra (in basso a destra e in alto a sinistra);
-- le quattro luci partono dai quattro angoli (Love in basso a destra, Breathe in alto a destra, Peace in alto a sinistra, Drink in basso a sinistra), girano nell'ordine del motto con un giro ogni 15 secondi (`ORBIT`) e hanno tutte la stessa intensità, ferma (`LAMP_POWER`, 0,6);
+- le quattro luci partono dai quattro angoli (Love in basso a destra, Breathe in alto a destra, Peace in alto a sinistra, Drink in basso a sinistra), girano nell'ordine del motto con un giro ogni 30 secondi (`ORBIT`) e hanno tutte la stessa intensità, ferma (`LAMP_POWER`, 0,6);
 - il tema del sito è fisso bianco: non segue più le luci;
 - effetto "liquido": l'immagine ondeggia piano, il cuore batte e dondola più lento, le particelle fluttuano ognuna per conto suo, sempre dietro il cuore, e sono dei 4 colori mescolati;
 - 4 cellule lontane e il filamento fanno un giro ogni 60 secondi, ognuna attorno a un asse diverso; 6 gocce galleggiano ferme attorno al cuore;
-- la scena è un po' più buia.
+- la home è senza velo scuro, le altre pagine hanno lo sfondo più scuro del 40% (`data-dim="0.6"`).
 - righe di monitor e grana più visibili: una riga sottile ogni 3 punti dello schermo che scurisce fino al 16%, grana dello sfondo 3D a grani di un punto e velo di grana sopra la pagina al 7% (`.grain-overlay` in `css/styles.css`).
 Le licenze chiedono di citare gli autori: i crediti sono nel footer e non vanno tolti.
 
@@ -156,14 +156,14 @@ Le licenze chiedono di citare gli autori: i crediti sono nel footer e non vanno 
 
 **Attributi dello sfondo** (`<div class="site-background">`):
 - `data-heart`: home ed eventi. Cuore e cellule lontane al centro della composizione (non con `data-lite`);
-- `data-dim`: sfondo più scuro;
+- `data-dim`: sfondo più scuro: `0.6` (40% più scuro) su tutte le pagine tranne la home;
 - `data-lite`: versione leggera, usata dallo scanner;
 - `data-tap`: pagine pubbliche. Il cursore è una croce su tutta la pagina (tranne link, bottoni e campi) e si sente il battito. Dal 22/10/2026 il clic non dà più un battito in più.
 
 **Altro:**
 - Attorno al centro galleggiano 6 gocce di metallo liquido (non nello scanner).
 - Il filamento (circa 1,5 MB, compresso da GitHub Pages) e in home il cuore e la cellula (circa 0,5 MB) arrivano dopo il resto della pagina e compaiono insieme con una dissolvenza; prima si vedono solo la polvere e le gocce. Il filamento si prepara in un worker (`js/core/dna-worker.js`), fuori dalla pagina, così il caricamento non blocca tocchi e scorrimento. Il cuore e la cellula si leggono con il GLTFLoader di three r128 (jsDelivr), caricato solo in home.
-- Composizione (posizione, prolungamenti, tratto a sinistra, cuore e cellule lontane) e camera sono quelle approvate nella prova del 21/10/2026: `POSE`, `EXTENSIONS`, `LEFT`, `HEART_SCALE` e `FAR` in `background.js`. Dal 22/10 il cuore c'è anche nella pagina Eventi, dietro le schede (sfondo scurito al 60%); iscrizione e pagine staff hanno solo il DNA (il cuore al centro coprirebbe i moduli).
+- Composizione (posizione, prolungamenti, tratto a sinistra, cuore e cellule lontane) e camera sono quelle approvate nella prova del 21/10/2026: `POSE`, `EXTENSIONS`, `LEFT`, `HEART_SCALE` e `FAR` in `background.js`. Dal 22/10 il cuore c'è anche nella pagina Eventi, dietro le schede (sfondo più scuro del 40%); iscrizione e pagine staff hanno solo il DNA (il cuore al centro coprirebbe i moduli).
 - Finestre (avvisi e conferme di `js/core/modal.js`, "Iscrizione completata"): pannello nero con bordo sottile e angoli vivi, senza sfocatura. Il bottone principale (OK, CONFERMA) è pieno nel colore del sito; ANNULLA è vuoto, con il bordo sottile.
 - Bottoni dell'area staff: ELIMINA ed ESCI sono vuoti con il bordo rosso, FILTRI è vuoto con il bordo sottile; solo i bottoni principali sono pieni nel colore del sito.
 - Sugli schermi a 120 Hz o più lo sfondo viene disegnato al massimo circa 60 volte al secondo.
