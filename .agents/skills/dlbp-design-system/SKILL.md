@@ -9,7 +9,7 @@ In vigore dal 27/09/2026. Sostituisce il vecchio stile, che **non va più usato*
 
 I valori veri sono nel codice, che conta sempre più di questa guida:
 - `css/identity.css`: colori, caratteri e forme. Si carica dopo `css/styles.css` e ne sovrascrive l'aspetto.
-- `js/core/background.js`: palette (`MOODS`), le quattro luci (`LAMPS`, `LAMP_POWER`, `ORBIT`), battito (`BPM`), sfondo 3D.
+- `js/core/background.js`: colori delle luci (`MOODS`), le due luci (`LAMPS`, `LAMP_POWER`, `ORBIT`), liquido (`LIQUID_FRONT`), battito (`BPM`), sfondo 3D.
 
 Chi cambia la palette la cambia in entrambi i file e avvisa il proprietario, che la tiene aggiornata anche nella sua guida grafica privata.
 
@@ -19,14 +19,14 @@ Chi cambia la palette la cambia in entrambi i file e avvisa il proprietario, che
   - pannelli `rgba(5, 5, 8, 0.8)`;
   - linee `rgba(236, 234, 244, 0.12)`;
   - testo `#eceaf4`.
-- **I quattro colori del motto sono sempre tutti in scena**, come luci da club viste nel fumo. Dal 22/10/2026 sono quattro luci invisibili che girano attorno alla scena: si vedono solo i loro riflessi sul cromo, il fondo resta nero. Dal 30/10/2026 tutti i modelli sono cromo, le luci fanno un giro ogni 30 secondi con la stessa intensità e le particelle sono dei 4 colori mescolati.
+- **Nello sfondo ci sono solo due luci del motto, Love e Peace** (dal 03/11/2026), invisibili: girano attorno alla scena con un giro ogni 30 secondi e la stessa intensità, e si vedono i loro riflessi larghi e morbidi sul cromo. I modelli, tutti in cromo, galleggiano in un liquido denso che si colora solo con quelle luci: il fondo è molto scuro, non più nero pieno. Niente righe di monitor né grana. Drink e Breathe restano nel motto e nei flyer.
 
 | Parola | Nome nel codice | Colore |
 |---|---|---|
 | Drink | `magenta` | `#8a2c80` bordeaux violaceo |
-| Love | `brace` | `#ff4500` rosso arancio (dal 30/10/2026; prima `#e0281c` Tizzone) |
+| Love | `brace` | `#ef0723` rosso (dal 03/11/2026; prima `#ff4500`) |
 | Breathe | `breathe` | `#1fa39a` petrolio |
-| Peace | `ghiaccio` | `#cfe6ff` ghiaccio |
+| Peace | `ghiaccio` | `#16a1dd` azzurro (dal 03/11/2026; prima `#cfe6ff`) |
 
 - **Colore del sito:** dal 30/10/2026 è fisso bianco, non segue più le luci: i colori del motto restano solo nello sfondo.
 - **Variabili CSS** (in `css/identity.css`, fisse sul bianco):
@@ -68,7 +68,7 @@ Chi cambia la palette la cambia in entrambi i file e avvisa il proprietario, che
 - **Tabelle:** nell'admin e nell'area PR stanno dentro `.table-responsive` e sui telefoni diventano schede. Ogni cella ha `data-label` con il nome della colonna.
 
 ## Sfondo e cursore
-- **Sfondo:** ogni pagina ha `<div class="site-background">` con il filamento di DNA in cromo (modello di Troy, CC BY 4.0, `assets/dna.glb`) che gira piano su sé stesso (Three.js), su fondo nero, con le quattro luci del motto che girano. In home ed eventi al centro c'è il cuore in cromo che batte (Mox3DModels, CC BY 4.0) con sette cellule lontane (Physio CG, CC BY 4.0). **Niente glitch** dal 21/10/2026; niente zoom né bagliore sul battito dal 22/10/2026.
+- **Sfondo:** ogni pagina ha `<div class="site-background">` con il filamento di DNA in cromo (modello di Troy, CC BY 4.0, `assets/dna.glb`) che gira piano su sé stesso (Three.js), immerso nel liquido, con le luci Love e Peace che girano. In home ed eventi al centro c'è il cuore in cromo che batte (Mox3DModels, CC BY 4.0) con quattro cellule lontane (Physio CG, CC BY 4.0). **Niente glitch** dal 21/10/2026; niente zoom né bagliore sul battito dal 22/10/2026.
 - **Suono:** sulle pagine pubbliche il battito si sente (`js/core/heart-sound.js`); il bottone `.sound-toggle` (quadrato nero in basso a destra, icona nel colore del sito quando è acceso) lo spegne.
 - **Crediti:** "DNA 3D: Troy · CC BY 4.0" nel footer di ogni pagina (`.credit-3d`), a destra su computer e sotto il copyright su telefono; in home ed eventi, uno sotto l'altro, anche "Cellula 3D: Physio CG · CC BY 4.0" e "Cuore 3D: Mox3DModels · CC BY 4.0". Li chiedono le licenze, non vanno tolti.
 - **Attributi dello sfondo:**

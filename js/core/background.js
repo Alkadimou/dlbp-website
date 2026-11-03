@@ -1,7 +1,7 @@
 // Sfondo del sito: filamento di DNA in cromo che gira piano su sé stesso (Three.js) e, in home, il cuore che batte
-// con le cellule lontane e le gocce. Dal 30/10/2026 tutti i modelli sono cromo in una stanza buia e quattro luci, una
-// per colore del motto, girano attorno alla scena (un giro ogni 30 secondi): si vedono solo i loro riflessi colorati.
-// Il tema del sito è fisso bianco (css/identity.css), non segue più le luci.
+// con le cellule lontane e le gocce. Tutti i modelli sono cromo in una stanza buia. Dal 03/11/2026 due luci, Love e Peace,
+// girano attorno alla scena (un giro ogni 30 secondi) e tutto galleggia in un liquido che si colora solo con la loro luce.
+// Il tema del sito è fisso bianco (css/identity.css), non segue le luci.
 // Modelli (CC BY 4.0, crediti nel footer): DNA "DNA Procedural EEVEE" di Troy (assets/dna.glb),
 // cuore "Anatomical Heart" di Mox3DModels (assets/heart-30k.glb),
 // cellula "Neutrophil" di Physio CG (assets/cellula-3k.glb, semplificata da cellula-8k.glb).
@@ -25,20 +25,14 @@ const GLTF_URL = 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders
 const asset = (name) => new URL('../../assets/' + name, import.meta.url).href;
 const DNA_URL = asset('dna.glb');
 
-// colori del motto (le quattro luci, le particelle). Dal 30/10/2026 Love è il rosso arancio #FF4500 (prima Tizzone
-// #E0281C, poi per poche ore rosso puro #FF0000) e Peace il ghiaccio #CFE6FF
+// le due luci dello sfondo (anche le particelle): dal 03/11/2026 Love è il rosso #EF0723 e Peace l'azzurro #16A1DD.
+// Drink e Breathe restano nel motto e nei flyer, non nello sfondo
 const MOODS = {
-    magenta:  { hex: 0x8a2c80 }, // Drink, bordeaux violaceo (dal 23/10/2026)
-    brace:    { hex: 0xff4500 }, // Love, rosso arancio
-    breathe:  { hex: 0x1fa39a }, // Breathe, petrolio
-    ghiaccio: { hex: 0xcfe6ff }  // Peace, ghiaccio
+    brace:    { hex: 0xef0723 }, // Love
+    ghiaccio: { hex: 0x16a1dd }  // Peace
 };
-// Le quattro luci partono dai quattro angoli e girano nell'ordine del motto: Love in basso a destra, Peace in alto a
-// sinistra, Drink in basso a sinistra, Breathe in alto a destra. LAMP_POWER: intensità di ognuna.
-const LAMPS = [
-    { mood: 'brace', at: [11, -6.5] }, { mood: 'ghiaccio', at: [-11, 7.5] },
-    { mood: 'magenta', at: [-11, -6.5] }, { mood: 'breathe', at: [11, 7.5] }
-];
+// Le due luci partono da due angoli opposti: Love in alto a sinistra, Peace in basso a destra. LAMP_POWER: intensità di ognuna.
+const LAMPS = [{ mood: 'brace', at: [-11, 7.5] }, { mood: 'ghiaccio', at: [11, -6.5] }];
 const LAMP_POWER = 0.6;
 // giro su un'ellisse 11 x 8 attorno al cuore, passando davanti e dietro: ogni luce parte dal punto vicino al suo angolo
 const LAMP_START = LAMPS.map(({ at }) => Math.atan2(at[1] / 8, at[0] / 11));
@@ -91,28 +85,30 @@ function loadScript(src) {
 const loadThree = () => (window.THREE ? Promise.resolve(window.THREE) : loadScript(THREE_URL).then(() => window.THREE));
 
 const ENV_VERT = 'varying vec3 vDir; void main(){ vDir = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }';
-// La stanza buia che il cromo riflette: due rettangoli di luce neutra (in basso a destra e in alto a sinistra) con il
-// centro più chiaro e un filo freddo in alto. I colori arrivano dalle quattro luci che girano.
+// La stanza buia che il cromo riflette: un rettangolo Peace in basso a destra e uno Love in alto a sinistra, con il centro
+// più chiaro, e un filo freddo in alto
 const ENV_FRAG = `
 varying vec3 vDir;
+vec3 rect(float v, vec3 w, vec3 c){ return w * min(v, 0.6) + c * max(v - 0.6, 0.0); }
 void main(){
   vec3 d = normalize(vDir);
   vec3 c = vec3(0.0016, 0.0019, 0.0023);
-  float win = smoothstep(0.62, 0.72, d.x) * (1.0 - smoothstep(0.26, 0.38, abs(d.y + 0.48))) * (1.0 - smoothstep(0.30, 0.45, abs(d.z)))
-            + smoothstep(-0.62, -0.72, d.x) * (1.0 - smoothstep(0.26, 0.38, abs(d.y - 0.55))) * (1.0 - smoothstep(0.30, 0.45, abs(d.z)));
-  float core = smoothstep(0.74, 0.84, d.x) * (1.0 - smoothstep(0.10, 0.26, abs(d.y + 0.48)))
-             + smoothstep(-0.74, -0.84, d.x) * (1.0 - smoothstep(0.10, 0.26, abs(d.y - 0.55)));
-  c += vec3(0.4, 0.4, 0.42) * 0.6 * win + vec3(0.8, 0.8, 0.82) * 0.5 * core;
+  float peace = smoothstep(0.62, 0.72, d.x) * (1.0 - smoothstep(0.26, 0.38, abs(d.y + 0.48))) * (1.0 - smoothstep(0.30, 0.45, abs(d.z)));
+  float peaceCore = smoothstep(0.74, 0.84, d.x) * (1.0 - smoothstep(0.10, 0.26, abs(d.y + 0.48)));
+  float love = smoothstep(-0.62, -0.72, d.x) * (1.0 - smoothstep(0.26, 0.38, abs(d.y - 0.55))) * (1.0 - smoothstep(0.30, 0.45, abs(d.z)));
+  float loveCore = smoothstep(-0.74, -0.84, d.x) * (1.0 - smoothstep(0.10, 0.26, abs(d.y - 0.55)));
+  c += rect(0.6 * peace + 0.5 * peaceCore, vec3(0.008, 0.356, 0.723), vec3(0.7, 0.89, 0.96));
+  c += rect(0.6 * love + 0.5 * loveCore, vec3(0.863, 0.002, 0.017), vec3(1.0, 0.25, 0.25));
   c += vec3(0.55, 0.62, 0.75) * 1.2 * smoothstep(0.92, 0.99, d.y);
   gl_FragColor = linearToOutputTexel(vec4(c, 1.0));
 }`;
 
 const POST_VERT = 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }';
-// Passaggio finale: leggera separazione dei colori ai bordi, righe del monitor, grana, vignetta, effetto liquido
+// Passaggio finale: l'immagine ondeggia come in un liquido, leggera separazione dei colori ai bordi, vignetta
+// (righe di monitor e grana tolte il 03/11/2026)
 const POST_FRAG = `
-uniform sampler2D tDiffuse; uniform float uTime; uniform vec2 uRes; uniform float uDim; uniform float uPx;
+uniform sampler2D tDiffuse; uniform float uTime; uniform float uDim;
 varying vec2 vUv;
-float rnd(vec2 p){ return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
 void main(){
   // l'immagine ondeggia piano e in modo irregolare, come vista attraverso un liquido denso
   float t = uTime;
@@ -122,24 +118,48 @@ void main(){
   vec2 fc = vUv - 0.5;
   vec2 ca = fc * 0.006;
   vec3 col = vec3(texture2D(tDiffuse, uv + ca).r, texture2D(tDiffuse, uv).g, texture2D(tDiffuse, uv - ca).b);
-  // righe di monitor (una ogni 3 punti dello schermo, qualunque sia la densità di pixel, scuriscono fino al 16%) e grana
-  // a grani di un punto; dal 30/10/2026 più visibili (prima 6% e grana 0,04)
-  vec2 px = vUv * uRes / uPx;
-  col *= 0.84 + 0.16 * (0.5 + 0.5 * sin(px.y * 2.0944));
-  col += (rnd(floor(px) + fract(uTime * 0.37) * 91.0) - 0.5) * 0.09;
   col *= smoothstep(1.05, 0.3, length(fc * vec2(1.0, 1.15)) * 1.25);
   col *= uDim;
   gl_FragColor = vec4(col, 1.0);
 }`;
 
-// Riflesso delle quattro luci che girano: uLD è la direzione di ogni luce vista dalla camera, uLC il suo colore.
+// Il liquido in cui galleggia tutto (dal 03/11/2026): denso e lento, senza colore suo, si colora solo con la luce che lo
+// attraversa, più debole lontano dalla luce. dens: quanto è denso in ogni punto, correnti morbide e fili sottili. Si
+// disegna due volte: dietro i modelli e, più leggero (LIQUID_FRONT), davanti, così i modelli stanno dentro.
+// uLP: dove si trova ogni luce sullo schermo; uLC: il suo colore; uAmount: quanto si vede
+const LIQUID_FRONT = 0.3;
+const LIQUID_VERT = 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 1.0, 1.0); }';
+const LIQUID_FRAG = `
+uniform vec2 uLP[2]; uniform vec3 uLC[2]; uniform float uT; uniform float uAsp; uniform float uAmount;
+varying vec2 vUv;
+float dens(vec2 p){
+  vec2 q = p * 0.9; float t = uT;
+  q += 0.60 * sin(q.yx * 1.1 + vec2(t * 0.07, -t * 0.05));
+  q += 0.35 * sin(q.yx * 2.3 + vec2(-t * 0.09, t * 0.06) + 1.7);
+  q += 0.18 * sin(q.yx * 4.1 + vec2(t * 0.05, t * 0.08) + 4.1);
+  float soft = 0.5 + 0.5 * sin(q.x * 1.3 + t * 0.04) * sin(q.y * 1.5 - t * 0.05);
+  float wisp = 1.0 - abs(sin((q.x - q.y) * 2.2 + t * 0.03));
+  return 0.25 + 0.75 * soft * soft + 0.3 * wisp * wisp * wisp;
+}
+void main(){
+  vec2 p = (vUv - 0.5) * 2.0 * vec2(uAsp, 1.0);
+  float de = dens(p);
+  vec3 col = vec3(0.0);
+  for (int i = 0; i < 2; i++) {
+    vec2 d = uLP[i] - p;
+    col += uLC[i] * 0.75 * de / (1.0 + dot(d, d) * 0.3);
+  }
+  gl_FragColor = vec4(col * uAmount, 1.0);
+}`;
+
+// Riflesso delle due luci che girano, largo e morbido: uLD è la direzione di ogni luce vista dalla camera, uLC il suo colore.
 // Il metallo le riflette come fari nel buio: la luce non si vede, il riflesso scorre sugli oggetti mentre gira.
 const LIGHTS_GLSL = `
-uniform vec3 uLD[4]; uniform vec3 uLC[4];
+uniform vec3 uLD[2]; uniform vec3 uLC[2];
 vec3 lightsRefl(vec3 n, vec3 vpos){
   // raggio riflesso dalla camera al punto e poi rimbalzato: il riflesso cade dalla parte della luce
   vec3 r = reflect(normalize(vpos), normalize(n)); vec3 c = vec3(0.0);
-  for (int i = 0; i < 4; i++) { float d = max(dot(r, uLD[i]), 0.0); c += uLC[i] * (pow(d, 6.0) * 1.1 + pow(d, 60.0) * 3.5); }
+  for (int i = 0; i < 2; i++) { float d = max(dot(r, uLD[i]), 0.0); c += uLC[i] * (pow(d, 4.0) * 1.1 + pow(d, 30.0) * 1.5); }
   return c;
 }
 `;
@@ -296,10 +316,24 @@ function createView(THREE, host) {
     envMat.dispose();
     pmrem.dispose();
 
-    // le quattro luci del motto: luci vere (fanno brillare il cromo) e, per lightsRefl, direzione e colore del riflesso
+    // le due luci: luci vere (fanno brillare il cromo) e, per lightsRefl, direzione e colore del riflesso
     const lamps = LAMPS.map(({ mood }) => { const l = new THREE.PointLight(MOODS[mood].hex, LAMP_POWER, 40, 1.5); scene.add(l); return l; });
     const lightU = { uLD: { value: lamps.map(() => new THREE.Vector3(0, 0, 1)) },
         uLC: { value: LAMPS.map(({ mood }) => linear(MOODS[mood].hex).multiplyScalar(LAMP_POWER * 0.8)) } };
+
+    // il liquido, dietro e davanti ai modelli (non nella versione leggera)
+    const liquidU = { uLP: { value: lamps.map(() => new THREE.Vector2()) }, uLC: lightU.uLC, uT: { value: 0 }, uAsp: { value: 1 } };
+    const liquidBack = { value: 0 }, liquidFront = { value: 0 };
+    if (!lite) {
+        const liquidGeo = new THREE.PlaneGeometry(2, 2);
+        [[liquidBack, -10, {}], [liquidFront, 10, { transparent: true, blending: THREE.AdditiveBlending }]].forEach(([uAmount, order, extra]) => {
+            const m = new THREE.Mesh(liquidGeo, new THREE.ShaderMaterial({ vertexShader: LIQUID_VERT, fragmentShader: LIQUID_FRAG,
+                uniforms: { ...liquidU, uAmount }, depthTest: false, depthWrite: false, ...extra }));
+            m.frustumCulled = false;
+            m.renderOrder = order;
+            scene.add(m);
+        });
+    }
 
     // lo stesso cromo per tutti i modelli (cuore, DNA, cellule, gocce), dal 29/10/2026; extra: side, transparent...
     const makeMat = (extra = {}) => new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 1, roughness: 0.1, ...extra });
@@ -335,6 +369,7 @@ function createView(THREE, host) {
     dnaModel.rotation.set(...POSE.rot);
     dnaModel.scale.setScalar(POSE.k);
     scene.add(dnaModel, dnaLeft);
+    const dnaBase = new THREE.Vector3(); // dove sta il DNA: da lì galleggia
     let D = null, readyAt = null;
 
     // gocce di metallo liquido attorno al centro (superficie che ondeggia come metallo fuso)
@@ -416,7 +451,7 @@ function createView(THREE, host) {
             g.scale.setScalar(FAR_SCALE * k);
             g.rotation.set(i * 1.7, i * 2.3, i * 0.9);
             // tutte fanno un giro ogni 60 secondi, ognuna attorno a un asse diverso (quindi in una direzione diversa)
-            g.userData = { q0: g.quaternion.clone(), axis: new THREE.Vector3(...(CELL_AXIS[i] || [0, 1, 0])).normalize(), spin: Math.PI * 2 / 60 };
+            g.userData = { q0: g.quaternion.clone(), axis: new THREE.Vector3(...(CELL_AXIS[i] || [0, 1, 0])).normalize(), spin: Math.PI * 2 / 60, base: g.position.clone() };
             const front = new THREE.Mesh(organs.cell.membrana, farMem);
             front.renderOrder = 3;
             g.add(new THREE.Mesh(organs.cell.nucleo, farCore), front);
@@ -435,7 +470,7 @@ function createView(THREE, host) {
     const dustBase = pos.slice(), dustPh = new Float32Array(count * 3).map(() => Math.random() * Math.PI * 2);
     const dustGeo = new THREE.BufferGeometry();
     dustGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    // ogni particella ha uno dei 4 colori del motto (mescolati), un po' più luminoso (× 1.8) perché si veda sul nero
+    // ogni particella ha il colore di una delle due luci (mescolati), un po' più luminoso (× 1.8) perché si veda sul nero
     const dustCol = new Float32Array(count * 3);
     const mix = LAMPS.map(({ mood }) => linear(MOODS[mood].hex));
     for (let p = 0; p < count; p++) mix[p % mix.length].toArray(dustCol, p * 3);
@@ -460,7 +495,7 @@ function createView(THREE, host) {
     let rt = makeTarget();
     const post = new THREE.ShaderMaterial({
         vertexShader: POST_VERT, fragmentShader: POST_FRAG, depthTest: false, depthWrite: false,
-        uniforms: { tDiffuse: { value: rt.texture }, uTime: { value: 0 }, uRes: { value: new THREE.Vector2(4, 4) }, uDim: { value: dim }, uPx: { value: dpr } }
+        uniforms: { tDiffuse: { value: rt.texture }, uTime: { value: 0 }, uDim: { value: dim } }
     });
     const postScene = new THREE.Scene();
     postScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), post));
@@ -497,13 +532,11 @@ function createView(THREE, host) {
         if (!w || !h) return;
         renderer.setSize(w, h, false);
         rt.setSize(Math.round(w * dpr), Math.round(h * dpr));
-        post.uniforms.uRes.value.set(w * dpr, h * dpr);
-        post.uniforms.uPx.value = dpr;
         camera.aspect = w / h;
         const landscape = w > h;
         drops.position.set(0, landscape ? 0 : 0.4, 0);
         holder.position.copy(drops.position);
-        dnaModel.position.copy(drops.position).add(new THREE.Vector3(...POSE[landscape ? 'landscape' : 'portrait']));
+        dnaBase.copy(drops.position).add(new THREE.Vector3(...POSE[landscape ? 'landscape' : 'portrait']));
         camera.position.set(0, 0, landscape ? 19 : Math.max(18, 10.5 / (0.611 * camera.aspect)));
         camera.updateProjectionMatrix();
         clearTimeout(leftTimer);
@@ -534,7 +567,7 @@ function createView(THREE, host) {
         }).catch(() => { /* resta il DNA senza cuore */ }).then(() => { ready.organs = true; maybeReveal(); });
     }
 
-    const lampDir = new THREE.Vector3();
+    const lampDir = new THREE.Vector3(), lampP = new THREE.Vector3();
     const view = {
         // livello di qualità più leggero (QUALITY): meno pixel e, se serve, niente bordi lisciati
         setQuality(q) {
@@ -566,7 +599,14 @@ function createView(THREE, host) {
             beatU.value = b;
             waveU.value = Math.min(1, state.ph / Math.min(60 / BPM, 0.6));
             heartPivot.rotation.set(Math.sin(sec * 0.11) * 0.08, Math.sin(sec * 0.14) * 0.5, 0); // dondolio lento, come in un liquido
-            farCells.children.forEach((g) => { g.quaternion.copy(g.userData.q0).multiply(cellQ.setFromAxisAngle(g.userData.axis, g.userData.spin * sec)); });
+            farCells.children.forEach((g, i) => {
+                g.quaternion.copy(g.userData.q0).multiply(cellQ.setFromAxisAngle(g.userData.axis, g.userData.spin * sec));
+                g.position.set(g.userData.base.x + Math.sin(sec * 0.07 + i * 1.9) * 0.5, g.userData.base.y + Math.sin(sec * 0.1 + i * 2.7) * 0.7, g.userData.base.z);
+            });
+            // sospesi nel liquido: cuore, DNA e cellule salgono, scendono e derivano piano, senza seguire il battito
+            heartPivot.position.set(Math.sin(sec * 0.09) * 0.12, Math.sin(sec * 0.13) * 0.22, Math.sin(sec * 0.07) * 0.15);
+            dnaModel.position.set(dnaBase.x + Math.sin(sec * 0.08 + 1.3) * 0.2, dnaBase.y + Math.sin(sec * 0.11 + 0.6) * 0.3, dnaBase.z);
+            dnaLeft.position.set(Math.sin(sec * 0.1 + 3.1) * 0.2, Math.sin(sec * 0.08 + 2.2) * 0.3, 0);
             timeU.value = sec;
             drops.visible = revealU.value > 0.5;
             // galleggiano: salgono e scendono piano e si spostano appena di lato, ognuna con il suo ritmo
@@ -584,14 +624,21 @@ function createView(THREE, host) {
             }
             dustGeo.attributes.position.needsUpdate = true;
 
-            // le quattro luci girano attorno alla scena; per il cromo conta da dove arriva ogni luce vista dalla camera
+            // le due luci girano attorno alla scena; per il cromo conta da dove arriva ogni luce vista dalla camera,
+            // per il liquido dove si trova sullo schermo
             camera.updateMatrixWorld();
             lamps.forEach((l, i) => {
                 const a = sec * ORBIT + LAMP_START[i];
                 l.position.set(holder.position.x + Math.cos(a) * 11, holder.position.y + Math.sin(a) * 8, 3 - Math.sin(a) * 4);
                 lampDir.copy(l.position).sub(holder.position).normalize().transformDirection(camera.matrixWorldInverse);
                 lightU.uLD.value[i].copy(lampDir);
+                lampP.copy(l.position).project(camera);
+                liquidU.uLP.value[i].set(lampP.x * camera.aspect, lampP.y);
             });
+            liquidBack.value = revealU.value;
+            liquidFront.value = revealU.value * LIQUID_FRONT;
+            liquidU.uT.value = sec;
+            liquidU.uAsp.value = camera.aspect;
             post.uniforms.uTime.value = sec;
             renderer.setRenderTarget(rt);
             renderer.render(scene, camera);
