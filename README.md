@@ -132,25 +132,30 @@ Dal 22/10/2026:
 - quattro luci invisibili, una per colore del motto, girano attorno alla scena: si vedono solo i loro riflessi colorati che scorrono su cromo, cuore, cellule e gocce.
 
 Dal 30/10/2026 (scelto nella prova "cromo" del 29-30/10):
-- tutti i modelli (cuore, DNA con i pioli, cellule, gocce) sono dello stesso cromo e riflettono una stanza buia con due rettangoli di luce neutra (in basso a destra e in alto a sinistra);
-- le quattro luci partono dai quattro angoli (Love in basso a destra, Breathe in alto a destra, Peace in alto a sinistra, Drink in basso a sinistra), girano nell'ordine del motto con un giro ogni 30 secondi (`ORBIT`) e hanno tutte la stessa intensità, ferma (`LAMP_POWER`, 0,6);
+- tutti i modelli (cuore, DNA con i pioli, cellule, gocce) sono dello stesso cromo e riflettono una stanza buia con due rettangoli di luce (in basso a destra e in alto a sinistra);
 - il tema del sito è fisso bianco: non segue più le luci;
-- effetto "liquido": l'immagine ondeggia piano, il cuore batte e dondola più lento, le particelle fluttuano ognuna per conto suo, sempre dietro il cuore, e sono dei 4 colori mescolati;
+- effetto "liquido": l'immagine ondeggia piano, il cuore batte e dondola più lento, le particelle fluttuano ognuna per conto suo, sempre dietro il cuore;
 - 4 cellule lontane e il filamento fanno un giro ogni 60 secondi, ognuna attorno a un asse diverso; 6 gocce galleggiano ferme attorno al cuore;
 - la home è senza velo scuro, le altre pagine hanno lo sfondo più scuro del 40% (`data-dim="0.6"`).
-- righe di monitor e grana più visibili: una riga sottile ogni 3 punti dello schermo che scurisce fino al 16%, grana dello sfondo 3D a grani di un punto e velo di grana sopra la pagina al 7% (`.grain-overlay` in `css/styles.css`).
+
+Dal 03/11/2026 (scelto nella stessa prova):
+- nello sfondo restano solo due luci, Love in alto a sinistra e Peace in basso a destra, con un giro ogni 30 secondi (`ORBIT`), la stessa intensità (`LAMP_POWER`, 0,6) e un riflesso largo e morbido; i rettangoli della stanza hanno i loro colori e le particelle sono mescolate fra i due;
+- liquido amniotico: il fondo non è più nero pieno ma un liquido denso e lento, senza colore suo, che si colora solo con la luce che lo attraversa; si disegna dietro i modelli e, più leggero, davanti (`LIQUID_FRONT`), tranne che nello scanner;
+- cuore, DNA e cellule galleggiano piano nel liquido, senza seguire il battito;
+- tolte le righe di monitor e la grana.
+
 Le licenze chiedono di citare gli autori: i crediti sono nel footer e non vanno tolti.
 
-**I 4 colori**, uno per parola del motto, sono sempre tutti in scena come luci:
+**I 4 colori** del motto. Nello sfondo sono luci solo Love e Peace; Drink e Breathe restano nel motto e nei flyer:
 
 | Parola | Nome nel codice | Colore |
 |---|---|---|
 | Drink | `magenta` | `#8a2c80` |
-| Love | `brace` | `#ff4500` (dal 30/10/2026; prima `#e0281c`) |
+| Love | `brace` | `#ef0723` (dal 03/11/2026; prima `#ff4500`) |
 | Breathe | `breathe` | `#1fa39a` |
-| Peace | `ghiaccio` | `#cfe6ff` |
+| Peace | `ghiaccio` | `#16a1dd` (dal 03/11/2026; prima `#cfe6ff`) |
 
-- I colori sono definiti in `js/core/background.js` (`MOODS`, e `LAMPS` per l'angolo da cui parte ogni luce).
+- I colori delle luci sono definiti in `js/core/background.js` (`MOODS`, e `LAMPS` per l'angolo da cui parte ogni luce); Drink e Breathe non sono più nel codice dello sfondo.
 - Il colore del sito (menu, bottoni, link) è fisso bianco: `--mood`, `--mood-deep`, `--on-mood` (testo sopra il colore) e `--mood-text` in `css/identity.css`.
 - Il battito "tum-tum" a 30 BPM (`BPM`) fa battere il cuore (le cellule no) e si sente sulle pagine pubbliche.
 
